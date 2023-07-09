@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Custom configuration file for restsh.init.
+# Desc:
+# Custom configuration file for restsh.init.
+# Set central environment variables if not already set.
+
+# REST host to connect to
+[ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
+[ -z "${RESTSH_HOST+x}" ] && export RESTSH_HOST="localhost"
+[ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
+
+# Authentication settings
+#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="basic"
+#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="bearer"
+#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="netrc"
+[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="anonymous"
+
+# Set username/password for basic auth
+#[ -z "${RESTSH_USER+x}" ] && export RESTSH_USER="apiuser"
+#[ -z "${RESTSH_PASS+x}" ] && export RESTSH_PASS="apipass"
+
+# Set bearer token
+#[ -z "${RESTSH_BEARER+x}" ] && export RESTSH_BEARER="token"
+
+# Set REST payload format
+[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
+#[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="text/xml"

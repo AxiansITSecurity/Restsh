@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Bash initialization file for the restsh framework.
+# Desc:
+# Initializes and checks the environment. Start this script not directly,
+# use restsh/restsh.start instead.
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment"
+  exit 1
+fi
+
+# Strict errorhandling
+set -uo pipefail
+
+# Enable debug mode
+if [ -n "${DEBUG+x}" ]
+then
+  echo "Enabling debug mode"
+  set -x
+fi
+
+# Do not add commands to history that begin with space
+# Usefull for variables with sensitive contents
+export HISTCONTROL=ignorespace
+
+# 4 spaces tab is enough
+tabs 4
+
+# Set path
+export PATH="$PATH:$RESTSH_PATH:$RESTSH_PATH/bin"
+
+# Load helper functions
+. "$RESTSH_PATH/lib/restsh.utility"
+. "$RESTSH_PATH/lib/restsh.inithelper"
+. "$RESTSH_PATH/lib/restsh.shortcuts"
+
+# Include mustache
+. "${RESTSH_PATH}/mo/mo"
+
+# Use a custom config file
+if [ -z "${1+x}" ]
+then
+  RESTSH_CONFIG=".restsh-config"
+else
+  RESTSH_CONFIG="$1"
+fi
+if [ -f "$RESTSH_CONFIG" ]
+then
+  . "$RESTSH_CONFIG"
+else
+  echo_err "Config file not found: $RESTSH_CONFIG"
+  exit 1
+fi
+
+# Some initial checks
+if ! restsh.init.check.env
+then
+  exit 1
+fi
+
+if ! restsh.init.check.cmd
+then
+  exit 1
+fi
+
+# Set default curl options
+RESTSH_CURL=$(restsh.init.get.curloptions)
+
+# Set version
+RESTSH_VERSION=$(cat $RESTSH_PATH/version)
+export RESTSH_VERSION
+
+# Set restsh url
+export RESTSH_URL=$(restsh.init.get.resturl)
+
+# Set prompt
+export PS1="\e[1;32m${RESTSH_URL}\e[m# "
+
+# ok
+echo_ok "restsh $RESTSH_VERSION initialized"
+echo -e "\t${RESTSH_URL}"
+[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tuser: $RESTSH_USER"
+[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tuser: bearer token"
+[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tuser: from .netrc"
+echo ""
+echo "Run restsh.help for available commands."
+echo "Use exit to finish."
+echo "Happy RESTing"
+echo ""

@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Some utility functions.
+# Desc:
+# Provides some utility functions. This file is included by restsh.init.
+
+# Prints green ok messages
+echo_ok() {
+  printf "\e[1;32m"
+  #shellcheck disable=SC2068
+  echo $@
+  printf "\e[m"
+}
+
+# Prints red error messages
+echo_err() {
+  printf "\e[0;31mERROR: "
+  #shellcheck disable=SC2068
+  echo $@
+  printf "\e[m"
+}
+
+# Prints yellow warning messages
+echo_warn() {
+  printf "\e[1;33mWARN: "
+  #shellcheck disable=SC2068
+  echo $@
+  printf "\e[m"
+}
+
+# Try to parse the output as json
+parseoutput() {
+  [ -z "${1+x}" ] && return 1
+  local OUT=$1
+  case "$RESTSH_CONTENT" in
+    "application/json")
+      if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
+      then
+        echo "$OUT"
+      fi
+    ;;
+    "text/xml")
+      if ! $RESTSH_YQ "." <<< "$OUT" 2>/dev/null
+      then
+        echo "$OUT"
+      fi
+    ;;
+    *)
+      echo "$OUT"
+    ;;
+  esac
+  return 0
+}
+
+# Export all functions
+export -f echo_ok
+export -f echo_err
+export -f echo_warn
+export -f parseoutput

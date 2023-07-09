@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Issues a PATCH/PUT/POST request.
+# Desc:
+# Issues a POST request.
+
+# Strict errorhandling
+set -euo pipefail
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment"
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  echo "Usage: $0 <uri path>"
+  echo "Pipe the request body in this command."
+  exit 1
+else
+  URI=$1
+fi
+
+# Determine method by extension of the script file
+METHOD=$(tr '[:lower:]' '[:upper:]' <<< "${0##*.}")
+
+if ! OUTPUT=$($RESTSH_CURL -X "$METHOD" -H "Content-Type: ${RESTSH_CONTENT}" "${RESTSH_URL}${URI}" -d @- 2>&1)
+then
+  echo_err "$METHOD ${RESTSH_URL}${URI} failed"
+  echo_err "$OUTPUT"
+  exit 1
+fi
+
+parseoutput "$OUTPUT"
+exit 0
