@@ -10,19 +10,19 @@
 
 # Checks for necessary environment variables
 restsh.init.check.env() {
-  if [ -z "$RESTSH_HOST" ]
+  if [ -z "${RESTSH_HOST+x}" ]
   then
     echo_err "No rest host configured, set variable RESTSH_HOST."
     return 1
   fi
 
-  if [ -z "$RESTSH_SCHEME" ]
+  if [ -z "${RESTSH_SCHEME+x}" ]
   then
     echo_err "No rest host configured, set variable RESTSH_SCHEME."
     return 1
   fi
 
-  if [ -z "$RESTSH_PORT" ]
+  if [ -z "${RESTSH_PORT+x}" ]
   then
     echo_err "No rest port configured, set variable RESTSH_PORT."
     return 1
@@ -40,14 +40,14 @@ restsh.init.check.env() {
       return 1
     fi
 
-    if [ -z "$RESTSH_PASS" ]
+    if [ -z "${RESTSH_PASS+x}" ]
     then
-      echo_err "No rest password configured, set variable RESTSH_PASS."
-      return 1
+      read -r -s -p "Password: " RESTSH_PASS
+      export RESTSH_PASS
     fi
   elif [ "$RESTSH_AUTH" == "bearer" ]
   then
-    if [ -z "$RESTSH_BEARER" ]
+    if [ -z "${RESTSH_BEARER+x}" ]
     then
       echo_err "No rest bearer token configured, set variable RESTSH_BEARER."
       return 1
