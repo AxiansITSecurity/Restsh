@@ -49,9 +49,16 @@ export PATH
 # Use default or custom config file
 if [ -z "${RESTSH_CONFIG+x}" ]
 then
+  # try config in current directory
   RESTSH_CONFIG=".restsh-config"
+  if [ ! -f "$RESTSH_CONFIG" ]
+  then
+    # fall back to config in user home
+    RESTSH_CONFIG="$HOME/.restsh-config"
+  fi
 fi
-if [ -f "$RESTSH_CONFIG" ]
+# Check for existing config file
+if [ -s "$RESTSH_CONFIG" ]
 then
   #shellcheck disable=SC1090
   . "$RESTSH_CONFIG"
@@ -59,6 +66,8 @@ else
   echo_err "Config file not found: $RESTSH_CONFIG"
   exit 1
 fi
+
+export RESTSH_CONFIG
 
 # Some initial checks
 if ! restsh.init.check.env
@@ -88,10 +97,11 @@ export PS1="\e[1;32m${RESTSH_URL}\e[m# "
 
 # ok
 echo_ok "restsh $RESTSH_VERSION initialized"
-echo -e "\t${RESTSH_URL}"
-[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tUser: $RESTSH_USER"
-[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tAuthentication: bearer token"
-[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tUser: from .netrc"
+echo -e "\tConfig: ${RESTSH_CONFIG}"
+echo -e "\tHost:   ${RESTSH_URL}"
+[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tUser:   $RESTSH_USER"
+[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tAuth:   bearer token"
+[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tUser:   from .netrc"
 echo ""
 echo "Run restsh.help for available commands."
 echo "Use exit to finish."

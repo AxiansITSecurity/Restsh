@@ -4,15 +4,20 @@ restsh is a small framework to work with rest api's within the bash. It is desig
 
 This framework includes the [mustache template engine](https://github.com/tests-always-included/mo) written in bash.
 
-## Running
+## Running interactively
 
 ```sh
 git clone https://github.com/JuergenMang/restsh.git
 cd restsh
 # Rename .restsh-config.dist to .restsh-config and customize it or export some environment variables
 # export RESTSH_HOST="10.125.245.51"
+# Basic authentication
+# export RESTSH_USER="basic"
 # export RESTSH_USER="apiuser"
 # export RESTSH_PASS="apipass"
+# Bearer authentication
+# export RESTSH_AUTH="bearer"
+# export RESTSH_BEARER="thetoken"
 # You can also use the .netrc file to store the credentials
 # export RESTSH_NETRC=1
 restsh/restsh.start
@@ -20,10 +25,18 @@ restsh/restsh.start
 
 ### Custom config
 
-You can use custom config files to work with several api endpoints.
+You can use custom config files to work with several api endpoints. If not defined restsh searches for a file named `.restsh-config` in the current folder and in the user home.
 
 ```sh
 restsh/restsh.start custom-config1
+```
+
+### Help
+
+List all custom environment variables and commands.
+
+```sh
+restsh.help
 ```
 
 ### Debug
@@ -35,12 +48,14 @@ export DEBUG=1
 restsh/restsh.start
 ```
 
-## Help
+## Using in a script
 
-List all custom environment variables and commands.
+Simply export the RESTSH_PATH and source the `restsh.init` file.
 
 ```sh
-restsh.help
+export RESTSH_PATH="/path/to/restsh"
+#export RESTSH_CONFIG="custom-config"
+. "$RESTSH_PATH/restsh.init"
 ```
 
 ## Dependencies
@@ -57,6 +72,8 @@ Further dependencies are:
 
 You can add your own scripts into the `restsh/bin` directory. Please consider to create a pull request.
 
+- [DEVELOPING.md](DEVELOPING.md)
+
 ## Usage
 
 ```sh
@@ -69,6 +86,10 @@ mo << EOL | POST /api/request
 > {"var1": "{{VAR1}}"}
 > EOL
 ```
+
+## Custom mustache functions
+
+You can find some custom mustache functions in the `mo/lib` folder.
 
 ## License
 
