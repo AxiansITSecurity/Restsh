@@ -18,18 +18,18 @@ echo_ok() {
 
 # Prints red error messages
 echo_err() {
-  printf "\e[0;31mERROR: "
+  printf "\e[0;31mERROR: " >&2
   #shellcheck disable=SC2068
-  echo $@
-  printf "\e[m"
+  echo $@ >&2
+  printf "\e[m" >&2
 }
 
 # Prints yellow warning messages
 echo_warn() {
-  printf "\e[1;33mWARN: "
+  printf "\e[1;33mWARN: " >&2
   #shellcheck disable=SC2068
-  echo $@
-  printf "\e[m"
+  echo $@ >&2
+  printf "\e[m" >&2
 }
 
 # Try to parse the output as json
