@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Waits for a F5 ASM Policy Task to finish
+# Desc:
+# Waits for a F5 ASM Policy Task to finish
+
+# Strict errorhandling
+set -euo pipefail
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  echo "Usage: $0 <task id>"
+  exit 1
+else
+  TASK_ID=$1
+fi
+
+echo "Waiting for task id \"$TASK_ID\" to finish."
+COUNTER=0
+while :
+do
+    sleep "$F5_TASK_CHECK_INTERVAL"
+    if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+    then
+        echo "Timeout waiting for task."
+        exit 1
+    fi
+    COUNTER=$((COUNTER+1))
+    if ! STATUS=$(restsh.get "/mgmt/tm/asm/tasks/apply-policy?\$select=id,status" | \
+        $RESTSH_JQ -r ".items[] | select(.id == \"$TASK_ID\") | .status")
+    then
+        echo "Could not get task status."
+        exit 1
+    fi
+    case "$STATUS" in
+        STARTED|NEW|"")
+            continue
+            ;;
+        COMPLETED)
+            break
+            ;;
+        *)
+            echo "Unhandled task status: $STATUS"
+            exit 1
+            ;;
+    esac
+done
+exit 0

@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Applies a F5 ASM Policy by full path.
+# Desc:
+# Applies a F5 ASM Policy by full path.
+# Shortcut for f5.asm.policy.gethash and f5.asm.policy.applyhash
+
+# Strict errorhandling
+set -euo pipefail
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  echo "Usage: $0 <policy full path>"
+  exit 1
+else
+  POLICY=$1
+fi
+
+# Get the policy hash
+if ! POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+then
+    echo_err "Policy \"$POLICY\" not found."
+    exit 1
+fi
+
+if f5.asm.policy.applyhash "$POLICY_HASH"
+then
+  exit 0
+fi
+
+exit 1

@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Manages signature staging.
+# Desc:
+# Manages signature staging.
+
+# Strict errorhandling
+set -euo pipefail
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+fi
+
+if [ -z "${2+x}" ]
+then
+    POLICY_FILTER=""
+else
+    POLICY_FILTER="| select(.fullPath == \"$2\")"
+fi
+
+case "$ACTION" in
+    state)
+        echo "Signature enforcement status"
+        ;;
+    stateVerbose)
+        echo "Signature enforcement status detail"
+        ;;
+    enforceAll)
+        echo "Enforcing all staged signatures"
+        ;;
+    enforceReady)
+        echo "Enforcing all ready signatures"
+        ;;
+    disableSuggestions)
+        echo "Disabling signatures with suggestions"
+        ;;
+    *)
+        echo "Usage: $0 <state|stateVerbose|enforceAll|enforceReady|disableSuggestions> [fullPath of policy]"
+        exit 1
+        ;;
+esac
+
+# All signatures in staging
+FILTER_STAGING="?\$filter=performStaging+eq+true+AND+enabled+eq+true"
+# All signatures that are in staging and are ready to be enforced
+FILTER_READY="?\$filter=hasSuggestions+eq+false+AND+wasUpdatedWithinEnforcementReadinessPeriod+eq+false+AND+performStaging+eq+true+AND+enabled+eq+true"
+# All signatures that are in staging and have learning suggestions
+FILTER_SUGGESTIONS="?\$filter=hasSuggestions+eq+true+AND+performStaging+eq+true+AND+enabled+eq+true"
+# All disabled signatures
+FILTER_DISABLED="?\$filter=enabled+eq+false"
+
+enforce_all() {
+    local HASH=$1
+    local SIG_ENFORCED
+    if SIG_ENFORCED=$(restsh.patch "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_STAGING" \
+        <<< '{"performStaging":false}' | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local ENFORCED_COUNT=0
+        [ -n "$SIG_ENFORCED" ] && ENFORCED_COUNT=$(wc -l <<< "$SIG_ENFORCED")
+        echo "$ENFORCED_COUNT signatures enforced"
+        echo "$SIG_ENFORCED"
+        return 0
+    fi
+    return 1
+}
+
+enforce_ready() {
+    local HASH=$1
+    local SIG_ENFORCED
+    if SIG_ENFORCED=$(restsh.patch "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_READY" \
+        <<< '{"performStaging":false}' | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local ENFORCED_COUNT=0
+        [ -n "$SIG_ENFORCED" ] && ENFORCED_COUNT=$(wc -l <<< "$SIG_ENFORCED")
+        echo "$ENFORCED_COUNT signatures enforced"
+        echo "$SIG_ENFORCED"
+        return 0
+    fi
+    return 1
+}
+
+disable_suggestions() {
+    local HASH=$1
+    if SIG_DISABLED=$(restsh.patch "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_SUGGESTIONS" \
+        <<< '{"enabled":false}' | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local DISABLED_COUNT=0
+        [ -n "$SIG_DISABLED" ] && DISABLED_COUNT=$(wc -l <<< "$SIG_DISABLED")
+        echo "$DISABLED_COUNT signatures disabled"
+        echo "$SIG_DISABLED"
+        return 0
+    fi
+    return 1
+}
+
+print_detail() {
+    local COUNT=$1
+    if [ "$ACTION" = "stateVerbose" ] && [ "$COUNT" -gt 0 ]
+    then
+        echo "$SIG_STAGING"
+    fi
+    return 0
+}
+
+enforcement_status() {
+    local HASH=$1
+    # Get all staging signatures
+    if SIG_STAGING=$(restsh.get "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_STAGING" | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local STAGING_COUNT=0
+        [ -n "$SIG_STAGING" ] && STAGING_COUNT=$(wc -l <<< "$SIG_STAGING")
+        echo "$STAGING_COUNT signatures in staging"
+        print_detail "$STAGING_COUNT"
+    else
+        return 1
+    fi
+
+    # Get all ready-to-be-enforced signatures
+    if SIG_READY=$(restsh.get "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_READY" | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local READY_COUNT=0
+        [ -n "$SIG_READY" ] && READY_COUNT=$(wc -l <<< "$SIG_READY")
+        echo "$READY_COUNT signatures are ready"
+        print_detail "$READY_COUNT"
+    else
+        return 1
+    fi
+
+    # Get all signatures with suggestions
+    if SIG_SUGGESTIONS=$(restsh.get "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_SUGGESTIONS" | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local SUGGESTIONS_COUNT=0
+        [ -n "$SIG_SUGGESTIONS" ] && SUGGESTIONS_COUNT=$(wc -l <<< "$SIG_SUGGESTIONS")
+        echo "$SUGGESTIONS_COUNT signatures have suggestions"
+        print_detail "$SUGGESTIONS_COUNT"
+    else
+        return 1
+    fi
+
+    # Get all disabled signatures
+    if SIG_DISABLED=$(restsh.get "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_DISABLED" | \
+        $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
+        paste - -)
+    then
+        local DISABLED_COUNT=0
+        [ -n "$SIG_DISABLED" ] && DISABLED_COUNT=$(wc -l <<< "$SIG_DISABLED")
+        echo "$DISABLED_COUNT signatures are disabled"
+        print_detail "$DISABLED_COUNT"
+    else
+        return 1
+    fi
+    return 0
+}
+
+# main
+while read -r HASH POLICY
+do
+    echo ""
+    echo "Policy: $POLICY"
+    case "$ACTION" in
+        enforceAll)
+            if ! enforce_all "$HASH" || f5.asm.policy.applyhash "$HASH"
+            then
+                exit 1
+            fi
+            ;;
+        enforceReady)
+            if ! enforce_ready "$HASH" || f5.asm.policy.applyhash "$HASH"
+            then
+                exit 1
+            fi
+            ;;
+        disableSuggestions)
+            if ! disable_suggestions "$HASH" || f5.asm.policy.applyhash "$HASH"
+            then
+                exit 1
+            fi
+            ;;
+        *)
+            if ! enforcement_status "$HASH"
+            then
+                exit 1
+            fi
+            ;;
+    esac
+done < <(restsh.get "/mgmt/tm/asm/policies/?\$select=fullPath,id" | \
+    $RESTSH_JQ -r ".items[] $POLICY_FILTER | .id, .fullPath" | \
+    paste - -)
+
+exit 0

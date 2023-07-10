@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Gets the active device from a f5 cluster.
+# Desc:
+# Gets the active device from a f5 cluster.
+
+# Strict errorhandling
+set -euo pipefail
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if ACTIVE_BIGIP=$(restsh.get "/mgmt/tm/cm/device?\$select=name,failoverState" | $RESTSH_JQ -r ".items[] | select(.failoverState==\"active\")")
+then
+    if [ -n "${ACTIVE_BIGIP}" ]
+    then
+        echo "$ACTIVE_BIGIP"
+        exit 0
+    fi
+fi
+
+echo_err "Could not detect active BIGIP."
+exit 1
