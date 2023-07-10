@@ -33,7 +33,8 @@ export HISTCONTROL=ignorespace
 tabs 4
 
 # Set path
-export PATH="$PATH:$RESTSH_PATH:$RESTSH_PATH/bin"
+PATH=$PATH:$RESTSH_PATH$(find $RESTSH_PATH/bin/ -type d -printf ":%p" )
+export PATH
 
 # Load helper functions
 . "$RESTSH_PATH/lib/restsh.utility"
