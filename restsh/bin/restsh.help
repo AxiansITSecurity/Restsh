@@ -30,8 +30,8 @@ while read -r LINE
 do
   # Hide sensitive information
   LINE=$(sed -E -e 's/(RESTSH_PASS=).*/\1"***"/' \
-    -e 's/-u \\".*\\"/-u \\"***:***\\"/' \
-    -e 's/Authorization: Bearer .*\\"/Authorization: Bearer ***\\"/' \
+    -e 's/-u .*/-u ***:***/' \
+    -e 's/Authorization: Bearer .*\"/Authorization: Bearer ***\"/' \
     <<< "$LINE")
   echo -e "\t$LINE"
 done < <(export | grep RESTSH | sed 's/declare -x //' | sort)
@@ -44,7 +44,7 @@ do
   FILE=$(basename "$FILE")
   echo -e "\t$FILE"
   echo -e "\t\t$DESC"
-done < <(find $RESTSH_PATH/bin/ -type f,l | sort)
+done < <(find $RESTSH_PATH/bin/ ! -type d | sort)
 
 cat << EOL
 
@@ -53,7 +53,7 @@ Available functions:
         Prints a error message.
     echo_ok
         Prints a message in green color.
-    echo_warm
+    echo_warn
         Prints a warning message.
     mo
         Mustache template engine.

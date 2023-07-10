@@ -44,6 +44,7 @@ restsh.init.check.env() {
     then
       read -r -s -p "Password: " RESTSH_PASS
       export RESTSH_PASS
+      printf "\n"
     fi
   elif [ "$RESTSH_AUTH" == "bearer" ]
   then
