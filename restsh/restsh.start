@@ -9,7 +9,7 @@
 # Executes a new bash instance with the restsh.init as initialization file.
 
 # Debug mode
-[ -n "${DEBUG+x}" ] && set -x
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
 
 # Set restsh base path
 RESTSH_PATH="$(dirname "$(realpath "$0")")"

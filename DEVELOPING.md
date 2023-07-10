@@ -19,7 +19,7 @@ Use the following header for each script file:
 set -euo pipefail
 
 # Debug mode
-[ -n "${DEBUG+x}" ] && set -x
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
 
 if [ -z "${RESTSH_PATH+x}" ]
 then

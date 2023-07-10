@@ -100,7 +100,7 @@ restsh.init.get.curloptions() {
   local CURL="$RESTSH_CURL -k -f --show-error"
 
   # Enable curl verbose mode
-  if [ -n "${DEBUG+x}" ]
+  if [ -n "${RESTSH_DEBUG+x}" ]
   then
     CURL="$CURL -v"
   else

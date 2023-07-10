@@ -19,7 +19,7 @@ fi
 set -uo pipefail
 
 # Enable debug mode
-if [ -n "${DEBUG+x}" ]
+if [ -n "${RESTSH_DEBUG+x}" ]
 then
   echo "Enabling debug mode"
   export MO_DEBUG=1

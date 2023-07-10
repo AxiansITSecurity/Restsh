@@ -40,24 +40,16 @@ You can use custom config files to work with several api endpoints. If not defin
 restsh/restsh.start custom-config1
 ```
 
-### Help
-
-List all custom environment variables and commands.
-
-```sh
-restsh.help
-```
-
 ### Debug
 
 Print all executed commands and enables verbose mode of curl and mustache.
 
 ```sh
-export DEBUG=1
+export RESTSH_DEBUG=1
 restsh/restsh.start
 ```
 
-## Using in a script
+## Include it in a script
 
 Simply export the RESTSH_PATH and source the `restsh.init` file.
 
@@ -67,15 +59,33 @@ export RESTSH_PATH="/path/to/restsh"
 . "$RESTSH_PATH/restsh.init"
 ```
 
+## Usage
+
+```sh
+# Show help
+restsh.help
+
+# Simple GET request
+restsh.get /api/version
+# or
+GET /api/version # This works only in the interactive shell and not in sub-shells.
+
+# Create a request with mustache and post it.
+VAR1="test"
+mo << EOL | restsh.post /api/request
+> {"var1": "{{VAR1}}"}
+> EOL
+```
+
 ## Dependencies
 
 restsh works only under the bash shell and needs standard linux utilities like sed, grep, etc.
 
 Further dependencies are:
 
-- curl
-- jq: to support json payload
-- yq: to support xml payload
+- `curl`
+- `jq`: to support json payload
+- `yq`: to support xml payload
 
 ## Customize
 
@@ -83,26 +93,13 @@ You can add your own scripts into the `restsh/bin` directory. Please consider to
 
 - [DEVELOPING.md](DEVELOPING.md)
 
-## Usage
-
-```sh
-# Simple GET request
-GET /api/version
-
-# Create a request with mustache and post it
-VAR1="test"
-mo << EOL | POST /api/request
-> {"var1": "{{VAR1}}"}
-> EOL
-```
-
 ## Custom mustache functions
 
 You can find some custom mustache functions in the `mo/lib` folder.
 
 ## License
 
-GPLv3 or newer, see LICENSE.md for the full license text.
+GPLv3 or newer, see [LICENSE.md](LICENSE.md) for the full license text.
 
 ## Copyright
 
