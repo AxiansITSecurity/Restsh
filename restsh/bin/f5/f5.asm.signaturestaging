@@ -178,10 +178,12 @@ enforcement_status() {
 }
 
 # main
+COUNT=0
 while read -r HASH POLICY
 do
     echo ""
     echo "Policy: $POLICY"
+    COUNT=$((COUNT+1))
     case "$ACTION" in
         enforceAll)
             if ! enforce_all "$HASH" || f5.asm.policy.applyhash "$HASH"
@@ -211,5 +213,11 @@ do
 done < <(restsh.get "/mgmt/tm/asm/policies/?\$select=fullPath,id" | \
     $RESTSH_JQ -r ".items[] $POLICY_FILTER | .id, .fullPath" | \
     paste - -)
+
+if [ "$COUNT" -eq 0 ]
+then
+    echo_err "No policies found."
+    exit 1
+fi
 
 exit 0
