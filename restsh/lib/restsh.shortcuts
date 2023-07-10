@@ -4,11 +4,11 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Exports some shortcuts
+# Shortdesc: Exports some shortcuts.
 # Desc:
 # Exports some shortcuts.
 
-# Shortcuts for all common REST methods
+# Shortcuts for all common REST methods.
 alias DELETE=restsh.delete
 alias GET=restsh.get
 alias PATCH=restsh.patch

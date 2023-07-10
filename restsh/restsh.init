@@ -26,7 +26,7 @@ then
 fi
 
 # Do not add commands to history that begin with space
-# Usefull for variables with sensitive contents
+# Useful for variables with sensitive contents
 export HISTCONTROL=ignorespace
 
 # 4 spaces tab is enough
