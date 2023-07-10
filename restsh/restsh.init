@@ -43,6 +43,7 @@ export PATH
 
 # Include mustache
 . "${RESTSH_PATH}/mo/mo"
+. "${RESTSH_PATH}/mo/lib/functions"
 
 # Use default or custom config file
 if [ -z "${RESTSH_CONFIG+x}" ]
