@@ -53,6 +53,7 @@ else
 fi
 if [ -f "$RESTSH_CONFIG" ]
 then
+  #shellcheck disable=SC1090
   . "$RESTSH_CONFIG"
 else
   echo_err "Config file not found: $RESTSH_CONFIG"
