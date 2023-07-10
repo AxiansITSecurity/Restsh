@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Lists all f5 asm policies
+# Desc:
+# Lists all f5 asm policies
+
+# Strict errorhandling
+set -euo pipefail
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if restsh.get "/mgmt/tm/asm/policies?\$select=fullPath,id,enforcementMode,description" | $RESTSH_JQ ".items[]"
+then
+  exit 0
+fi
+
+exit 1
