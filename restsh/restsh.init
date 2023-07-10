@@ -82,14 +82,14 @@ RESTSH_URL=$(restsh.init.get.resturl)
 export RESTSH_URL
 
 # Set prompt
-export PS1="\[\e[1;32m${RESTSH_URL}\e[m\]# "
+export PS1="\e[1;32m${RESTSH_URL}\e[m# "
 
 # ok
 echo_ok "restsh $RESTSH_VERSION initialized"
 echo -e "\t${RESTSH_URL}"
-[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tuser: $RESTSH_USER"
-[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tuser: bearer token"
-[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tuser: from .netrc"
+[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tUser: $RESTSH_USER"
+[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tAuthentication: bearer token"
+[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tUser: from .netrc"
 echo ""
 echo "Run restsh.help for available commands."
 echo "Use exit to finish."

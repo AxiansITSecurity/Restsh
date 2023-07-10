@@ -99,18 +99,6 @@ restsh.init.get.resturl() {
 restsh.init.get.curloptions() {
   local CURL="$RESTSH_CURL -k -f --show-error"
 
-  case "$RESTSH_AUTH" in
-    basic)
-      CURL="$CURL -u "${RESTSH_USER}:${RESTSH_PASS}""
-      ;;
-    bearer)
-      CURL="$CURL -H "Authorization: Bearer ${RESTSH_BEARER}""
-      ;;
-    netrc)
-      CURL="$CURL -n"
-      ;;
-  esac
-
   # Enable curl verbose mode
   if [ -n "${DEBUG+x}" ]
   then
@@ -118,6 +106,20 @@ restsh.init.get.curloptions() {
   else
     CURL="$CURL -s"
   fi
+
+  # Add authentication options
+  case "$RESTSH_AUTH" in
+    basic)
+      CURL="$CURL -u '${RESTSH_USER}:${RESTSH_PASS}'"
+      ;;
+    bearer)
+      CURL="$CURL -H 'Authorization: Bearer ${RESTSH_BEARER}'"
+      ;;
+    netrc)
+      CURL="$CURL -n"
+      ;;
+  esac
+
   echo "$CURL"
   return 0
 }

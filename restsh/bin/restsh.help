@@ -29,9 +29,10 @@ echo "Available environment variables:"
 while read -r LINE
 do
   # Hide sensitive information
-  LINE=$(sed -E -e 's/(RESTSH_PASS=).*/\1"***"/' \
-    -e 's/-u .*/-u ***:***/' \
-    -e 's/Authorization: Bearer .*\"/Authorization: Bearer ***\"/' \
+  LINE=$(sed -E -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
+    -e "s/(RESTSH_BEARER=).*/\1\"***\"/" \
+    -e "s/-u .*/-u '***:***'/" \
+    -e "s/Authorization: Bearer .*/Authorization: Bearer ***\'\"/" \
     <<< "$LINE")
   echo -e "\t$LINE"
 done < <(export | grep RESTSH | sed 's/declare -x //' | sort)
