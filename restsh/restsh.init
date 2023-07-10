@@ -22,6 +22,7 @@ set -uo pipefail
 if [ -n "${DEBUG+x}" ]
 then
   echo "Enabling debug mode"
+  export MO_DEBUG=1
   set -x
 fi
 
