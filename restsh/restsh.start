@@ -10,5 +10,6 @@
 
 RESTSH_PATH="$(dirname "$(realpath "$0")")"
 export RESTSH_PATH
-bash --init-file "$RESTSH_PATH/restsh.init" "$@"
+[ -n "${1+x}" ] && export RESTSH_CONFIG=$1
+bash --init-file "$RESTSH_PATH/restsh.init"
 unset RESTSH_PATH

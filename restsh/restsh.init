@@ -44,12 +44,10 @@ export PATH
 # Include mustache
 . "${RESTSH_PATH}/mo/mo"
 
-# Use a custom config file
-if [ -z "${1+x}" ]
+# Use default or custom config file
+if [ -z "${RESTSH_CONFIG+x}" ]
 then
   RESTSH_CONFIG=".restsh-config"
-else
-  RESTSH_CONFIG="$1"
 fi
 if [ -f "$RESTSH_CONFIG" ]
 then
@@ -76,7 +74,7 @@ RESTSH_CURL=$(restsh.init.get.curloptions)
 export RESTSH_CURL
 
 # Set version
-RESTSH_VERSION=$(cat "$RESTSH_PATH/version")
+RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Set restsh url
