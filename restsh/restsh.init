@@ -33,7 +33,7 @@ export HISTCONTROL=ignorespace
 tabs 4
 
 # Set path
-PATH=$PATH:$RESTSH_PATH$(find $RESTSH_PATH/bin/ -type d -printf ":%p" )
+PATH=$PATH:$RESTSH_PATH$(find "$RESTSH_PATH/bin/" -type d -printf ":%p" )
 export PATH
 
 # Load helper functions
@@ -72,16 +72,18 @@ fi
 
 # Set default curl options
 RESTSH_CURL=$(restsh.init.get.curloptions)
+export RESTSH_CURL
 
 # Set version
-RESTSH_VERSION=$(cat $RESTSH_PATH/version)
+RESTSH_VERSION=$(cat "$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Set restsh url
-export RESTSH_URL=$(restsh.init.get.resturl)
+RESTSH_URL=$(restsh.init.get.resturl)
+export RESTSH_URL
 
 # Set prompt
-export PS1="\e[1;32m${RESTSH_URL}\e[m# "
+export PS1="\[\e[1;32m${RESTSH_URL}\e[m\]# "
 
 # ok
 echo_ok "restsh $RESTSH_VERSION initialized"

@@ -101,10 +101,10 @@ restsh.init.get.curloptions() {
 
   case "$RESTSH_AUTH" in
     basic)
-      CURL="$CURL -u "$RESTSH_USER:$RESTSH_PASS""
+      CURL="$CURL -u "${RESTSH_USER}:${RESTSH_PASS}""
       ;;
     bearer)
-      CURL="$CURL -H "Authorization: Bearer $RESTSH_BEARER""
+      CURL="$CURL -H "Authorization: Bearer ${RESTSH_BEARER}""
       ;;
     netrc)
       CURL="$CURL -n"

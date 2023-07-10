@@ -44,7 +44,7 @@ do
   FILE=$(basename "$FILE")
   echo -e "\t$FILE"
   echo -e "\t\t$DESC"
-done < <(find $RESTSH_PATH/bin/ ! -type d | sort)
+done < <(find "$RESTSH_PATH/bin/" ! -type d | sort)
 
 cat << EOL
 
