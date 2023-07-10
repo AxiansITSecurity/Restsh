@@ -34,10 +34,10 @@ restsh.init.check.env() {
     return 1
   elif [ "$RESTSH_AUTH" == "basic" ]
   then
-    if [ -z "$RESTSH_USER" ]
+    if [ -z "${RESTSH_USER+x}" ]
     then
-      echo_err "No rest user configured, set variable RESTSH_USER."
-      return 1
+      read -r -p "User: " RESTSH_USER
+      export RESTSH_USER
     fi
 
     if [ -z "${RESTSH_PASS+x}" ]
