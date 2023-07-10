@@ -8,8 +8,15 @@
 # Desc:
 # Executes a new bash instance with the restsh.init as initialization file.
 
+# Debug mode
+[ -n "${DEBUG+x}" ] && set -x
+
+# Set restsh base path
 RESTSH_PATH="$(dirname "$(realpath "$0")")"
 export RESTSH_PATH
+
+# Set restsh custom configuration file
 [ -n "${1+x}" ] && export RESTSH_CONFIG=$1
+
+# Start restsh in a subshell, to avoid clobbering the existing environment
 bash --init-file "$RESTSH_PATH/restsh.init"
-unset RESTSH_PATH
