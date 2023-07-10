@@ -16,7 +16,7 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment"
+  echo "Script must be run in the restsh environment" >&2
   exit 1
 fi
 

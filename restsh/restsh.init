@@ -11,7 +11,7 @@
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment"
+  echo "Script must be run in the restsh environment" >&2
   exit 1
 fi
 
@@ -51,7 +51,7 @@ if [ -z "${RESTSH_CONFIG+x}" ]
 then
   # try config in current directory
   RESTSH_CONFIG=".restsh-config"
-  if [ ! -f "$RESTSH_CONFIG" ]
+  if [ ! -s "$RESTSH_CONFIG" ]
   then
     # fall back to config in user home
     RESTSH_CONFIG="$HOME/.restsh-config"
@@ -99,9 +99,17 @@ export PS1="\e[1;32m${RESTSH_URL}\e[m# "
 echo_ok "restsh $RESTSH_VERSION initialized"
 echo -e "\tConfig: ${RESTSH_CONFIG}"
 echo -e "\tHost:   ${RESTSH_URL}"
-[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tUser:   $RESTSH_USER"
-[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tAuth:   bearer token"
-[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tUser:   from .netrc"
+case "$RESTSH_AUTH" in
+  basic)
+    echo -e "\tUser:   $RESTSH_USER"
+    ;;
+  bearer)
+    echo -e "\tAuth:   bearer token"
+    ;;
+  netrc)
+    echo -e "\tUser:   from .netrc"
+    ;;
+esac
 echo ""
 echo "Run restsh.help for available commands."
 echo "Use exit to finish."

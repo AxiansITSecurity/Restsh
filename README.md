@@ -1,25 +1,34 @@
 # restsh
 
-restsh is a small framework to work with rest api's within the bash. It is designed to be used interactively, in scripts or in CI/CD pipelines. This framework is work-in-progress. I will add new commands on demand.
+restsh is a small framework to work with REST api's within the bash. It is designed to be used interactively, in scripts or in CI/CD pipelines. This framework is work-in-progress. I will add new commands on demand.
 
 This framework includes the [mustache template engine](https://github.com/tests-always-included/mo) written in bash.
+
+restsh is not a shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, jq and mo to create your own REST shell.
 
 ## Running interactively
 
 ```sh
 git clone https://github.com/JuergenMang/restsh.git
 cd restsh
-# Rename .restsh-config.dist to .restsh-config and customize it or export some environment variables
-# export RESTSH_HOST="10.125.245.51"
+#
+# Rename .restsh-config.dist to .restsh-config and customize it or export some environment variables.
+#
+# export RESTSH_HOST="localhost"
+#
 # Basic authentication
-# export RESTSH_USER="basic"
+# export RESTSH_AUTH="basic"
 # export RESTSH_USER="apiuser"
 # export RESTSH_PASS="apipass"
+# If no username or password is set, restsh asks for it on start.
+#
 # Bearer authentication
 # export RESTSH_AUTH="bearer"
 # export RESTSH_BEARER="thetoken"
-# You can also use the .netrc file to store the credentials
-# export RESTSH_NETRC=1
+#
+# You can also use the .netrc file to store the credentials.
+# export RESTSH_AUTH="netrc"
+#
 restsh/restsh.start
 ```
 
@@ -41,7 +50,7 @@ restsh.help
 
 ### Debug
 
-Print all executed commands and enables verbose mode of curl.
+Print all executed commands and enables verbose mode of curl and mustache.
 
 ```sh
 export DEBUG=1
@@ -60,7 +69,7 @@ export RESTSH_PATH="/path/to/restsh"
 
 ## Dependencies
 
-Restsh works only under the bash shell and needs standard linux utilities like sed, grep, etc.
+restsh works only under the bash shell and needs standard linux utilities like sed, grep, etc.
 
 Further dependencies are:
 

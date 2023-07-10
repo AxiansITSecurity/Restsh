@@ -11,9 +11,12 @@
 # Strict errorhandling
 set -euo pipefail
 
-shellcheck --severity=warning restsh/restsh.*
-shellcheck --severity=warning restsh/lib/*
+SHELLCHECK_OPT="--severity=warning"
 
-find restsh/bin -type f -exec shellcheck --severity=warning {} \;
+shellcheck "$SHELLCHECK_OPT" restsh/restsh.*
+shellcheck "$SHELLCHECK_OPT" restsh/lib/*
+
+find restsh/bin -type f -exec shellcheck "$SHELLCHECK_OPT" {} \;
 
 echo "Shellcheck does not report any warnings or errors"
+exit 0
