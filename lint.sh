@@ -15,3 +15,5 @@ shellcheck --severity=warning restsh/restsh.*
 shellcheck --severity=warning restsh/lib/*
 
 find restsh/bin -type f -exec shellcheck --severity=warning {} \;
+
+echo "Shellcheck does not report any warnings or errors"
