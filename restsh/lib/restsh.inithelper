@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Some init helper
+# Shortdesc: Some init helper functions.
 # Desc:
-# Provides some init helper function. This file is only used by restsh.init.
+# Provides some init helper functions. This file is only used by restsh.init.
 
 # Checks for necessary environment variables
 restsh.init.check.env() {
@@ -30,7 +30,7 @@ restsh.init.check.env() {
 
   if [ -z "${RESTSH_AUTH+x}" ]
   then
-    echo_err "No authentication method configured"
+    echo_err "No authentication method configured, set variable RESTSH_AUTH"
     return 1
   elif [ "$RESTSH_AUTH" == "basic" ]
   then
@@ -50,7 +50,7 @@ restsh.init.check.env() {
   then
     if [ -z "${RESTSH_BEARER+x}" ]
     then
-      echo_err "No rest bearer token configured, set variable RESTSH_BEARER."
+      echo_err "No bearer token configured, set variable RESTSH_BEARER."
       return 1
     fi
   fi
