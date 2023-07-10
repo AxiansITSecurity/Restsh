@@ -6,7 +6,7 @@
 
 # Shortdesc: Creates a archive with all components.
 # Desc:
-# Creates a archive with all components, excludes git history.
+# Creates an archive with all components, excludes git history.
 
 # Strict errorhandling
 set -euo pipefail
