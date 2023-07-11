@@ -10,77 +10,77 @@
 
 # Prints green ok messages
 echo_ok() {
-  printf "\e[1;32m"
-  echo "$@"
-  printf "\e[m"
+    printf "\e[1;32m"
+    echo "$@"
+    printf "\e[m"
 }
 
 # Prints red error messages
 echo_err() {
-  printf "\e[0;31mERROR: " >&2
-  echo "$@" >&2
-  printf "\e[m" >&2
+    printf "\e[0;31mERROR: " >&2
+    echo "$@" >&2
+    printf "\e[m" >&2
 }
 
 # Prints yellow warning messages
 echo_warn() {
-  printf "\e[1;33mWARN: " >&2
-  echo "$@" >&2
-  printf "\e[m" >&2
+    printf "\e[1;33mWARN: " >&2
+    echo "$@" >&2
+    printf "\e[m" >&2
 }
 
 # Sets the RESTSH_CURL_OPTIONS environment variable
 # We set this not globally by design
 restsh.utility.setcurloptions() {
-  RESTSH_CURL_OPTS=(-k -f --show-error)
+    RESTSH_CURL_OPTS=(-k -f --show-error)
 
-  # Enable curl verbose mode
-  if [ -n "${RESTSH_DEBUG+x}" ]
-  then
-    RESTSH_CURL_OPTS+=("-v")
-  else
-    RESTSH_CURL_OPTS+=("-s")
-  fi
+    # Enable curl verbose mode
+    if [ -n "${RESTSH_DEBUG+x}" ]
+    then
+        RESTSH_CURL_OPTS+=("-v")
+    else
+        RESTSH_CURL_OPTS+=("-s")
+    fi
 
-  # Add authentication options
-  case "$RESTSH_AUTH" in
-    basic)
-      RESTSH_CURL_OPTS+=("-u" "${RESTSH_USER}:${RESTSH_PASS}")
-      ;;
-    token)
-      RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
-      ;;
-    netrc)
-      RESTSH_CURL_OPTS+=("-n")
-      ;;
-  esac
+    # Add authentication options
+    case "$RESTSH_AUTH" in
+        basic)
+        RESTSH_CURL_OPTS+=("-u" "${RESTSH_USER}:${RESTSH_PASS}")
+        ;;
+        token)
+        RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
+        ;;
+        netrc)
+        RESTSH_CURL_OPTS+=("-n")
+        ;;
+    esac
 
-  export RESTSH_CURL_OPTS
-  return 0
+    export RESTSH_CURL_OPTS
+    return 0
 }
 
 # Parses a command output as json, xml or plain text.
 restsh.utility.parseoutput() {
-  [ -z "${1+x}" ] && return 1
-  local OUT=$1
-  case "$RESTSH_CONTENT" in
-    "application/json")
-      if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
-      then
+    [ -z "${1+x}" ] && return 1
+    local OUT=$1
+    case "$RESTSH_CONTENT" in
+        "application/json")
+        if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
+        then
+            echo "$OUT"
+        fi
+        ;;
+        "text/xml")
+        if ! $RESTSH_YQ "." <<< "$OUT" 2>/dev/null
+        then
+            echo "$OUT"
+        fi
+        ;;
+        *)
         echo "$OUT"
-      fi
-    ;;
-    "text/xml")
-      if ! $RESTSH_YQ "." <<< "$OUT" 2>/dev/null
-      then
-        echo "$OUT"
-      fi
-    ;;
-    *)
-      echo "$OUT"
-    ;;
-  esac
-  return 0
+        ;;
+    esac
+    return 0
 }
 
 # Export all functions

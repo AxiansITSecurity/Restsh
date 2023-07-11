@@ -16,8 +16,8 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment" >&2
-  exit 1
+    echo "Script must be run in the restsh environment" >&2
+    exit 1
 fi
 
 cat << EOL
@@ -31,45 +31,36 @@ echo ""
 echo "Available environment variables:"
 while read -r LINE
 do
-  # Hide sensitive information
-  LINE=$(sed -E -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
-    -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
-    <<< "$LINE")
-  echo -e "\t$LINE"
+    # Hide sensitive information
+    LINE=$(sed -E -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
+        -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
+        <<< "$LINE")
+    echo -e "\t$LINE"
 done < <(export | grep RESTSH | sed 's/declare -x //' | sort)
 
 echo ""
 echo "Available commands:"
 while read -r FILE
 do
-  DESC=$(grep -m1 "# Shortdesc: " "$FILE" | sed 's/# Shortdesc: //')
-  FILE=$(basename "$FILE")
-  echo -e "\t$FILE"
-  echo -e "\t\t$DESC"
+    DESC=$(grep -m1 "# Shortdesc: " "$FILE" | sed 's/# Shortdesc: //')
+    FILE=$(basename "$FILE")
+    echo -e "\t$FILE"
+    echo -e "\t\t$DESC"
 done < <(find "$RESTSH_PATH/bin/" ! -type d | sort)
 
-cat << EOL
-
-Available functions:
-    echo_err
-        Prints a error message.
-    echo_ok
-        Prints a message in green color.
-    echo_warn
-        Prints a warning message.
-    mo
-        Mustache template engine.
-    restsh.utility.parseoutput
-        Parses a command output as json, xml or plain text.
-EOL
-
-# Include shortcuts to get the available aliases
-. "$RESTSH_PATH/lib/restsh.shortcuts"
 echo ""
-echo "Available aliases:"
-while read -r ALIAS
+echo "Available functions:"
+
+COUNT=0
+while read -r LINE
 do
-  echo -e "\t$ALIAS"
-done < <(alias -p | sed 's/alias //' | sort)
+    if [ "$COUNT" -eq 1 ]
+    then
+        echo -e "\t"
+        COUNT=0
+    fi
+    echo -e "\t$LINE"
+    COUNT=$((COUNT+1))
+done < <(grep -B1 --no-group-separator "() {" restsh/lib/restsh.utility)
 
 exit 0
