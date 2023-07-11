@@ -44,13 +44,13 @@ restsh.utility.setcurloptions() {
     # Add authentication options
     case "$RESTSH_AUTH" in
         basic)
-        RESTSH_CURL_OPTS+=("-u" "${RESTSH_USER}:${RESTSH_PASS}")
+            RESTSH_CURL_OPTS+=("-u" "${RESTSH_USER}:${RESTSH_PASS}")
         ;;
         token)
-        RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
+            RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
         ;;
         netrc)
-        RESTSH_CURL_OPTS+=("-n")
+            RESTSH_CURL_OPTS+=("-n")
         ;;
     esac
 
@@ -60,23 +60,27 @@ restsh.utility.setcurloptions() {
 
 # Parses a command output as json, xml or plain text.
 restsh.utility.parseoutput() {
-    [ -z "${1+x}" ] && return 1
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.utility.parseoutput <text>"
+        return 1
+    fi
     local OUT=$1
     case "$RESTSH_CONTENT" in
         "application/json")
-        if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
-        then
-            echo "$OUT"
-        fi
-        ;;
+            if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
+            then
+                echo "$OUT"
+            fi
+            ;;
         "text/xml")
-        if ! $RESTSH_YQ "." <<< "$OUT" 2>/dev/null
-        then
-            echo "$OUT"
-        fi
-        ;;
+            if ! $RESTSH_YQ "." <<< "$OUT" 2>/dev/null
+            then
+                echo "$OUT"
+            fi
+            ;;
         *)
-        echo "$OUT"
+            echo "$OUT"
         ;;
     esac
     return 0

@@ -4,7 +4,7 @@ restsh is a small framework to work with REST api's within the bash. It is desig
 
 This framework includes the [mustache template engine](https://github.com/tests-always-included/mo) written in bash.
 
-restsh is not a shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, jq and mo to create your own REST shell.
+restsh is not a shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, jq and mustache to create your own REST shell.
 
 ## Running interactively
 
@@ -78,7 +78,7 @@ mo << EOL | POST /api/request
 
 ## Dependencies
 
-restsh works only under the bash shell and needs standard linux utilities like sed, grep, etc.
+restsh works only inside the bash shell and needs standard linux utilities like sed, grep, etc.
 
 Further dependencies are:
 
@@ -88,7 +88,7 @@ Further dependencies are:
 
 ## Customize
 
-You can add your own scripts into the `restsh/bin` directory. Please consider to create a pull request.
+You can add your own scripts into the `restsh/bin` and `restsh/lib` folders. Please consider to create a pull request.
 
 - [DEVELOPING.md](DEVELOPING.md)
 

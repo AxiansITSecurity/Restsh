@@ -13,13 +13,14 @@ restsh.http() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
     then
         echo "Usage: restsh.http <method> <uri> <body>"
+        echo -e "\tSet <body> to 0 for no body and 1 for a body and pipe the payload in the command."
         return 1
     fi
     local METHOD=$1
     local URI=$2
     local BODY=$3
 
-    # We must set the curl options here
+    # We must set the curl options first
     restsh.utility.setcurloptions
 
     if [ "$BODY" -eq 1 ]
@@ -68,6 +69,7 @@ PATCH() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: PATCH <uri>"
+        echo -e "\tPipe the payload in the command."
         return 1
     fi
     restsh.http PATCH "$1" 1
@@ -78,6 +80,7 @@ POST() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: POST <uri>"
+        echo -e "\tPipe the payload in the command."
         return 1
     fi
     restsh.http POST "$1" 1
@@ -88,6 +91,7 @@ PUT() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: PUT <uri>"
+        echo -e "\tPipe the payload in the command."
         return 1
     fi
     restsh.http PUT "$1" 1

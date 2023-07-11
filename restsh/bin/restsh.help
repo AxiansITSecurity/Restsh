@@ -42,6 +42,7 @@ done < <(export | grep RESTSH | sed 's/declare -x //' | sort | column -s"=" -l2 
 
 # Show commands
 
+# Parses the file for functions and its descriptions
 restsh.help.parse.lib() {
     FILE=$1
     DESC=""
@@ -58,6 +59,7 @@ restsh.help.parse.lib() {
     done < <(grep -B1 --no-group-separator "() {" "$FILE" | sed -e 's/# //' -e 's/() {//')
 }
 
+# Prints the CMDS array
 restsh.help.print() {
     for K in "${!CMDS[@]}"
     do
@@ -66,6 +68,7 @@ restsh.help.print() {
     unset CMDS
 }
 
+# First print restsh interal commands
 echo ""
 echo "HTTP commands:"
 declare -A CMDS
@@ -77,6 +80,7 @@ declare -A CMDS
 restsh.help.parse.lib "restsh/lib/restsh.utility"
 restsh.help.print
 
+# Print all custom commands
 while read -r CAT
 do
     echo ""
@@ -99,6 +103,6 @@ do
         done < <(find "$RESTSH_PATH/bin/$CAT" -type f)
     fi
     restsh.help.print
-done < <(find "$RESTSH_PATH/bin" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort)
+done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
 
 exit 0
