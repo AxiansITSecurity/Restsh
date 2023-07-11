@@ -35,7 +35,7 @@ if ! TASK_ID=$($RESTSH_JQ -n --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HAS
         policyReference: {
             link: $waf_policy
         }
-    }' | restsh.post "/mgmt/tm/asm/tasks/apply-policy?\$select=id" -d@- | \
+    }' | restsh.post "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
         $RESTSH_JQ -r ".id")
 then
     echo "Apply of policy failed."
