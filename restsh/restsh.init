@@ -11,7 +11,7 @@
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment"
+  echo "Script must be run in the restsh environment" >&2
   exit 1
 fi
 
@@ -19,9 +19,10 @@ fi
 set -uo pipefail
 
 # Enable debug mode
-if [ -n "${DEBUG+x}" ]
+if [ -n "${RESTSH_DEBUG+x}" ]
 then
   echo "Enabling debug mode"
+  export MO_DEBUG=1
   set -x
 fi
 
@@ -33,7 +34,7 @@ export HISTCONTROL=ignorespace
 tabs 4
 
 # Set path
-PATH=$PATH:$RESTSH_PATH$(find $RESTSH_PATH/bin/ -type d -printf ":%p" )
+PATH=$PATH:$RESTSH_PATH$(find "$RESTSH_PATH/bin/" -type d -printf ":%p" )
 export PATH
 
 # Load helper functions
@@ -43,21 +44,30 @@ export PATH
 
 # Include mustache
 . "${RESTSH_PATH}/mo/mo"
+. "${RESTSH_PATH}/mo/lib/functions"
 
-# Use a custom config file
-if [ -z "${1+x}" ]
+# Use default or custom config file
+if [ -z "${RESTSH_CONFIG+x}" ]
 then
+  # try config in current directory
   RESTSH_CONFIG=".restsh-config"
-else
-  RESTSH_CONFIG="$1"
+  if [ ! -s "$RESTSH_CONFIG" ]
+  then
+    # fall back to config in user home
+    RESTSH_CONFIG="$HOME/.restsh-config"
+  fi
 fi
-if [ -f "$RESTSH_CONFIG" ]
+# Check for existing config file
+if [ -s "$RESTSH_CONFIG" ]
 then
+  #shellcheck disable=SC1090
   . "$RESTSH_CONFIG"
 else
   echo_err "Config file not found: $RESTSH_CONFIG"
   exit 1
 fi
+
+export RESTSH_CONFIG
 
 # Some initial checks
 if ! restsh.init.check.env
@@ -72,23 +82,34 @@ fi
 
 # Set default curl options
 RESTSH_CURL=$(restsh.init.get.curloptions)
+export RESTSH_CURL
 
 # Set version
-RESTSH_VERSION=$(cat $RESTSH_PATH/version)
+RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Set restsh url
-export RESTSH_URL=$(restsh.init.get.resturl)
+RESTSH_URL=$(restsh.init.get.resturl)
+export RESTSH_URL
 
 # Set prompt
 export PS1="\e[1;32m${RESTSH_URL}\e[m# "
 
 # ok
 echo_ok "restsh $RESTSH_VERSION initialized"
-echo -e "\t${RESTSH_URL}"
-[ "$RESTSH_AUTH" == "basic" ] && echo -e "\tuser: $RESTSH_USER"
-[ "$RESTSH_AUTH" == "bearer" ] && echo -e "\tuser: bearer token"
-[ "$RESTSH_AUTH" == "netrc" ] && echo -e "\tuser: from .netrc"
+echo -e "\tConfig: ${RESTSH_CONFIG}"
+echo -e "\tHost:   ${RESTSH_URL}"
+case "$RESTSH_AUTH" in
+  basic)
+    echo -e "\tUser:   $RESTSH_USER"
+    ;;
+  bearer)
+    echo -e "\tAuth:   bearer token"
+    ;;
+  netrc)
+    echo -e "\tUser:   from .netrc"
+    ;;
+esac
 echo ""
 echo "Run restsh.help for available commands."
 echo "Use exit to finish."

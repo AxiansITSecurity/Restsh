@@ -9,6 +9,9 @@
 # Custom configuration file for restsh.init.
 # Set central environment variables if not already set.
 
+# Debugging
+# export RESTSH_DEBUG="true"
+
 # REST host to connect to
 [ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
 [ -z "${RESTSH_HOST+x}" ] && export RESTSH_HOST="localhost"

@@ -11,6 +11,6 @@
 # Strict errorhandling
 set -euo pipefail
 
-VERSION=$(cat restsh/version)
+VERSION=$(<restsh/version)
 
 tar -czf "restsh_${VERSION}.tgz" -- restsh .restsh-config.dist *.md
