@@ -22,9 +22,9 @@ cd restsh
 # export RESTSH_PASS="apipass"
 # If no username or password is set, restsh asks for it on start.
 #
-# Bearer authentication
-# export RESTSH_AUTH="bearer"
-# export RESTSH_BEARER="thetoken"
+# Token based authentication
+# export RESTSH_AUTH="token"
+# export RESTSH_TOKEN_VALUE="the_token"
 #
 # You can also use the .netrc file to store the credentials.
 # export RESTSH_AUTH="netrc"

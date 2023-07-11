@@ -19,7 +19,7 @@
 
 # Authentication settings
 #[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="basic"
-#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="bearer"
+#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="token"
 #[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="netrc"
 [ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="anonymous"
 
@@ -27,8 +27,9 @@
 #[ -z "${RESTSH_USER+x}" ] && export RESTSH_USER="apiuser"
 #[ -z "${RESTSH_PASS+x}" ] && export RESTSH_PASS="apipass"
 
-# Set bearer token
-#[ -z "${RESTSH_BEARER+x}" ] && export RESTSH_BEARER="token"
+# Set token header and value
+#[ -z "${RESTSH_TOKEN_HEADER+x}" ] && export RESTSH_TOKEN_HEADER="X-Auth-Token"
+#[ -z "${RESTSH_TOKEN_VALUE+x}" ] && export RESTSH_TOKEN_VALUE="the_token"
 
 # Set REST payload format
 [ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"

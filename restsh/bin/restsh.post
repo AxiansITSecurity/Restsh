@@ -32,12 +32,15 @@ fi
 # Determine method by extension of the script file
 METHOD=$(tr '[:lower:]' '[:upper:]' <<< "${0##*.}")
 
-if ! OUTPUT=$($RESTSH_CURL -X "$METHOD" -H "Content-Type: ${RESTSH_CONTENT}" "${RESTSH_URL}${URI}" -d @- 2>&1)
+# We must set the curl options here
+restsh.utility.setcurloptions
+
+if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" -H "Content-Type: ${RESTSH_CONTENT}" "${RESTSH_URL}${URI}" -d @- 2>&1)
 then
   echo_err "$METHOD ${RESTSH_URL}${URI} failed"
   echo_err "$OUTPUT"
   exit 1
 fi
 
-parseoutput "$OUTPUT"
+restsh.utility.parseoutput "$OUTPUT"
 exit 0
