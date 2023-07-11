@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Applies a F5 ASM Policy by it's hash
+# Shortdesc: Applies a F5 ASM Policy by it's hash.
 # Desc:
-# Applies a F5 ASM Policy by it's hash
+# Applies a F5 ASM Policy by it's hash.
 
 # Strict errorhandling
 set -euo pipefail
