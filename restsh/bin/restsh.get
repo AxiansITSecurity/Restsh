@@ -34,8 +34,6 @@ METHOD=$(tr '[:lower:]' '[:upper:]' <<< "${0##*.}")
 # We must set the curl options here
 restsh.utility.setcurloptions
 
-set -x
-
 if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}" 2>&1)
 then
   echo_err "$METHOD ${RESTSH_URL}${URI} failed"
