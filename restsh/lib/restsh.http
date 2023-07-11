@@ -21,6 +21,8 @@ restsh.http() {
     then
         # Read body from STDIN
         RESTSH_CURL_OPTS+=("-d" "@-")
+        # Add header
+        RESTSH_CURL_OPTS+=("-H" "Content-Type: $RESTSH_CONTENT")
     fi
 
     if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}" 2>&1)
@@ -45,6 +47,7 @@ DELETE() {
     fi
     restsh.http DELETE "$1" 0
 }
+
 # Issues a GET request
 GET() {
     if [ -z "${1+x}" ]
