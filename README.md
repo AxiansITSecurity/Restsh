@@ -24,6 +24,7 @@ cd restsh
 #
 # Token based authentication
 # export RESTSH_AUTH="token"
+# export RESTSH_TOKEN_HEADER="X-Auth-Token"
 # export RESTSH_TOKEN_VALUE="the_token"
 #
 # You can also use the .netrc file to store the credentials.
