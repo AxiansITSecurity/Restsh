@@ -24,7 +24,7 @@ if ACTIVE_BIGIP=$(restsh.get "/mgmt/tm/cm/device?\$select=name,failoverState" | 
 then
     if [ -n "${ACTIVE_BIGIP}" ]
     then
-        echo "$ACTIVE_BIGIP"
+        jq "." <<< "${ACTIVE_BIGIP}"
         exit 0
     fi
 fi
