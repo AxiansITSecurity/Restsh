@@ -7,7 +7,7 @@
 # Shortdesc: Bash initialization file for the restsh framework.
 # Desc:
 # Initializes and checks the environment. Start this script not directly,
-# use restsh/restsh.start instead.
+# use restsh/restsh.start or source it from your script instead.
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
@@ -27,7 +27,6 @@ then
 fi
 
 # Do not add commands to history that begin with space
-# Useful for variables with sensitive contents
 export HISTCONTROL=ignorespace
 
 # 4 spaces tab is enough
@@ -37,7 +36,7 @@ tabs 4
 PATH=$PATH:$RESTSH_PATH$(find "$RESTSH_PATH/bin/" -type d -printf ":%p" )
 export PATH
 
-# Load helper functions
+# Include functions
 while read -r LINE
 do
     #shellcheck disable=SC1090
