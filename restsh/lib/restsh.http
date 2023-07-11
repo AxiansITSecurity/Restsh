@@ -47,6 +47,7 @@ DELETE() {
     fi
     restsh.http DELETE "$1" 0
 }
+
 # Issues a GET request
 GET() {
     if [ -z "${1+x}" ]
