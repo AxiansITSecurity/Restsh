@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Central http functions for all common REST methods.
+# Desc:
+# Central http functions for all common REST methods.
+
+# Generic http request function
+restsh.http() {
+    local METHOD=$1
+    local URI=$2
+    local BODY=$3
+
+    # We must set the curl options here
+    restsh.utility.setcurloptions
+
+    if [ "$BODY" -eq 1 ]
+    then
+        # Read body from STDIN
+        RESTSH_CURL_OPTS+=("-d" "@-")
+    fi
+
+    if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}" 2>&1)
+    then
+        echo_err "$METHOD ${RESTSH_URL}${URI} failed"
+        echo_err "$OUTPUT"
+        unset RESTSH_CURL_OPTS
+        return 1
+    fi
+    unset RESTSH_CURL_OPTS
+
+    restsh.utility.parseoutput "$OUTPUT"
+    return 0
+}
+
+# Issues a DELETE request
+DELETE() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.delete <uri>"
+        return 1
+    fi
+    restsh.http DELETE "$1" 0
+}
+# Issues a GET request
+GET() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.get <uri>"
+        return 1
+    fi
+    restsh.http GET "$1" 0
+}
+
+# Issues a PATCH request
+PATCH() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.patch <uri>"
+        return 1
+    fi
+    restsh.http PATCH "$1" 1
+}
+
+# Issues a POST request
+POST() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.post <uri>"
+        return 1
+    fi
+    restsh.http POST "$1" 1
+}
+
+# Issues a PUT request
+PUT() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.put <uri>"
+        return 1
+    fi
+    restsh.http PUT "$1" 1
+}
+
+export -f restsh.http
+export -f restsh.delete
+export -f restsh.get
+export -f restsh.patch
+export -f restsh.post
+export -f restsh.put

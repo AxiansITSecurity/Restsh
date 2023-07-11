@@ -67,13 +67,11 @@ export RESTSH_PATH="/path/to/restsh"
 restsh.help
 
 # Simple GET request
-restsh.get /api/version
-# or
-GET /api/version # This works only in the interactive shell and not in sub-shells.
+GET /api/version
 
 # Create a request with mustache and post it.
 VAR1="test"
-mo << EOL | restsh.post /api/request
+mo << EOL | POST /api/request
 > {"var1": "{{VAR1}}"}
 > EOL
 ```

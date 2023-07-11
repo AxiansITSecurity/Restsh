@@ -10,87 +10,87 @@
 
 # Checks for necessary environment variables
 restsh.init.check.env() {
-  if [ -z "${RESTSH_HOST+x}" ]
-  then
-    echo_err "No rest host configured, set variable RESTSH_HOST."
-    return 1
-  fi
-
-  if [ -z "${RESTSH_SCHEME+x}" ]
-  then
-    echo_err "No rest host configured, set variable RESTSH_SCHEME."
-    return 1
-  fi
-
-  if [ -z "${RESTSH_PORT+x}" ]
-  then
-    echo_err "No rest port configured, set variable RESTSH_PORT."
-    return 1
-  fi
-
-  if [ -z "${RESTSH_AUTH+x}" ]
-  then
-    echo_err "No authentication method configured, set variable RESTSH_AUTH"
-    return 1
-  elif [ "$RESTSH_AUTH" == "basic" ]
-  then
-    if [ -z "${RESTSH_USER+x}" ]
+    if [ -z "${RESTSH_HOST+x}" ]
     then
-      read -r -p "User: " RESTSH_USER
-      export RESTSH_USER
+        echo_err "No rest host configured, set variable RESTSH_HOST."
+        return 1
     fi
 
-    if [ -z "${RESTSH_PASS+x}" ]
+    if [ -z "${RESTSH_SCHEME+x}" ]
     then
-      read -r -s -p "Password: " RESTSH_PASS
-      export RESTSH_PASS
-      printf "\n"
+        echo_err "No rest host configured, set variable RESTSH_SCHEME."
+        return 1
     fi
-  elif [ "$RESTSH_AUTH" == "token" ]
-  then
-    if [ -z "${RESTSH_TOKEN_HEADER+x}" ] || [ -z "${RESTSH_TOKEN_VALUE+x}" ]
+
+    if [ -z "${RESTSH_PORT+x}" ]
     then
-      echo_err "No token configured, set variables RESTSH_TOKEN_HEADER and RESTSH_TOKEN_VALUE."
-      return 1
+        echo_err "No rest port configured, set variable RESTSH_PORT."
+        return 1
     fi
-  fi
-  return 0
+
+    if [ -z "${RESTSH_AUTH+x}" ]
+    then
+        echo_err "No authentication method configured, set variable RESTSH_AUTH"
+        return 1
+    elif [ "$RESTSH_AUTH" == "basic" ]
+    then
+        if [ -z "${RESTSH_USER+x}" ]
+        then
+            read -r -p "User: " RESTSH_USER
+            export RESTSH_USER
+        fi
+
+        if [ -z "${RESTSH_PASS+x}" ]
+        then
+            read -r -s -p "Password: " RESTSH_PASS
+            export RESTSH_PASS
+            printf "\n"
+        fi
+    elif [ "$RESTSH_AUTH" == "token" ]
+    then
+        if [ -z "${RESTSH_TOKEN_HEADER+x}" ] || [ -z "${RESTSH_TOKEN_VALUE+x}" ]
+        then
+            echo_err "No token configured, set variables RESTSH_TOKEN_HEADER and RESTSH_TOKEN_VALUE."
+            return 1
+        fi
+    fi
+    return 0
 }
 
 # Check for dependencies
 restsh.init.check.cmd() {
-  if ! RESTSH_CURL_BIN=$(command -v curl)
-  then
-    echo_err "Command not found: curl"
-    return 1
-  fi
-  export RESTSH_CURL_BIN
-  if [ "$RESTSH_CONTENT" == "application/json" ]
-  then
-    if ! RESTSH_JQ=$(command -v jq)
+    if ! RESTSH_CURL_BIN=$(command -v curl)
     then
-      echo_err "Command not found: jq"
-      return 1
+        echo_err "Command not found: curl"
+        return 1
     fi
-    export RESTSH_JQ
-  fi
-  if [ "$RESTSH_CONTENT" == "text/xml" ]
-  then
-    if ! RESTSH_YQ=$(command -v yq)
+    export RESTSH_CURL_BIN
+    if [ "$RESTSH_CONTENT" == "application/json" ]
     then
-      echo_err "Command not found: yq"
-      return 1
+        if ! RESTSH_JQ=$(command -v jq)
+        then
+            echo_err "Command not found: jq"
+            return 1
+        fi
+        export RESTSH_JQ
     fi
-    export RESTSH_YQ
-  fi
-  return 0
+    if [ "$RESTSH_CONTENT" == "text/xml" ]
+    then
+        if ! RESTSH_YQ=$(command -v yq)
+        then
+            echo_err "Command not found: yq"
+            return 1
+        fi
+        export RESTSH_YQ
+    fi
+    return 0
 }
 
 # Sets the RESTSH_URL environment variable with scheme and port
 restsh.init.setresturl() {
-  local URL="${RESTSH_SCHEME}://${RESTSH_HOST}"
-  [ "$RESTSH_SCHEME" == "https" ] && [ "$RESTSH_PORT" != "443" ] && URL="${URL}:${RESTSH_PORT}"
-  [ "$RESTSH_SCHEME" == "http" ] && [ "$RESTSH_PORT" != "80" ] && URL="${URL}:${RESTSH_PORT}"
-  export RESTSH_URL="$URL"
-  return 0
+    local URL="${RESTSH_SCHEME}://${RESTSH_HOST}"
+    [ "$RESTSH_SCHEME" == "https" ] && [ "$RESTSH_PORT" != "443" ] && URL="${URL}:${RESTSH_PORT}"
+    [ "$RESTSH_SCHEME" == "http" ] && [ "$RESTSH_PORT" != "80" ] && URL="${URL}:${RESTSH_PORT}"
+    export RESTSH_URL="$URL"
+    return 0
 }
