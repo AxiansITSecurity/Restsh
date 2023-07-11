@@ -6,7 +6,8 @@
 
 # Shortdesc: Gets the authentication token from a f5.
 # Desc:
-# Gets the authentication token from a f5.
+# Gets the authentication token from a f5. Ask's for username and password.
+# Reference: https://community.f5.com/t5/technical-articles/icontrol-rest-authentication-token-management/ta-p/287462
 
 # Strict errorhandling
 set -euo pipefail
@@ -24,18 +25,21 @@ read -r -p "User: " USER
 read -r -s -p "Password: " PASS
 echo ""
 
-if TOKEN=$($RESTSH_JQ -n --arg user "$USER" --arg pass "$PASS" \
+if RESULT=$($RESTSH_JQ -n --arg user "$USER" --arg pass "$PASS" \
     '{
         "username": $user,
         "password": $pass,
         "loginProviderName": "tmos"
-    }' | restsh.post "/mgmt/shared/authn/login" | \
-        $RESTSH_JQ -r ".token.token")
+    }' | restsh.post "/mgmt/shared/authn/login")
 then
+    TOKEN=$($RESTSH_JQ -r ".token.token" <<< "$RESULT")
+    EXPIRATION=$($RESTSH_JQ -r ".token.expirationMicros" <<< "$RESULT")
+    EXPIRATION=$((EXPIRATION / 1000000))
     if [ -n "${TOKEN}" ]
     then
         echo "F5 Authentication Token: $TOKEN"
-        echo "Set it with export RESTSH_TOKEN_VALUE=\"$TOKEN\""
+        echo "Expires at: $(date --date \@$EXPIRATION)"
+        echo "Set it with: export RESTSH_TOKEN_VALUE=\"$TOKEN\""
         exit 0
     fi
 fi
