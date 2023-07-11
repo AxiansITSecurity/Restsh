@@ -1,0 +1,4 @@
+[ -z "${blockRequests+x}" ] && blockRequests="policy-default"
+[ -z "${description+x}" ] && description=""
+[ -z "${ipAddress+x}" ] && ipAddress="1.1.1.1"
+[ -z "${ipMask+x}" ] && ipMask="255.255.255.255"

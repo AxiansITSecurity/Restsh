@@ -1,0 +1,11 @@
+{
+    "blockRequests": "{{blockRequests}}",
+    "description": "{{description}}",
+    "ignoreAnomalies": false,
+    "ignoreIpReputation": true,
+    "ipAddress": "{{ipAddress}}",
+    "ipMask": "{{ipMask}}",
+    "neverLearnRequests": true,
+    "neverLogRequests": false,
+    "trustedByPolicyBuilder": false
+}
