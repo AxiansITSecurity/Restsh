@@ -66,7 +66,6 @@ else
   echo_err "Config file not found: $RESTSH_CONFIG"
   exit 1
 fi
-
 export RESTSH_CONFIG
 
 # Some initial checks
@@ -80,17 +79,12 @@ then
   exit 1
 fi
 
-# Set default curl options
-RESTSH_CURL=$(restsh.init.get.curloptions)
-export RESTSH_CURL
-
 # Set version
 RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Set restsh url
-RESTSH_URL=$(restsh.init.get.resturl)
-export RESTSH_URL
+restsh.init.setresturl
 
 # Set prompt
 export PS1="\e[1;32m${RESTSH_URL}\e[m# "
@@ -103,8 +97,8 @@ case "$RESTSH_AUTH" in
   basic)
     echo -e "\tUser:   $RESTSH_USER"
     ;;
-  bearer)
-    echo -e "\tAuth:   bearer token"
+  token)
+    echo -e "\tAuth:   token"
     ;;
   netrc)
     echo -e "\tUser:   from .netrc"

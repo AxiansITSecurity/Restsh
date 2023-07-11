@@ -33,9 +33,7 @@ while read -r LINE
 do
   # Hide sensitive information
   LINE=$(sed -E -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
-    -e "s/(RESTSH_BEARER=).*/\1\"***\"/" \
-    -e "s/-u .*/-u '***:***'/" \
-    -e "s/Authorization: Bearer .*/Authorization: Bearer ***\'\"/" \
+    -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
     <<< "$LINE")
   echo -e "\t$LINE"
 done < <(export | grep RESTSH | sed 's/declare -x //' | sort)
@@ -61,7 +59,7 @@ Available functions:
         Prints a warning message.
     mo
         Mustache template engine.
-    parse_output
+    restsh.utility.parseoutput
         Parses a command output as json, xml or plain text.
 EOL
 

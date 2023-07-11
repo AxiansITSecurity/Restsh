@@ -29,8 +29,38 @@ echo_warn() {
   printf "\e[m" >&2
 }
 
+# Sets the RESTSH_CURL_OPTIONS environment variable
+# We set this not globally by design
+restsh.utility.setcurloptions() {
+  RESTSH_CURL_OPTS=(-k -f --show-error)
+
+  # Enable curl verbose mode
+  if [ -n "${RESTSH_DEBUG+x}" ]
+  then
+    RESTSH_CURL_OPTS+=("-v")
+  else
+    RESTSH_CURL_OPTS+=("-s")
+  fi
+
+  # Add authentication options
+  case "$RESTSH_AUTH" in
+    basic)
+      RESTSH_CURL_OPTS+=("-u" "${RESTSH_USER}:${RESTSH_PASS}")
+      ;;
+    token)
+      RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
+      ;;
+    netrc)
+      RESTSH_CURL_OPTS+=("-n")
+      ;;
+  esac
+
+  export RESTSH_CURL_OPTS
+  return 0
+}
+
 # Parses a command output as json, xml or plain text.
-parseoutput() {
+restsh.utility.parseoutput() {
   [ -z "${1+x}" ] && return 1
   local OUT=$1
   case "$RESTSH_CONTENT" in
@@ -57,4 +87,5 @@ parseoutput() {
 export -f echo_ok
 export -f echo_err
 export -f echo_warn
-export -f parseoutput
+export -f restsh.utility.setcurloptions
+export -f restsh.utility.parseoutput

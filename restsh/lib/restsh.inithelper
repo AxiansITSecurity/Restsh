@@ -46,11 +46,11 @@ restsh.init.check.env() {
       export RESTSH_PASS
       printf "\n"
     fi
-  elif [ "$RESTSH_AUTH" == "bearer" ]
+  elif [ "$RESTSH_AUTH" == "token" ]
   then
-    if [ -z "${RESTSH_BEARER+x}" ]
+    if [ -z "${RESTSH_TOKEN_HEADER+x}" ] || [ -z "${RESTSH_TOKEN_VALUE+x}" ]
     then
-      echo_err "No bearer token configured, set variable RESTSH_BEARER."
+      echo_err "No token configured, set variables RESTSH_TOKEN_HEADER and RESTSH_TOKEN_VALUE."
       return 1
     fi
   fi
@@ -59,12 +59,12 @@ restsh.init.check.env() {
 
 # Check for dependencies
 restsh.init.check.cmd() {
-  if ! RESTSH_CURL=$(command -v curl)
+  if ! RESTSH_CURL_BIN=$(command -v curl)
   then
     echo_err "Command not found: curl"
     return 1
   fi
-  export RESTSH_CURL
+  export RESTSH_CURL_BIN
   if [ "$RESTSH_CONTENT" == "application/json" ]
   then
     if ! RESTSH_JQ=$(command -v jq)
@@ -86,40 +86,11 @@ restsh.init.check.cmd() {
   return 0
 }
 
-# Return the rest url with scheme and port
-restsh.init.get.resturl() {
-  local RESTURL="${RESTSH_SCHEME}://${RESTSH_HOST}"
-  [ "$RESTSH_SCHEME" == "https" ] && [ "$RESTSH_PORT" != "443" ] && RESTURL="${RESTURL}:${RESTSH_PORT}"
-  [ "$RESTSH_SCHEME" == "http" ] && [ "$RESTSH_PORT" != "80" ] && RESTURL="${RESTURL}:${RESTSH_PORT}"
-  echo "$RESTURL"
-  return 0
-}
-
-# Return the curl options
-restsh.init.get.curloptions() {
-  local CURL="$RESTSH_CURL -k -f --show-error"
-
-  # Enable curl verbose mode
-  if [ -n "${RESTSH_DEBUG+x}" ]
-  then
-    CURL="$CURL -v"
-  else
-    CURL="$CURL -s"
-  fi
-
-  # Add authentication options
-  case "$RESTSH_AUTH" in
-    basic)
-      CURL="$CURL -u '${RESTSH_USER}:${RESTSH_PASS}'"
-      ;;
-    bearer)
-      CURL="$CURL -H 'Authorization: Bearer ${RESTSH_BEARER}'"
-      ;;
-    netrc)
-      CURL="$CURL -n"
-      ;;
-  esac
-
-  echo "$CURL"
+# Sets the RESTSH_URL environment variable with scheme and port
+restsh.init.setresturl() {
+  local URL="${RESTSH_SCHEME}://${RESTSH_HOST}"
+  [ "$RESTSH_SCHEME" == "https" ] && [ "$RESTSH_PORT" != "443" ] && URL="${URL}:${RESTSH_PORT}"
+  [ "$RESTSH_SCHEME" == "http" ] && [ "$RESTSH_PORT" != "80" ] && URL="${URL}:${RESTSH_PORT}"
+  export RESTSH_URL="$URL"
   return 0
 }
