@@ -16,13 +16,13 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
-if restsh.get "/mgmt/tm/asm/policies?\$select=fullPath,id,enforcementMode,description" | $RESTSH_JQ ".items[]"
+if GET "/mgmt/tm/asm/policies?\$select=fullPath,id,enforcementMode,description" | $RESTSH_JQ ".items[]"
 then
-  exit 0
+    exit 0
 fi
 
 exit 1

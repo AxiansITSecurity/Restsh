@@ -16,19 +16,19 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 if [ -z "${1+x}" ]
 then
-  echo "Usage: $0 <policy>"
-  exit 1
+    echo "Usage: $0 <policy>"
+    exit 1
 else
-  POLICY=$1
+    POLICY=$1
 fi
 
-if POLICY_HASH=$(restsh.get "/mgmt/tm/asm/policies?\$select=fullPath,id" | $RESTSH_JQ -r ".items[] | select(.fullPath == \"$POLICY\") | .id")
+if POLICY_HASH=$(GET "/mgmt/tm/asm/policies?\$select=fullPath,id" | $RESTSH_JQ -r ".items[] | select(.fullPath == \"$POLICY\") | .id")
 then
     if [ -n "$POLICY_HASH" ]
     then

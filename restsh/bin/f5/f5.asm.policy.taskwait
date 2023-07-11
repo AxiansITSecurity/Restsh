@@ -16,16 +16,16 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 if [ -z "${1+x}" ]
 then
-  echo "Usage: $0 <task id>"
-  exit 1
+    echo "Usage: $0 <task id>"
+    exit 1
 else
-  TASK_ID=$1
+    TASK_ID=$1
 fi
 
 echo "Waiting for task id \"$TASK_ID\" to finish."
@@ -39,7 +39,7 @@ do
         exit 1
     fi
     COUNTER=$((COUNTER+1))
-    if ! STATUS=$(restsh.get "/mgmt/tm/asm/tasks/apply-policy?\$select=id,status" | \
+    if ! STATUS=$(GET "/mgmt/tm/asm/tasks/apply-policy?\$select=id,status" | \
         $RESTSH_JQ -r ".items[] | select(.id == \"$TASK_ID\") | .status")
     then
         echo "Could not get task status."
@@ -55,7 +55,7 @@ do
         *)
             echo "Unhandled task status: $STATUS"
             exit 1
-            ;;
+        ;;
     esac
 done
 exit 0

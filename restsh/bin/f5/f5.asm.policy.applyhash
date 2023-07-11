@@ -16,27 +16,27 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 if [ -z "${1+x}" ]
 then
-  echo "Usage: $0 <policy hash>"
-  exit 1
+    echo "Usage: $0 <policy hash>"
+    exit 1
 else
-  POLICY_HASH=$1
+    POLICY_HASH=$1
 fi
 
 # Apply the policy
 echo "Applying policy: \"$POLICY_HASH\"."
 if ! TASK_ID=$($RESTSH_JQ -n --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HASH" \
-    '{
-        policyReference: {
-            link: $waf_policy
-        }
-    }' | restsh.post "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
-        $RESTSH_JQ -r ".id")
+  '{
+      policyReference: {
+          link: $waf_policy
+      }
+  }' | POST "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
+      $RESTSH_JQ -r ".id")
 then
     echo "Apply of policy failed."
     exit 1

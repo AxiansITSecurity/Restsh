@@ -16,11 +16,11 @@ set -euo pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
-if ACTIVE_BIGIP=$(restsh.get "/mgmt/tm/cm/device?\$select=name,failoverState" | $RESTSH_JQ -r ".items[] | select(.failoverState==\"active\")")
+if ACTIVE_BIGIP=$(GET "/mgmt/tm/cm/device?\$select=name,failoverState" | $RESTSH_JQ -r ".items[] | select(.failoverState==\"active\")")
 then
     if [ -n "${ACTIVE_BIGIP}" ]
     then
