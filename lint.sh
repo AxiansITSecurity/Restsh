@@ -16,7 +16,7 @@ SHELLCHECK_OPT="--severity=warning"
 shellcheck "$SHELLCHECK_OPT" restsh/restsh.*
 
 find restsh/lib -type f -exec shellcheck "$SHELLCHECK_OPT" {} \;
-find restsh/bin -type f -exec shellcheck "$SHELLCHECK_OPT" {} \;
+find restsh/bin -type f ! -name .\* -exec shellcheck "$SHELLCHECK_OPT" {} \;
 
 echo "OK! Shellcheck does not report any warnings or errors"
 exit 0
