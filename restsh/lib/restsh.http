@@ -8,6 +8,12 @@
 # Desc:
 # Central http functions for all common REST methods.
 
+# Strict errorhandling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
 # Generic http request function
 restsh.http() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
@@ -31,7 +37,7 @@ restsh.http() {
         RESTSH_CURL_OPTS+=("-H" "Content-Type: $RESTSH_CONTENT")
     fi
 
-    if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}" 2>&1)
+    if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}")
     then
         echo_err "$METHOD ${RESTSH_URL}${URI} failed"
         echo_err "$OUTPUT"
@@ -98,8 +104,8 @@ PUT() {
 }
 
 export -f restsh.http
-export -f restsh.delete
-export -f restsh.get
-export -f restsh.patch
-export -f restsh.post
-export -f restsh.put
+export -f DELETE
+export -f GET
+export -f PATCH
+export -f POST
+export -f PUT
