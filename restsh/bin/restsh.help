@@ -33,12 +33,10 @@ echo ""
 echo "Environment variables:"
 while read -r LINE
 do
-    # Hide sensitive information
-    LINE=$(sed -E -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
-        -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
-        <<< "$LINE")
     echo -e "\t$LINE"
-done < <(export | grep RESTSH | sed 's/declare -x //' | sort | column -s"=" -l2 -t)
+done < <(export | grep RESTSH | \
+    sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" | \
+    sort | column -s"=" -l2 -t)
 
 # Show commands
 
