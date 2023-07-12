@@ -30,15 +30,7 @@ else
 fi
 
 # Get the policy hash
-if ! POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-then
-    echo_err "Policy \"$POLICY\" not found."
-    exit 1
-fi
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
-if f5.asm.policy.applyhash "$POLICY_HASH"
-then
-    exit 0
-fi
-
-exit 1
+# Apply the policy
+f5.asm.policy.applyhash "$POLICY_HASH"
