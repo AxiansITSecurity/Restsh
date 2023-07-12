@@ -4,29 +4,35 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Manages files on a F5.
+# Shortdesc: Manages files on the f5.
 # Desc:
-# Manages files on a F5.
-# Reference: https://support.f5.com/csp/article/K41763344
-# There is no download function, because of:
-# Using the HTTP GET command to download files does not function on BIG-IP releases 15.0.0 and later.
+# Manages files on the f5.
 
 # Strict errorhandling
-set -uo pipefail
+set -euo pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+    FILENAME=$2
+fi
+
 # Uploads a file to a F5 to directory /var/config/rest/downloads/.
 f5.file.upload() {
-    if [ -z "${1+x}" ]
-    then
-        echo "Usage: f5.file.upload <filename>"
-        return 1
-    fi
     local FILE_PATH=$1
-    local FILE_NAME
-    FILE_NAME=$(basename "$FILE_PATH")
+    local FILE_BASENAME
+    FILE_BASENAME=$(basename "$FILE_PATH")
     local FILE_SIZE
     if ! FILE_SIZE=$(stat -c%s "$FILE_PATH")
     then
@@ -39,7 +45,7 @@ f5.file.upload() {
 
     local RANGE_END=$((FILE_SIZE-1))
     local RESPONSE
-    if RESPONSE=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}/mgmt/shared/file-transfer/uploads/${FILE_NAME}" \
+    if RESPONSE=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}/mgmt/shared/file-transfer/uploads/${FILE_BASENAME}" \
         -H "Content-Type: application/octet-stream" \
         -H "Content-Range: 0-${RANGE_END}/${FILE_SIZE}" \
         -H "Connection: Close" \
@@ -58,11 +64,6 @@ f5.file.upload() {
 
 # Deletes an uploaded file from a F5 from directory /var/config/rest/downloads/.
 f5.file.remove() {
-    if [ -z "${1+x}" ]
-    then
-        echo "Usage: f5.file.remove <filename>"
-        return 1
-    fi
     local RM_FILE=$1
     local RESPONSE
     if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' rm -v -f /var/config/rest/downloads/$RM_FILE'\" }")
@@ -78,11 +79,6 @@ f5.file.remove() {
 
 # Lists a file from a F5 from directory /var/config/rest/downloads/.
 f5.file.list() {
-    if [ -z "${1+x}" ]
-    then
-        echo "Usage: f5.file.list <filename>"
-        return 1
-    fi
     local LIST_FILE=$1
     local RESPONSE
     if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' ls -l /var/config/rest/downloads/$LIST_FILE'\" }")
@@ -95,3 +91,27 @@ f5.file.list() {
     fi
     return 0
 }
+
+# Prints help
+usage() {
+    echo "Usage: $(basename "$0") (upload|remove|list) <filename>"
+    echo "Files are managed in the path /var/config/rest/downloads/ on the f5"
+    return 1
+}
+
+case "$ACTION" in
+    upload)
+        f5.file.upload "$FILENAME"
+        ;;
+    remove)
+        f5.file.remove "$FILENAME"
+        ;;
+    list)
+        f5.file.list "$FILENAME"
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0
