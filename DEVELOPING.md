@@ -51,6 +51,12 @@ Use the following header for each script file:
 # Desc:
 # More detailed description.
 
+# Strict errorhandling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
 # Description - this line is displayed in the help, only one line allowed.
 sample.func() {
     # Function body
