@@ -37,5 +37,5 @@ then
     fi
 fi
 
-echo_err "Policy $POLICY not found."
+echo_err "Policy \"$POLICY\" not found."
 exit 1

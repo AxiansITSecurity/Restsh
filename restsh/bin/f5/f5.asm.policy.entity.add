@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Modifies a F5 ASM Policy defined by full path.
+# Shortdesc: Adds an entity to a F5 ASM Policy.
 # Desc:
-# Modifies a F5 ASM Policy defined by full path.
+# Adds an entity to a F5 ASM Policy.
 
 # Strict errorhandling
 set -euo pipefail
@@ -32,13 +32,13 @@ else
 fi
 
 # Get the policy hash
-if ! POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-then
-    echo_err "Policy \"$POLICY\" not found."
-    exit 1
-fi
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
-if ! mo -s "$DEFAULTS" < "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
+# Include mustache
+. "${RESTSH_PATH}/mo/mo"
+. "${RESTSH_PATH}/mo/lib/functions"
+
+if ! mo -s="$DEFAULTS" < "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
 then
     echo_err "Failed to modify policy"
     exit 1
