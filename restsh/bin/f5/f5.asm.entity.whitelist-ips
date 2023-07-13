@@ -54,7 +54,7 @@ usage() {
 
 case "$ACTION" in
     add)
-        if ! RESULT=$(f5.asm.policy.entity.add "$POLICY" "$RESTSH_PATH/$MODIFY_TEMPLATE" "$RESTSH_PATH/$MODIFY_DEFAULTS" "$ENTITY")
+        if ! RESULT=$(f5.asm.entity.add "$POLICY" "$RESTSH_PATH/$MODIFY_TEMPLATE" "$RESTSH_PATH/$MODIFY_DEFAULTS" "$ENTITY")
         then
             echo_err "Failed"
             echo_err "$RESULT"
@@ -62,7 +62,7 @@ case "$ACTION" in
         fi
         ;;
     remove)
-        if ! RESULT=$(f5.asm.policy.entity.remove "$POLICY" "$ENTITY" ".items[] | select(.ipAddress==\"$WHITELIST_IP\") | .id")
+        if ! RESULT=$(f5.asm.entity.remove "$POLICY" "$ENTITY" ".items[] | select(.ipAddress==\"$WHITELIST_IP\") | .id")
         then
             echo_err "Failed"
             echo_err "$RESULT"
