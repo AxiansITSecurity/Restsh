@@ -189,19 +189,19 @@ do
     COUNT=$((COUNT+1))
     case "$ACTION" in
         enforceAll)
-            if ! enforce_all "$HASH" || f5.asm.policy.applyhash "$HASH"
+            if ! enforce_all "$HASH" || f5.asm.policy.apply "$HASH"
             then
                 exit 1
             fi
             ;;
         enforceReady)
-            if ! enforce_ready "$HASH" || f5.asm.policy.applyhash "$HASH"
+            if ! enforce_ready "$HASH" || f5.asm.policy.apply "$HASH"
             then
                 exit 1
             fi
             ;;
         disableSuggestions)
-            if ! disable_suggestions "$HASH" || f5.asm.policy.applyhash "$HASH"
+            if ! disable_suggestions "$HASH" || f5.asm.policy.apply "$HASH"
             then
                 exit 1
             fi

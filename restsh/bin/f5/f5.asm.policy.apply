@@ -4,10 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Applies a F5 ASM Policy by full path.
+# Shortdesc: Applies a F5 ASM Policy by it's fullPath or hash.
 # Desc:
-# Applies a F5 ASM Policy by full path.
-# Shortcut for f5.asm.policy.gethash and f5.asm.policy.applyhash
+# Applies a F5 ASM Policy by it's fullPath or hash.
 
 # Strict errorhandling
 set -euo pipefail
@@ -21,16 +20,79 @@ then
     exit 1
 fi
 
+# Applies an ASM policy by hash
+apply_by_hash() {
+    local POLICY_HASH=$1
+    # Apply the policy
+    echo "Applying policy: \"$POLICY_HASH\"."
+    local TASK_ID
+    if ! TASK_ID=$($RESTSH_JQ -n --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HASH" \
+    '{
+        policyReference: {
+            link: $waf_policy
+        }
+    }' | POST "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
+        $RESTSH_JQ -r ".id")
+    then
+        echo "Apply of policy failed."
+        return 1
+    fi
+
+    # Wait for completed
+    echo "Waiting for task id \"$TASK_ID\" to finish."
+    local COUNTER=0
+    while :
+    do
+        sleep "$F5_TASK_CHECK_INTERVAL"
+        if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+        then
+            echo "Timeout waiting for task."
+            return 1
+        fi
+        COUNTER=$((COUNTER+1))
+        local STATUS
+        if ! STATUS=$(GET "/mgmt/tm/asm/tasks/apply-policy?\$select=id,status" | \
+            $RESTSH_JQ -r ".items[] | select(.id == \"$TASK_ID\") | .status")
+        then
+            echo "Could not get task status."
+            return 1
+        fi
+        case "$STATUS" in
+            STARTED|NEW|"")
+                continue
+                ;;
+            COMPLETED)
+                break
+                ;;
+            *)
+                echo "Unhandled task status: $STATUS"
+                return 1
+            ;;
+        esac
+    done
+
+    echo "Policy applied succesfully"
+    return 0
+}
+
+#Applies an ASM policy by its fullPath
+apply_by_full_path() {
+    local POLICY=$1
+    # Get the policy hash
+    local POLICY_HASH
+    POLICY_HASH=$(f5.asm.policy.gethash "$POLICY") && \
+        apply_by_hash "$POLICY_HASH"
+}
+
 if [ -z "${1+x}" ]
 then
-    echo "Usage: $0 <policy full path>"
+    echo "Usage: $0 <policy hash or fullPath>"
     exit 1
 else
-  POLICY=$1
+     if [ "${1:0:1}" == "/" ]
+     then
+        apply_by_full_path "$1"
+     else
+        apply_by_hash "$1"
+     fi
 fi
-
-# Get the policy hash
-POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-
-# Apply the policy
-f5.asm.policy.applyhash "$POLICY_HASH"
