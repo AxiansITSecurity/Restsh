@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Manages traffic management certificates on the F5.
+# Desc:
+# Manages traffic management certificates on the F5.
+
+# Strict errorhandling
+set -euo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -n "${1+x}" ]
+then
+    ACTION=$1
+else
+    ACTION="invalid"
+fi
+
+if [ "$ACTION" == "add_cert" ] || [ "$ACTION" == "add_key" ]
+then
+    NAME=$2
+    FILE_PATH=$3
+elif [ "$ACTION" == "remove_cert" ] || [ "$ACTION" == "remove_key" ]
+then
+    NAME=$2
+fi
+
+# Prints help
+usage() {
+    echo "Usage:"
+    echo -e "\tf5.cert (add_cert|add_key) <name> <path to pem>"
+    echo -e "\tf5.cert (remove_cert|remove_key) <name>"
+    echo -e "\tf5.cert list"
+    return 1
+}
+
+# Installs the certificate
+add_cert() {
+    local NAME=$1
+    local F5_FILE_PATH=$2
+    local F5_FILE_NAME
+    F5_FILE_NAME=$(basename "$F5_FILE_PATH")
+    local RESPONSE
+    if ! RESPONSE=$($RESTSH_JQ -n --arg f5_cert_name "$NAME" \
+        --arg f5_file_path "$F5_FILE_PATH" \
+    '{
+        "command": "install",
+        "name": $f5_cert_name,
+        "from-local-file": $f5_file_path
+    }' | POST "/mgmt/tm/sys/crypto/cert")
+    then
+        echo_err "Certificate installation failed."
+        echo_err "$RESPONSE"
+        f5.file remove "$F5_FILE_NAME"
+        return 1
+    fi
+    echo "Certificate installation successful."
+    f5.file remove "$F5_FILE_NAME"
+    return 0
+}
+
+# Installs the key
+add_key() {
+    local NAME=$1
+    local F5_FILE_PATH=$2
+    local F5_FILE_NAME
+    F5_FILE_NAME=$(basename "$F5_FILE_PATH")
+    local RESPONSE
+    if ! RESPONSE=$($RESTSH_JQ -n --arg f5_cert_name "$NAME" \
+        --arg f5_file_path "$F5_FILE_PATH" \
+    '{
+        "command": "install",
+        "name": $f5_cert_name,
+        "from-local-file": $f5_file_path
+    }' | POST "/mgmt/tm/sys/crypto/key")
+    then
+        echo_err "Key installation failed."
+        echo_err "$RESPONSE"
+        f5.file remove "$F5_FILE_NAME"
+        return 1
+    fi
+    echo "Key installation successful."
+    f5.file remove "$F5_FILE_NAME"
+    return 0
+}
+
+# Deletes a certificate
+remove_cert() {
+    local F5_CERT_NAME=$1
+    local OUTPUT
+    if ! OUTPUT=$(DELETE "/mgmt/tm/sys/file/ssl-cert/$F5_CERT_NAME")
+    then
+        echo_err "Failed to delete certificate"
+        echo_err "$OUTPUT"
+        return 1
+    fi
+    echo "Certificate removed"
+    return 0
+}
+
+# Deletes a key
+remove_key() {
+    local F5_KEY_NAME=$1
+    local OUTPUT
+    if ! OUTPUT=$(DELETE "/mgmt/tm/sys/file/ssl-key/$F5_KEY_NAME")
+    then
+        echo_err "Failed to delete key"
+        echo_err "$OUTPUT"
+        return 1
+    fi
+    echo "Key removed"
+    return 0
+}
+
+# Lists all certificates
+list_certs() {
+    GET /mgmt/tm/sys/file/ssl-cert | \
+        jq -r ".items[] | [.fullPath, .subject, .expirationString, .isBundle] | @tsv" |\
+        column -ts $'\t' -o " | " -W "subject" -N "fullPath,subject,expiration,bundle"
+}
+
+case "$ACTION" in
+    "add_cert")
+        F5_FILE_PATH=$(f5.file upload "$FILE_PATH") && \
+            add_cert "$NAME" "$F5_FILE_PATH"
+        ;;
+    "add_key")
+        F5_FILE_PATH=$(f5.file upload "$FILE_PATH") && \
+            add_key "$NAME" "$F5_FILE_PATH"
+        ;;
+    "remove_cert")
+        remove_cert "$NAME"
+        ;;
+    "remove_key")
+        remove_key "$NAME"
+        ;;
+    "list")
+        list_certs
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0
