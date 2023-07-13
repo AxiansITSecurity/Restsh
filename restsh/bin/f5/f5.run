@@ -22,7 +22,7 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    echo "Usage: f5.file.upload <command>"
+    echo "Usage: f5.run <command>"
     exit 1
 fi
 COMMAND=$1
