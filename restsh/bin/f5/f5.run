@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Runs a bash command on the f5.
+# Shortdesc: Runs a bash command on the F5.
 # Desc:
-# Runs a bash command on the f5.
+# Runs a bash command on the F5.
 
 # Strict errorhandling
 set -euo pipefail

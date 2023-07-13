@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Manages files on the f5.
+# Shortdesc: Manages files on the F5.
 # Desc:
-# Manages files on the f5.
+# Manages files on the F5.
 
 # Strict errorhandling
 set -euo pipefail
