@@ -38,7 +38,7 @@ restsh.help.print() {
     for K in "${!CMDS[@]}"
     do
         echo -e "\t$K:${CMDS["$K"]}"
-    done | sort | column -s":" -l2 -t
+    done | sort | column -s":" -t
     unset CMDS
     return 0
 }
@@ -62,7 +62,7 @@ restsh.help.showenv() {
         echo -e "\t$LINE"
     done < <(export | grep RESTSH | \
         sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" | \
-        sort | column -s"=" -l2 -t)
+        sort | column -s"=" -t)
     return 0
 }
 
