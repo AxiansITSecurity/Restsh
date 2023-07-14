@@ -7,6 +7,7 @@
 # Shortdesc: Checks a F5 ASM Policy against best practices.
 # Desc:
 # Checks a F5 ASM Policy against best practices. Rules are defined in templates/f5/policycheck folder.
+# You must export the policy to a temporary file before.
 
 # Strict errorhandling
 set -euo pipefail
@@ -22,15 +23,11 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    echo "Usage: $0 <policy fullPath>"
+    echo "Usage: $0 <filename>"
     exit 1
 else
-     POLICY=$1
+    FILENAME=$1
 fi
-
-#install -d "$RESTSH_PATH/tmp"
-FILENAME="$RESTSH_PATH/tmp/policy_to_check.json"
-#f5.asm.policy.export "$POLICY" "$FILENAME"
 
 echo "Check filetypes"
 for RULE_FILE in "$RESTSH_PATH/templates/f5/policycheck/"*.rule
