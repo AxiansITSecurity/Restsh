@@ -38,41 +38,13 @@ apply_by_hash() {
         return 1
     fi
 
-    # Wait for completed
-    echo "Waiting for task id \"$TASK_ID\" to finish."
-    local COUNTER=0
-    while :
-    do
-        sleep "$F5_TASK_CHECK_INTERVAL"
-        if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
-        then
-            echo "Timeout waiting for task."
-            return 1
-        fi
-        COUNTER=$((COUNTER+1))
-        local STATUS
-        if ! STATUS=$(GET "/mgmt/tm/asm/tasks/apply-policy?\$select=id,status" | \
-            $RESTSH_JQ -r ".items[] | select(.id == \"$TASK_ID\") | .status")
-        then
-            echo "Could not get task status."
-            return 1
-        fi
-        case "$STATUS" in
-            STARTED|NEW|"")
-                continue
-                ;;
-            COMPLETED)
-                break
-                ;;
-            *)
-                echo "Unhandled task status: $STATUS"
-                return 1
-            ;;
-        esac
-    done
-
-    echo "Policy applied succesfully"
-    return 0
+    # Wait for completed task
+    if f5.asm.taskwait apply-policy "$TASK_ID"
+    then
+        echo "Policy applied successfully."
+        return 0
+    fi
+    return 1
 }
 
 #Applies an ASM policy by its fullPath
