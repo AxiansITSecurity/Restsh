@@ -20,25 +20,25 @@ then
     exit 1
 fi
 
-if [ -z "${1+x}" ]
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    echo "Usage: $0 <policy fullPath>"
+    echo "Usage: $0 <policy fullPath> <filename>"
     exit 1
 else
      POLICY=$1
+     FILENAME=$2
 fi
 
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-FILENAME="${POLICY_HASH}.json"
 
-if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" --arg policyLink "https://localhost/mgmt/tm/asm/policies/$POLICY_HASH" \
+if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$POLICY_HASH.json" --arg policyLink "https://localhost/mgmt/tm/asm/policies/$POLICY_HASH" \
     '{
         "format": "json",
         "filename": $filename,
         "policyReference": {
             "link": $policyLink
         },
-        "minimal": true
+        "minimal": false
     }' | POST "/mgmt/tm/asm/tasks/export-policy" | \
         $RESTSH_JQ -r ".id")
 then
@@ -54,6 +54,5 @@ then
 fi
 
 # Download policy
-install -d tmp
-GET "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" > "${RESTSH_PATH}/tmp/${FILENAME}"
-ls -l "$FILENAME"
+GET "/mgmt/tm/asm/file-transfer/downloads/$POLICY_HASH.json" > "${FILENAME}"
+ls -lh "$FILENAME"
