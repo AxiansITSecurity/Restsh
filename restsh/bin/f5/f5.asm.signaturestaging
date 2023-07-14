@@ -101,6 +101,7 @@ enforce_ready() {
 
 disable_suggestions() {
     local HASH=$1
+    local SIG_DISABLED
     if SIG_DISABLED=$(PATCH "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_SUGGESTIONS" \
         <<< '{"enabled":false}' | \
         $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
@@ -127,6 +128,7 @@ print_detail() {
 enforcement_status() {
     local HASH=$1
     # Get all staging signatures
+    local SIG_STAGING
     if SIG_STAGING=$(GET "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_STAGING" | \
         $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
         paste - -)
@@ -140,6 +142,7 @@ enforcement_status() {
     fi
 
     # Get all ready-to-be-enforced signatures
+    local SIG_READY
     if SIG_READY=$(GET "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_READY" | \
         $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
         paste - -)
@@ -153,6 +156,7 @@ enforcement_status() {
     fi
 
     # Get all signatures with suggestions
+    local SIG_SUGGESTIONS
     if SIG_SUGGESTIONS=$(GET "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_SUGGESTIONS" | \
         $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
         paste - -)
@@ -166,6 +170,7 @@ enforcement_status() {
     fi
 
     # Get all disabled signatures
+    local SIG_DISABLED
     if SIG_DISABLED=$(GET "/mgmt/tm/asm/policies/$HASH/signatures/$FILTER_DISABLED" | \
         $RESTSH_JQ -r ".items[] | .signatureReference.signatureId, .signatureReference.name" | \
         paste - -)
