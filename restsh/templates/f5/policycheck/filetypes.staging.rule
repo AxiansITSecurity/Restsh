@@ -1,0 +1,4 @@
+#Filetypes in staging
+.policy.filetypes[] |
+    select(.performStaging == true) |
+        .name

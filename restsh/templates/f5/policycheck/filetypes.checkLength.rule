@@ -1,0 +1,4 @@
+#Length check disabled
+.policy.filetypes[] |
+    [.checkPostDataLength, .checkQueryStringLength, .checkRequestLength, .checkUrlLength] |
+        index(false)

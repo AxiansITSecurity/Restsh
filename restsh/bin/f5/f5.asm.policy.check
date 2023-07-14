@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Checks a F5 ASM Policy against best practices.
+# Desc:
+# Checks a F5 ASM Policy against best practices. Rules are defined in templates/f5/policycheck folder.
+
+# Strict errorhandling
+set -euo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    echo "Usage: $0 <policy fullPath>"
+    exit 1
+else
+     POLICY=$1
+fi
+
+#install -d "$RESTSH_PATH/tmp"
+FILENAME="$RESTSH_PATH/tmp/policy_to_check.json"
+#f5.asm.policy.export "$POLICY" "$FILENAME"
+
+echo "Check filetypes"
+for RULE_FILE in "$RESTSH_PATH/templates/f5/policycheck/"*.rule
+do
+    DESC=$(grep '^#' "$RULE_FILE" | sed 's/#/- /')
+    RULE=$(grep -v -e '^[[:space:]]*$' -e '^#' "$RULE_FILE")
+
+    RESULT=$($RESTSH_JQ "$RULE" "$FILENAME")
+    if [ -n "$RESULT" ]
+    then
+        #None empty result is considered as warning
+        echo_warn "$DESC: $RESULT"
+    else
+        echo_ok "$DESC"
+    fi
+done
