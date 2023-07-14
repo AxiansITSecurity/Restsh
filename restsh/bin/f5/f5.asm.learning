@@ -23,6 +23,7 @@ fi
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     ACTION="invalid"
+    POLICY=""
 else
     ACTION=$1
     POLICY=$2
@@ -40,10 +41,16 @@ fi
 
 usage() {
     echo "Usage:"
-    echo -e "\tf5.asm.learning list <policy name or hash>"
-    echo -e "\tf5.asm.learning ignore <policy name or hash> <id>"
-    echo -e "\tf5.asm.learning delete <policy name or hash> <id>"
+    echo -e "\tf5.asm.learning (list|overview) <policy name or hash>"
+    echo -e "\tf5.asm.learning (ignore|delete) <policy name or hash> <id>"
     return 1
+}
+
+# prints a suggestions overview
+overview_suggestions() {
+    local HASH=$1
+    GET /mgmt/tm/asm/policies/$HASH/suggestions | $RESTSH_JQ -r ".items[] | [.id, .action, .entityName, .score, .occurrences] | @tsv" |\
+        column -ts $'\t' -o " | " -N "id,action,entityName,score,occurrences"
 }
 
 # lists all suggestions
@@ -82,12 +89,15 @@ ignore_suggestion() {
 
 if [ "${POLICY:0:1}" == "/" ]
 then
-    POLICY_HASH=$(f5.asm.gethash "$POLICY")
+    POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 else
     POLICY_HASH=$POLICY
 fi
 
 case "$ACTION" in
+    overview)
+        overview_suggestions "$POLICY_HASH" 
+        ;;
     list)
         list_suggestions "$POLICY_HASH" 
         ;;
