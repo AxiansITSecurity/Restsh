@@ -20,7 +20,7 @@ then
     exit 1
 fi
 
-if GET "/mgmt/tm/asm/policies?\$select=fullPath,id,enforcementMode,description" | $RESTSH_JQ ".items[]"
+if GET "/mgmt/tm/asm/policies?\$select=fullPath,parentPolicyName,id,enforcementMode,description" | $RESTSH_JQ ".items[]"
 then
     exit 0
 fi
