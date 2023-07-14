@@ -4,9 +4,10 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Gets the hash of a F5 ASM Policy.
+# Shortdesc: Calculates the hash of a F5 ASM Policy fullPath.
 # Desc:
-# Gets the hash of a F5 ASM Policy.
+# Calculates the hash of a F5 ASM Policy.
+# Reference: https://my.f5.com/manage/s/article/K40414407
 
 # Strict errorhandling
 set -euo pipefail
@@ -22,20 +23,18 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    echo "Usage: $0 <policy>"
+    echo "Usage: $0 <policy fullPath>"
     exit 1
 else
     POLICY=$1
 fi
 
-if POLICY_HASH=$(GET "/mgmt/tm/asm/policies?\$select=fullPath,id" | $RESTSH_JQ -r ".items[] | select(.fullPath == \"$POLICY\") | .id")
+# Calculate hash
+if [ "${POLICY:0:1}" == "/" ]
 then
-    if [ -n "$POLICY_HASH" ]
-    then
-        echo "$POLICY_HASH"
-        exit 0
-    fi
+    printf "%s" "$POLICY" | openssl dgst -md5 -binary | base64 | cut -c-22 | sed 'y/+\//-_/'
+    exit 0
 fi
 
-echo_err "Policy \"$POLICY\" not found."
+echo_err "Policy fullPath must start with /"
 exit 1
