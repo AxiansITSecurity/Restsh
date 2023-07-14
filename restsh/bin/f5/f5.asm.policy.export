@@ -54,6 +54,6 @@ then
 fi
 
 # Download policy
-
-GET "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" > "${RESTSH_PATH}/${FILENAME}"
+install -d tmp
+GET "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" > "${RESTSH_PATH}/tmp/${FILENAME}"
 ls -l "$FILENAME"
