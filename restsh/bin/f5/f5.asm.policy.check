@@ -26,21 +26,23 @@ then
     echo "Usage: $0 <filename>"
     exit 1
 else
-    FILENAME=$1
+    POLICY_FILE=$1
 fi
 
-echo "Check filetypes"
-for RULE_FILE in "$RESTSH_PATH/templates/f5/policycheck/"*.rule
+echo "Checking policy against best practices"
+while read -r FILE
 do
-    DESC=$(grep '^#' "$RULE_FILE" | sed 's/#/- /')
-    RULE=$(grep -v -e '^[[:space:]]*$' -e '^#' "$RULE_FILE")
+    OK=$(grep '^#OK:' "$FILE" | sed 's/#OK: //')
+    WARN=$(grep '^#WARN:' "$FILE" | sed 's/#WARN: //')
+    RULE=$(grep -v -P '^(#|\s*$)' "$FILE")
 
-    RESULT=$($RESTSH_JQ "$RULE" "$FILENAME")
+    RESULT=$($RESTSH_JQ "$RULE" "$POLICY_FILE")
+    FILENAME=$(basename "$FILE" .rule)
     if [ -n "$RESULT" ]
     then
-        #None empty result is considered as warning
-        echo_warn "$DESC: $RESULT"
+        # None empty result is considered as warning
+        echo_warn "$FILENAME: $WARN: $RESULT"
     else
-        echo_ok "$DESC"
+        echo_ok "$FILENAME: $OK"
     fi
-done
+done < <(find "$RESTSH_PATH/templates/f5/policycheck/" -type f -name \*.rule)

@@ -1,4 +1,5 @@
-#Length check disabled
+#OK: All length checks enabled for filetypes.
+#WARN: Length check disabled for minimum one filetype.
 .policy.filetypes[] |
     [.checkPostDataLength, .checkQueryStringLength, .checkRequestLength, .checkUrlLength] |
         index(false)
