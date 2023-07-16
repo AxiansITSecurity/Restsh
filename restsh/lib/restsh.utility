@@ -64,7 +64,7 @@ restsh.utility.setcurloptions() {
     return 0
 }
 
-# Parses a command output as json, xml or plain text.
+# Parses a command output according to the RESTSH_CONTENT environment variable.
 restsh.utility.parseoutput() {
     if [ -z "${1+x}" ]
     then
@@ -75,12 +75,6 @@ restsh.utility.parseoutput() {
     case "$RESTSH_CONTENT" in
         "application/json")
             if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
-            then
-                echo "$OUT"
-            fi
-            ;;
-        "text/xml")
-            if ! $RESTSH_YQ "." <<< "$OUT" 2>/dev/null
             then
                 echo "$OUT"
             fi

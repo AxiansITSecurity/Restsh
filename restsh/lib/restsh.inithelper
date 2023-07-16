@@ -80,15 +80,6 @@ restsh.init.check.cmd() {
         fi
         export RESTSH_JQ
     fi
-    if [ "$RESTSH_CONTENT" == "text/xml" ]
-    then
-        if ! RESTSH_YQ=$(command -v yq)
-        then
-            echo_err "Command not found: yq"
-            return 1
-        fi
-        export RESTSH_YQ
-    fi
     return 0
 }
 
