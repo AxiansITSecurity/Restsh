@@ -8,7 +8,52 @@
 # Desc:
 # Provides some helper functions for mustache.
 
-# Writes a comma if it is not the first item in a loop.
+# Returns a comma if it is not the first item in a loop.
 MO_COMMA_IF_NOT_FIRST() {
     [[ "${moCurrent#*.}" != "0" ]] && echo ","
+}
+
+# Returns a comma if arguments are not empty
+MO_COMMA_IF_NOT_EMPTY() {
+    local ARG_ARRAY=( $MO_FUNCTION_ARGS )
+    local ARG_COUNT=${#ARG_ARRAY[@]}
+    local MAX_ARG_INDEX=$((ARG_COUNT-1))
+
+    local BEFORE_VALUES=""
+    # Join arguments but last
+    local COUNT=0
+    for ARG in ${MO_FUNCTION_ARGS}
+    do
+        BEFORE_VALUES="${BEFORE_VALUES}$(moShow "${ARG}" "${ARG}")"
+        COUNT=$((COUNT+1))
+        # Exit loop before last
+        [ $COUNT -eq $MAX_ARG_INDEX ] && break
+    done
+    # Get last argument
+    local LAST_VALUE=$(moShow "${ARG_ARRAY[$MAX_ARG_INDEX]}" "${ARG_ARRAY[$MAX_ARG_INDEX]}")
+    if [ -n "$BEFORE_VALUES" ] && [ -n "$LAST_VALUE" ]
+    then
+        printf ","
+    fi
+}
+
+# Returns the first entry from a comma separated list
+MO_FIRST_COMMA_ENTRY() {
+    local VALUE=$(moShow "$moCurrent" "$moCurrent")
+    echo "${VALUE%%,*}"
+}
+
+# Returns the last entry from a comma separated list
+MO_LAST_COMMA_ENTRY() {
+    local VALUE=$(moShow "$moCurrent" "$moCurrent")
+    echo "${VALUE#*,}"
+}
+
+# Returns an entry from a comma separated list
+MO_GET_COMMA_ENTRY() {
+    local VALUE=$(moShow "$moCurrent" "$moCurrent")
+    local NR=$MO_FUNCTION_ARGS
+    local CSV
+    mapfile -t -d, <<< "$VALUE" CSV
+    echo "${CSV[$NR]}"
 }
