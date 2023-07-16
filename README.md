@@ -84,7 +84,6 @@ Further dependencies are:
 
 - `curl`
 - `jq`: to support json payload
-- `yq`: to support xml payload
 
 ## Customize
 
