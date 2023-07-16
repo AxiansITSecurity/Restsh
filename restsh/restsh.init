@@ -110,6 +110,9 @@ case "$RESTSH_AUTH" in
     netrc)
         echo -e "\tUser:   from .netrc"
         ;;
+    *)
+        echo -e "\tAuth:   anonymous"
+        ;;
 esac
 echo ""
 echo "Run restsh.help for available commands."
