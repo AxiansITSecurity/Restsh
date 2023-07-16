@@ -16,15 +16,27 @@ set -uo pipefail
 
 # Generic http request function
 restsh.http() {
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
+    local BODY=0
+    local RAW=0
+    local OPTION OPTIND
+    while getopts ':br' OPTION
+    do
+        case "$OPTION" in
+            b) BODY=1 ;;
+            r) RAW=1 ;;
+            *) OPTION="invalid" ;;
+        esac
+    done
+    shift "$(($OPTIND -1))"
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: restsh.http <method> <uri> <body>"
-        echo -e "\tSet <body> to 0 for no body and 1 for a body and pipe the payload in the command."
+        echo "Usage: restsh.http [-b] [-r] <method> <uri>"
+        echo -e "\tUse -b for a body and pipe the payload in the command."
+        echo -e "\tUse -r for raw output."
         return 1
     fi
     local METHOD=$1
     local URI=$2
-    local BODY=$3
 
     # We must set the curl options first
     restsh.utility.setcurloptions
@@ -45,62 +57,121 @@ restsh.http() {
         return 1
     fi
     unset RESTSH_CURL_OPTS
-
-    restsh.utility.parseoutput "$OUTPUT"
+    if [ "$RAW" -eq 1 ]
+    then
+        echo "$OUTPUT"
+    else
+        restsh.utility.parseoutput "$OUTPUT"
+    fi
     return 0
 }
 
 # Issues a DELETE request
 DELETE() {
-    if [ -z "${1+x}" ]
+    local ARGS=()
+    local OPTION OPTIND
+    while getopts ':r' OPTION
+    do
+        case "$OPTION" in
+            r) ARGS+=("-r") ;;
+            *) OPTION="invalid" ;;
+        esac
+    done
+    shift "$(($OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: DELETE <uri>"
+        echo "Usage: DELETE [-r] <uri>"
+        echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http DELETE "$1" 0
+    restsh.http "${ARGS[@]}" DELETE "$1"
 }
 
 # Issues a GET request
 GET() {
-    if [ -z "${1+x}" ]
+    local ARGS=()
+    local OPTION OPTIND
+    while getopts ':r' OPTION
+    do
+        case "$OPTION" in
+            r) ARGS+=("-r") ;;
+            *) OPTION="invalid" ;;
+        esac
+    done
+    shift "$(($OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: GET <uri>"
+        echo "Usage: GET [-r] <uri>"
+        echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http GET "$1" 0
+    restsh.http "${ARGS[@]}" GET "$1"
 }
 
 # Issues a PATCH request
 PATCH() {
-    if [ -z "${1+x}" ]
+    local ARGS=("-b")
+    local OPTION OPTIND
+    while getopts ':r' OPTION
+    do
+        case "$OPTION" in
+            r) ARGS+=("-r") ;;
+            *) OPTION="invalid" ;;
+        esac
+    done
+    shift "$(($OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: PATCH <uri>"
+        echo "Usage: PATCH [-r] <uri>"
         echo -e "\tPipe the payload in the command."
+        echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http PATCH "$1" 1
+    restsh.http "${ARGS[@]}" PATCH "$1"
 }
 
 # Issues a POST request
 POST() {
-    if [ -z "${1+x}" ]
+    local ARGS=("-b")
+    local OPTION OPTIND
+    while getopts ':r' OPTION
+    do
+        case "$OPTION" in
+            r) ARGS+=("-r") ;;
+            *) OPTION="invalid" ;;
+        esac
+    done
+    shift "$(($OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: POST <uri>"
+        echo "Usage: POST [-r] <uri>"
         echo -e "\tPipe the payload in the command."
+        echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http POST "$1" 1
+    restsh.http "${ARGS[@]}" POST "$1"
 }
 
 # Issues a PUT request
 PUT() {
-    if [ -z "${1+x}" ]
+    local ARGS=("-b")
+    local OPTION OPTIND
+    while getopts ':r' OPTION
+    do
+        case "$OPTION" in
+            r) ARGS+=("-r") ;;
+            *) OPTION="invalid" ;;
+        esac
+    done
+    shift "$(($OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: PUT <uri>"
+        echo "Usage: PUT [-r] <uri>"
         echo -e "\tPipe the payload in the command."
+        echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http PUT "$1" 1
+    restsh.http "${ARGS[@]}" PUT "$1"
 }
 
 export -f restsh.http
