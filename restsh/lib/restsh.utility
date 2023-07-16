@@ -86,9 +86,42 @@ restsh.utility.parseoutput() {
     return 0
 }
 
+# Reads variables from a directory. .txt extension for simple variables, .array for arrays.
+restsh.utility.setvars() {
+    local DIR=$1
+    echo "Reading configuration from \"$DIR\""
+    # strings, concats multiple lines
+    local DEF
+    while read -r DEF
+    do
+        # construct variable name
+        local VAR
+        VAR="VAR_$(basename "$DEF" .txt)"
+        # set variable from config file
+        declare -g "$VAR"="$(grep -v -P '^(#|\s*$)' "$DEF" | tr -d '\n')"
+    done < <(find "$DIR" -maxdepth 1 -name \*.txt)
+    # arrays - one line per member
+    while read -r DEF
+    do
+        # construct array name
+        local VAR
+        VAR="VAR_$(basename "$DEF" .array)"
+        # set array from config file
+        local LINES
+        LINES=$(grep -v -P '^(#|\s*$)' "$DEF" || true)
+        if [ -n "$LINES" ]
+        then
+            mapfile -t "$VAR" <<< "$LINES"
+        else
+            declare -g "$VAR"=""
+        fi
+    done < <(find "$DIR" -maxdepth 1 -name \*.array)
+}
+
 # Export all functions
 export -f echo_ok
 export -f echo_err
 export -f echo_warn
 export -f restsh.utility.setcurloptions
 export -f restsh.utility.parseoutput
+export -f restsh.utility.setvar
