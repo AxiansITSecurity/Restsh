@@ -13,9 +13,13 @@
 # export RESTSH_DEBUG="true"
 
 # REST host to connect to
-[ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
+#[ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
 [ -z "${RESTSH_HOST+x}" ] && export RESTSH_HOST="localhost"
-[ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
+#[ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
+
+# Curl options
+# Set this to 1 to enable curl insecure option (disables tls checks).
+#[ -z "${RESTSH_CURL_INSECURE+x}" ] && export RESTSH_CURL_INSECURE="0"
 
 # Authentication settings
 #[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="basic"
@@ -32,5 +36,4 @@
 #[ -z "${RESTSH_TOKEN_VALUE+x}" ] && export RESTSH_TOKEN_VALUE="the_token"
 
 # Set REST payload format
-[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
-#[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="text/xml"
+#[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"

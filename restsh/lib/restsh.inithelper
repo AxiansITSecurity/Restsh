@@ -22,18 +22,6 @@ restsh.init.check.env() {
         return 1
     fi
 
-    if [ -z "${RESTSH_SCHEME+x}" ]
-    then
-        echo_err "No rest host configured, set variable RESTSH_SCHEME."
-        return 1
-    fi
-
-    if [ -z "${RESTSH_PORT+x}" ]
-    then
-        echo_err "No rest port configured, set variable RESTSH_PORT."
-        return 1
-    fi
-
     if [ -z "${RESTSH_AUTH+x}" ]
     then
         echo_err "No authentication method configured, set variable RESTSH_AUTH"
