@@ -16,7 +16,7 @@ then
 fi
 
 # Strict errorhandling
-set -uo pipefail
+set -eEu -o pipefail
 
 # Enable debug mode
 if [ -n "${RESTSH_DEBUG+x}" ]
@@ -41,10 +41,10 @@ while read -r LINE
 do
     #shellcheck disable=SC1090
     . "$LINE"
-done < <(find "$RESTSH_PATH/lib" -type f)
+done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 
 # Include mustache
-. "${RESTSH_PATH}/mo/mo"
+. "${RESTSH_PATH}/lib/mo/mo"
 . "${RESTSH_PATH}/lib/mo/functions"
 
 # Use default or custom config file
@@ -110,3 +110,6 @@ echo "Run restsh.help for available commands."
 echo "Use exit to finish."
 echo "Happy RESTing"
 echo ""
+
+# Do not exit on error after initialiation
+set +eE
