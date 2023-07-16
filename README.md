@@ -70,7 +70,7 @@ restsh.help
 GET /api/version
 
 # Create a request with mustache and post it.
-. "$RESTSH_PATH/lib/mo/mo"
+. "$RESTSH_PATH/dist/mo/mo"
 . "$RESTSH_PATH/lib/mo/functions"
 VAR1="test"
 mo << EOL | POST /api/request

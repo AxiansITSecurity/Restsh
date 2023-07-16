@@ -44,7 +44,7 @@ do
 done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 
 # Include mustache
-. "${RESTSH_PATH}/lib/mo/mo"
+. "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/functions"
 
 # Use default or custom config file
