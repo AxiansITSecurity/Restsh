@@ -37,7 +37,12 @@ echo_warn() {
 
 # Sets the RESTSH_CURL_OPTIONS environment variable.
 restsh.utility.setcurloptions() {
-    RESTSH_CURL_OPTS=(-k -f --show-error)
+    RESTSH_CURL_OPTS=("-f" "--show-error")
+
+    if [ "$RESTSH_CURL_INSECURE" -eq 1 ]
+    then
+        RESTSH_CURL_OPTS+=("-k")
+    fi
 
     # Enable curl verbose mode
     if [ -n "${RESTSH_DEBUG+x}" ]

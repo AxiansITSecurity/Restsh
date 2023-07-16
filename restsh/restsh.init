@@ -69,6 +69,12 @@ else
 fi
 export RESTSH_CONFIG
 
+# Set defaults if not already set
+[ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
+[ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
+[ -z "${RESTSH_CURL_INSECURE+x}" ] && export RESTSH_CURL_INSECURE="0"
+[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
+
 # Some initial checks
 if ! restsh.init.check.env
 then
@@ -103,6 +109,9 @@ case "$RESTSH_AUTH" in
         ;;
     netrc)
         echo -e "\tUser:   from .netrc"
+        ;;
+    *)
+        echo -e "\tAuth:   anonymous"
         ;;
 esac
 echo ""
