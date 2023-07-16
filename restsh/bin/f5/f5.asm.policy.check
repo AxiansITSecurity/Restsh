@@ -10,7 +10,7 @@
 # You must export the policy to a temporary file before.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x

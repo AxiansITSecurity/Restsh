@@ -4,12 +4,12 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Lists all f5 asm policies.
+# Shortdesc: Lists all F5 asm policies.
 # Desc:
-# Lists all f5 asm policies.
+# Lists all F5 asm policies.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x

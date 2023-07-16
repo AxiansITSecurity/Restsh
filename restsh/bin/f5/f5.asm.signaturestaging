@@ -4,12 +4,12 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Manages signature staging.
+# Shortdesc: Manages F5 ASM signature staging.
 # Desc:
-# Manages signature staging.
+# Manages F5 ASM signature staging.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x

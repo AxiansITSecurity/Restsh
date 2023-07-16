@@ -9,7 +9,7 @@
 # Runs a bash command on the F5.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
@@ -26,6 +26,7 @@ then
     exit 1
 fi
 COMMAND=$1
+
 if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' $COMMAND'\" }")
 then
     $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"

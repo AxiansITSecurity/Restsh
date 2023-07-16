@@ -9,7 +9,7 @@
 # Manages traffic management certificates on the F5.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x

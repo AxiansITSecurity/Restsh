@@ -9,7 +9,7 @@
 # Exports a F5 ASM Policy as JSON.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x

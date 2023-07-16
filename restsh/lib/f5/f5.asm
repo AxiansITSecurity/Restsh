@@ -14,7 +14,7 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-#Calculates the hash of a F5 ASM Policy fullPath.
+# Calculates the hash of a F5 ASM Policy fullPath.
 f5.asm.policy.gethash() {
     if [ -z "${1+x}" ]
     then

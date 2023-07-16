@@ -9,7 +9,7 @@
 # Adds an entity to a F5 ASM Policy.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
@@ -35,7 +35,7 @@ fi
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
 # Include mustache
-. "${RESTSH_PATH}/mo/mo"
+. "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/functions"
 
 if ! mo -s="$DEFAULTS" < "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
