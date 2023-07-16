@@ -2,6 +2,8 @@
 
 You can place custom scripts in the `restsh/bin` or `restsh/lib` folders. Place your scripts in a new sub-folder inside one of these folders. Sub-folders are used to group the `restsh.help` output.
 
+Add a `.shortdesc` file into the folder for a short description (read by the `restsh.help` command).
+
 ## Scripts in the bin folder
 
 Scripts in the bin folder are treated as standard scripts.
