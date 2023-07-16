@@ -22,7 +22,7 @@ Use the following header for each script file:
 # More detailed description.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEu -o pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x

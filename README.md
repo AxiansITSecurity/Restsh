@@ -70,7 +70,7 @@ restsh.help
 GET /api/version
 
 # Create a request with mustache and post it.
-. "$RESTSH_PATH/mo/mo"
+. "$RESTSH_PATH/dist/mo/mo"
 . "$RESTSH_PATH/lib/mo/functions"
 VAR1="test"
 mo << EOL | POST /api/request
@@ -92,10 +92,6 @@ Further dependencies are:
 You can add your own scripts into the `restsh/bin` and `restsh/lib` folders. Please consider to create a pull request.
 
 - [DEVELOPING.md](DEVELOPING.md)
-
-## Custom mustache functions
-
-You can find some custom mustache functions in the `mo/lib` folder.
 
 ## License
 
