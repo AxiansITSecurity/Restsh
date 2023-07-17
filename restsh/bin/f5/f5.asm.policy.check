@@ -38,16 +38,20 @@ do
     OK=$(grep '^#OK:' "$FILE" | sed 's/#OK: //')
     WARN=$(grep '^#WARN:' "$FILE" | sed 's/#WARN: //')
     RULE=$(grep -v -P '^(#|\s*$)' "$FILE")
-
-    RESULT=$($RESTSH_JQ "$RULE" "$POLICY_FILE" | tr -d '\n')
     FILENAME=$(basename "$FILE" .rule)
-    if [ -n "$RESULT" ]
+
+    if RESULT=$($RESTSH_JQ "$RULE" "$POLICY_FILE" | tr -d '\n')
     then
-        # None empty result is considered as warning
-        echo_warn "$FILENAME: $WARN: $RESULT"
-        COUNTER=$((COUNTER+1))
+        if [ -n "$RESULT" ]
+        then
+            # None empty result is considered as warning
+            echo_warn "$FILENAME: $WARN"
+            COUNTER=$((COUNTER+1))
+        else
+            echo "OK:   $FILENAME: $OK"
+        fi
     else
-        echo "OK:   $FILENAME: $OK"
+        echo_err "$FILENAME: Executing jq failed"
     fi
 done < <(find "$RESTSH_PATH/templates/f5/policycheck/" -type f -name \*.rule | sort)
 echo ""
