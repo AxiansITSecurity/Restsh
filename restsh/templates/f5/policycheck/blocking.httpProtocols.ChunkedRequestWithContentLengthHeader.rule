@@ -1,0 +1,5 @@
+#OK: Chunked request with Content-Length header is enabled.
+#WARN: Chunked request with Content-Length header is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Chunked request with Content-Length header") |
+        select(.enabled == false)

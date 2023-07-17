@@ -1,0 +1,5 @@
+#OK: "Malformed GraphQL data" is in blocking.
+#WARN: "Malformed GraphQL data" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_GRAPHQL_MALFORMED") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: "GWT data does not comply with format settings" is in blocking.
+#WARN: "GWT data does not comply with format settings" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_GWT_FORMAT") |
+        select(.block == false or .alarm == false)

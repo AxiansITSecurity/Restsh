@@ -1,0 +1,5 @@
+#OK: Apache whitespace is enabled.
+#WARN: Apache whitespace is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "Apache whitespace") |
+        select(.enabled == false)

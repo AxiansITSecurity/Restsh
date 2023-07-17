@@ -1,0 +1,5 @@
+#OK: CRLF characters before request start is enabled.
+#WARN: CRLF characters before request start is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "CRLF characters before request start") |
+        select(.enabled == false)

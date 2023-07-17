@@ -1,0 +1,5 @@
+#OK: "Violation Rating Need Examination detected" is in blocking.
+#WARN: "Violation Rating Need Examination detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_RATING_NEED_EXAMINATION") |
+        select(.block == false or .alarm == false)

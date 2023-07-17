@@ -1,0 +1,5 @@
+#OK: "Illegal repeated header" is in blocking.
+#WARN: "Illegal repeated header" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HEADER_REPEATED") |
+        select(.block == false or .alarm == false)

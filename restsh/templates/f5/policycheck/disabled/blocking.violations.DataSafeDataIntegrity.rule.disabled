@@ -1,0 +1,5 @@
+#OK: "DataSafe Data Integrity" is in blocking.
+#WARN: "DataSafe Data Integrity" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_DATA_INTEGRITY") |
+        select(.block == false or .alarm == false)

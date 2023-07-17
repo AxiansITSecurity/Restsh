@@ -1,0 +1,5 @@
+#OK: Several Content-Length headers is enabled.
+#WARN: Several Content-Length headers is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Several Content-Length headers") |
+        select(.enabled == false)

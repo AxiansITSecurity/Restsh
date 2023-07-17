@@ -1,0 +1,5 @@
+#OK: "Plain text data does not comply with format settings" is in blocking.
+#WARN: "Plain text data does not comply with format settings" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PLAINTEXT_FORMAT") |
+        select(.block == false or .alarm == false)

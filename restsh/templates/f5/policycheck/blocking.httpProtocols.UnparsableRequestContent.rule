@@ -1,0 +1,5 @@
+#OK: Unparsable request content is enabled.
+#WARN: Unparsable request content is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Unparsable request content") |
+        select(.enabled == false)

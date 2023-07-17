@@ -1,0 +1,5 @@
+#OK: "Illegal cross-origin request" is in blocking.
+#WARN: "Illegal cross-origin request" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_CROSS_ORIGIN_REQUEST") |
+        select(.block == false or .alarm == false)

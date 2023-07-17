@@ -1,0 +1,5 @@
+#OK: "SOAP method not allowed" is in blocking.
+#WARN: "SOAP method not allowed" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_XML_SOAP_METHOD") |
+        select(.block == false or .alarm == false)

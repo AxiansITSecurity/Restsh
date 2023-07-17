@@ -1,0 +1,5 @@
+#OK: "XML data does not comply with schema or WSDL document" is in blocking.
+#WARN: "XML data does not comply with schema or WSDL document" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_XML_SCHEMA") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: "Request length exceeds defined buffer size" is in blocking.
+#WARN: "Request length exceeds defined buffer size" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_REQUEST_MAX_LENGTH") |
+        select(.block == false or .alarm == false)

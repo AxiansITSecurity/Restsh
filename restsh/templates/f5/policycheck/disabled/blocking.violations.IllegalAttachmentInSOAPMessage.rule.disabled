@@ -1,0 +1,5 @@
+#OK: "Illegal attachment in SOAP message" is in blocking.
+#WARN: "Illegal attachment in SOAP message" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_XML_SOAP_ATTACHMENT") |
+        select(.block == false or .alarm == false)

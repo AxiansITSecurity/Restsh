@@ -1,0 +1,5 @@
+#OK: "Access from malicious IP address" is in blocking.
+#WARN: "Access from malicious IP address" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_MALICIOUS_IP") |
+        select(.block == false or .alarm == false)

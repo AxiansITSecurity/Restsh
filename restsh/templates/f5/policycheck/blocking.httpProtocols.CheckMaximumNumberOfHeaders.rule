@@ -1,0 +1,5 @@
+#OK: Check maximum number of headersis enabled.
+#WARN: Check maximum number of headers is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Check maximum number of headers") |
+        select(.enabled == false)

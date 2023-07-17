@@ -1,0 +1,5 @@
+#OK: "Illegal parameter numeric value" is in blocking.
+#WARN: "Illegal parameter numeric value" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_NUMERIC_VALUE") |
+        select(.block == false or .alarm == false)

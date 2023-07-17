@@ -1,0 +1,5 @@
+#OK: "Login URL expired" is in blocking.
+#WARN: "Login URL expired" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_LOGIN_URL_EXPIRED") |
+        select(.block == false or .alarm == false)

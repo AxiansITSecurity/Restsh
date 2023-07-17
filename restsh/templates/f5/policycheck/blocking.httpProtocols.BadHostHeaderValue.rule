@@ -1,0 +1,5 @@
+#OK: Bad host header value is enabled.
+#WARN: Bad host header valueis disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Bad host header value") |
+        select(.enabled == false)

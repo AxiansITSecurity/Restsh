@@ -1,0 +1,5 @@
+#OK: "Illegal method" is in blocking.
+#WARN: "Illegal method" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_METHOD") |
+        select(.block == false or .alarm == false)

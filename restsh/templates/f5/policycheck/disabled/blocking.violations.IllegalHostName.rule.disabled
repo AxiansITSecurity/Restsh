@@ -1,0 +1,5 @@
+#OK: "Illegal host name" is in blocking.
+#WARN: "Illegal host name" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HOSTNAME") |
+        select(.block == false or .alarm == false)

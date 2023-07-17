@@ -1,0 +1,5 @@
+#OK: High ASCII characters in headers is enabled.
+#WARN: High ASCII characters in headers is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "High ASCII characters in headers") |
+        select(.enabled == false)

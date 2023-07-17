@@ -1,0 +1,5 @@
+#OK: IIS Unicode codepoints is enabled.
+#WARN: IIS Unicode codepoints is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "IIS Unicode codepoints") |
+        select(.enabled == false)

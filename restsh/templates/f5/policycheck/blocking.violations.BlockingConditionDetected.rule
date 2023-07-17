@@ -1,0 +1,5 @@
+#OK: "Blocking Condition Detected" is in blocking.
+#WARN: "Blocking Condition Detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_BLOCKING_CONDITION") |
+        select(.block == false or .alarm == false)

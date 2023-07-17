@@ -1,0 +1,5 @@
+#OK: "Illegal entry point" is in blocking.
+#WARN: "Illegal entry point" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_FLOW_ENTRY_POINT") |
+        select(.block == false or .alarm == false)

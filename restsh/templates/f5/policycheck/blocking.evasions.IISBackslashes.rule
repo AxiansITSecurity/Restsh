@@ -1,0 +1,5 @@
+#OK: IIS backslashes is enabled.
+#WARN: IIS backslashes is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "IIS backslashes") |
+        select(.enabled == false)

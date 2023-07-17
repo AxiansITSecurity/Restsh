@@ -1,0 +1,5 @@
+#OK: Multiple decoding is enabled.
+#WARN: Multiple decoding is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "Multiple decoding") |
+        select(.enabled == false)

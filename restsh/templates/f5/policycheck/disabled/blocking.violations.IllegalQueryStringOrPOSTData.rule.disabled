@@ -1,0 +1,5 @@
+#OK: "Illegal query string or POST data" is in blocking.
+#WARN: "Illegal query string or POST data" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_FLOW_DISALLOWED_INPUT") |
+        select(.block == false or .alarm == false)

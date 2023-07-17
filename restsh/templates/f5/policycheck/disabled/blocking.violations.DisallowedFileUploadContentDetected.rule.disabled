@@ -1,0 +1,5 @@
+#OK: "Disallowed file upload content detected" is in blocking.
+#WARN: "Disallowed file upload content detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_FILE_UPLOAD") |
+        select(.block == false or .alarm == false)

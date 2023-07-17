@@ -1,0 +1,5 @@
+#OK: Bad multipart/form-data request parsing is enabled.
+#WARN: Bad multipart/form-data request parsing disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Bad multipart/form-data request parsing") |
+        select(.enabled == false)

@@ -1,0 +1,5 @@
+#OK: "Illegal empty parameter value" is in blocking.
+#WARN: "Illegal empty parameter value" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_EMPTY_VALUE") |
+        select(.block == false or .alarm == false)

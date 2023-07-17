@@ -1,0 +1,5 @@
+#OK: "IP is blacklisted" is in blocking.
+#WARN: "IP is blacklisted" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_BLACKLISTED_IP") |
+        select(.block == false or .alarm == false)

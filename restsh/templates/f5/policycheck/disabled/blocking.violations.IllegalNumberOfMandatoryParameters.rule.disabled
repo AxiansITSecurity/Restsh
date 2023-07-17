@@ -1,0 +1,5 @@
+#OK: "Illegal number of mandatory parameters" is in blocking.
+#WARN: "Illegal number of mandatory parameters" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_FLOW_MANDATORY_PARAMS") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: Multiple host headers is enabled.
+#WARN: Multiple host headers is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Multiple host headers") |
+        select(.enabled == false)

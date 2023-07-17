@@ -1,0 +1,5 @@
+#OK: "HTTP protocol compliance failed" is in blocking.
+#WARN: "HTTP protocol compliance failed" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HTTP_PROTOCOL") |
+        select(.block == false or .alarm == false)

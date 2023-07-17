@@ -1,0 +1,5 @@
+#OK: Null in request is enabled.
+#WARN: Null in request is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Null in request") |
+        select(.enabled == false)

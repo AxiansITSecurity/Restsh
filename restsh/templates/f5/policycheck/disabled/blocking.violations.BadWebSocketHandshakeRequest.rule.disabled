@@ -1,0 +1,5 @@
+#OK: "Bad WebSocket handshake request" is in blocking.
+#WARN: "Bad WebSocket handshake request" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_BAD_REQUEST") |
+        select(.block == false or .alarm == false)

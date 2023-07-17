@@ -1,0 +1,5 @@
+#OK: "GraphQL introspection query" is in blocking.
+#WARN: "GraphQL introspection query" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_GRAPHQL_INTROSPECTION_QUERY") |
+        select(.block == false or .alarm == false)

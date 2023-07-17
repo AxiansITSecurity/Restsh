@@ -1,0 +1,5 @@
+#OK: Bad HTTP version is enabled.
+#WARN: Bad HTTP version is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Bad HTTP version") |
+        select(.enabled == false)

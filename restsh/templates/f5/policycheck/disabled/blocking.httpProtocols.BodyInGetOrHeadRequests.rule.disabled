@@ -1,0 +1,5 @@
+#OK: Body in GET or HEAD requests is enabled.
+#WARN: Body in GET or HEAD requests is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Body in GET or HEAD requests") |
+        select(.enabled == false)

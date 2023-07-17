@@ -1,0 +1,5 @@
+#OK: "Modified domain cookie(s)" is in blocking.
+#WARN: "Modified domain cookie(s)" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_COOKIE_MODIFIED") |
+        select(.block == false or .alarm == false)

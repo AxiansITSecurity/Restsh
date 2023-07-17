@@ -1,0 +1,5 @@
+#OK: Header name with no header value is enabled.
+#WARN: Header name with no header value is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Header name with no header value") |
+        select(.enabled == false)

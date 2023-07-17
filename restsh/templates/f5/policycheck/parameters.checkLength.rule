@@ -2,4 +2,5 @@
 #WARN: Length check disabled for minimum one parameter
 .policy.parameters[] |
     [.checkMaxValueLength] |
-        index(false)
+        index(false) |
+            select (. != null)

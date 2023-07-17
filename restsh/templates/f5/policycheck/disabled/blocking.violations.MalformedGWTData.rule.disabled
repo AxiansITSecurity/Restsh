@@ -1,0 +1,5 @@
+#OK: "Malformed GWT data" is in blocking.
+#WARN: "Malformed GWT data" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_GWT_MALFORMED") |
+        select(.block == false or .alarm == false)

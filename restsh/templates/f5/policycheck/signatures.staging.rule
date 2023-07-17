@@ -2,4 +2,4 @@
 #WARN: Minimum one signature is in staging
 .policy.signatures[] |
     select(.performStaging == true) |
-        .signatureId
+        .signatureId | @csv

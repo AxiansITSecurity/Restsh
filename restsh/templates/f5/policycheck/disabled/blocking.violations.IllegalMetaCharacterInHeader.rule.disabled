@@ -1,0 +1,5 @@
+#OK: "Illegal meta character in header" is in blocking.
+#WARN: "Illegal meta character in header" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HEADER_METACHAR") |
+        select(.block == false or .alarm == false)
