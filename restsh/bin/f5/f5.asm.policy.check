@@ -29,20 +29,32 @@ else
     POLICY_FILE=$1
 fi
 
+COUNTER=0
+echo ""
 echo "Checking policy against best practices"
+echo "--------------------------------------"
 while read -r FILE
 do
     OK=$(grep '^#OK:' "$FILE" | sed 's/#OK: //')
     WARN=$(grep '^#WARN:' "$FILE" | sed 's/#WARN: //')
     RULE=$(grep -v -P '^(#|\s*$)' "$FILE")
 
-    RESULT=$($RESTSH_JQ "$RULE" "$POLICY_FILE")
+    RESULT=$($RESTSH_JQ "$RULE" "$POLICY_FILE" | tr -d '\n')
     FILENAME=$(basename "$FILE" .rule)
     if [ -n "$RESULT" ]
     then
         # None empty result is considered as warning
         echo_warn "$FILENAME: $WARN: $RESULT"
+        COUNTER=$((COUNTER+1))
     else
-        echo_ok "$FILENAME: $OK"
+        echo "OK:   $FILENAME: $OK"
     fi
-done < <(find "$RESTSH_PATH/templates/f5/policycheck/" -type f -name \*.rule)
+done < <(find "$RESTSH_PATH/templates/f5/policycheck/" -type f -name \*.rule | sort)
+echo ""
+
+if [ "$COUNTER" -gt 0 ]
+then
+    exit 1
+fi
+
+exit 0
