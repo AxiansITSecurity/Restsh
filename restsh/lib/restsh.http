@@ -84,7 +84,8 @@ DELETE() {
         echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http "${ARGS[@]}" DELETE "$1"
+    ARGS+=("DELETE" "$1")
+    restsh.http "${ARGS[@]}"
 }
 
 # Issues a GET request
@@ -105,7 +106,8 @@ GET() {
         echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http "${ARGS[@]}" GET "$1"
+    ARGS+=("GET" "$1")
+    restsh.http "${ARGS[@]}"
 }
 
 # Issues a PATCH request
@@ -127,7 +129,8 @@ PATCH() {
         echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http "${ARGS[@]}" PATCH "$1"
+    ARGS+=("PATCH" "$1")
+    restsh.http "${ARGS[@]}"
 }
 
 # Issues a POST request
@@ -149,7 +152,8 @@ POST() {
         echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http "${ARGS[@]}" POST "$1"
+    ARGS+=("POST" "$1")
+    restsh.http "${ARGS[@]}"
 }
 
 # Issues a PUT request
@@ -171,7 +175,8 @@ PUT() {
         echo -e "\tUse -r for raw output."
         return 1
     fi
-    restsh.http "${ARGS[@]}" PUT "$1"
+    ARGS+=("PUT" "$1")
+    restsh.http "${ARGS[@]}"
 }
 
 export -f restsh.http
