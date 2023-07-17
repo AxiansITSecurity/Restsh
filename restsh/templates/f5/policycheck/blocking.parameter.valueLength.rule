@@ -1,0 +1,5 @@
+#OK: Parameter value length is in blocking.
+#WARN: Parameter value length is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_VALUE_LENGTH") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: Illegal Filetype is in blocking.
+#WARN: Illegal Filetype is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_FILETYPE") |
+        select(.block == false or .alarm == false)
