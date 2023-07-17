@@ -1,0 +1,5 @@
+#OK: No signatures are in staging.
+#WARN: Minimum one signature is in staging
+.policy.signatures[] |
+    select(.performStaging == true) |
+        .signatureId

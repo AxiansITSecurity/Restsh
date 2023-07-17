@@ -1,0 +1,5 @@
+#OK: No websocket urls are in staging.
+#WARN: Minimum one websocket url is in staging
+.policy."websocket-urls"[] |
+    select(.performStaging == true) |
+        .name

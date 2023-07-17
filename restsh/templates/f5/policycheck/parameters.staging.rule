@@ -1,0 +1,5 @@
+#OK: No parameters are in staging.
+#WARN: Minimum one parameter is in staging
+.policy.parameters[] |
+    select(.performStaging == true) |
+        .name

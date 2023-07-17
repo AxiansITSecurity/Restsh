@@ -1,0 +1,5 @@
+#OK: No urls are in staging.
+#WARN: Minimum one url is in staging
+.policy.urls[] |
+    select(.performStaging == true) |
+        .name

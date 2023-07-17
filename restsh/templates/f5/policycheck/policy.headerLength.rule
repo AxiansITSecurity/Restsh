@@ -1,0 +1,3 @@
+#OK: Maximum header length is restricted.
+#WARN: Maximum header length is any
+.policy."header-settings" | select(.maximumHttpHeaderLength == "any")

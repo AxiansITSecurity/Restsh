@@ -1,0 +1,5 @@
+#OK: No cookies are in staging.
+#WARN: Minimum one cookie is in staging
+.policy.cookies[] |
+    select(.performStaging == true) |
+        .name

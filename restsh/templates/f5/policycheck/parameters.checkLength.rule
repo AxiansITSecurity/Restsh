@@ -1,0 +1,5 @@
+#OK: All length checks enabled for parameters.
+#WARN: Length check disabled for minimum one parameter
+.policy.parameters[] |
+    [.checkMaxValueLength] |
+        index(false)

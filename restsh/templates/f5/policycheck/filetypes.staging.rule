@@ -1,5 +1,5 @@
 #OK: No filetypes are in staging.
-#WARN: Minimum one filetypes is in staging.
+#WARN: Minimum one filetype is in staging
 .policy.filetypes[] |
     select(.performStaging == true) |
         .name
