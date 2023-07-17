@@ -54,5 +54,15 @@ then
 fi
 
 # Download policy
-GET "/mgmt/tm/asm/file-transfer/downloads/$POLICY_HASH.json" > "${FILENAME}"
-ls -lh "$FILENAME"
+if GET "/mgmt/tm/asm/file-transfer/downloads/$POLICY_HASH.json" > "${FILENAME}"
+then
+    SIZE=$(stat -c%s "${FILENAME}")
+    if [ "$SIZE" -eq 1048577 ]
+    then
+        echo_warn "Exported policy is truncated."
+        exit 1
+    fi
+    exit 0
+fi
+
+exit 1
