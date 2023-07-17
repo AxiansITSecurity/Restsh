@@ -24,12 +24,12 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ] || [ -z "${4+x}" ]
 then
     echo "Usage: $0 <policy full path> <template> <defaults> <entity>"
     exit 1
-else
-  POLICY=$1
-  TEMPLATE=$2
-  DEFAULTS=$3
-  ENTITY=$4
 fi
+
+POLICY=$1
+TEMPLATE=$2
+DEFAULTS=$3
+ENTITY=$4
 
 # Get the policy hash
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
@@ -44,4 +44,4 @@ then
     exit 1
 fi
 
-exit 1
+exit 0
