@@ -93,6 +93,11 @@ restsh.utility.parseoutput() {
 
 # Reads variables from a directory. .txt extension for simple variables, .array for arrays.
 restsh.utility.setvars() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.utility.setvars <directory>"
+        return 1
+    fi
     local DIR=$1
     echo "Reading configuration from \"$DIR\""
     # strings, concats multiple lines
