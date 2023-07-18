@@ -1,0 +1,9 @@
+#OK: All graphql profiles limits are enforced.
+#WARN: Minimum one graphql profile limit is set to any.
+.policy."graphql-profiles"[] |
+    [ .defenseAttributes.maximumBatchedQueries,
+      .defenseAttributes.maximumStructureDepth,
+      .defenseAttributes.maximumTotalLength,
+      .defenseAttributes.maximumValueLength
+    ] |
+        select (. == "any")

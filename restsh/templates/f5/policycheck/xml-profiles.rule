@@ -1,0 +1,14 @@
+#OK: All xml profiles limits are enforced.
+#WARN: Minimum one xml profile limit is set to any.
+.policy."xml-profiles"[] |
+    [ .defenseAttributes.maximumAttributeValueLength,
+      .defenseAttributes.maximumAttributesPerElement,
+      .defenseAttributes.maximumChildrenPerElement,
+      .defenseAttributes.maximumDocumentDepth,
+      .defenseAttributes.maximumDocumentSize,
+      .defenseAttributes.maximumElements,
+      .defenseAttributes.maximumNSDeclarations,
+      .defenseAttributes.maximumNameLength,
+      .defenseAttributes.maximumNamespaceLength
+    ] |
+        select (. == "any")

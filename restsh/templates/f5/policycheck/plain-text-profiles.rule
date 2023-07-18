@@ -1,0 +1,7 @@
+#OK: All plain-text profiles limits are enforced.
+#WARN: Minimum one plain-text profile limit is set to any.
+.policy."plain-text-profiles"[] |
+    [ .defenseAttributes.maximumLineLength,
+      .defenseAttributes.maximumTotalLength
+    ] |
+        select (. == "any")
