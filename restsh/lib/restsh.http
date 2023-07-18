@@ -24,7 +24,7 @@ restsh.http() {
         case "$OPTION" in
             b) BODY=1 ;;
             r) RAW=1 ;;
-            *) OPTION="invalid" ;;
+            *) OPTION="invalid"; break ;;
         esac
     done
     shift "$(($OPTIND -1))"
@@ -74,7 +74,7 @@ DELETE() {
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
-            *) OPTION="invalid" ;;
+            *) OPTION="invalid"; break ;;
         esac
     done
     shift "$(($OPTIND -1))"
@@ -96,7 +96,7 @@ GET() {
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
-            *) OPTION="invalid" ;;
+            *) OPTION="invalid"; break ;;
         esac
     done
     shift "$(($OPTIND -1))"
@@ -118,7 +118,7 @@ PATCH() {
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
-            *) OPTION="invalid" ;;
+            *) OPTION="invalid"; break ;;
         esac
     done
     shift "$(($OPTIND -1))"
@@ -141,7 +141,7 @@ POST() {
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
-            *) OPTION="invalid" ;;
+            *) OPTION="invalid"; break ;;
         esac
     done
     shift "$(($OPTIND -1))"
@@ -164,7 +164,7 @@ PUT() {
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
-            *) OPTION="invalid" ;;
+            *) OPTION="invalid"; break ;;
         esac
     done
     shift "$(($OPTIND -1))"
