@@ -34,7 +34,7 @@ apply_by_hash() {
     }' | POST "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
         $RESTSH_JQ -r ".id")
     then
-        echo "Apply of policy failed."
+        echo_err "Apply of policy failed."
         return 1
     fi
 
