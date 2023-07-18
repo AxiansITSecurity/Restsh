@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Runs a bash command on the F5.
+# Shortdesc: Runs a shell command on the F5.
 # Desc:
-# Runs a bash command on the F5.
+# Runs a shell command on the F5.
 
 # Strict errorhandling
 set -eEu -o pipefail
@@ -20,16 +20,35 @@ then
     exit 1
 fi
 
-if [ -z "${1+x}" ]
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$(($OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
-    echo "Usage: f5.run <command>"
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-r] <shell command>"
+    echo -e "\tUse -r for raw output."
     exit 1
 fi
 COMMAND=$1
 
+# Main
 if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' $COMMAND'\" }")
 then
-    $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    if [ "$RAW" -eq 1 ]
+    then
+        echo "$RESPONSE"
+    else
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    fi
 else
     echo_err "Running command failed."
     echo_err "$RESPONSE"
