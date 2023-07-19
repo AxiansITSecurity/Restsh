@@ -39,24 +39,24 @@ MO_COMMA_IF_NOT_EMPTY() {
 }
 
 # Returns the first entry from a comma separated list
-MO_FIRST_COMMA_ENTRY() {
+MO_CSV_GET_FIRST() {
     local VALUE
     VALUE=$(moShow "$moCurrent" "$moCurrent")
     echo "${VALUE%%,*}"
 }
 
 # Returns the last entry from a comma separated list
-MO_LAST_COMMA_ENTRY() {
+MO_CSV_GET_LAST() {
     local VALUE
     VALUE=$(moShow "$moCurrent" "$moCurrent")
     echo "${VALUE#*,}"
 }
 
 # Returns an entry from a comma separated list
-MO_GET_COMMA_ENTRY() {
+MO_CSV_GET_ENTRY() {
     local VALUE
     VALUE=$(moShow "$moCurrent" "$moCurrent")
-    local NR=$MO_FUNCTION_ARGS
+    local NR="${MO_FUNCTION_ARGS[0]}"
     local CSV
     mapfile -t -d, <<< "$VALUE" CSV
     echo "${CSV[$NR]}"
