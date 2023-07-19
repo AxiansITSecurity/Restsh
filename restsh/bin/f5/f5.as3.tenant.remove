@@ -30,7 +30,7 @@ fi
 
 # Mustache template definitions
 export TENANT_NAME=$1
-TEMPLATE="$RESTSH_PATH/templates/f5/as3/f5.as3.tenant.remove.json"
+TEMPLATE="$RESTSH_PATH/templates/f5/as3/tenant.remove.json"
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
