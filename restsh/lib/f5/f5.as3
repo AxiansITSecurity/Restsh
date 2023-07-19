@@ -40,28 +40,33 @@ f5.as3.taskwait() {
         fi
         COUNTER=$((COUNTER+1))
         local STATUS
-        if ! STATUS=$(GET "$CHECK_TASK_URI" | \
-            $RESTSH_JQ -r ".results[] | .code")
+        if ! STATUS=$(GET -r "$CHECK_TASK_URI" | \
+            $RESTSH_JQ -r ".results[] | .code" | tr '\n' ' ')
         then
             echo "Could not get task status."
             return 1
         fi
-        case "$STATUS" in
-            0)
-                # In progress
-                continue
-                ;;
-            200)
-                break
-                ;;
-            *)
-                echo_err "Unhandled as3 declaration result: $STATUS"
-                # Print result message from f5
-                GET "$CHECK_TASK_URI" | \
-                    $RESTSH_JQ -r ".results"
-                return 1
-                ;;
-        esac
+        local RC=0
+        for CODE in $STATUS
+        do
+            case "$CODE" in
+                0)
+                    # In progress
+                    RC=$CODE
+                    ;;
+                200)
+                    # ok
+                    RC=$CODE
+                    ;;
+                *)
+                    echo_err "AS3 declaration failed: $CODE"
+                    # Print result message from f5
+                    GET -r "$CHECK_TASK_URI" | $RESTSH_JQ -r ".results"
+                    return 1
+                    ;;
+            esac
+        done
+        [ "$RC" -eq 200 ] && break
     done
     return 0
 }
