@@ -16,8 +16,7 @@ MO_COMMA_IF_NOT_FIRST() {
 
 # Returns a comma if arguments are not empty
 MO_COMMA_IF_NOT_EMPTY() {
-    mapfile -t ARG_ARRAY <<< "$MO_FUNCTION_ARGS"
-    local ARG_COUNT=${#ARG_ARRAY[@]}
+    local ARG_COUNT=${#MO_FUNCTION_ARGS[@]}
     local MAX_ARG_INDEX=$((ARG_COUNT-1))
 
     local BEFORE_VALUES=""
@@ -32,7 +31,7 @@ MO_COMMA_IF_NOT_EMPTY() {
     done
     # Get last argument
     local LAST_VALUE
-    LAST_VALUE=$(moShow "${ARG_ARRAY[$MAX_ARG_INDEX]}" "${ARG_ARRAY[$MAX_ARG_INDEX]}")
+    LAST_VALUE=$(moShow "${MO_FUNCTION_ARGS[$MAX_ARG_INDEX]}" "${MO_FUNCTION_ARGS[$MAX_ARG_INDEX]}")
     if [ -n "$BEFORE_VALUES" ] && [ -n "$LAST_VALUE" ]
     then
         printf ","
@@ -61,4 +60,21 @@ MO_GET_COMMA_ENTRY() {
     local CSV
     mapfile -t -d, <<< "$VALUE" CSV
     echo "${CSV[$NR]}"
+}
+
+# Includes a file base64 encoded
+# Returns an unquoted string
+MO_INCLUDE_BASE64() {
+    base64 < "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
+}
+
+# Include an external template
+MO_INCLUDE_PLAIN() {
+    cat "${MO_FUNCTION_ARGS[0]}"
+}
+
+# Include a file json encoded
+# Returns a quoted string
+MO_INCLUDE_JSON_ENCODE() {
+    jq "@json" "${MO_FUNCTION_ARGS[0]}"
 }
