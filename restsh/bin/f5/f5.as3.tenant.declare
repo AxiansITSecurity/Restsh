@@ -21,26 +21,59 @@ then
 fi
 
 # Get options
-if [ -z "${1+x}" ]
+IS_TEMPLATE=0
+while getopts ':td:' OPTION
+do
+    case "$OPTION" in
+        t) IS_TEMPLATE=1 ;;
+        d) DEFAULTS=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$(($OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") <as3 declaration file>"
+    echo "Usage: $(basename "$0") [-t] [-d <defaults file>] <as3 declaration file>"
+    echo -e "\t Use -t to process the as3 declaration file with mustache."
+    echo -e "\t Use -d to define a custom variable file. Default is <as3 declaration file>.var"
     exit 1
 fi
 AS3_FILE=$1
 
 # Main
-if ! TASK_ID=$(POST "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE" | \
-        jq -r ".id")
+if [ "$IS_TEMPLATE" -eq 1 ]
 then
-    echo_err "Posting the declaration failed."
-    exit 1
+    # Include mustache
+    . "${RESTSH_PATH}/dist/mo/mo"
+    . "${RESTSH_PATH}/lib/mo/functions"
+
+    # Load variables file
+    [ -z "${DEFAULTS+x}" ] && DEFAULTS="${1}.var"
+    #shellcheck disable=SC1090
+    [ -s "$DEFAULTS" ] && . "$DEFAULTS"
+
+    # Process and POST template
+    if ! TASK_ID=$(mo "$AS3_FILE" | POST "/mgmt/shared/appsvcs/declare?async=true" | \
+            jq -r ".id")
+    then
+        echo_err "Posting the declaration failed."
+        exit 1
+    fi
+else
+    if ! TASK_ID=$(POST "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE" | \
+            jq -r ".id")
+    then
+        echo_err "Posting the declaration failed."
+        exit 1
+    fi
 fi
 
 # Wait for completed task
 if f5.as3.taskwait "$TASK_ID"
 then
-    echo "AS3 declared successfully."
+    echo_ok "AS3 declared successfully."
     exit 0
 fi
 exit 1
