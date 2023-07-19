@@ -39,7 +39,7 @@ fi
 
 ENTITY="whitelist-ips"
 MODIFY_TEMPLATE="templates/f5/asm/entity.whitelist-ips.json"
-MODIFY_DEFAULTS="templates/f5/asm/entity.whitelist-ips.defaults"
+MODIFY_DEFAULTS="templates/f5/asm/entity.whitelist-ips.var"
 
 usage() {
     echo "Add an IP: $(basename "$0") add <policy full path>"
