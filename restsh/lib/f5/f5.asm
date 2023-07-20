@@ -8,7 +8,7 @@
 # Desc:
 # General functions for the F5 ASM module.
 
-# Strict errorhandling
+# Strict error handling
 set -uo pipefail
 
 # Debug mode

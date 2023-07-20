@@ -8,7 +8,7 @@
 # Desc:
 # Exports a F5 ASM Policy as JSON.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -30,7 +30,7 @@ else
 fi
 
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-
+#shellcheck disable=SC2016
 if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$POLICY_HASH.json" --arg policyLink "https://localhost/mgmt/tm/asm/policies/$POLICY_HASH" \
     '{
         "format": "json",

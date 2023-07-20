@@ -6,10 +6,10 @@
 
 # Shortdesc: Checks a F5 ASM Policy against best practices.
 # Desc:
-# Checks a F5 ASM Policy against best practices. Rules are defined in templates/f5/policycheck folder.
+# Checks a F5 ASM Policy against best practices. Rules are defined in templates/f5/asm/policy.check folder.
 # You must export the policy to a temporary file before.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -30,7 +30,7 @@ do
         *) OPTION="invalid"; break ;;
     esac
 done
-shift "$(($OPTIND -1))"
+shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then

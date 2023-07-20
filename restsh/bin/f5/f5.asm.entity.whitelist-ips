@@ -8,7 +8,7 @@
 # Desc:
 # Modifies the ip whitelist of a F5 ASM Policy.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode

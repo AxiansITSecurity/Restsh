@@ -8,7 +8,7 @@
 # Desc:
 # Manages traffic management certificates on the F5.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -52,6 +52,7 @@ add_cert() {
     local F5_FILE_NAME
     F5_FILE_NAME=$(basename "$F5_FILE_PATH")
     local RESPONSE
+    #shellcheck disable=SC2016
     if ! RESPONSE=$($RESTSH_JQ -n --arg f5_cert_name "$NAME" \
         --arg f5_file_path "$F5_FILE_PATH" \
     '{
@@ -77,6 +78,7 @@ add_key() {
     local F5_FILE_NAME
     F5_FILE_NAME=$(basename "$F5_FILE_PATH")
     local RESPONSE
+    #shellcheck disable=SC2016
     if ! RESPONSE=$($RESTSH_JQ -n --arg f5_cert_name "$NAME" \
         --arg f5_file_path "$F5_FILE_PATH" \
     '{

@@ -8,7 +8,9 @@
 # Desc:
 # Posts an AS3 declaration.
 
-# Strict errorhandling
+#shellcheck disable=SC1091
+
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -34,7 +36,7 @@ do
         *) OPTION="invalid"; break ;;
     esac
 done
-shift "$(($OPTIND -1))"
+shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then

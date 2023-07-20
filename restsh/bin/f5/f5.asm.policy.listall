@@ -8,7 +8,7 @@
 # Desc:
 # Lists all F5 ASM Polices.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -29,7 +29,7 @@ do
         *) OPTION="invalid"; break ;;
     esac
 done
-shift "$(($OPTIND -1))"
+shift "$((OPTIND -1))"
 
 if [ "$OPTION" == "invalid" ]
 then

@@ -8,7 +8,7 @@
 # Desc:
 # Manages F5 ASM signature staging.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode

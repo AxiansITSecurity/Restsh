@@ -8,7 +8,7 @@
 # Desc:
 # Manages learning suggestions.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -49,14 +49,14 @@ usage() {
 # prints a suggestions overview
 overview_suggestions() {
     local HASH=$1
-    GET /mgmt/tm/asm/policies/$HASH/suggestions | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
+    GET "/mgmt/tm/asm/policies/$HASH/suggestions" | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
         column -ts $'\t' -o " | " -N "id,action,entityName,score,occurrences"
 }
 
 # lists all suggestions
 list_suggestions() {
     local HASH=$1
-    GET /mgmt/tm/asm/policies/$HASH/suggestions | $RESTSH_JQ ".items[]"
+    GET "/mgmt/tm/asm/policies/$HASH/suggestions" | $RESTSH_JQ ".items[]"
 }
 
 # deletes a suggestion

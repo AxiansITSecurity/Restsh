@@ -8,7 +8,7 @@
 # Desc:
 # Manages files on the F5.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode

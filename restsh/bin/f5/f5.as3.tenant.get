@@ -8,7 +8,7 @@
 # Desc:
 # Gets an AS3 Tenant Declaration.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -29,7 +29,7 @@ do
         *) OPTION="invalid"; break ;;
     esac
 done
-shift "$(($OPTIND -1))"
+shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then

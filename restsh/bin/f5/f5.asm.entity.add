@@ -8,7 +8,9 @@
 # Desc:
 # Adds an entity to a F5 ASM Policy.
 
-# Strict errorhandling
+#shellcheck disable=SC1091
+
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
