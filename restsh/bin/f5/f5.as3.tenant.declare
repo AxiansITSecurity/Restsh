@@ -22,11 +22,15 @@ fi
 
 # Get options
 IS_TEMPLATE=0
-while getopts ':td:' OPTION
+DRY=0
+KEEP_TMP=0
+while getopts ':d:ktv' OPTION
 do
     case "$OPTION" in
-        t) IS_TEMPLATE=1 ;;
         d) DEFAULTS=$OPTARG ;;
+        k) KEEP_TMP=1 ;;
+        t) IS_TEMPLATE=1 ;;
+        v) DRY=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,39 +39,62 @@ shift "$(($OPTIND -1))"
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-t] [-d <defaults file>] <as3 declaration file>"
-    echo -e "\t Use -t to process the as3 declaration file with mustache."
-    echo -e "\t Use -d to define a custom variable file. Default is <as3 declaration file>.var"
+    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] <as3 declaration file>"
+    echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
+    echo -e "\t-k\tKeeps the working directory."
+    echo -e "\t-t\tProcess the as3 declaration file with mustache."
+    echo -e "\t-v\tValidate the declaration by the dry-run action."
     exit 1
 fi
 AS3_FILE=$1
 
 # Main
+# Populate working directory
+TMPDIR=$(mktemp -d)
+[ "$KEEP_TMP" -eq 0 ] && trap 'rm -rf -- "$TMPDIR"' EXIT
+echo "Workdir: $TMPDIR"
+DECLARATION_FILE="$TMPDIR/declaration.json"
+
+cp "$AS3_FILE" "$DECLARATION_FILE"
+AS3_DIR=$(dirname "$AS3_FILE")
+[ -d "$AS3_DIR/includes" ] && cp -r "$AS3_DIR/includes" "$TMPDIR"
+
+if [ "$DRY" -eq 1 ]
+then
+    # Dry-run: change action from deploy to dry-run
+    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$DECLARATION_FILE"
+    echo "Dry-run enabled"
+fi
+
+# Run mustache
 if [ "$IS_TEMPLATE" -eq 1 ]
 then
+    echo "Processing template"
     # Include mustache
     . "${RESTSH_PATH}/dist/mo/mo"
     . "${RESTSH_PATH}/lib/mo/functions"
 
     # Load variables file
-    [ -z "${DEFAULTS+x}" ] && DEFAULTS="${1}.var"
+    [ -z "${DEFAULTS+x}" ] && DEFAULTS="${AS3_FILE}.var"
     #shellcheck disable=SC1090
     [ -s "$DEFAULTS" ] && . "$DEFAULTS"
 
-    # Process and POST template
-    if ! TASK_ID=$(mo "$AS3_FILE" | POST "/mgmt/shared/appsvcs/declare?async=true" | \
-            jq -r ".id")
+    # Process template
+    mv "$DECLARATION_FILE" "$DECLARATION_FILE.tmpl"
+    if ! $RESTSH_MO -- "$DECLARATION_FILE.tmpl" > "$DECLARATION_FILE"
     then
-        echo_err "Posting the declaration failed."
+        echo_err "Processing the template failed."
         exit 1
     fi
-else
-    if ! TASK_ID=$(POST "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE" | \
-            jq -r ".id")
-    then
-        echo_err "Posting the declaration failed."
-        exit 1
-    fi
+fi
+
+# Post the declaration
+echo "Posting declaration"
+if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$DECLARATION_FILE" | \
+        jq -r ".id")
+then
+    echo_err "Posting the declaration failed."
+    exit 1
 fi
 
 # Wait for completed task
@@ -76,4 +103,5 @@ then
     echo_ok "AS3 declared successfully."
     exit 0
 fi
+
 exit 1
