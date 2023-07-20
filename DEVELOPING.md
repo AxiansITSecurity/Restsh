@@ -21,7 +21,7 @@ Use the following header for each script file:
 # Desc:
 # More detailed description.
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Debug mode
@@ -53,7 +53,7 @@ Use the following header for each script file:
 # Desc:
 # More detailed description.
 
-# Strict errorhandling
+# Strict error handling
 set -uo pipefail
 
 # Debug mode

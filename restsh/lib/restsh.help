@@ -8,7 +8,7 @@
 # Desc:
 # Displays all commands and the short description.
 
-# Strict errorhandling
+# Strict error handling
 set -uo pipefail
 
 # Debug mode
@@ -83,7 +83,7 @@ restsh.help.categories() {
     return 0
 }
 
-# Prints all commands from a categorie
+# Prints all commands from a category
 restsh.help.categories.cmds() {
     local CAT=$1
     echo ""
