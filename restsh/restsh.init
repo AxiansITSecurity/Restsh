@@ -47,6 +47,8 @@ done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 . "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/functions"
 
+export RESTSH_MO="mo --fail-on-function --fail-on-file"
+
 # Use default or custom config file
 if [ -z "${RESTSH_CONFIG+x}" ]
 then

@@ -73,7 +73,7 @@ GET /api/version
 . "$RESTSH_PATH/dist/mo/mo"
 . "$RESTSH_PATH/lib/mo/functions"
 VAR1="test"
-mo << EOL | POST /api/request
+$RESTSH_MO -- << EOL | POST /api/request
 > {"var1": "{{VAR1}}"}
 > EOL
 ```
