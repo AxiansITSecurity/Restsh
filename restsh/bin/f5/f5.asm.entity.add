@@ -38,7 +38,7 @@ POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 . "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/functions"
 
-if ! mo -s="$DEFAULTS" < "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
+if ! $RESTSH_MO -s="$DEFAULTS" -- "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
 then
     echo_err "Failed to modify policy"
     exit 1

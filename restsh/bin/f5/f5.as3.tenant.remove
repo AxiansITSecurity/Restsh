@@ -37,7 +37,7 @@ TEMPLATE="$RESTSH_PATH/templates/f5/as3/tenant.remove.json"
 . "${RESTSH_PATH}/lib/mo/functions"
 
 # Main
-if ! TASK_ID=$(mo < "$TEMPLATE" | POST "/mgmt/shared/appsvcs/declare?async=true" | \
+if ! TASK_ID=$($RESTSH_MO -- "$TEMPLATE" | POST "/mgmt/shared/appsvcs/declare?async=true" | \
         jq -r ".id")
 then
     echo_err "Posting the declaration failed."
