@@ -96,7 +96,7 @@ export RESTSH_VERSION
 restsh.init.setresturl
 
 # Set prompt
-export PS1="${RESTSH_URL}# "
+export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "
 
 # ok
 echo_ok "restsh $RESTSH_VERSION initialized"
