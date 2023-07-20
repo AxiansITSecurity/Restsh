@@ -4,9 +4,9 @@
 # restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
 # https://github.com/JuergenMang/restsh
 
-# Shortdesc: Posts an AS3 declaration.
+# Shortdesc: Posts an AS3 declaration, optionally runs mustache before.
 # Desc:
-# Posts an AS3 declaration.
+# Posts an AS3 declaration, optionally runs mustache before.
 
 #shellcheck disable=SC1091
 
@@ -43,24 +43,17 @@ then
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
     echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] <as3 declaration file>"
     echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
-    echo -e "\t-k\tKeeps the working directory."
+    echo -e "\t-k\tKeeps the temporary files."
     echo -e "\t-t\tProcess the as3 declaration file with mustache."
     echo -e "\t-v\tValidate the declaration by the dry-run action."
     exit 1
 fi
 AS3_FILE=$1
 
+# Cleanup tmp files
+[ "$KEEP_TMP" -eq 0 ] && trap "rm -f -- "$AS3_FILE.tmp" "$AS3_FILE.parsed"" EXIT
+
 # Main
-# Populate working directory
-TMPDIR=$(mktemp -d)
-[ "$KEEP_TMP" -eq 0 ] && trap 'rm -rf -- "$TMPDIR"' EXIT
-echo "Workdir: $TMPDIR"
-DECLARATION_FILE="$TMPDIR/declaration.json"
-
-cp "$AS3_FILE" "$DECLARATION_FILE"
-AS3_DIR=$(dirname "$AS3_FILE")
-[ -d "$AS3_DIR/includes" ] && cp -r "$AS3_DIR/includes" "$TMPDIR"
-
 if [ "$DRY" -eq 1 ]
 then
     # Dry-run: change action from deploy to dry-run
@@ -75,6 +68,7 @@ then
     # Include mustache
     . "${RESTSH_PATH}/dist/mo/mo"
     . "${RESTSH_PATH}/lib/mo/functions"
+    . "${RESTSH_PATH}/lib/mo/f5.as3"
 
     # Load variables file
     [ -z "${DEFAULTS+x}" ] && DEFAULTS="${AS3_FILE}.var"
@@ -82,17 +76,18 @@ then
     [ -s "$DEFAULTS" ] && . "$DEFAULTS"
 
     # Process template
-    mv "$DECLARATION_FILE" "$DECLARATION_FILE.tmpl"
-    if ! $RESTSH_MO -- "$DECLARATION_FILE.tmpl" > "$DECLARATION_FILE"
+    if ! $RESTSH_MO -- "$AS3_FILE" > "$AS3_FILE.parsed"
     then
         echo_err "Processing the template failed."
         exit 1
     fi
+else
+    cp "$AS3_FILE" "$AS3_FILE.parsed"
 fi
 
 # Post the declaration
 echo "Posting declaration"
-if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$DECLARATION_FILE" | \
+if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE.parsed" | \
         jq -r ".id")
 then
     echo_err "Posting the declaration failed."
