@@ -125,12 +125,12 @@ restsh.help() {
     # First print restsh internal commands
     echo "HTTP commands:"
     declare -A CMDS
-    restsh.help.parse.lib "restsh/lib/restsh.http"
+    restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.http"
     restsh.help.print
     echo ""
     echo "Utility commands:"
     declare -A CMDS
-    restsh.help.parse.lib "restsh/lib/restsh.utility"
+    restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.utility"
     restsh.help.print
 
     if [ "$CATEGORIES" == "none" ]
