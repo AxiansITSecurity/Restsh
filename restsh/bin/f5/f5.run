@@ -52,6 +52,6 @@ then
 else
     echo_err "Running command failed."
     echo_err "$RESPONSE"
-    exit 1  
+    exit 1
 fi
 exit 0

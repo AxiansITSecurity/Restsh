@@ -96,10 +96,10 @@ fi
 
 case "$ACTION" in
     overview)
-        overview_suggestions "$POLICY_HASH" 
+        overview_suggestions "$POLICY_HASH"
         ;;
     list)
-        list_suggestions "$POLICY_HASH" 
+        list_suggestions "$POLICY_HASH"
         ;;
     ignore)
         ignore_suggestion "$POLICY_HASH" "$ID"

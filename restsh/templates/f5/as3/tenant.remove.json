@@ -8,7 +8,7 @@
         "label": "tenant_name_via_AS3",
         "remark": "tenant_name_via_AS3",
         "{{TENANT_NAME}}": {
-            "class": "Tenant"        
+            "class": "Tenant"
         }
     }
 }

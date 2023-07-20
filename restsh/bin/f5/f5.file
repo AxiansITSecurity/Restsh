@@ -72,7 +72,7 @@ f5.file.remove() {
     else
         echo_err "Removing file \"$RM_FILE\" failed."
         echo_err "$RESPONSE"
-        return 1  
+        return 1
     fi
     return 0
 }
