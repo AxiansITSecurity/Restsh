@@ -8,7 +8,7 @@
 # Desc:
 # Provides some utility functions. This file is included by restsh.init.
 
-# Strict errorhandling
+# Strict error handling
 set -uo pipefail
 
 # Debug mode
@@ -100,7 +100,7 @@ restsh.utility.setvars() {
     fi
     local DIR=$1
     echo "Reading configuration from \"$DIR\""
-    # strings, concats multiple lines
+    # strings, concatenates multiple lines
     local DEF
     while read -r DEF
     do

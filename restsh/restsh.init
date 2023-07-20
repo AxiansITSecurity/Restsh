@@ -9,13 +9,15 @@
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
 
+#shellcheck disable=SC1091
+
 if [ -z "${RESTSH_PATH+x}" ]
 then
     echo "Script must be run in the restsh environment" >&2
     exit 1
 fi
 
-# Strict errorhandling
+# Strict error handling
 set -eEu -o pipefail
 
 # Enable debug mode
@@ -122,5 +124,5 @@ echo "Use exit to finish."
 echo "Happy RESTing"
 echo ""
 
-# Do not exit on error after initialiation
+# Do not exit on error after initialization
 set +eE
