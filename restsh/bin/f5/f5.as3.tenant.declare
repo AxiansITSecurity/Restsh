@@ -51,7 +51,7 @@ fi
 AS3_FILE=$1
 
 # Cleanup tmp files
-[ "$KEEP_TMP" -eq 0 ] && trap "rm -f -- "$AS3_FILE.tmp" "$AS3_FILE.parsed"" EXIT
+[ "$KEEP_TMP" -eq 0 ] && trap "rm -f -- "$AS3_FILE.parsed"" EXIT
 
 # Main
 if [ "$DRY" -eq 1 ]
