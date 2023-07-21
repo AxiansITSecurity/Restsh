@@ -8,12 +8,12 @@
 # Desc:
 # F5 AS3 helper functions for mustache.
 
-# Recursively includes an json path from/in an AS3 declaration, removes .class, .remark and .label keys
+# Recursively includes an json path from/in an AS3 declaration, removes .class, .template, .remark and .label keys
 MO_F5_AS3_INCLUDE_DECLARATION() {
     local JSON_FILE=${MO_FUNCTION_ARGS[0]}
     local JSON_PATH=${MO_FUNCTION_ARGS[1]}
 
     $RESTSH_MO -- "$JSON_FILE" | \
-        jq -r "$JSON_PATH | del(.class, .remark, .label)" | \
+        jq -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
             sed -e 's/^{$//' -e 's/^}$//'
 }
