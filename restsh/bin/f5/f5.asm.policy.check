@@ -68,7 +68,7 @@ do
     else
         echo_err "$FILENAME: Executing jq failed."
     fi
-done < <(find "$RULES_DIR" -type f -name \*.rule | sort)
+done < <(find "$RULES_DIR" -type f -name \*.rule ! -path \*disabled | sort)
 echo ""
 
 if [ "$COUNTER" -gt 0 ]
