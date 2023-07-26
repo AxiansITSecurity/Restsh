@@ -1,4 +1,4 @@
-#OK: Maximum header length is restricted.
-#WARN: Maximum header length is any
+#OK: Maximum cookie header length is restricted.
+#WARN: Maximum cookie header length is any
 .policy."cookie-settings".maximumCookieHeaderLength |
     select(. == "any")
