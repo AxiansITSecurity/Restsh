@@ -1,0 +1,5 @@
+#OK: "Illegal meta character in parameter name" is in blocking.
+#WARN: "Illegal meta character in parameter name" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_NAME_METACHAR") |
+        select(.block == false or .alarm == false)

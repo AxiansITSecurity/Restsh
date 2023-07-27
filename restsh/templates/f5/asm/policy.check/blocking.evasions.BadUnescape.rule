@@ -1,0 +1,5 @@
+#OK: Bad Unescape enabled.
+#WARN: Bad Unescape is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "Bad Unescape") |
+        select(.enabled == false)

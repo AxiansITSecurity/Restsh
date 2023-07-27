@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Lists all F5 ASM Policies.
+# Desc:
+# Lists all F5 ASM Polices.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-r]"
+    echo -e "\tUse -r for raw output."
+    exit 1
+fi
+
+# Main
+if RESULT=$(GET "/mgmt/tm/asm/policies?\$select=fullPath,parentPolicyName,id,enforcementMode,description")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        echo "$RESULT"
+    else
+        $RESTSH_JQ -r '.items[] | [.fullPath, .parentPolicyName, .description, .enforcementMode, .id] | @tsv' <<< "$RESULT" | \
+            column -ts $'\t' -o " | " -N "fullPath,parentPolicyName,description,enforcementMode,id" -W "description"
+    fi
+fi
+
+exit 0

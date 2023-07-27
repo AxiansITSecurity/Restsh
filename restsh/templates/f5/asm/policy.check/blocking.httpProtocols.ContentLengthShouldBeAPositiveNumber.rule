@@ -1,0 +1,5 @@
+#OK: Content length should be a positive number is enabled.
+#WARN: Content length should be a positive number is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Content length should be a positive number") |
+        select(.enabled == false)

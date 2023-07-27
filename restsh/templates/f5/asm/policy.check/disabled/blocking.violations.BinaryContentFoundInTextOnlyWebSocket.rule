@@ -1,0 +1,5 @@
+#OK: "Binary content found in text only WebSocket" is in blocking.
+#WARN: "Binary content found in text only WebSocket" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_BINARY_MESSAGE_NOT_ALLOWED") |
+        select(.block == false or .alarm == false)

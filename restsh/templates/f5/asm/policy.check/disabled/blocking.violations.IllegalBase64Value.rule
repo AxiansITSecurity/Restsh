@@ -1,0 +1,5 @@
+#OK: "Illegal Base64 value" is in blocking.
+#WARN: "Illegal Base64 value" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_VALUE_BASE64") |
+        select(.block == false or .alarm == false)

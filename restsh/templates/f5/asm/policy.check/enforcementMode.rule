@@ -1,0 +1,4 @@
+#OK: Enforcement mode is blocking.
+#WARN: Enforcement mode is transparent
+.policy.enforcementMode |
+    select(. == "transparent")

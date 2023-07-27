@@ -1,0 +1,9 @@
+#OK: All json profiles limits are enforced.
+#WARN: Minimum one json profile limit is set to any.
+.policy."json-profiles"[] |
+    [ .defenseAttributes.maximumArrayLength,
+      .defenseAttributes.maximumStructureDepth,
+      .defenseAttributes.maximumTotalLengthOfJSONData,
+      .defenseAttributes.maximumValueLength
+    ] |
+        select (. == "any")

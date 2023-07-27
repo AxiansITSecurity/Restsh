@@ -1,0 +1,5 @@
+#OK: "Illegal request length" is in blocking.
+#WARN: "Illegal request length" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_REQUEST_LENGTH") |
+        select(.block == false or .alarm == false)

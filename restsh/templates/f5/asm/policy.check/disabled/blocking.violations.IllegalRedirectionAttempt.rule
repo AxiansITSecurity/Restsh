@@ -1,0 +1,5 @@
+#OK: "Illegal redirection attempt" is in blocking.
+#WARN: "Illegal redirection attempt" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_REDIRECT") |
+        select(.block == false or .alarm == false)

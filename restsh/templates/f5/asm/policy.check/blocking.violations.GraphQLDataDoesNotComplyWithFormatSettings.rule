@@ -1,0 +1,5 @@
+#OK: "GraphQL data does not comply with format settings" is in blocking.
+#WARN: "GraphQL data does not comply with format settings" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_GRAPHQL_FORMAT") |
+        select(.block == false or .alarm == false)

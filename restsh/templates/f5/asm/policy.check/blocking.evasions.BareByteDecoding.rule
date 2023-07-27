@@ -1,0 +1,5 @@
+#OK: Bare byte decoding is enabled.
+#WARN: Bare byte decoding is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "Bare byte decoding") |
+        select(.enabled == false)

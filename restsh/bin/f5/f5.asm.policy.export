@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Exports a F5 ASM Policy as JSON.
+# Desc:
+# Exports a F5 ASM Policy as JSON.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <policy fullPath> <filename>"
+    exit 1
+else
+     POLICY=$1
+     FILENAME=$2
+fi
+
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+#shellcheck disable=SC2016
+if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$POLICY_HASH.json" --arg policyLink "https://localhost/mgmt/tm/asm/policies/$POLICY_HASH" \
+    '{
+        "format": "json",
+        "filename": $filename,
+        "policyReference": {
+            "link": $policyLink
+        },
+        "minimal": false
+    }' | POST "/mgmt/tm/asm/tasks/export-policy" | \
+        $RESTSH_JQ -r ".id")
+then
+    echo "Export of policy failed."
+    exit 1
+fi
+
+# Wait for completed task
+if ! f5.asm.taskwait export-policy "$TASK_ID"
+then
+    echo_err "Export of policy failed."
+    exit 1
+fi
+
+# Download policy
+if GET "/mgmt/tm/asm/file-transfer/downloads/$POLICY_HASH.json" > "${FILENAME}"
+then
+    SIZE=$(stat -c%s "${FILENAME}")
+    if [ "$SIZE" -eq 1048577 ]
+    then
+        echo_warn "Exported policy is truncated."
+        exit 1
+    fi
+    exit 0
+fi
+
+exit 1

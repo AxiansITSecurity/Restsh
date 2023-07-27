@@ -1,0 +1,5 @@
+#OK: "CSRF authentication expired" is in blocking.
+#WARN: "CSRF authentication expired" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_CSRF_EXPIRED") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: "Modified ASM cookie" is in blocking.
+#WARN: "Modified ASM cookie" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_ASM_COOKIE_MODIFIED") |
+        select(.block == false or .alarm == false)

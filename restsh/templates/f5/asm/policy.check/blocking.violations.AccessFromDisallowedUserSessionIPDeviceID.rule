@@ -1,0 +1,5 @@
+#OK: "Access from disallowed User/Session/IP/Device ID" is in blocking.
+#WARN: "Access from disallowed User/Session/IP/Device ID" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_SESSION_AWARENESS") |
+        select(.block == false or .alarm == false)

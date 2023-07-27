@@ -1,0 +1,5 @@
+#OK: "Malformed XML data" is in blocking.
+#WARN: "Malformed XML data" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_XML_MALFORMED") |
+        select(.block == false or .alarm == false)

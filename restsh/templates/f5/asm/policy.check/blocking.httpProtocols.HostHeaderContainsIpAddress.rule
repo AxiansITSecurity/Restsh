@@ -1,0 +1,5 @@
+#OK: Host header contains IP address is enabled.
+#WARN: Host header contains IP address is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Host header contains IP address") |
+        select(.enabled == false)

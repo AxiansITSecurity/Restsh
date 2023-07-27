@@ -1,0 +1,5 @@
+#OK: "Access from disallowed Geolocation" is in blocking.
+#WARN: "Access from disallowed Geolocation" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_GEOLOCATION") |
+        select(.block == false or .alarm == false)

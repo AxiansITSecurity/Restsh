@@ -1,0 +1,5 @@
+#OK: %u decoding is enabled.
+#WARN: %u decoding is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "%u decoding") |
+        select(.enabled == false)

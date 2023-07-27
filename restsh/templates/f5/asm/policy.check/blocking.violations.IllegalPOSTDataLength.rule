@@ -1,0 +1,5 @@
+#OK: "Illegal POST data length" is in blocking.
+#WARN: "Illegal POST data length" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_POST_DATA_LENGTH") |
+        select(.block == false or .alarm == false)

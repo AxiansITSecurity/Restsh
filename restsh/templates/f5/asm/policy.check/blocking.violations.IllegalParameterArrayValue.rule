@@ -1,0 +1,5 @@
+#OK: "Illegal parameter array value" is in blocking.
+#WARN: "Illegal parameter array value" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_ARRAY_VALUE") |
+        select(.block == false or .alarm == false)

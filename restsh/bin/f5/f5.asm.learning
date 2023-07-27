@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Manages learning suggestions.
+# Desc:
+# Manages learning suggestions.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    ACTION="invalid"
+    POLICY=""
+else
+    ACTION=$1
+    POLICY=$2
+fi
+
+if [ "$ACTION" == "ignore" ] || [ "$ACTION" == "delete" ]
+then
+    if [ -z "${3+x}" ]
+    then
+        ACTION="invalid"
+    else
+        ID=$3
+    fi
+fi
+
+usage() {
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage:"
+    echo -e "\tf5.asm.learning (list|overview) <policy name or hash>"
+    echo -e "\tf5.asm.learning (ignore|delete) <policy name or hash> <id>"
+    return 1
+}
+
+# prints a suggestions overview
+overview_suggestions() {
+    local HASH=$1
+    GET "/mgmt/tm/asm/policies/$HASH/suggestions" | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
+        column -ts $'\t' -o " | " -N "id,action,entityName,score,occurrences"
+}
+
+# lists all suggestions
+list_suggestions() {
+    local HASH=$1
+    GET "/mgmt/tm/asm/policies/$HASH/suggestions" | $RESTSH_JQ ".items[]"
+}
+
+# deletes a suggestion
+delete_suggestion() {
+    local HASH=$1
+    local ID=$2
+    if OUTPUT=$(DELETE "/mgmt/tm/asm/policies/$HASH/suggestions/$ID")
+    then
+        $RESTSH_JQ -r ".id" <<< "$OUTPUT"
+    else
+        echo_err "$OUTPUT"
+        return 1
+    fi
+    return 0
+}
+
+# deletes a suggestion
+ignore_suggestion() {
+    local HASH=$1
+    local ID=$2
+    if OUTPUT=$(PATCH "/mgmt/tm/asm/policies/$HASH/suggestions/$ID" <<< "{ \"status\": \"ignored\" }")
+    then
+        $RESTSH_JQ -r ".id" <<< "$OUTPUT"
+    else
+        echo_err "$OUTPUT"
+        return 1
+    fi
+    return 0
+}
+
+if [ "${POLICY:0:1}" == "/" ]
+then
+    POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+else
+    POLICY_HASH=$POLICY
+fi
+
+case "$ACTION" in
+    overview)
+        overview_suggestions "$POLICY_HASH"
+        ;;
+    list)
+        list_suggestions "$POLICY_HASH"
+        ;;
+    ignore)
+        ignore_suggestion "$POLICY_HASH" "$ID"
+        ;;
+    delete)
+        delete_suggestion "$POLICY_HASH" "$ID"
+        ;;
+    *)
+        usage;
+esac

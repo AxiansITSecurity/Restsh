@@ -1,0 +1,5 @@
+#OK: "Illegal URL" is in blocking.
+#WARN: "Illegal URL" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_URL") |
+        select(.block == false or .alarm == false)

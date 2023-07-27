@@ -1,0 +1,5 @@
+#OK: "Cookie not RFC-compliant" is in blocking.
+#WARN: "Cookie not RFC-compliant" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_COOKIE_MALFORMED") |
+        select(.block == false or .alarm == false)

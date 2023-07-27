@@ -1,0 +1,5 @@
+#OK: "Illegal HTTP status in response" is in blocking.
+#WARN: "Illegal HTTP status in response" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HTTP_RESPONSE_STATUS") |
+        select(.block == false or .alarm == false)

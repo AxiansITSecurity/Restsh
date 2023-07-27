@@ -1,0 +1,14 @@
+{
+    "class": "AS3",
+    "action": "deploy",
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.2.0",
+        "id": "tenant_name",
+        "label": "tenant_name_via_AS3",
+        "remark": "tenant_name_via_AS3",
+        "{{TENANT_NAME}}": {
+            "class": "Tenant"
+        }
+    }
+}

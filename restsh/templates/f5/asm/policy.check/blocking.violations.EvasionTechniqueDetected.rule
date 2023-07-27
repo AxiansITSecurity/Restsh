@@ -1,0 +1,5 @@
+#OK: "Evasion technique detected" is in blocking.
+#WARN: "Evasion technique detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_EVASION") |
+        select(.block == false or .alarm == false)

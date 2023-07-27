@@ -1,0 +1,5 @@
+#OK: "Failure in WebSocket framing protocol" is in blocking.
+#WARN: "Failure in WebSocket framing protocol" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_FRAMING_PROTOCOL") |
+        select(.block == false or .alarm == false)

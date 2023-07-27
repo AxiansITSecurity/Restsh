@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: F5 AS3 helper functions for mustache.
+# Desc:
+# F5 AS3 helper functions for mustache.
+
+# Recursively includes an json path from/in an AS3 declaration, removes .class, .template, .remark and .label keys
+MO_F5_AS3_INCLUDE_DECLARATION() {
+    local JSON_FILE=${MO_FUNCTION_ARGS[0]}
+    local JSON_PATH=${MO_FUNCTION_ARGS[1]}
+
+    $RESTSH_MO -- "$JSON_FILE" | \
+        jq -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
+            sed -e 's/^{$//' -e 's/^}$//'
+}

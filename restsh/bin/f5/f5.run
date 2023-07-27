@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Runs a shell command on the F5.
+# Desc:
+# Runs a shell command on the F5.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-r] <shell command>"
+    echo -e "\tUse -r for raw output."
+    exit 1
+fi
+COMMAND=$1
+
+# Main
+if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' $COMMAND'\" }")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        echo "$RESPONSE"
+    else
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    fi
+else
+    echo_err "Running command failed."
+    echo_err "$RESPONSE"
+    exit 1
+fi
+exit 0

@@ -1,0 +1,5 @@
+#OK: "Violation Rating Threat detected" is in blocking.
+#WARN: "Violation Rating Threat detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_RATING_THREAT") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: "Null character found in WebSocket text message" is in blocking.
+#WARN: "Null character found in WebSocket text message" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_TEXT_NULL_VALUE") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Imports a declarative waf policy.
+# Desc:
+# Imports a declarative waf policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <import uri> <policy fullPath>"
+    exit 1
+else
+    WAF_POLICY_IMPORT_URI=$1
+    WAF_POLICY_FULL_PATH=$2
+fi
+
+echo "Importing waf policy from uri \"$WAF_POLICY_IMPORT_URI\""
+#shellcheck disable=SC2016
+TASK_ID=$($RESTSH_JQ -n --arg waf_policy_import_uri "$WAF_POLICY_IMPORT_URI" \
+    --arg waf_policy_full_path "$WAF_POLICY_FULL_PATH" \
+'{
+    "fileReference":{
+        "link": $waf_policy_import_uri
+    },
+    "policy":{
+        "fullPath": $waf_policy_full_path
+    }
+}' | POST -r "/mgmt/tm/asm/tasks/import-policy?\$select=id" | \
+        $RESTSH_JQ -r ".id")
+
+if [ -z "${TASK_ID}" ]
+then
+    echo_err "Import of policy \"$WAF_POLICY_FULL_PATH\" failed."
+    exit 1
+fi
+
+# Wait for completed task
+if ! f5.asm.taskwait import-policy "$TASK_ID"
+then
+    echo_err "Import of policy failed."
+    exit 1
+fi
+
+# Apply the policy
+f5.asm.policy.apply "$WAF_POLICY_FULL_PATH"

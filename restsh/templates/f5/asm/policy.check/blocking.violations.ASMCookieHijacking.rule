@@ -1,0 +1,5 @@
+#OK: "ASM Cookie Hijacking" is in blocking.
+#WARN: "ASM Cookie Hijacking" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_ASM_COOKIE_HIJACKING") |
+        select(.block == false or .alarm == false)

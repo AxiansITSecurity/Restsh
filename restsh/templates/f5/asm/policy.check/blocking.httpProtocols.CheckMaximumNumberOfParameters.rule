@@ -1,0 +1,5 @@
+#OK: Check maximum number of parameters is enabled.
+#WARN: Check maximum number of parameters is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Check maximum number of parameters") |
+        select(.enabled == false)

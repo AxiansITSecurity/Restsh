@@ -1,0 +1,5 @@
+#OK: "Data Guard: Information leakage detected" is in blocking.
+#WARN: "Data Guard: Information leakage detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_DATA_GUARD") |
+        select(.block == false or .alarm == false)

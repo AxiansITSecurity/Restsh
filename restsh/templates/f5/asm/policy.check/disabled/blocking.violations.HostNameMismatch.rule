@@ -1,0 +1,5 @@
+#OK: "Host name mismatch" is in blocking.
+#WARN: "Host name mismatch" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HOSTNAME_MISMATCH") |
+        select(.block == false or .alarm == false)

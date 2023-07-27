@@ -1,0 +1,5 @@
+#OK: "Illegal parameter location" is in blocking.
+#WARN: "Illegal parameter location" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_LOCATION") |
+        select(.block == false or .alarm == false)

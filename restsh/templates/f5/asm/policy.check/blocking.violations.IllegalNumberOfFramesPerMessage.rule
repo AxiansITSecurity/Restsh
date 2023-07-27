@@ -1,0 +1,5 @@
+#OK: "Illegal number of frames per message" is in blocking.
+#WARN: "Illegal number of frames per message" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_FRAMES_PER_MESSAGE_COUNT") |
+        select(.block == false or .alarm == false)

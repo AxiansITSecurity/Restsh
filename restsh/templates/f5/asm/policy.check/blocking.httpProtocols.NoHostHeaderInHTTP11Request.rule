@@ -1,0 +1,5 @@
+#OK: No Host header in HTTP/1.1 request is enabled.
+#WARN: No Host header in HTTP/1.1 request is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "No Host header in HTTP/1.1 request") |
+        select(.enabled == false)

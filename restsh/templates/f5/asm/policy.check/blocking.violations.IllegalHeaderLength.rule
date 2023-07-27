@@ -1,0 +1,5 @@
+#OK: "Illegal header length" is in blocking.
+#WARN: "Illegal header length" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_HEADER_LENGTH") |
+        select(.block == false or .alarm == false)

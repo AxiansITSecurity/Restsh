@@ -1,0 +1,5 @@
+#OK: "Failed to convert character" is in blocking.
+#WARN: "Failed to convert character" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_ENCODING") |
+        select(.block == false or .alarm == false)

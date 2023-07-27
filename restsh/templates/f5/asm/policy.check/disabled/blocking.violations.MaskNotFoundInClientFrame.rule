@@ -1,0 +1,5 @@
+#OK: "Mask not found in client frame" is in blocking.
+#WARN: "Mask not found in client frame" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_FRAME_MASKING") |
+        select(.block == false or .alarm == false)

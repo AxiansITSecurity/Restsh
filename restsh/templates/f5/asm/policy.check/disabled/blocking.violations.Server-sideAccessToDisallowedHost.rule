@@ -1,0 +1,5 @@
+#OK: "Server-side access to disallowed host" is in blocking.
+#WARN: "Server-side access to disallowed host" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_SERVER_SIDE_HOST") |
+        select(.block == false or .alarm == false)

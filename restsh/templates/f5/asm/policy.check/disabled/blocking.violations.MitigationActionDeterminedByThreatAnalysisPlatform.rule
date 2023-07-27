@@ -1,0 +1,5 @@
+#OK: "Mitigation action determined by Threat Analysis Platform" is in blocking.
+#WARN: "Mitigation action determined by Threat Analysis Platform" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_THREAT_ANALYSIS") |
+        select(.block == false or .alarm == false)

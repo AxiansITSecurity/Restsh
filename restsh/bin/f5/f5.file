@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Manages files on the F5.
+# Desc:
+# Manages files on the F5.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+    FILENAME=$2
+fi
+
+# Uploads a file to a F5 to directory /var/config/rest/downloads/.
+f5.file.upload() {
+    local FILE_PATH=$1
+    local FILE_BASENAME
+    FILE_BASENAME=$(basename "$FILE_PATH")
+    local FILE_SIZE
+    if ! FILE_SIZE=$(stat -c%s "$FILE_PATH")
+    then
+        echo "File \"$FILE_PATH\" not found."
+        return 1
+    fi
+
+    # We must set the curl options first
+    restsh.utility.setcurloptions
+
+    local RANGE_END=$((FILE_SIZE-1))
+    local RESPONSE
+    if RESPONSE=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}/mgmt/shared/file-transfer/uploads/${FILE_BASENAME}" \
+        -H "Content-Type: application/octet-stream" \
+        -H "Content-Range: 0-${RANGE_END}/${FILE_SIZE}" \
+        -H "Connection: Close" \
+        --data-binary @"$FILE_PATH")
+    then
+        $RESTSH_JQ -r ".localFilePath" <<< "$RESPONSE"
+    else
+        echo_err "Error uploading file"
+        echo_err "$RESPONSE"
+        unset RESTSH_CURL_OPTS
+        return 1
+    fi
+    unset RESTSH_CURL_OPTS
+    return 0
+}
+
+# Deletes an uploaded file from a F5 from directory /var/config/rest/downloads/.
+f5.file.remove() {
+    local RM_FILE=$1
+    local RESPONSE
+    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' rm -v -f /var/config/rest/downloads/$RM_FILE'\" }")
+    then
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    else
+        echo_err "Removing file \"$RM_FILE\" failed."
+        echo_err "$RESPONSE"
+        return 1
+    fi
+    return 0
+}
+
+# Lists a file from a F5 from directory /var/config/rest/downloads/.
+f5.file.list() {
+    local LIST_FILE=$1
+    local RESPONSE
+    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' ls -l /var/config/rest/downloads/$LIST_FILE'\" }")
+    then
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    else
+        echo_err "Accessing file \"$LIST_FILE\" failed."
+        echo_err "$RESPONSE"
+        return 1  
+    fi
+    return 0
+}
+
+# Prints help
+usage() {
+    echo "Usage: $(basename "$0") (upload|remove|list) <filename>"
+    echo "Files are managed in the path /var/config/rest/downloads/ on the f5"
+    return 1
+}
+
+case "$ACTION" in
+    upload)
+        f5.file.upload "$FILENAME"
+        ;;
+    remove)
+        f5.file.remove "$FILENAME"
+        ;;
+    list)
+        f5.file.list "$FILENAME"
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0

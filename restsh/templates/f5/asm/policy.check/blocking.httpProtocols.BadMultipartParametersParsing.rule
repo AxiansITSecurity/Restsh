@@ -1,0 +1,5 @@
+#OK: Bad multipart parameters parsing is enabled.
+#WARN: Bad multipart parameters parsing is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "Bad multipart parameters parsing") |
+        select(.enabled == false)

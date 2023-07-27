@@ -1,0 +1,5 @@
+#OK: "JSON data does not comply with JSON schema" is in blocking.
+#WARN: "JSON data does not comply with JSON schema" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_JSON_SCHEMA") |
+        select(.block == false or .alarm == false)

@@ -1,0 +1,5 @@
+#OK: "Bad Actor Convicted" is in blocking.
+#WARN: "Bad Actor Convicted" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_CONVICTION") |
+        select(.block == false or .alarm == false)

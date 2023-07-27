@@ -1,0 +1,5 @@
+#OK: POST request with Content-Length: 0 is enabled.
+#WARN: POST request with Content-Length: 0 is disabled
+.policy."blocking-settings"."http-protocols"[] |
+    select(.description == "POST request with Content-Length: 0") |
+        select(.enabled == false)

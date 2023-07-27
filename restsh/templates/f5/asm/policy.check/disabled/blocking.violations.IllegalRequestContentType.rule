@@ -1,0 +1,5 @@
+#OK: "Illegal request content type" is in blocking.
+#WARN: "Illegal request content type" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_URL_CONTENT_TYPE") |
+        select(.block == false or .alarm == false)

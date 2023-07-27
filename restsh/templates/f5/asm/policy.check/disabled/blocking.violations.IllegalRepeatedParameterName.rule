@@ -1,0 +1,5 @@
+#OK: "Illegal repeated parameter name" is in blocking.
+#WARN: "Illegal repeated parameter name" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_REPEATED") |
+        select(.block == false or .alarm == false)

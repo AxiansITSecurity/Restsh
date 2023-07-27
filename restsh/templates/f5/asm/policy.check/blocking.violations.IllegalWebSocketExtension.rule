@@ -1,0 +1,5 @@
+#OK: "Illegal WebSocket extension" is in blocking.
+#WARN: "Illegal WebSocket extension" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_WEBSOCKET_EXTENSION") |
+        select(.block == false or .alarm == false)

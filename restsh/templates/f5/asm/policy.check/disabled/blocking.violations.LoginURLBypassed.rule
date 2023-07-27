@@ -1,0 +1,5 @@
+#OK: "Login URL bypassed" is in blocking.
+#WARN: "Login URL bypassed" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_LOGIN_URL_BYPASSED") |
+        select(.block == false or .alarm == false)

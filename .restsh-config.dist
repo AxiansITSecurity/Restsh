@@ -36,3 +36,8 @@
 
 # Set REST payload format
 #[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
+
+###############################################################################
+# F5 specific settings
+[ -z "${F5_TASK_CHECK_INTERVAL+x}" ] && export F5_TASK_CHECK_INTERVAL=10
+[ -z "${F5_TASK_TIMEOUT+x}" ] && export F5_TASK_TIMEOUT=18

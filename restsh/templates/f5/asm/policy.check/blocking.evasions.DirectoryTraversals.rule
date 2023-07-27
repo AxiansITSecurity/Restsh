@@ -1,0 +1,5 @@
+#OK: Directory traversals is enabled.
+#WARN: Directory traversals is disabled
+.policy."blocking-settings".evasions[] |
+    select(.description == "Directory traversals") |
+        select(.enabled == false)

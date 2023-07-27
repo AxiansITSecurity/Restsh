@@ -1,0 +1,5 @@
+#OK: "Illegal parameter data type" is in blocking.
+#WARN: "Illegal parameter data type" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_PARAMETER_DATA_TYPE") |
+        select(.block == false or .alarm == false)

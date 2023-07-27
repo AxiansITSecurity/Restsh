@@ -1,0 +1,5 @@
+#OK: "Mandatory parameter is missing" is in blocking.
+#WARN: "Mandatory parameter is missing" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_MANDATORY_PARAMETER") |
+        select(.block == false or .alarm == false)

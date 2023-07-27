@@ -1,0 +1,5 @@
+#OK: "Mandatory request body is missing" is in blocking.
+#WARN: "Mandatory request body is missing" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_MANDATORY_REQUEST_BODY") |
+        select(.block == false or .alarm == false)

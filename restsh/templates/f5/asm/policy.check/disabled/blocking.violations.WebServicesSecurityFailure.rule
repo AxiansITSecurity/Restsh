@@ -1,0 +1,5 @@
+#OK: "Web Services Security failure" is in blocking.
+#WARN: "Web Services Security failure" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_XML_WEB_SERVICES_SECURITY") |
+        select(.block == false or .alarm == false)

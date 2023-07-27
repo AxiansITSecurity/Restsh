@@ -1,0 +1,5 @@
+#OK: "Attack signature detected" is in blocking.
+#WARN: "Attack signature detected" is not in block and alarm
+.policy."blocking-settings".violations[] |
+    select(.name == "VIOL_ATTACK_SIGNATURE") |
+        select(.block == false or .alarm == false)

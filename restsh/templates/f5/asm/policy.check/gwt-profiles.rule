@@ -1,0 +1,7 @@
+#OK: All gwt profiles limits are enforced.
+#WARN: Minimum one gwt profile limit is set to any.
+.policy."gwt-profiles"[] |
+    [ .defenseAttributes.maximumTotalLengthOfGWTData,
+      .defenseAttributes.maximumValueLength
+    ] |
+        select (. == "any")
