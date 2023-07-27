@@ -1,3 +1,3 @@
 # TODO F5
 
-- Declarative WAF
+- Add workaround for max 1 MB for policy download
