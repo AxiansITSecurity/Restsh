@@ -9,7 +9,7 @@
 # Lints the scripts with shellcheck.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEuo pipefail
 
 SHELLCHECK_OPT="--severity=warning"
 

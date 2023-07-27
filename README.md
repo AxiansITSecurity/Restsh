@@ -9,7 +9,7 @@ restsh is not a shell. It sets only some environment variables and defines helpe
 ## Running interactively
 
 ```sh
-git clone https://github.com/JuergenMang/restsh.git
+git clone <clone uri>
 cd restsh
 #
 # Rename .restsh-config.dist to .restsh-config and customize it or export some environment variables.
@@ -89,14 +89,6 @@ Further dependencies are:
 
 ## Customize
 
-You can add your own scripts into the `restsh/bin` and `restsh/lib` folders. Please consider to create a pull request.
+You can add your own scripts into the `restsh/bin` and `restsh/lib` folders.
 
 - [DEVELOPING.md](DEVELOPING.md)
-
-## License
-
-GPLv3 or newer, see [LICENSE.md](LICENSE.md) for the full license text.
-
-## Copyright
-
-(c) 2023 Juergen Mang <juergen.mang@axians.de>

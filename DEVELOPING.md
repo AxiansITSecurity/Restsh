@@ -13,10 +13,6 @@ Use the following header for each script file:
 ```sh
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# Your copyright notice. I accept only pull requests with above license
-# or compatible license.
-
 # Shortdesc: This line is displayed in the help.
 # Desc:
 # More detailed description.
@@ -44,10 +40,6 @@ Use the following header for each script file:
 
 ```sh
 #!/usr/bin/env bash
-
-# SPDX-License-Identifier: GPL-3.0-or-later
-# Your copyright notice. I accept only pull requests with above license
-# or compatible license.
 
 # Shortdesc: Short description
 # Desc:

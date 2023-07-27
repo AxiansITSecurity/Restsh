@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
-# https://github.com/JuergenMang/restsh
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
 
 # Shortdesc: Creates a archive with all components.
 # Desc:
 # Creates an archive with all components, excludes git history.
 
 # Strict errorhandling
-set -euo pipefail
+set -eEuo pipefail
 
 VERSION=$(<restsh/version)
 
