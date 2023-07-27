@@ -12,32 +12,32 @@
 # export RESTSH_DEBUG="true"
 
 # REST host to connect to
-#[ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
-[ -z "${RESTSH_HOST+x}" ] && export RESTSH_HOST="localhost"
-#[ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
+#[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
+[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="localhost"
+#[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
 
 # Curl options
 # Set this to 1 to enable curl insecure option (disables tls checks).
-#[ -z "${RESTSH_CURL_INSECURE+x}" ] && export RESTSH_CURL_INSECURE="0"
+#[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 
 # Authentication settings
-#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="basic"
-#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="token"
-#[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="netrc"
-[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="anonymous"
+#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"
+#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
+#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="netrc"
+[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="anonymous"
 
 # Set username/password for basic auth
-#[ -z "${RESTSH_USER+x}" ] && export RESTSH_USER="apiuser"
-#[ -z "${RESTSH_PASS+x}" ] && export RESTSH_PASS="apipass"
+#[ -n "${RESTSH_USER+x}" ] || export RESTSH_USER="apiuser"
+#[ -n "${RESTSH_PASS+x}" ] || export RESTSH_PASS="apipass"
 
 # Set token header and value
-#[ -z "${RESTSH_TOKEN_HEADER+x}" ] && export RESTSH_TOKEN_HEADER="X-Auth-Token"
-#[ -z "${RESTSH_TOKEN_VALUE+x}" ] && export RESTSH_TOKEN_VALUE="the_token"
+#[ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-Auth-Token"
+#[ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="the_token"
 
 # Set REST payload format
-#[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
+#[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
 
 ###############################################################################
 # F5 specific settings
-[ -z "${F5_TASK_CHECK_INTERVAL+x}" ] && export F5_TASK_CHECK_INTERVAL=10
-[ -z "${F5_TASK_TIMEOUT+x}" ] && export F5_TASK_TIMEOUT=18
+#[ -n "${F5_TASK_CHECK_INTERVAL+x}" ] || export F5_TASK_CHECK_INTERVAL=10
+#[ -n "${F5_TASK_TIMEOUT+x}" ] || export F5_TASK_TIMEOUT=18

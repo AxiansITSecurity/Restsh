@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Sets envorinment variables for F5.
+# Desc:
+# Sets environment variables for F5.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+[ -n "${F5_TASK_CHECK_INTERVAL+x}" ] || export F5_TASK_CHECK_INTERVAL=10
+[ -n "${F5_TASK_TIMEOUT+x}" ] || export F5_TASK_TIMEOUT=18

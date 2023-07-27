@@ -8,6 +8,7 @@
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
 
+#shellcheck disable=SC1090
 #shellcheck disable=SC1091
 
 if [ -z "${RESTSH_PATH+x}" ]
@@ -40,7 +41,6 @@ export PATH
 # Include functions
 while read -r LINE
 do
-    #shellcheck disable=SC1090
     . "$LINE"
 done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 
@@ -64,13 +64,12 @@ fi
 # Check for existing config file
 if [ -s "$RESTSH_CONFIG" ]
 then
-    #shellcheck disable=SC1090
     . "$RESTSH_CONFIG"
+    export RESTSH_CONFIG="$RESTSH_CONFIG"
 else
-    echo_err "Config file not found: $RESTSH_CONFIG"
-    exit 1
+    echo_warn "Config file not found: $RESTSH_CONFIG"
+    export RESTSH_CONFIG=""
 fi
-export RESTSH_CONFIG
 
 # Set defaults if not already set
 [ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
