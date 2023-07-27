@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
-# https://github.com/JuergenMang/restsh
-
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
 # Shortdesc: Manages F5 ASM signature staging.
 # Desc:
 # Manages F5 ASM signature staging.
@@ -51,7 +49,8 @@ case "$ACTION" in
         echo "Disabling signatures with suggestions"
         ;;
     *)
-        echo "Usage: $0 <state|stateVerbose|enforceAll|enforceReady|disableSuggestions> [fullPath of policy]"
+        grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+        echo "Usage: $(basename "$0") <state|stateVerbose|enforceAll|enforceReady|disableSuggestions> [fullPath of policy]"
         exit 1
         ;;
 esac

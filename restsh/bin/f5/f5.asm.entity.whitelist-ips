@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
-# https://github.com/JuergenMang/restsh
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
 
 # Shortdesc: Modifies the ip whitelist of a F5 ASM Policy.
 # Desc:
@@ -42,6 +41,8 @@ MODIFY_TEMPLATE="templates/f5/asm/entity.whitelist-ips.json"
 MODIFY_DEFAULTS="templates/f5/asm/entity.whitelist-ips.var"
 
 usage() {
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage:"
     echo "Add an IP: $(basename "$0") add <policy full path>"
     echo ""
     echo "Template for add is: $MODIFY_TEMPLATE"

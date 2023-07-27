@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
-# https://github.com/JuergenMang/restsh
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
 
 # Shortdesc: Applies a F5 ASM Policy by it's fullPath or hash.
 # Desc:
@@ -59,7 +58,8 @@ apply_by_full_path() {
 
 if [ -z "${1+x}" ]
 then
-    echo "Usage: $0 <policy hash or fullPath>"
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <policy hash or fullPath>"
     exit 1
 else
      if [ "${1:0:1}" == "/" ]

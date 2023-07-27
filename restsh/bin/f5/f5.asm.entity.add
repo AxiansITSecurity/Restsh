@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
-# https://github.com/JuergenMang/restsh
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
 
 # Shortdesc: Adds an entity to a F5 ASM Policy.
 # Desc:
@@ -24,7 +23,8 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ] || [ -z "${4+x}" ]
 then
-    echo "Usage: $0 <policy full path> <template> <defaults> <entity>"
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <policy full path> <template> <defaults> <entity>"
     exit 1
 fi
 
