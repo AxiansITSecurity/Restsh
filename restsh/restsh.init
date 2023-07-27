@@ -31,7 +31,7 @@ fi
 export HISTCONTROL=ignorespace
 
 # 4 spaces tab is enough
-tabs 4
+tabs 4 2>/dev/null || true
 
 # Set path
 PATH=$PATH:$RESTSH_PATH$(find "$RESTSH_PATH/bin/" -type d -printf ":%p" )
