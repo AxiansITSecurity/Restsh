@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2023-07-28
 
 # Shortdesc: Some helper functions for mustache.
 # Desc:
 # Some helper functions for mustache.
 
+#shellcheck disable=SC2154
+
 # Returns a comma if it is not the first item in a loop.
+# Usage: {{MO_COMMA_IF_NOT_FIRST}}
 MO_COMMA_IF_NOT_FIRST() {
-    #shellcheck disable=SC2154
-    [[ "${moCurrent#*.}" != "0" ]] && echo ","
+    [[ "${MO_CURRENT#*.}" != "0" ]] && printf ","
+    return 0
 }
 
 # Returns a comma if arguments are not empty
+# Usage: {{MO_COMMA_IF_NOT_EMPTY 'VAR_NAME_1' 'VAR_NAME_2' 'VAR_NAME_3'}}
 MO_COMMA_IF_NOT_EMPTY() {
     local ARG_COUNT=${#MO_FUNCTION_ARGS[@]}
     local MAX_ARG_INDEX=$((ARG_COUNT-1))
@@ -21,16 +25,18 @@ MO_COMMA_IF_NOT_EMPTY() {
     local BEFORE_VALUES=""
     # Join arguments but last
     local COUNT=0
+    local ARG
     for ARG in ${MO_FUNCTION_ARGS}
     do
-        BEFORE_VALUES="${BEFORE_VALUES}$(moShow "${ARG}" "${ARG}")"
+        BEFORE_VALUES="${BEFORE_VALUES}${!ARG}"
         COUNT=$((COUNT+1))
         # Exit loop before last
         [ $COUNT -eq $MAX_ARG_INDEX ] && break
     done
     # Get last argument
+    ARG=${MO_FUNCTION_ARGS[$MAX_ARG_INDEX]}
     local LAST_VALUE
-    LAST_VALUE=$(moShow "${MO_FUNCTION_ARGS[$MAX_ARG_INDEX]}" "${MO_FUNCTION_ARGS[$MAX_ARG_INDEX]}")
+    LAST_VALUE=${!ARG}
     if [ -n "$BEFORE_VALUES" ] && [ -n "$LAST_VALUE" ]
     then
         printf ","
@@ -38,42 +44,45 @@ MO_COMMA_IF_NOT_EMPTY() {
 }
 
 # Returns the first entry from a comma separated list
+# Usage: {{MO_CSV_GET_FIRST {{.}}}}
 MO_CSV_GET_FIRST() {
-    local VALUE
-    VALUE=$(moShow "$moCurrent" "$moCurrent")
-    echo "${VALUE%%,*}"
+    local VALUE=${MO_FUNCTION_ARGS[0]}
+    printf "%s" "${VALUE%%,*}"
 }
 
 # Returns the last entry from a comma separated list
+# Usage: {{MO_CSV_GET_LAST {{.}}}}
 MO_CSV_GET_LAST() {
-    local VALUE
-    VALUE=$(moShow "$moCurrent" "$moCurrent")
-    echo "${VALUE#*,}"
+    local VALUE=${MO_FUNCTION_ARGS[0]}
+    printf "%s" "${VALUE#*,}"
 }
 
 # Returns an entry from a comma separated list
+# Usage: {{MO_CSV_GET_ENTRY {{.}} '1'}}
 MO_CSV_GET_ENTRY() {
-    local VALUE
-    VALUE=$(moShow "$moCurrent" "$moCurrent")
-    local NR="${MO_FUNCTION_ARGS[0]}"
+    local VALUE=${MO_FUNCTION_ARGS[0]}
+    local NR=${MO_FUNCTION_ARGS[1]}
     local CSV
     mapfile -t -d, <<< "$VALUE" CSV
-    echo "${CSV[$NR]}"
+    printf "%s" "${CSV[$NR]}" | tr -d '\n'
 }
 
 # Includes a file base64 encoded
 # Returns an unquoted string
+# Usage: {{MO_INCLUDE_BASE64 '<filename>'}}
 MO_INCLUDE_BASE64() {
     base64 < "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
 }
 
 # Include an external template
+# Usage: {{MO_INCLUDE_PLAIN '<filename>'}}
 MO_INCLUDE_PLAIN() {
     cat "${MO_FUNCTION_ARGS[0]}"
 }
 
 # Include a file json encoded
 # Returns a quoted string
+# Usage: {{MO_INCLUDE_JSON_ENCODE '<filename>'}}
 MO_INCLUDE_JSON_ENCODE() {
     jq "@json" "${MO_FUNCTION_ARGS[0]}"
 }
