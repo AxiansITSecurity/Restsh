@@ -77,8 +77,6 @@ f5.asm.taskwait() {
         esac
     done
     # Print task result message
-    GET -r "/mgmt/tm/asm/tasks/$TASK_ENTITY" | \
-        $RESTSH_JQ -r ".items | .[] | select(.id==\"$TASK_ID\") | .result.message"
     return 0
 }
 
