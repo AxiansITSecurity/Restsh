@@ -23,6 +23,7 @@ In both cases restsh asks for username and password. If you want to integrate re
 
 For token based authentication call `f5.auth.token.get` to retrieve the token. It uses the provided username and password to retrieve the token and sets the `RESTSH_TOKEN_VALUE` environment variable.
 
-## iControl REST API User Guide
+## References
 
-https://cdn.f5.com/websites/devcentral.f5.com/downloads/icontrol-rest-api-user-guide-16-1-0.pdf
+- https://clouddocs.f5.com/api/icontrol-rest/
+- https://cdn.f5.com/websites/devcentral.f5.com/downloads/icontrol-rest-api-user-guide-16-1-0.pdf
