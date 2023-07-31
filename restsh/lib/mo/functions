@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-28
+# Date: 2023-07-31
 
 # Shortdesc: Some helper functions for mustache.
 # Desc:
@@ -84,5 +84,5 @@ MO_INCLUDE_PLAIN() {
 # Returns a quoted string
 # Usage: {{MO_INCLUDE_JSON_ENCODE '<filename>'}}
 MO_INCLUDE_JSON_ENCODE() {
-    jq "@json" "${MO_FUNCTION_ARGS[0]}"
+    jq "@json" "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
 }

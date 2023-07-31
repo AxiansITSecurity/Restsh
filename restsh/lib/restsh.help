@@ -37,8 +37,8 @@ restsh.help.print() {
     local K
     for K in "${!CMDS[@]}"
     do
-        echo -e "\t$K:${CMDS["$K"]}"
-    done | sort | column -s":" -t
+        echo -e "\t$K|${CMDS["$K"]}"
+    done | sort | column -s"|" -t
     unset CMDS
     return 0
 }

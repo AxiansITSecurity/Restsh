@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2023-07-31
 
 # Shortdesc: Starts the restsh environment.
 # Desc:
@@ -14,8 +14,11 @@
 RESTSH_PATH="$(dirname "$(realpath "$0")")"
 export RESTSH_PATH
 
-# Set restsh custom configuration file
+# Interactive mode
+export RESTSH_INTERACTIVE=1
+
+# Set restsh custom configuration file.
 [ -n "${1+x}" ] && export RESTSH_CONFIG=$1
 
-# Start restsh in a sub shell, to avoid clobbering the existing environment
+# Start restsh in a sub shell, to avoid clobbering the existing environment.
 bash --init-file "$RESTSH_PATH/restsh.init"

@@ -28,12 +28,6 @@ then
     set -x
 fi
 
-# Do not add commands to history that begin with space
-export HISTCONTROL=ignorespace
-
-# 4 spaces tab is enough
-tabs 4 2>/dev/null || true
-
 # Set path
 PATH=$PATH:$RESTSH_PATH$(find "$RESTSH_PATH/bin/" -type d -printf ":%p" )
 export PATH
@@ -96,32 +90,43 @@ export RESTSH_VERSION
 # Set restsh url
 restsh.init.setresturl
 
-# Set prompt
-export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "
-
-# ok
+# OK
 echo_ok "restsh $RESTSH_VERSION initialized"
-echo -e "\tConfig: ${RESTSH_CONFIG}"
-echo -e "\tHost:   ${RESTSH_URL}"
-case "$RESTSH_AUTH" in
-    basic)
-        echo -e "\tUser:   $RESTSH_USER"
-        ;;
-    token)
-        echo -e "\tAuth:   token"
-        ;;
-    netrc)
-        echo -e "\tUser:   from .netrc"
-        ;;
-    *)
-        echo -e "\tAuth:   anonymous"
-        ;;
-esac
-echo ""
-echo "Run restsh.help for available commands."
-echo "Use exit to finish."
-echo "Happy RESTing"
-echo ""
 
-# Do not exit on error after initialization
-set +eE
+# Interactive mode
+if [ -n "${RESTSH_INTERACTIVE+x}" ]
+then
+    echo -e "\tConfig: ${RESTSH_CONFIG}"
+    echo -e "\tHost:   ${RESTSH_URL}"
+    case "$RESTSH_AUTH" in
+        basic)
+            echo -e "\tUser:   $RESTSH_USER"
+            ;;
+        token)
+            echo -e "\tAuth:   token"
+            ;;
+        netrc)
+            echo -e "\tUser:   from .netrc"
+            ;;
+        *)
+            echo -e "\tAuth:   anonymous"
+            ;;
+    esac
+    echo ""
+    echo "Run restsh.help for available commands."
+    echo "Use exit to finish."
+    echo "Happy RESTing"
+    echo ""
+
+    # Set prompt
+    export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "
+
+    # Do not add commands to history that begin with space
+    export HISTCONTROL=ignorespace
+
+    # 4 spaces tab is enough
+    tabs 4 2>/dev/null || true
+
+    # Do not exit on error after initialization
+    set +eE
+fi
