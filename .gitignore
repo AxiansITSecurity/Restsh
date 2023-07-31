@@ -1,5 +1,6 @@
 *~
 .restsh-config
+.restsh-config-*
 *.tgz
 /tmp
 /restsh/tmp
