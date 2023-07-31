@@ -34,6 +34,16 @@ echo_warn() {
     printf "\e[m" >&2
 }
 
+# Shortcut for $RESTSH_MO
+MO() {
+    $RESTSH_MO "$@"
+}
+
+# Shortcut for $RESTSH_JQ
+JQ() {
+    $RESTSH_JQ "$@"
+}
+
 # Sets the RESTSH_CURL_OPTIONS environment variable.
 restsh.utility.setcurloptions() {
     RESTSH_CURL_OPTS=("-f" "--show-error")
