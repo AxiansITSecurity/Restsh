@@ -21,7 +21,7 @@ fi
 
 # Get options
 AS3_FILE=""
-while getopts ':r:' OPTION
+while getopts ':o:' OPTION
 do
     case "$OPTION" in
         o) AS3_FILE=$OPTARG ;;
