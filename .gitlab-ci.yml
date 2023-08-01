@@ -1,18 +1,12 @@
 default:
-  image: ubuntu:20.04
-
-cache:
-  key: ${CI_COMMIT_REF_SLUG}
-  paths:
-    - vendor/
+  image: alpine:latest
 
 stages:
   - lint
 
 before_script:
-  - export DEBIAN_FRONTEND=noninteractive
-  - apt-get update
-  - apt-get install -y --no-install-recommends shellcheck
+  - apk update
+  - apk add bash shellcheck
 
 lint:
   rules:
