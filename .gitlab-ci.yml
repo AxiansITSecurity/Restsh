@@ -1,0 +1,22 @@
+default:
+  image: ubuntu:20.04
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+
+stages:
+  - lint
+
+before_script:
+  - export DEBIAN_FRONTEND=noninteractive
+  - apt-get update
+  - apt-get install -y --no-install-recommends shellcheck
+
+lint:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'push'
+  stage: lint
+  script:
+    - ./lint.sh
