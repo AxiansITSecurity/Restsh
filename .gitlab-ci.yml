@@ -6,6 +6,7 @@ stages:
 
 before_script:
   - apk update
+  - apk upgrade
   - apk add bash shellcheck
 
 lint:
