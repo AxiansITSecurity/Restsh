@@ -132,6 +132,7 @@ restsh.utility.setvars() {
         then
             mapfile -t "$VAR" <<< "$LINES"
         else
+            #shellcheck disable=SC2140
             declare -g "$VAR"=""
         fi
     done < <(find "$DIR" -maxdepth 1 -name \*.array)
