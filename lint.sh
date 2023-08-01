@@ -11,11 +11,10 @@
 set -eEuo pipefail
 
 SHELLCHECK_OPT="--severity=warning"
+FILES_TO_CHECK1=(restsh/restsh.*)
+FILES_TO_CHECK2=$(find restsh/lib restsh/bin -type f ! -name .\*)
 
-shellcheck "$SHELLCHECK_OPT" restsh/restsh.*
-
-find restsh/lib -type f ! -name .\* -exec shellcheck "$SHELLCHECK_OPT" {} \;
-find restsh/bin -type f ! -name .\* -exec shellcheck "$SHELLCHECK_OPT" {} \;
+xargs shellcheck "$SHELLCHECK_OPT" -- <<< "${FILES_TO_CHECK1[*]} ${FILES_TO_CHECK2[*]}" 
 
 echo "OK! Shellcheck does not report any warnings or errors"
 exit 0
