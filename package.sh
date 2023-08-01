@@ -7,7 +7,7 @@
 # Desc:
 # Creates an archive with all components, excludes git history.
 
-# Strict errorhandling
+# Strict error handling
 set -eEuo pipefail
 
 VERSION=$(<restsh/version)

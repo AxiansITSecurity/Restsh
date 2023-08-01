@@ -7,7 +7,7 @@
 # Desc:
 # Lints the scripts with shellcheck.
 
-# Strict errorhandling
+# Strict error handling
 set -eEuo pipefail
 
 SHELLCHECK_OPT="--severity=warning"
