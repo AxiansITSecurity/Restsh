@@ -65,6 +65,51 @@ restsh.http() {
     return 0
 }
 
+# Download a file in chunks of 512kB.
+restsh.download() {
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
+    then
+        echo "Download a file in chunks of 512kB."
+        echo "Usage: restsh.download <uri> <size> <filename>"
+        return 1
+    fi
+    local URI=$1
+    local TOTAL_SIZE=$2
+    local FILENAME=$3
+
+    # We must set the curl options first
+    restsh.utility.setcurloptions
+
+    # Remove local file
+    rm -f "${FILENAME}"
+
+    # Download file in 512kB chunks, range header is zero-indexed
+    # and includes range start and end.
+    TOTAL_SIZE=$((TOTAL_SIZE-1))
+    local START=0
+    local END=0
+    local CHUNK_SIZE=524288
+    [ "$TOTAL_SIZE" -lt "$CHUNK_SIZE" ] && CHUNK_SIZE=$TOTAL_SIZE
+
+    while [ "$END" -lt "$TOTAL_SIZE" ]
+    do
+        END=$((START+CHUNK_SIZE-1))
+        [ "$END" -gt "$TOTAL_SIZE" ] && END=$TOTAL_SIZE
+        echo "${START}-${END}/${TOTAL_SIZE}"
+        if ! $RESTSH_CURL_BIN -H "Content-Range: ${START}-${END}/${TOTAL_SIZE}" \
+            "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
+            >> "${FILENAME}"
+        then
+            echo_err "Download failed"
+            unset RESTSH_CURL_OPTS
+            return 1
+        fi
+        START=$((END+1))
+    done
+    unset RESTSH_CURL_OPTS
+    return 0    
+}
+
 # Issues a DELETE request
 DELETE() {
     local ARGS=()
@@ -179,6 +224,7 @@ PUT() {
 }
 
 export -f restsh.http
+export -f restsh.download
 export -f DELETE
 export -f GET
 export -f PATCH
