@@ -7,6 +7,8 @@
 # Desc:
 # Manages files on the F5 with the file-transfer endpoint /var/config/rest/downloads/.
 # Using the HTTP GET command to download files does not function on BIG-IP releases 15.0.0 and later.
+# https://my.f5.com/manage/s/article/K41763344
+# https://community.f5.com/t5/technical-articles/demystifying-icontrol-rest-part-5-transferring-files/ta-p/286689
 
 # Strict error handling
 set -eEu -o pipefail
