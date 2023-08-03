@@ -65,7 +65,7 @@ restsh.http() {
     return 0
 }
 
-# Download a file in chunks of 512kB.
+# Download a file in chunks (default 512kB).
 restsh.download() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
     then
@@ -83,20 +83,29 @@ restsh.download() {
     # Remove local file
     rm -f "${FILENAME}"
 
-    # Download file in 512kB chunks, range header is zero-indexed
+    # Download file in chunks, range header is zero-indexed
     # and includes range start and end.
     TOTAL_SIZE=$((TOTAL_SIZE-1))
     local START=0
     local END=0
-    local CHUNK_SIZE=524288
+    local CHUNK_SIZE=$RESTSH_CHUNK_SIZE
     [ "$TOTAL_SIZE" -lt "$CHUNK_SIZE" ] && CHUNK_SIZE=$TOTAL_SIZE
+
+    # Initialize Connection type at Keep-Alive
+	local CONNECTION="Keep-Alive"
 
     while [ "$END" -lt "$TOTAL_SIZE" ]
     do
         END=$((START+CHUNK_SIZE-1))
-        [ "$END" -gt "$TOTAL_SIZE" ] && END=$TOTAL_SIZE
+        if [ "$END" -gt "$TOTAL_SIZE" ]
+        then
+            END=$TOTAL_SIZE
+            CONNECTION="Close"
+        fi
         echo "${START}-${END}/${TOTAL_SIZE}"
-        if ! $RESTSH_CURL_BIN -H "Content-Range: ${START}-${END}/${TOTAL_SIZE}" \
+        if ! $RESTSH_CURL_BIN \
+            -H "Content-Range: ${START}-${END}/${TOTAL_SIZE}" \
+            -H "Connection: $CONNECTION" \
             "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
             >> "${FILENAME}"
         then
@@ -107,7 +116,70 @@ restsh.download() {
         START=$((END+1))
     done
     unset RESTSH_CURL_OPTS
-    return 0    
+    return 0
+}
+
+# Uploads a file in chunks (default 512kB).
+restsh.upload() {
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+    then
+        echo "Upload a file in chunks of 512kB."
+        echo "Usage: restsh.upload <uri> <filename>"
+        return 1
+    fi
+    local URI=$1
+    local FILENAME=$2
+    local TOTAL_SIZE
+    if ! TOTAL_SIZE=$(stat -c%s "$FILENAME")
+    then
+        echo "File \"$FILENAME\" not found."
+        return 1
+    fi
+
+    # We must set the curl options first
+    restsh.util.setcurloptions
+
+    # Upload file in chunks, range header is zero-indexed
+    # and includes range start and end.
+    TOTAL_SIZE=$((TOTAL_SIZE-1))
+    local START=0
+    local END=0
+    local CHUNK_SIZE=$RESTSH_CHUNK_SIZE
+    [ "$TOTAL_SIZE" -lt "$CHUNK_SIZE" ] && CHUNK_SIZE=$TOTAL_SIZE
+
+    # Initialize Connection type at Keep-Alive
+	local CONNECTION="Keep-Alive"
+
+    TMPFILE=$(mktemp)
+    SKIP=0
+    while [ "$END" -lt "$TOTAL_SIZE" ]
+    do
+        END=$((START+CHUNK_SIZE-1))
+        if [ "$END" -gt "$TOTAL_SIZE" ]
+        then
+            END=$TOTAL_SIZE
+            CONNECTION="Close"
+        fi
+        echo "${START}-${END}/${TOTAL_SIZE}"
+        dd status=none if="$FILENAME" of="$TMPFILE" count=1 skip="$SKIP" bs="$CHUNK_SIZE"
+        if ! OUTPUT=$($RESTSH_CURL_BIN \
+            -H "Content-Range: ${START}-${END}/${TOTAL_SIZE}" \
+            -H "Content-Type: application/octet-stream" \
+            -H "Connection: $CONNECTION" \
+            "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
+            --data-binary @"$TMPFILE")
+        then
+            echo_err "Upload failed"
+            echo_err "$OUTPUT"
+            unset RESTSH_CURL_OPTS
+            return 1
+        fi
+        START=$((END+1))
+        SKIP=$((SKIP+1))
+    done
+    unset RESTSH_CURL_OPTS
+    rm -f "$TMPFILE"
+    return 0
 }
 
 # Issues a DELETE request
@@ -225,6 +297,7 @@ PUT() {
 
 export -f restsh.http
 export -f restsh.download
+export -f restsh.upload
 export -f DELETE
 export -f GET
 export -f PATCH
