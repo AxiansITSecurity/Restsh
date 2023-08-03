@@ -3,9 +3,10 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2023-07-27
 
-# Shortdesc: Manages files on the F5.
+# Shortdesc: Manages files on the F5, /var/config/rest/downloads/.
 # Desc:
-# Manages files on the F5.
+# Manages files on the F5 with the file-transfer endpoint /var/config/rest/downloads/.
+# Using the HTTP GET command to download files does not function on BIG-IP releases 15.0.0 and later.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -27,45 +28,24 @@ else
     FILENAME=$2
 fi
 
-# Uploads a file to a F5 to directory /var/config/rest/downloads/.
+# Uploads a file to the F5 directory /var/config/rest/downloads/.
 f5.file.upload() {
     local FILE_PATH=$1
     local FILE_BASENAME
     FILE_BASENAME=$(basename "$FILE_PATH")
-    local FILE_SIZE
-    if ! FILE_SIZE=$(stat -c%s "$FILE_PATH")
-    then
-        echo "File \"$FILE_PATH\" not found."
-        return 1
-    fi
 
-    # We must set the curl options first
-    restsh.util.setcurloptions
-
-    local RANGE_END=$((FILE_SIZE-1))
-    local RESPONSE
-    if RESPONSE=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}/mgmt/shared/file-transfer/uploads/${FILE_BASENAME}" \
-        -H "Content-Type: application/octet-stream" \
-        -H "Content-Range: 0-${RANGE_END}/${FILE_SIZE}" \
-        -H "Connection: Close" \
-        --data-binary @"$FILE_PATH")
+    if restsh.upload "/mgmt/shared/file-transfer/uploads/${FILE_BASENAME}" "$FILE_PATH"
     then
-        $RESTSH_JQ -r ".localFilePath" <<< "$RESPONSE"
-    else
-        echo_err "Error uploading file"
-        echo_err "$RESPONSE"
-        unset RESTSH_CURL_OPTS
-        return 1
+        return 0
     fi
-    unset RESTSH_CURL_OPTS
-    return 0
+    return 1
 }
 
-# Deletes an uploaded file from a F5 from directory /var/config/rest/downloads/.
+# Deletes a file from the F5 directory /var/config/rest/downloads/.
 f5.file.remove() {
     local RM_FILE=$1
     local RESPONSE
-    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' rm -v -f /var/config/rest/downloads/$RM_FILE'\" }")
+    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' rm -v -f -- /var/config/rest/downloads/$RM_FILE'\" }")
     then
         $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
     else
@@ -76,11 +56,11 @@ f5.file.remove() {
     return 0
 }
 
-# Lists a file from a F5 from directory /var/config/rest/downloads/.
+# Lists a file from the F5 directory /var/config/rest/downloads/.
 f5.file.list() {
     local LIST_FILE=$1
     local RESPONSE
-    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' ls -l /var/config/rest/downloads/$LIST_FILE'\" }")
+    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' ls -lh -- /var/config/rest/downloads/$LIST_FILE'\" }")
     then
         $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
     else
@@ -94,7 +74,7 @@ f5.file.list() {
 # Prints help
 usage() {
     echo "Usage: $(basename "$0") (upload|remove|list) <filename>"
-    echo "Files are managed in the path /var/config/rest/downloads/ on the f5"
+    echo "Files are managed in the path /var/config/rest/downloads/ on the F5"
     return 1
 }
 
