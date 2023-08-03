@@ -128,7 +128,7 @@ restsh.help() {
     echo ""
     echo "Utility commands:"
     declare -A CMDS
-    restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.utility"
+    restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.util"
     restsh.help.print
 
     if [ "$CATEGORIES" == "none" ]

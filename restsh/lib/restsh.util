@@ -45,7 +45,7 @@ JQ() {
 }
 
 # Sets the RESTSH_CURL_OPTIONS environment variable.
-restsh.utility.setcurloptions() {
+restsh.util.setcurloptions() {
     RESTSH_CURL_OPTS=("-f" "--show-error")
 
     if [ "$RESTSH_CURL_INSECURE" -eq 1 ]
@@ -79,10 +79,10 @@ restsh.utility.setcurloptions() {
 }
 
 # Parses a command output according to the RESTSH_CONTENT environment variable.
-restsh.utility.parseoutput() {
+restsh.util.parseoutput() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: restsh.utility.parseoutput <text>"
+        echo "Usage: restsh.util.parseoutput <text>"
         return 1
     fi
     local OUT=$1
@@ -101,10 +101,10 @@ restsh.utility.parseoutput() {
 }
 
 # Reads variables from a directory. .txt extension for simple variables, .array for arrays.
-restsh.utility.setvars() {
+restsh.util.setvars() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: restsh.utility.setvars <directory>"
+        echo "Usage: restsh.util.setvars <directory>"
         return 1
     fi
     local DIR=$1
@@ -142,6 +142,6 @@ restsh.utility.setvars() {
 export -f echo_ok
 export -f echo_err
 export -f echo_warn
-export -f restsh.utility.setcurloptions
-export -f restsh.utility.parseoutput
-export -f restsh.utility.setvars
+export -f restsh.util.setcurloptions
+export -f restsh.util.parseoutput
+export -f restsh.util.setvars

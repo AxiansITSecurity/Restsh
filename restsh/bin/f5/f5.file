@@ -40,7 +40,7 @@ f5.file.upload() {
     fi
 
     # We must set the curl options first
-    restsh.utility.setcurloptions
+    restsh.util.setcurloptions
 
     local RANGE_END=$((FILE_SIZE-1))
     local RESPONSE

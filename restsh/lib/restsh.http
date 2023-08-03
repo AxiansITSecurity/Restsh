@@ -38,7 +38,7 @@ restsh.http() {
     local URI=$2
 
     # We must set the curl options first
-    restsh.utility.setcurloptions
+    restsh.util.setcurloptions
 
     if [ "$BODY" -eq 1 ]
     then
@@ -60,7 +60,7 @@ restsh.http() {
     then
         echo "$OUTPUT"
     else
-        restsh.utility.parseoutput "$OUTPUT"
+        restsh.util.parseoutput "$OUTPUT"
     fi
     return 0
 }
@@ -78,7 +78,7 @@ restsh.download() {
     local FILENAME=$3
 
     # We must set the curl options first
-    restsh.utility.setcurloptions
+    restsh.util.setcurloptions
 
     # Remove local file
     rm -f "${FILENAME}"
