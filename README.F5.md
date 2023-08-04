@@ -9,14 +9,14 @@ Reference: https://clouddocs.f5.com/api/icontrol-soap/Authentication_with_the_F5
 **.restsh-config for basic authentication**
 
 ```sh
-[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="basic"
+[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"
 ```
 
 **.restsh-config for token based authentication**
 
 ```sh
-[ -z "${RESTSH_AUTH+x}" ] && export RESTSH_AUTH="token"
-[ -z "${RESTSH_TOKEN_HEADER+x}" ] && export RESTSH_TOKEN_HEADER="X-F5-Auth-Token"
+[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
+[ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-F5-Auth-Token"
 ```
 
 In both cases restsh asks for username and password. If you want to integrate restsh in a pipeline script you can simply set the environment variables `RESTSH_USER` and `RESTSH_PASS`.

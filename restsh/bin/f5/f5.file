@@ -76,7 +76,7 @@ f5.file.list() {
 # Prints help
 usage() {
     echo "Usage: $(basename "$0") (upload|remove|list) <filename>"
-    echo "Files are managed in the path /var/config/rest/downloads/ on the F5"
+    echo "Files are managed in the path /var/config/rest/downloads/ on the F5."
     return 1
 }
 
