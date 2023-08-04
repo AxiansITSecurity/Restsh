@@ -71,7 +71,7 @@ fi
 [ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
 [ -z "${RESTSH_CURL_INSECURE+x}" ] && export RESTSH_CURL_INSECURE="0"
 [ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
-[ -z "${RESTSH_CHUNK_SIZE+x}" ] && export RESTSH_CHUNK_SIZE="1048576"
+[ -z "${RESTSH_CHUNK_SIZE+x}" ] && export RESTSH_CHUNK_SIZE="524288"
 
 # Some initial checks
 if ! restsh.init.check.env
