@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-02
+# Date: 2023-08-04
 
 # Shortdesc: Central http functions for all common REST methods.
 # Desc:
@@ -71,6 +71,7 @@ restsh.download() {
     then
         echo "Download a file in chunks of 512kB."
         echo "Usage: restsh.download <uri> <size> <filename>"
+        echo "Use 0 for <size> to enable auto-detection of the size."
         return 1
     fi
     local URI=$1
@@ -82,6 +83,25 @@ restsh.download() {
 
     # Remove local file
     rm -f "${FILENAME}"
+
+    # Get file size if not specified
+    if [ "$TOTAL_SIZE" -eq 0 ]
+    then
+        TOTAL_SIZE=$($RESTSH_CURL_BIN \
+            -H "Connection: close" \
+            -H "Content-Range: 0-1/*" \
+            -i "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
+            | awk -F/ '/Content-Range/ {print $2}' | tr -d '\r')
+        # Check if TOTAL_SIZE is a positive number
+        if [ "$TOTAL_SIZE" -gt 0 ]
+        then
+            echo "Download size is $TOTAL_SIZE"
+        else
+            unset RESTSH_CURL_OPTS
+            echo_err "Could not determine download size."
+            return 1
+        fi
+    fi
 
     # Download file in chunks, range header is zero-indexed
     # and includes range start and end.
@@ -103,7 +123,7 @@ restsh.download() {
             CONNECTION="Close"
         fi
         local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
-        echo "$CONTENT_RANGE"
+        #echo "$CONTENT_RANGE"
         if ! $RESTSH_CURL_BIN \
             -H "Content-Range: $CONTENT_RANGE" \
             -H "Connection: $CONNECTION" \
@@ -161,7 +181,7 @@ restsh.upload() {
             CONNECTION="Close"
         fi
         local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
-        echo "$CONTENT_RANGE"
+        #echo "$CONTENT_RANGE"
         if ! OUTPUT=$(dd status=none if="$FILENAME" count=1 skip="$SKIP" bs="$CHUNK_SIZE" \
             | $RESTSH_CURL_BIN \
                 -H "Content-Range: $CONTENT_RANGE" \
