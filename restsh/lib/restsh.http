@@ -102,9 +102,10 @@ restsh.download() {
             END=$TOTAL_SIZE
             CONNECTION="Close"
         fi
-        echo "${START}-${END}/${TOTAL_SIZE}"
+        local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
+        echo "$CONTENT_RANGE"
         if ! $RESTSH_CURL_BIN \
-            -H "Content-Range: ${START}-${END}/${TOTAL_SIZE}" \
+            -H "Content-Range: $CONTENT_RANGE" \
             -H "Connection: $CONNECTION" \
             "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
             >> "${FILENAME}"
@@ -150,7 +151,6 @@ restsh.upload() {
     # Initialize Connection type at Keep-Alive
 	local CONNECTION="Keep-Alive"
 
-    TMPFILE=$(mktemp)
     SKIP=0
     while [ "$END" -lt "$TOTAL_SIZE" ]
     do
@@ -160,14 +160,15 @@ restsh.upload() {
             END=$TOTAL_SIZE
             CONNECTION="Close"
         fi
-        echo "${START}-${END}/${TOTAL_SIZE}"
-        dd status=none if="$FILENAME" of="$TMPFILE" count=1 skip="$SKIP" bs="$CHUNK_SIZE"
-        if ! OUTPUT=$($RESTSH_CURL_BIN \
-            -H "Content-Range: ${START}-${END}/${TOTAL_SIZE}" \
-            -H "Content-Type: application/octet-stream" \
-            -H "Connection: $CONNECTION" \
-            "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
-            --data-binary @"$TMPFILE")
+        local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
+        echo "$CONTENT_RANGE"
+        if ! OUTPUT=$(dd status=none if="$FILENAME" count=1 skip="$SKIP" bs="$CHUNK_SIZE" \
+            | $RESTSH_CURL_BIN \
+                -H "Content-Range: $CONTENT_RANGE" \
+                -H "Content-Type: application/octet-stream" \
+                -H "Connection: $CONNECTION" \
+                "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
+                --data-binary @-)
         then
             echo_err "Upload failed"
             echo_err "$OUTPUT"
@@ -178,7 +179,6 @@ restsh.upload() {
         SKIP=$((SKIP+1))
     done
     unset RESTSH_CURL_OPTS
-    rm -f "$TMPFILE"
     return 0
 }
 
