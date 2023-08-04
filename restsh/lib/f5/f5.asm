@@ -33,7 +33,7 @@ f5.asm.policy.gethash() {
     return 1
 }
 
-# Waits for a task to be finished
+# Waits for a task to be finished.
 f5.asm.taskwait() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
