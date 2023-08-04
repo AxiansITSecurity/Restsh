@@ -105,7 +105,7 @@ restsh.download() {
 
     # Download file in chunks, range header is zero-indexed
     # and includes range start and end.
-    TOTAL_SIZE=$((TOTAL_SIZE-1))
+    RANGE_END=$((TOTAL_SIZE-1))
     local START=0
     local END=0
     local CHUNK_SIZE=$RESTSH_CHUNK_SIZE
@@ -114,16 +114,16 @@ restsh.download() {
     # Initialize Connection type at Keep-Alive
 	local CONNECTION="Keep-Alive"
 
-    while [ "$END" -lt "$TOTAL_SIZE" ]
+    while [ "$END" -lt "$RANGE_END" ]
     do
         END=$((START+CHUNK_SIZE-1))
-        if [ "$END" -gt "$TOTAL_SIZE" ]
+        if [ "$END" -gt "$RANGE_END" ]
         then
-            END=$TOTAL_SIZE
+            END=$RANGE_END
             CONNECTION="Close"
         fi
         local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
-        #echo "$CONTENT_RANGE"
+        echo "$CONTENT_RANGE"
         if ! $RESTSH_CURL_BIN \
             -H "Content-Range: $CONTENT_RANGE" \
             -H "Connection: $CONNECTION" \
@@ -134,7 +134,10 @@ restsh.download() {
             unset RESTSH_CURL_OPTS
             return 1
         fi
-        START=$((END+1))
+        # Do not calculate the new range start, we do not know if we got really the requested chunk length
+        # We use the file size + 1 written to disk as range start
+        START=$(stat -c%s "$FILENAME")
+        START=$((START+1))
     done
     unset RESTSH_CURL_OPTS
     return 0
@@ -162,7 +165,7 @@ restsh.upload() {
 
     # Upload file in chunks, range header is zero-indexed
     # and includes range start and end.
-    TOTAL_SIZE=$((TOTAL_SIZE-1))
+    RANGE_END=$((TOTAL_SIZE-1))
     local START=0
     local END=0
     local CHUNK_SIZE=$RESTSH_CHUNK_SIZE
@@ -172,12 +175,12 @@ restsh.upload() {
 	local CONNECTION="Keep-Alive"
 
     SKIP=0
-    while [ "$END" -lt "$TOTAL_SIZE" ]
+    while [ "$END" -lt "$RANGE_END" ]
     do
         END=$((START+CHUNK_SIZE-1))
-        if [ "$END" -gt "$TOTAL_SIZE" ]
+        if [ "$END" -gt "$RANGE_END" ]
         then
-            END=$TOTAL_SIZE
+            END=$RANGE_END
             CONNECTION="Close"
         fi
         local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
