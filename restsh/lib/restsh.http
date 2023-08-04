@@ -123,7 +123,7 @@ restsh.download() {
             CONNECTION="Close"
         fi
         local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
-        echo "$CONTENT_RANGE"
+        #echo "$CONTENT_RANGE"
         if ! $RESTSH_CURL_BIN \
             -H "Content-Range: $CONTENT_RANGE" \
             -H "Connection: $CONNECTION" \
@@ -135,9 +135,8 @@ restsh.download() {
             return 1
         fi
         # Do not calculate the new range start, we do not know if we got really the requested chunk length
-        # We use the file size + 1 written to disk as range start
+        # We use the file size written to disk as range start
         START=$(stat -c%s "$FILENAME")
-        START=$((START+1))
     done
     unset RESTSH_CURL_OPTS
     return 0
