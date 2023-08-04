@@ -1,0 +1,109 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-08-04
+
+# Shortdesc: General file management functions for F5.
+# Desc:
+# General file management functions for F5
+# https://my.f5.com/manage/s/article/K41763344
+# https://community.f5.com/t5/technical-articles/demystifying-icontrol-rest-part-5-transferring-files/ta-p/286689
+#
+# Endpoints:
+# Description 	        Method 	URI 	                                       File Location
+# Download a File 	    GET 	/mgmt/cm/autodeploy/software-image-downloads/  /shared/images/
+# Upload an Image File 	POST 	/mgmt/cm/autodeploy/software-image-uploads/    /shared/images/
+# Upload a File 	    POST 	/mgmt/shared/file-transfer/uploads/ 	       /var/config/rest/downloads/
+# Download a QKView 	GET 	/mgmt/shared/file-transfer/qkview-downloads/   /var/tmp/
+# Download a UCS 	    GET 	/mgmt/shared/file-transfer/ucs-downloads/      /var/local/ucs/
+# Upload ASM Policy 	POST 	/mgmt/tm/asm/file-transfer/uploads/            /var/ts/var/rest/
+# Download ASM Policy 	GET 	/mgmt/tm/asm/file-transfer/downloads/          /var/ts/var/rest/
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Uploads a file to the F5.
+f5.file.upload() {
+    if [ -z "$1" ]
+    then
+        echo "Usage: f5.file.upload <upload endpoint> <file>"
+        return 1
+    fi
+    local ENDPOINT=$1
+    local FILE_PATH=$2
+    local FILE_BASENAME
+    FILE_BASENAME=$(basename "$FILE_PATH")
+
+    if restsh.upload "$ENDPOINT/${FILE_BASENAME}" "$FILE_PATH"
+    then
+        return 0
+    fi
+    return 1
+}
+
+# Downloads a file from the F5.
+f5.file.download() {
+    if [ -z "$1" ]
+    then
+        echo "Usage: f5.file.download <download endpoint> <file> <size> <output file>"
+        return 1
+    fi
+    local ENDPOINT=$1
+    local FILE=$2
+    local SIZE=$3
+    local OUT_FILE=$4
+
+    if restsh.download "$ENDPOINT/${FILE}" "$SIZE" "$OUT_FILE"
+    then
+        return 0
+    fi
+    return 1
+}
+
+# Deletes a file from the F5.
+f5.file.remove() {
+    if [ -z "$1" ]
+    then
+        echo "Usage: f5.file.remove <file path>"
+        return 1
+    fi
+    local RM_FILE=$1
+    local RESPONSE
+    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' rm -v -f -- $RM_FILE'\" }")
+    then
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    else
+        echo_err "Removing file \"$RM_FILE\" failed."
+        echo_err "$RESPONSE"
+        return 1
+    fi
+    return 0
+}
+
+# Lists a file or directory on the F5.
+f5.file.list() {
+    if [ -z "$1" ]
+    then
+        echo "Usage: f5.file.list <path>"
+        return 1
+    fi
+    local LIST_FILE=$1
+    local RESPONSE
+    if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' ls -lh -- $LIST_FILE'\" }")
+    then
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+    else
+        echo_err "Accessing file \"$LIST_FILE\" failed."
+        echo_err "$RESPONSE"
+        return 1  
+    fi
+    return 0
+}
+
+export -f f5.file.upload
+export -f f5.file.download
+export -f f5.file.remove
+export -f f5.file.list
