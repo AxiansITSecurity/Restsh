@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-08-04
+
+# Shortdesc: Manages ucs on the F5, /var/local/ucs/.
+# Desc:
+# Manages ucs on the F5, /var/local/ucs/.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+fi
+
+DOWNLOAD_ENDPOINT="/mgmt/shared/file-transfer/ucs-downloads"
+F5_DIR="/var/local/ucs"
+
+# Creates an ucs archive and waits for the task to finish
+f5.ucs.create() {
+    local NAME=$1
+    TASK_ID=$($RESTSH_JQ -n --arg name "/var/local/ucs/$NAME" \
+    '{
+        "command": "save",
+        "name": $name
+    }' | POST -r "/mgmt/tm/task/sys/ucs" \
+       | $RESTSH_JQ -r "._taskId")
+    echo "Waiting for task id \"$TASK_ID\" to finish."
+    local COUNTER=0
+    while :
+    do
+        sleep "$F5_TASK_CHECK_INTERVAL"
+        if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+        then
+            echo "Timeout waiting for task."
+            return 1
+        fi
+        COUNTER=$((COUNTER+1))
+        local STATUS
+        if ! STATUS=$(GET -r "/mgmt/tm/task/sys/ucs/$TASK_ID" | \
+            $RESTSH_JQ -r "._taskState")
+        then
+            break
+        fi
+        case "$STATUS" in
+            STARTED|NEW|"")
+                continue
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
+    return 0
+}
+
+case "$ACTION" in
+    create)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <output file>"
+            echo "Archive is created in $F5_DIR"
+            exit 1
+        fi
+        f5.ucs.create "$2"
+        ;;
+    download)
+        if [ -z "${2+x}" ] || [ -z "${3+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <file> <output file>"
+            exit 1
+        fi
+        f5.file.download "$DOWNLOAD_ENDPOINT" "$2" 0 "$3"
+        ;;
+    remove)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <name>"
+            exit 1
+        fi
+        DELETE "/mgmt/tm/sys/ucs/$2"
+        ;;
+    list)
+        f5.file.list "$F5_DIR/*.ucs"
+        ;;
+    *)
+        echo "Usage: $(basename "$0") (create|download|remove|list) [options]"
+        echo "Files are managed in the path $F5_DIR on the F5."
+        exit 1
+        ;;
+esac
+
+exit 0

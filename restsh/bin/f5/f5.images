@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-08-04
+
+# Shortdesc: Manages images (or other files) on the F5, /shared/images/.
+# Desc:
+# Manages images (or other files) on the F5, /shared/images/.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+fi
+
+DOWNLOAD_ENDPOINT="/mgmt/cm/autodeploy/software-image-downloads"
+UPLOAD_ENDPOINT="/mgmt/cm/autodeploy/software-image-uploads"
+F5_DIR="/shared/images"
+
+case "$ACTION" in
+    upload)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <file>"
+            exit 1
+        fi
+        f5.file.upload "$UPLOAD_ENDPOINT" "$2"
+        ;;
+    download)
+        if [ -z "${2+x}" ] || [ -z "${3+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <file> <output file>"
+            exit 1
+        fi
+        f5.file.download "$DOWNLOAD_ENDPOINT" "$2" 0 "$3"
+        ;;
+    remove)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <file>"
+            exit 1
+        fi
+        f5.file.remove "$F5_DIR/$2"
+        ;;
+    list)
+        f5.file.list "$F5_DIR/"
+        ;;
+    *)
+        echo "Usage: $(basename "$0") (upload|download|remove|list) [options]"
+        echo "Files are managed in the path $F5_DIR on the F5."
+        exit 1
+        ;;
+esac
+
+exit 0

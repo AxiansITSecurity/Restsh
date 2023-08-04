@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-08-04
+
+# Shortdesc: Manages files on the F5, /var/config/rest/downloads/.
+# Desc:
+# Manages files on the F5 with the file-transfer endpoint /var/config/rest/downloads/.
+# Using the HTTP GET command to download files does not function on BIG-IP releases 15.0.0 and later.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+    FILENAME=$2
+fi
+
+UPLOAD_ENDPOINT="/mgmt/shared/file-transfer/uploads"
+F5_DIR="/var/config/rest/downloads"
+
+# Prints help
+usage() {
+    echo "Usage: $(basename "$0") (upload|remove|list) <filename>"
+    echo "Files are managed in the path $F5_DIR on the F5."
+    echo "Download endpoint is not available on newer F5s."
+    return 1
+}
+
+case "$ACTION" in
+    upload)
+        f5.file.upload "$UPLOAD_ENDPOINT" "$FILENAME"
+        ;;
+    remove)
+        f5.file.remove "$F5_DIR/$FILENAME"
+        ;;
+    list)
+        f5.file.list "$F5_DIR/$FILENAME"
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0
