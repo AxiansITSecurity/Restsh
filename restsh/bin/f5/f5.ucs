@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-04
+# Date: 2023-08-07
 
 # Shortdesc: Manages ucs on the F5, /var/local/ucs/.
 # Desc:
 # Manages ucs on the F5, /var/local/ucs/.
+# https://community.f5.com/t5/technical-forum/using-an-asynchronous-task-creating-ucs-file/td-p/272613
 
 # Strict error handling
 set -eEu -o pipefail
@@ -27,17 +28,28 @@ else
 fi
 
 DOWNLOAD_ENDPOINT="/mgmt/shared/file-transfer/ucs-downloads"
+UCS_TASK_ENDPOINT="/mgmt/tm/task/sys/ucs"
+UCS_ENDPOINT="/mgmt/tm/sys/ucs"
 F5_DIR="/var/local/ucs"
 
 # Creates an ucs archive and waits for the task to finish
 f5.ucs.create() {
     local NAME=$1
-    TASK_ID=$($RESTSH_JQ -n --arg name "/var/local/ucs/$NAME" \
+    # Create the task
+    TASK_ID=$($RESTSH_JQ -n --arg name "$F5_DIR/$NAME" \
     '{
         "command": "save",
         "name": $name
-    }' | POST -r "/mgmt/tm/task/sys/ucs" \
+    }' | POST -r "$UCS_TASK_ENDPOINT" \
        | $RESTSH_JQ -r "._taskId")
+    # Start the task
+    if ! PUT -r "$UCS_TASK_ENDPOINT/$TASK_ID" <<< '{"_taskState":"VALIDATING"}' > /dev/null
+    then
+        echo_err "Could not start task with id \"$TASK_ID\""
+        return 1
+    fi
+    # Wait for finish
+    # The curl errors can be ignored
     echo "Waiting for task id \"$TASK_ID\" to finish."
     local COUNTER=0
     while :
@@ -50,7 +62,7 @@ f5.ucs.create() {
         fi
         COUNTER=$((COUNTER+1))
         local STATUS
-        if ! STATUS=$(GET -r "/mgmt/tm/task/sys/ucs/$TASK_ID" | \
+        if ! STATUS=$(GET -r -c 5 "$UCS_TASK_ENDPOINT/$TASK_ID" | \
             $RESTSH_JQ -r "._taskState")
         then
             break
@@ -59,9 +71,15 @@ f5.ucs.create() {
             STARTED|NEW|"")
                 continue
                 ;;
-            *)
+            COMPLETED)
+                echo_ok "UCS creates successfully"
                 break
                 ;;
+            *)
+                echo "Unhandled task status: $STATUS"
+                # Print task result message
+                GET -r "$UCS_TASK_ENDPOINT/$TASK_ID"
+                return 1
         esac
     done
     return 0
@@ -91,10 +109,12 @@ case "$ACTION" in
             echo "Usage: $(basename "$0") $ACTION <name>"
             exit 1
         fi
-        DELETE "/mgmt/tm/sys/ucs/$2"
+        DELETE "$UCS_ENDPOINT/$2"
         ;;
     list)
-        f5.file.list "$F5_DIR/*.ucs"
+        GET -r "$UCS_ENDPOINT" \
+            | $RESTSH_JQ -r ".items[] | .apiRawValues | [.filename,.file_created_date,.file_size] | @tsv" \
+            | column
         ;;
     *)
         echo "Usage: $(basename "$0") (create|download|remove|list) [options]"
