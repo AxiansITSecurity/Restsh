@@ -33,7 +33,7 @@ UCS_ENDPOINT="/mgmt/tm/sys/ucs"
 F5_DIR="/var/local/ucs"
 
 # Creates an ucs archive and waits for the task to finish
-f5.ucs.create() {
+create() {
     local NAME=$1
     # Create the task
     TASK_ID=$($RESTSH_JQ -n --arg name "$F5_DIR/$NAME" \
@@ -72,7 +72,7 @@ f5.ucs.create() {
                 continue
                 ;;
             COMPLETED)
-                echo_ok "UCS creates successfully"
+                echo_ok "UCS created successfully"
                 break
                 ;;
             *)
@@ -93,7 +93,7 @@ case "$ACTION" in
             echo "Archive is created in $F5_DIR"
             exit 1
         fi
-        f5.ucs.create "$2"
+        create "$2"
         ;;
     download)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
