@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-04
+# Date: 2023-08-07
 
-# Shortdesc: Manages QKViews on the F5, /var/tmp/.
+# Shortdesc: Manages QKViews on the F5.
 # Desc:
-# Manages QKViews on the F5, /var/tmp/.
+# Manages QKViews on the F5.
 # https://my.f5.com/manage/s/article/K04396542
 
 # Strict error handling
@@ -27,13 +27,54 @@ else
     ACTION=$1
 fi
 
-DOWNLOAD_ENDPOINT="/mgmt/shared/file-transfer/qkview-downloads"
-F5_DIR="/var/tmp"
+DOWNLOAD_ENDPOINT="/mgmt/cm/autodeploy/qkview-downloads"
+QKVIEW_ENDPOINT="/mgmt/cm/autodeploy/qkview"
+F5_DIR="/tmp"
 
-# Creates an QKView files and waits for the task to finish
-f5.qkview.create() {
-    # TODO
-    return 1
+# Creates a QKView and waits for the task to finish
+create() {
+    local NAME=$1
+    # Create the task
+    TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
+    '{
+        "name": $name
+    }' | POST -r "$QKVIEW_ENDPOINT" \
+       | $RESTSH_JQ -r ".id")
+    # Wait for finish
+    # The curl errors can be ignored
+    echo "Waiting for task id \"$TASK_ID\" to finish."
+    local COUNTER=0
+    while :
+    do
+        sleep "$F5_TASK_CHECK_INTERVAL"
+        if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+        then
+            echo "Timeout waiting for task."
+            return 1
+        fi
+        COUNTER=$((COUNTER+1))
+        local STATUS
+        if ! STATUS=$(GET -r -c 5 "$QKVIEW_ENDPOINT/$TASK_ID" | \
+            $RESTSH_JQ -r ".status")
+        then
+            break
+        fi
+        case "$STATUS" in
+            IN_PROGRESS|"")
+                continue
+                ;;
+            SUCCEEDED)
+                echo_ok "QKView created successfully"
+                break
+                ;;
+            *)
+                echo "Unhandled task status: $STATUS"
+                # Print task result message
+                GET -r "$QKVIEW_ENDPOINT/$TASK_ID"
+                return 1
+        esac
+    done
+    return 0
 }
 
 case "$ACTION" in
@@ -41,22 +82,31 @@ case "$ACTION" in
         if [ -z "${2+x}" ]
         then
             echo "Usage: $(basename "$0") $ACTION <output file>"
-            echo "Archive is created in $F5_DIR"
+            echo "QKView is created in $F5_DIR"
             exit 1
         fi
-        f5.qkview.create "$2"
+        create "$2"
         ;;
     download)
-        # TODO: use native API call
-        exit 1
+        if [ -z "${2+x}" ] || [ -z "${3+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <file> <output file>"
+            exit 1
+        fi
+        f5.file.download "$DOWNLOAD_ENDPOINT" "$2" 0 "$3"
         ;;
     remove)
-        # TODO: use native API call
-        exit 1
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $(basename "$0") $ACTION <qkview-id>"
+            exit 1
+        fi
+        DELETE "$QKVIEW_ENDPOINT/$2"
         ;;
     list)
-        # TODO: use native API call
-        exit 1
+        GET -r "$QKVIEW_ENDPOINT" \
+            | $RESTSH_JQ -r ".items[] | [.name,.status,.id] | @tsv" \
+            | column
         ;;
     *)
         echo "Usage: $(basename "$0") (create|download|remove|list) [options]"
