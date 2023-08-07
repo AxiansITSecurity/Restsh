@@ -17,12 +17,14 @@ set -uo pipefail
 restsh.http() {
     local BODY=0
     local RAW=0
+    local RETRIES=0
     local OPTION OPTIND
-    while getopts ':br' OPTION
+    while getopts ':brc:' OPTION
     do
         case "$OPTION" in
             b) BODY=1 ;;
             r) RAW=1 ;;
+            c) RETRIES="$OPTARG" ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -32,6 +34,7 @@ restsh.http() {
         echo "Usage: restsh.http [-b] [-r] <method> <uri>"
         echo -e "\tUse -b for a body and pipe the payload in the command."
         echo -e "\tUse -r for raw output."
+        echo -e "\tUse -c to define retries"
         return 1
     fi
     local METHOD=$1
@@ -46,6 +49,11 @@ restsh.http() {
         RESTSH_CURL_OPTS+=("-d" "@-")
         # Add header
         RESTSH_CURL_OPTS+=("-H" "Content-Type: $RESTSH_CONTENT")
+    fi
+
+    if [ "$RETRIES" -gt 0 ]
+    then
+        RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "--retry-all-errors" --retry-delay "10")
     fi
 
     if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}")
@@ -208,10 +216,11 @@ restsh.upload() {
 DELETE() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':r' OPTION
+    while getopts ':rc:' OPTION
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
+            c) ARGS+=("-c" "$OPTARG") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -220,6 +229,7 @@ DELETE() {
     then
         echo "Usage: DELETE [-r] <uri>"
         echo -e "\tUse -r for raw output."
+        echo -e "\tUse -c to define retries."
         return 1
     fi
     ARGS+=("DELETE" "$1")
@@ -230,10 +240,11 @@ DELETE() {
 GET() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':r' OPTION
+    while getopts ':rc:' OPTION
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
+            c) ARGS+=("-c" "$OPTARG") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -242,6 +253,7 @@ GET() {
     then
         echo "Usage: GET [-r] <uri>"
         echo -e "\tUse -r for raw output."
+        echo -e "\tUse -c to define retries."
         return 1
     fi
     ARGS+=("GET" "$1")
@@ -252,10 +264,11 @@ GET() {
 PATCH() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':r' OPTION
+    while getopts ':rc:' OPTION
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
+            c) ARGS+=("-c" "$OPTARG") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -265,6 +278,7 @@ PATCH() {
         echo "Usage: PATCH [-r] <uri>"
         echo -e "\tPipe the payload in the command."
         echo -e "\tUse -r for raw output."
+        echo -e "\tUse -c to define retries."
         return 1
     fi
     ARGS+=("PATCH" "$1")
@@ -275,10 +289,11 @@ PATCH() {
 POST() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':r' OPTION
+    while getopts ':rc:' OPTION
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
+            c) ARGS+=("-c" "$OPTARG") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -288,6 +303,7 @@ POST() {
         echo "Usage: POST [-r] <uri>"
         echo -e "\tPipe the payload in the command."
         echo -e "\tUse -r for raw output."
+        echo -e "\tUse -c to define retries."
         return 1
     fi
     ARGS+=("POST" "$1")
@@ -298,10 +314,11 @@ POST() {
 PUT() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':r' OPTION
+    while getopts ':rc:' OPTION
     do
         case "$OPTION" in
             r) ARGS+=("-r") ;;
+            c) ARGS+=("-c" "$OPTARG") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -311,6 +328,7 @@ PUT() {
         echo "Usage: PUT [-r] <uri>"
         echo -e "\tPipe the payload in the command."
         echo -e "\tUse -r for raw output."
+        echo -e "\tUse -c to define retries."
         return 1
     fi
     ARGS+=("PUT" "$1")
