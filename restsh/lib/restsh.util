@@ -13,25 +13,106 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Prints green ok messages to STDOUT.
+# Note:
+# We print user oriented messages to STDERR.
+# JSON formated message are printed always to STDOUT.
+
+# Prints green ok messages to STDERR.
 echo_ok() {
-    printf "\e[1;32m"
-    echo "$@"
-    printf "\e[m"
+    printf "\e[1;32m" 1>&2
+    echo "$@" 1>&2
+    printf "\e[m" 1>&2
+}
+
+# Prints green ok message in JSON format to STDOUT.
+print_json_ok() {
+    #shellcheck disable=SC2016
+    $RESTSH_JQ -n --arg message "$1" \
+    '{
+        ok: {
+            message: $message
+        }
+    }'
+}
+
+# Prints green ok message in JSON format to STDOUT for curl.
+print_json_ok_curl() {
+    #shellcheck disable=SC2016
+    $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
+    '{
+        ok: {
+            request: $request,
+            message: $message
+        }
+    }'
 }
 
 # Prints red error messages to STDERR.
 echo_err() {
-    printf "\e[0;31mERROR: " >&2
-    echo "$@" >&2
-    printf "\e[m" >&2
+    printf "\e[0;31mERROR: " 1>&2
+    echo "$@" 1>&2
+    printf "\e[m" 1>&2
+}
+
+# Prints red error message in JSON format to STDOUT.
+print_json_err() {
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
+    #shellcheck disable=SC2016
+    $RESTSH_JQ -n --arg message "$1" \
+    '{
+        error: {
+            message: $message
+        }
+    }'
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
+}
+
+# Prints red error message in JSON format to STDOUT for curl.
+print_json_err_curl() {
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
+    #shellcheck disable=SC2016
+    $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
+    '{
+        error: {
+            request: $request,
+            message: $message
+        }
+    }'
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
 }
 
 # Prints yellow warning messages to STDERR.
 echo_warn() {
-    printf "\e[1;33mWARN: " >&2
-    echo "$@" >&2
-    printf "\e[m" >&2
+    printf "\e[1;33mWARN: " 1>&2
+    echo "$@" 1>&2
+    printf "\e[m" 1>&2
+}
+
+# Prints yellow warning message in JSON format to STDOUT.
+print_json_warn() {
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
+    #shellcheck disable=SC2016
+    $RESTSH_JQ -n --arg message "$1" \
+    '{
+        warn: {
+            message: $message
+        }
+    }'
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
+}
+
+# Prints yellow warning message in JSON format to STDOUT for curl.
+print_json_warn_curl() {
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
+    #shellcheck disable=SC2016
+    $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
+    '{
+        warn: {
+            request: $request,
+            message: $message
+        }
+    }'
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
 }
 
 # Shortcut for $RESTSH_MO
@@ -82,7 +163,7 @@ restsh.util.setcurloptions() {
 restsh.util.parseoutput() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: restsh.util.parseoutput <text>"
+        echo "Usage: restsh.util.parseoutput <text>" 1>&2
         return 1
     fi
     local OUT=$1
@@ -104,11 +185,11 @@ restsh.util.parseoutput() {
 restsh.util.setvars() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: restsh.util.setvars <directory>"
+        echo "Usage: restsh.util.setvars <directory>" 1>&2
         return 1
     fi
     local DIR=$1
-    echo "Reading configuration from \"$DIR\""
+    echo "Reading configuration from \"$DIR\"" 1>&2
     # strings, concatenates multiple lines
     local DEF
     while read -r DEF
@@ -140,8 +221,16 @@ restsh.util.setvars() {
 
 # Export all functions
 export -f echo_ok
+export -f print_json_ok
+export -f print_json_ok_curl
 export -f echo_err
+export -f print_json_err
+export -f print_json_err_curl
 export -f echo_warn
+export -f print_json_warn
+export -f print_json_warn_curl
+export -f MO
+export -f JQ
 export -f restsh.util.setcurloptions
 export -f restsh.util.parseoutput
 export -f restsh.util.setvars

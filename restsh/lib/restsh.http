@@ -31,10 +31,10 @@ restsh.http() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: restsh.http [-b] [-r] <method> <uri>"
-        echo -e "\tUse -b for a body and pipe the payload in the command."
-        echo -e "\tUse -r for raw output."
-        echo -e "\tUse -c to define retries"
+        echo "Usage: restsh.http [-b] [-r] <method> <uri>" 1>&2
+        echo -e "\tUse -b for a body and pipe the payload in the command." 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries" 1>&2
         return 1
     fi
     local METHOD=$1
@@ -56,13 +56,18 @@ restsh.http() {
         RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "--retry-all-errors" --retry-delay "10")
     fi
 
-    if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}")
+    local ERROR_TMP
+    ERROR_TMP=$(mktemp)
+    if ! OUTPUT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -X "$METHOD" "${RESTSH_URL}${URI}" 2>"$ERROR_TMP")
     then
-        echo_err "$METHOD ${RESTSH_URL}${URI} failed"
-        echo_err "$OUTPUT"
+        local ERROR
+        ERROR=$(<"$ERROR_TMP")
+        rm -f "$ERROR_TMP"
+        print_json_err_curl "$ERROR" "$METHOD ${RESTSH_URL}${URI}"
         unset RESTSH_CURL_OPTS
         return 1
     fi
+    rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
     if [ "$RAW" -eq 1 ]
     then
@@ -77,9 +82,9 @@ restsh.http() {
 restsh.download() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
     then
-        echo "Download a file in chunks of 512kB."
-        echo "Usage: restsh.download <uri> <size> <filename>"
-        echo "Use 0 for <size> to enable auto-detection of the size."
+        echo "Download a file in chunks of 512kB." 1>&2
+        echo "Usage: restsh.download <uri> <size> <filename>" 1>&2
+        echo "Use 0 for <size> to enable auto-detection of the size." 1>&2
         return 1
     fi
     local URI=$1
@@ -92,21 +97,27 @@ restsh.download() {
     # Remove local file
     rm -f "${FILENAME}"
 
+    local ERROR_TMP
+    ERROR_TMP=$(mktemp)
+
     # Get file size if not specified
     if [ "$TOTAL_SIZE" -eq 0 ]
     then
         TOTAL_SIZE=$($RESTSH_CURL_BIN \
             -H "Connection: close" \
             -H "Content-Range: 0-1/*" \
-            -i "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
+            -i "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" 2>"$ERROR_TMP" \
             | awk -F/ '/Content-Range/ {print $2}' | tr -d '\r')
         # Check if TOTAL_SIZE is a positive number
         if [ "$TOTAL_SIZE" -gt 0 ]
         then
-            echo "Download size is $TOTAL_SIZE"
+            echo "Download size is $TOTAL_SIZE" 1>&2
         else
+            local ERROR
+            ERROR=$(<"$ERROR_TMP")
+            rm -f "$ERROR_TMP"
+            print_json_err_curl "Could not determine download size: $ERROR" "$METHOD ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
-            echo_err "Could not determine download size."
             return 1
         fi
     fi
@@ -136,9 +147,12 @@ restsh.download() {
             -H "Content-Range: $CONTENT_RANGE" \
             -H "Connection: $CONNECTION" \
             "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
-            >> "${FILENAME}"
+            >> "${FILENAME}" 2>"$ERROR_TMP"
         then
-            echo_err "Download failed"
+            local ERROR
+            ERROR=$(<"$ERROR_TMP")
+            rm -f "$ERROR_TMP"
+            print_json_err_curl "$ERROR" "$METHOD ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
@@ -146,7 +160,9 @@ restsh.download() {
         # We use the file size written to disk as range start
         START=$(stat -c%s "$FILENAME")
     done
+    rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
+    print_json_ok_curl "Successful" "$METHOD ${RESTSH_URL}${URI}"
     return 0
 }
 
@@ -154,8 +170,8 @@ restsh.download() {
 restsh.upload() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
-        echo "Upload a file in chunks of 512kB."
-        echo "Usage: restsh.upload <uri> <filename>"
+        echo "Upload a file in chunks of 512kB." 1>&2
+        echo "Usage: restsh.upload <uri> <filename>" 1>&2
         return 1
     fi
     local URI=$1
@@ -181,6 +197,8 @@ restsh.upload() {
     # Initialize Connection type at Keep-Alive
 	local CONNECTION="Keep-Alive"
 
+    local ERROR_TMP
+    ERROR_TMP=$(mktemp)
     SKIP=0
     while [ "$END" -lt "$RANGE_END" ]
     do
@@ -198,16 +216,19 @@ restsh.upload() {
                 -H "Content-Type: application/octet-stream" \
                 -H "Connection: $CONNECTION" \
                 "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" \
-                --data-binary @-)
+                --data-binary @- 2>"$ERROR_TMP")
         then
-            echo_err "Upload failed"
-            echo_err "$OUTPUT"
+            local ERROR
+            ERROR=$(<"$ERROR_TMP")
+            rm -f "$ERROR_TMP"
+            print_json_err_curl "$ERROR" "$METHOD ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
         START=$((END+1))
         SKIP=$((SKIP+1))
     done
+    rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
     return 0
 }
@@ -227,9 +248,9 @@ DELETE() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: DELETE [-r] <uri>"
-        echo -e "\tUse -r for raw output."
-        echo -e "\tUse -c to define retries."
+        echo "Usage: DELETE [-r] <uri>" 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
     ARGS+=("DELETE" "$1")
@@ -251,9 +272,9 @@ GET() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: GET [-r] <uri>"
-        echo -e "\tUse -r for raw output."
-        echo -e "\tUse -c to define retries."
+        echo "Usage: GET [-r] <uri>" 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
     ARGS+=("GET" "$1")
@@ -275,10 +296,10 @@ PATCH() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: PATCH [-r] <uri>"
-        echo -e "\tPipe the payload in the command."
-        echo -e "\tUse -r for raw output."
-        echo -e "\tUse -c to define retries."
+        echo "Usage: PATCH [-r] <uri>" 1>&2
+        echo -e "\tPipe the payload in the command." 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
     ARGS+=("PATCH" "$1")
@@ -300,10 +321,10 @@ POST() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: POST [-r] <uri>"
-        echo -e "\tPipe the payload in the command."
-        echo -e "\tUse -r for raw output."
-        echo -e "\tUse -c to define retries."
+        echo "Usage: POST [-r] <uri>" 1>&2
+        echo -e "\tPipe the payload in the command." 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
     ARGS+=("POST" "$1")
@@ -325,10 +346,10 @@ PUT() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: PUT [-r] <uri>"
-        echo -e "\tPipe the payload in the command."
-        echo -e "\tUse -r for raw output."
-        echo -e "\tUse -c to define retries."
+        echo "Usage: PUT [-r] <uri>" 1>&2
+        echo -e "\tPipe the payload in the command." 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
     ARGS+=("PUT" "$1")
