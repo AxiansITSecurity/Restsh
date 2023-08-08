@@ -88,32 +88,16 @@ f5.file.remove() {
 
 # Lists a file or directory on the F5.
 f5.file.list() {
-    local RAW=0
-    local OPTION OPTIND
-    while getopts ':r' OPTION
-    do
-        case "$OPTION" in
-            r) RAW=1 ;;
-            *) OPTION="invalid"; break ;;
-        esac
-    done
-    shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ]
     then
-        echo "Usage: f5.file.list [-r] <path>" 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
+        echo "Usage: f5.file.list <path>" 1>&2
         return 1
     fi
     local LIST_FILE=$1
     local RESPONSE
     if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' ls -lh -- $LIST_FILE'\" }")
     then
-        if [ "$RAW" -eq 1 ]
-        then
-            restsh.util.parseoutput "$RESPONSE"
-        else
-            $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
-        fi
+        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
     else
         return 1  
     fi

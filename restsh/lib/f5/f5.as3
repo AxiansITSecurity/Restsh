@@ -22,7 +22,7 @@ f5.as3.version() {
 f5.as3.taskwait() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: $0 <id>"
+        echo "Usage: $0 <id>" 1>&2
         return 1
     fi
     local TASK_ID=$1
@@ -34,7 +34,7 @@ f5.as3.taskwait() {
         sleep "$F5_TASK_CHECK_INTERVAL"
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
         then
-            echo "Timeout waiting for task."
+            echo_err "Timeout waiting for task."
             return 1
         fi
         COUNTER=$((COUNTER+1))
@@ -42,7 +42,7 @@ f5.as3.taskwait() {
         if ! STATUS=$(GET -r "$CHECK_TASK_URI" | \
             $RESTSH_JQ -r ".results[] | .code" | tr '\n' ' ')
         then
-            echo "Could not get task status."
+            echo_err "Could not get task status."
             return 1
         fi
         local RC=0

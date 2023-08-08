@@ -17,7 +17,7 @@ set -uo pipefail
 f5.asm.policy.gethash() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: $0 <policy fullPath>"
+        echo "Usage: $0 <policy fullPath>" 1>&2
         return 1
     fi
     local POLICY=$1
@@ -37,7 +37,7 @@ f5.asm.policy.gethash() {
 f5.asm.taskwait() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
-        echo "Usage: $0 <entity> <id>"
+        echo "Usage: $0 <entity> <id>" 1>&2
         return 1
     fi
     local TASK_ENTITY=$1
@@ -49,7 +49,7 @@ f5.asm.taskwait() {
         sleep "$F5_TASK_CHECK_INTERVAL"
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
         then
-            echo "Timeout waiting for task."
+            echo_err "Timeout waiting for task."
             return 1
         fi
         COUNTER=$((COUNTER+1))
@@ -57,7 +57,7 @@ f5.asm.taskwait() {
         if ! STATUS=$(GET -r "/mgmt/tm/asm/tasks/$TASK_ENTITY?\$select=id,status" | \
             $RESTSH_JQ -r ".items[] | select(.id == \"$TASK_ID\") | .status")
         then
-            echo "Could not get task status."
+            echo_err "Could not get task status."
             return 1
         fi
         case "$STATUS" in
@@ -68,7 +68,7 @@ f5.asm.taskwait() {
                 break
                 ;;
             *)
-                echo "Unhandled task status: $STATUS"
+                echo_err "Unhandled task status: $STATUS"
                 # Print task result message
                 GET -r "/mgmt/tm/asm/tasks/$TASK_ENTITY" | \
                     $RESTSH_JQ -r ".items | .[] | select(.id==\"$TASK_ID\") | .result.message"

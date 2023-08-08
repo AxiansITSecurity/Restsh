@@ -108,11 +108,9 @@ restsh.download() {
             -H "Content-Range: 0-1/*" \
             -i "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" 2>"$ERROR_TMP" \
             | awk -F/ '/Content-Range/ {print $2}' | tr -d '\r')
-        # Check if TOTAL_SIZE is a positive number
-        if [ "$TOTAL_SIZE" -gt 0 ]
+        # Check if TOTAL_SIZE is gt 0
+        if [ "$TOTAL_SIZE" -le 0 ]
         then
-            echo "Download size is $TOTAL_SIZE" 1>&2
-        else
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
@@ -120,6 +118,7 @@ restsh.download() {
             unset RESTSH_CURL_OPTS
             return 1
         fi
+        #echo "Download size is $TOTAL_SIZE"
     fi
 
     # Download file in chunks, range header is zero-indexed
@@ -179,7 +178,7 @@ restsh.upload() {
     local TOTAL_SIZE
     if ! TOTAL_SIZE=$(stat -c%s "$FILENAME")
     then
-        echo "File \"$FILENAME\" not found."
+        print_json_err "File '$FILENAME' not found."
         return 1
     fi
 
@@ -230,6 +229,7 @@ restsh.upload() {
     done
     rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
+    print_json_ok_curl "Successful" "$METHOD ${RESTSH_URL}${URI}"
     return 0
 }
 
