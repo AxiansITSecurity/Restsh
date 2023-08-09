@@ -151,7 +151,7 @@ restsh.download() {
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
-            print_json_err_curl "$ERROR" "$METHOD ${RESTSH_URL}${URI}"
+            print_json_err_curl "$ERROR" "GET ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
@@ -161,7 +161,7 @@ restsh.download() {
     done
     rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
-    print_json_ok_curl "Successful" "$METHOD ${RESTSH_URL}${URI}"
+    print_json_ok_curl "Successful" "GET ${RESTSH_URL}${URI}"
     return 0
 }
 
@@ -220,7 +220,7 @@ restsh.upload() {
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
-            print_json_err_curl "$ERROR" "$METHOD ${RESTSH_URL}${URI}"
+            print_json_err_curl "$ERROR" "POST ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
@@ -229,7 +229,7 @@ restsh.upload() {
     done
     rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
-    print_json_ok_curl "Successful" "$METHOD ${RESTSH_URL}${URI}"
+    print_json_ok_curl "Successful" "POST ${RESTSH_URL}${URI}"
     return 0
 }
 
