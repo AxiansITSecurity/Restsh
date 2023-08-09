@@ -67,11 +67,11 @@ else
 fi
 
 # Set defaults if not already set
-[ -z "${RESTSH_SCHEME+x}" ] && export RESTSH_SCHEME="https"
-[ -z "${RESTSH_PORT+x}" ] && export RESTSH_PORT="443"
-[ -z "${RESTSH_CURL_INSECURE+x}" ] && export RESTSH_CURL_INSECURE="0"
-[ -z "${RESTSH_CONTENT+x}" ] && export RESTSH_CONTENT="application/json"
-[ -z "${RESTSH_CHUNK_SIZE+x}" ] && export RESTSH_CHUNK_SIZE="524288"
+[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
+[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
+[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
+[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
+[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
 
 # Some initial checks
 if ! restsh.init.check.env
