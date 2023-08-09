@@ -39,14 +39,14 @@ then
 fi
 
 # Main
-if RESULT=$(GET "/mgmt/tm/asm/policies?\$select=fullPath,parentPolicyName,id,enforcementMode,description")
+if RESULT=$(GET "/mgmt/tm/asm/policies?\$select=fullPath,isModified,parentPolicyName,id,enforcementMode,description")
 then
     if [ "$RAW" -eq 1 ]
     then
         echo "$RESULT"
     else
-        $RESTSH_JQ -r '.items[] | [.fullPath, .parentPolicyName, .description, .enforcementMode, .id] | @tsv' <<< "$RESULT" | \
-            column -ts $'\t' -o " | " -N "fullPath,parentPolicyName,description,enforcementMode,id" -W "description"
+        $RESTSH_JQ -r '.items[] | [.fullPath, .isModified, .parentPolicyName, .description, .enforcementMode, .id] | @tsv' <<< "$RESULT" | \
+            column -ts $'\t' -o " | " -N "fullPath,isModified,parentPolicyName,description,enforcementMode,id" -W "description"
     fi
 fi
 
