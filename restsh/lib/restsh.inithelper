@@ -58,15 +58,12 @@ restsh.init.check.cmd() {
         return 1
     fi
     export RESTSH_CURL_BIN
-    if [ "$RESTSH_CONTENT" == "application/json" ]
+    if ! RESTSH_JQ=$(command -v jq)
     then
-        if ! RESTSH_JQ=$(command -v jq)
-        then
-            echo_err "Command not found: jq"
-            return 1
-        fi
-        export RESTSH_JQ
+        echo_err "Command not found: jq"
+        return 1
     fi
+    export RESTSH_JQ
     return 0
 }
 
