@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2023-08-10
 
 # Shortdesc: Some utility functions.
 # Desc:
@@ -189,26 +189,40 @@ restsh.util.setvars() {
         return 1
     fi
     local DIR=$1
-    echo "Reading configuration from \"$DIR\"" 1>&2
-    # strings, concatenates multiple lines
+    echo "Reading configuration from \"$DIR\""
     local DEF
     while read -r DEF
     do
+        restsh.util.setvar "$DEF"
+    done < <(find "$DIR" -maxdepth 1 -type f -name \*.txt -or -name \*.array)
+}
+
+# Reads a variable from a file. .txt extension for simple variable, .array for array.
+restsh.util.setvar() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.util.setvar <file>" 1>&2
+        return 1
+    fi
+    local FILE=$1
+    local EXT="${FILE##*.}"
+    # strings, concatenates multiple lines
+    if [ "$EXT" == "txt" ]
+    then
         # construct variable name
         local VAR
-        VAR="VAR_$(basename "$DEF" .txt)"
+        VAR="VAR_$(basename "$FILE" .txt)"
         # set variable from config file
-        declare -g "$VAR"="$(grep -v -P '^(#|\s*$)' "$DEF" | tr -d '\n')"
-    done < <(find "$DIR" -maxdepth 1 -name \*.txt)
-    # arrays - one line per member
-    while read -r DEF
-    do
+        declare -g "$VAR"="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\n')"
+        echo "Declaring variable: $VAR"
+    elif [ "$EXT" == "array" ]
+    then
         # construct array name
         local VAR
-        VAR="VAR_$(basename "$DEF" .array)"
+        VAR="VAR_$(basename "$FILE" .array)"
         # set array from config file
         local LINES
-        LINES=$(grep -v -P '^(#|\s*$)' "$DEF" || true)
+        LINES=$(grep -v -P '^(#|\s*$)' "$FILE" || true)
         if [ -n "$LINES" ]
         then
             mapfile -t "$VAR" <<< "$LINES"
@@ -216,7 +230,11 @@ restsh.util.setvars() {
             #shellcheck disable=SC2140
             declare -g "$VAR"=""
         fi
-    done < <(find "$DIR" -maxdepth 1 -name \*.array)
+        echo "Declaring Array: $VAR"
+    else
+        echo_err "Invalid file type: $EXT"
+        return 1
+    fi
 }
 
 # Export all functions
@@ -234,3 +252,4 @@ export -f JQ
 export -f restsh.util.setcurloptions
 export -f restsh.util.parseoutput
 export -f restsh.util.setvars
+export -f restsh.util.setvar
