@@ -128,7 +128,7 @@ remove_key() {
 list_certs() {
     GET /mgmt/tm/sys/file/ssl-cert | \
         jq -r ".items[] | [.fullPath, .subject, .expirationString, .isBundle] | @tsv" |\
-        column -ts $'\t' -o " | " -W "subject" -N "fullPath,subject,expiration,bundle"
+        COLUMN -ts $'\t' -o " | " -W "subject" -N "fullPath,subject,expiration,bundle"
 }
 
 case "$ACTION" in

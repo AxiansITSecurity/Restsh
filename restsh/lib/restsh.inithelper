@@ -75,3 +75,12 @@ restsh.init.setresturl() {
     export RESTSH_URL="$URL"
     return 0
 }
+
+# Feature detection of column command
+restsh.init.check.column() {
+    if column -t -s "," -N "col1,col2" -W "col1" <<< "v1,v2" 2>&1 > /dev/null
+    then
+        return 0
+    fi
+    return 1
+}

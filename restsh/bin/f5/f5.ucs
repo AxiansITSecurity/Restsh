@@ -114,7 +114,7 @@ case "$ACTION" in
     list)
         GET -r "$UCS_ENDPOINT" \
             | $RESTSH_JQ -r ".items[] | .apiRawValues | [.filename,.file_created_date,.file_size] | @tsv" \
-            | column
+            | COLUMN
         ;;
     *)
         echo "Usage: $(basename "$0") (create|download|remove|list) [options]"

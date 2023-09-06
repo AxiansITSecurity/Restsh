@@ -50,7 +50,7 @@ usage() {
 overview_suggestions() {
     local HASH=$1
     GET "/mgmt/tm/asm/policies/$HASH/suggestions" | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
-        column -ts $'\t' -o " | " -N "id,action,entityName,score,occurrences"
+        COLUMN -ts $'\t' -o " | " -N "id,action,entityName,score,occurrences"
 }
 
 # lists all suggestions

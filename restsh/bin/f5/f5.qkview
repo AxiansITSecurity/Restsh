@@ -106,7 +106,7 @@ case "$ACTION" in
     list)
         GET -r "$QKVIEW_ENDPOINT" \
             | $RESTSH_JQ -r ".items[] | [.name,.status,.id] | @tsv" \
-            | column
+            | COLUMN
         ;;
     *)
         echo "Usage: $(basename "$0") (create|download|remove|list) [options]"

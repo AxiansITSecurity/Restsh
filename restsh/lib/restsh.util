@@ -125,6 +125,58 @@ JQ() {
     $RESTSH_JQ "$@"
 }
 
+# Shortcut for column with feature detection
+COLUMN() {
+    local OPTION OPTIND
+    local COLUMN_OPTIONS=()
+    local COLUMN_NAMES=""
+    local COLUMN_SEPARATOR=""
+    while getopts ':ts:o:N:W:' OPTION
+    do
+        case "$OPTION" in
+            t)
+                # table mode
+                COLUMN_OPTIONS+=("-t")
+                ;;
+            s)
+                # column separator
+                COLUMN_OPTIONS+=("-s" "$OPTARG")
+                COLUMN_SEPARATOR="$OPTARG"
+                ;;
+            o)
+                # output separator
+                COLUMN_OPTIONS+=("-o" "$OPTARG")
+                ;;
+            N)
+                # manually add header, if column cmd is too old
+                [ "$RESTSH_COLUMN_ADV" -eq 1 ] && COLUMN_OPTIONS+=("-N" "$OPTARG")
+                COLUMN_NAMES="$OPTARG"
+                ;;
+            W)
+                # ignore -W option, if column cmd is too old
+                [ "$RESTSH_COLUMN_ADV" -eq 1 ] && COLUMN_OPTIONS+=("-W" "$OPTARG")
+                ;;
+            *) 
+                echo_err "Invalid column options"
+                return 1 
+                ;;
+        esac
+    done
+
+    # replace separator
+    [ "$RESTSH_COLUMN_ADV" -eq 0 ] && COLUMN_NAMES="${COLUMN_NAMES//,/"$COLUMN_SEPARATOR"}"
+
+    {
+        # manually add header, if column cmd is too old
+        [ "$RESTSH_COLUMN_ADV" -eq 0 ] && echo "$COLUMN_NAMES"
+        # read/print STDIN
+        while read -r LINE
+        do
+            echo "$LINE"
+        done
+    } | column "${COLUMN_OPTIONS[@]}"
+}
+
 # Sets the RESTSH_CURL_OPTIONS environment variable.
 restsh.util.setcurloptions() {
     RESTSH_CURL_OPTS=("-f" "--show-error")
@@ -247,6 +299,7 @@ export -f print_json_err_curl
 export -f echo_warn
 export -f print_json_warn
 export -f print_json_warn_curl
+export -f COLUMN
 export -f MO
 export -f JQ
 export -f restsh.util.setcurloptions
