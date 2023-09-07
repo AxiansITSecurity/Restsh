@@ -78,7 +78,7 @@ restsh.init.setresturl() {
 
 # Feature detection of column command
 restsh.init.check.column() {
-    if column -t -s "," -N "col1,col2" -W "col1" <<< "v1,v2" 2>&1 > /dev/null
+    if column -t -s "," -N "col1,col2" -W "col1" <<< "v1,v2" > /dev/null 2>&1
     then
         return 0
     fi

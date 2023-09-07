@@ -164,7 +164,7 @@ COLUMN() {
     done
 
     # replace separator
-    [ "$RESTSH_COLUMN_ADV" -eq 0 ] && COLUMN_NAMES="${COLUMN_NAMES//,/"$COLUMN_SEPARATOR"}"
+    [ "$RESTSH_COLUMN_ADV" -eq 0 ] && COLUMN_NAMES="${COLUMN_NAMES//,/$COLUMN_SEPARATOR}"
 
     {
         # manually add header, if column cmd is too old
