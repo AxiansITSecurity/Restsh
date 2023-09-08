@@ -1,0 +1,8 @@
+{
+    "virtualServers": [
+        {{#VAR_VIRTUAL_SERVERS}}
+            {{MO_COMMA_IF_NOT_FIRST}}
+            "{{.}}"
+        {{/VAR_VIRTUAL_SERVERS}}
+    ]
+}
