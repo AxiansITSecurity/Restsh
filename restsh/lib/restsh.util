@@ -125,6 +125,11 @@ JQ() {
     $RESTSH_JQ "$@"
 }
 
+# Shortcut for xargs
+XARGS() {
+    xargs -n1 -p1 "$@"
+}
+
 # Shortcut for column with feature detection
 COLUMN() {
     local OPTION OPTIND
@@ -302,6 +307,7 @@ export -f print_json_warn_curl
 export -f COLUMN
 export -f MO
 export -f JQ
+export -f XARGS
 export -f restsh.util.setcurloptions
 export -f restsh.util.parseoutput
 export -f restsh.util.setvars
