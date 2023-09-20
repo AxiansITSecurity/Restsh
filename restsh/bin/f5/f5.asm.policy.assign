@@ -31,6 +31,7 @@ assign_by_hash() {
     # Read virtual servers from stdin, one vs per line
     while read -r LINE
     do
+        [ "${LINE:0:1}" = "#" ] && continue
         VAR_VIRTUAL_SERVERS+=("$LINE")
     done
     export VAR_VIRTUAL_SERVERS
