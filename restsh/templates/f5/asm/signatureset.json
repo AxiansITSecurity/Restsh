@@ -1,0 +1,16 @@
+{
+    "isUserDefined": true,
+    "name": "{{VAR_NAME}}",
+    "assignToPolicyByDefault": false,
+    "defaultLearn": true,
+    "defaultBlock": true,
+    "defaultAlarm": true,
+    "category": "User-defined",
+    "type": "manual",
+    "signatures": [
+        {{#VAR_SIGNATURES}}
+            {{MO_COMMA_IF_NOT_FIRST}}
+            { "signatureId": "{{.}}" }
+        {{/VAR_SIGNATURES}}
+    ]
+}
