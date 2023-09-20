@@ -64,11 +64,11 @@ then
     echo "Usage: $(basename "$0") <policy hash or fullPath>"
     echo "Pipe the list of virtual servers to STDIN, one vs per line"
     exit 1
+fi
+
+if [ "${1:0:1}" == "/" ]
+then
+    assign_by_full_path "$1"
 else
-     if [ "${1:0:1}" == "/" ]
-     then
-        assign_by_full_path "$1"
-     else
-        assign_by_hash "$1"
-     fi
+    assign_by_hash "$1"
 fi
