@@ -1,0 +1,10 @@
+{
+    "disallowFileUploadOfExecutables" : false,
+    "isAllowed" : false,
+    "mandatoryBody" : false,
+    "metacharsOnUrlCheck" : false,
+    "method" : "*",
+    "name" : "{{VAR_DISALLOWED_URL}}",
+    "protocol" : "http",
+    "type" : "explicit"
+ }
