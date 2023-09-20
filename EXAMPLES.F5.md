@@ -1,5 +1,27 @@
 # F5 usage examples
 
+## Get all virtual servers
+
+```sh
+GET /mgtm/tm/ltm/virtual | JQ -r ".items[].fullPath"
+```
+
+## Attach a log profile to a list of virtual servers
+
+```sh
+cat > log-profile.json << EOL
+{
+ "securityLogProfiles": [
+    "/Common/siem_all_requests"
+  ]
+}
+EOL
+
+while read -r VS
+    do PATCH "/mgmt/tm/ltm/virtual/$VS" < log-profile.json
+done < VIRTUAL_SERVERS.array
+```
+
 ## Apply all policies
 
 ```sh
