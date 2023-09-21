@@ -3,7 +3,13 @@
 ## Get all virtual servers
 
 ```sh
-GET /mgmt/tm/ltm/virtual | JQ -r ".items[].fullPath"
+GET /mgmt/tm/ltm/virtual?\$select=fullPath
+```
+
+## Details of a virtual servers
+
+```sh
+GET /mgmt/tm/ltm/virtual/vs_test?expandSubcollections=true
 ```
 
 ## Attach a log profile to a list of virtual servers

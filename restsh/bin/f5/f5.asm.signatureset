@@ -37,10 +37,12 @@ else
     ACTION=$1
 fi
 
+# Gets the signature set id
 get_signature_set_id() {
     GET /mgmt/tm/asm/signature-sets?\$select=name,id | jq -r ".items[] | select(.name == \"$VAR_NAME\") | .id"
 }
 
+# Creates a new signature set
 create_signature_set() {
     # Read signature ids from STDIN
     VAR_SIGNATURES=()
@@ -56,6 +58,7 @@ create_signature_set() {
         | POST /mgmt/tm/asm/signature-sets
 }
 
+# Replaces a signature set
 modify_signature_set() {
     # Read signature ids from STDIN
     VAR_SIGNATURES=()
@@ -78,6 +81,7 @@ modify_signature_set() {
     fi
 }
 
+# Deletes a signature set and removes it from any referencing policy
 delete_signature_set() {
     # Get signature set id
     if ID=$(get_signature_set_id)
@@ -90,12 +94,12 @@ delete_signature_set() {
     fi
 }
 
+# Lists all custom signature sets
 list_signature_sets() {
     GET /mgmt/tm/asm/signature-sets?\$select=name,id,signatureCount,isUserDefined \
         | JQ -r '.items[] | select(.isUserDefined == true) | [.name,.id,.signatureCount] | @tsv' \
         | COLUMN -ts $'\t' -o " | " -N "Name,Id,Count"
 }
-
 
 case "$ACTION" in
     create)

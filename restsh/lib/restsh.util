@@ -125,7 +125,7 @@ JQ() {
     $RESTSH_JQ "$@"
 }
 
-# Shortcut for xargs
+# Shortcut for xargs, running the command sequentially and only with one parameter
 XARGS() {
     xargs -n1 -p1 "$@"
 }
