@@ -57,7 +57,7 @@ AS3_FILE=$1
 if [ "$DRY" -eq 1 ]
 then
     # Dry-run: change action from deploy to dry-run
-    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$DECLARATION_FILE"
+    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$AS3_FILE"
     echo "Dry-run enabled"
 fi
 
