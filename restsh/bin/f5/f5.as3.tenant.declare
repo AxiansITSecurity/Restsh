@@ -54,12 +54,6 @@ AS3_FILE=$1
 [ "$KEEP_TMP" -eq 0 ] && trap "rm -f -- "$AS3_FILE.parsed"" EXIT
 
 # Main
-if [ "$DRY" -eq 1 ]
-then
-    # Dry-run: change action from deploy to dry-run
-    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$AS3_FILE"
-    echo "Dry-run enabled"
-fi
 
 # Run mustache
 if [ "$IS_TEMPLATE" -eq 1 ]
@@ -83,6 +77,13 @@ then
     fi
 else
     cp "$AS3_FILE" "$AS3_FILE.parsed"
+fi
+
+if [ "$DRY" -eq 1 ]
+then
+    # Dry-run: change action from deploy to dry-run
+    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$AS3_FILE.parsed"
+    echo "Dry-run enabled"
 fi
 
 # Post the declaration
