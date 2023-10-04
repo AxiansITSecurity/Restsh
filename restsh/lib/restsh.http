@@ -281,6 +281,30 @@ GET() {
     restsh.http "${ARGS[@]}"
 }
 
+# Issues a GET request
+OPTIONS() {
+    local ARGS=()
+    local OPTION OPTIND
+    while getopts ':rc:' OPTION
+    do
+        case "$OPTION" in
+            r) ARGS+=("-r") ;;
+            c) ARGS+=("-c" "$OPTARG") ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+    then
+        echo "Usage: OPTIONS [-r] <uri>" 1>&2
+        echo -e "\tUse -r for raw output." 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
+        return 1
+    fi
+    ARGS+=("GET" "$1")
+    restsh.http "${ARGS[@]}"
+}
+
 # Issues a PATCH request
 PATCH() {
     local ARGS=("-b")
@@ -361,6 +385,7 @@ export -f restsh.download
 export -f restsh.upload
 export -f DELETE
 export -f GET
+export -f OPTIONS
 export -f PATCH
 export -f POST
 export -f PUT
