@@ -193,28 +193,16 @@ do
     COUNT=$((COUNT+1))
     case "$ACTION" in
         enforceAll)
-            if ! enforce_all "$HASH" || f5.asm.policy.apply "$HASH"
-            then
-                exit 1
-            fi
+            enforce_all "$HASH" && f5.asm.policy.apply "$HASH"
             ;;
         enforceReady)
-            if ! enforce_ready "$HASH" || f5.asm.policy.apply "$HASH"
-            then
-                exit 1
-            fi
+            enforce_ready "$HASH" && f5.asm.policy.apply "$HASH"
             ;;
         disableSuggestions)
-            if ! disable_suggestions "$HASH" || f5.asm.policy.apply "$HASH"
-            then
-                exit 1
-            fi
+            disable_suggestions "$HASH" && f5.asm.policy.apply "$HASH"
             ;;
         *)
-            if ! enforcement_status "$HASH"
-            then
-                exit 1
-            fi
+            enforcement_status "$HASH"
             ;;
     esac
 done < <(GET "/mgmt/tm/asm/policies/?\$select=fullPath,id" | \
