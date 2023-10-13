@@ -1,0 +1,4 @@
+#OK: Policy is case sensitive
+#WARN: Policy is case insensitive
+.policy.caseInsensitive |
+    select(. == true)
