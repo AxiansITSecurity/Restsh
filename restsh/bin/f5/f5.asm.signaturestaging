@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2023-10-13
 # Shortdesc: Manages F5 ASM signature staging.
 # Desc:
 # Manages F5 ASM signature staging.
@@ -74,8 +74,9 @@ enforce_all() {
     then
         local ENFORCED_COUNT=0
         [ -n "$SIG_ENFORCED" ] && ENFORCED_COUNT=$(wc -l <<< "$SIG_ENFORCED")
-        echo "$ENFORCED_COUNT signatures enforced"
-        echo "$SIG_ENFORCED"
+        echo "$ENFORCED_COUNT signatures enforced" 1>&2
+        echo "$SIG_ENFORCED" 1>&2
+        printf "%s" "$ENFORCED_COUNT"
         return 0
     fi
     return 1
@@ -91,8 +92,9 @@ enforce_ready() {
     then
         local ENFORCED_COUNT=0
         [ -n "$SIG_ENFORCED" ] && ENFORCED_COUNT=$(wc -l <<< "$SIG_ENFORCED")
-        echo "$ENFORCED_COUNT signatures enforced"
-        echo "$SIG_ENFORCED"
+        echo "$ENFORCED_COUNT signatures enforced" 1>&2
+        echo "$SIG_ENFORCED" 1>&2
+        printf "%s" "$ENFORCED_COUNT"
         return 0
     fi
     return 1
@@ -108,8 +110,9 @@ disable_suggestions() {
     then
         local DISABLED_COUNT=0
         [ -n "$SIG_DISABLED" ] && DISABLED_COUNT=$(wc -l <<< "$SIG_DISABLED")
-        echo "$DISABLED_COUNT signatures disabled"
-        echo "$SIG_DISABLED"
+        echo "$DISABLED_COUNT signatures disabled" 1>&2
+        echo "$SIG_DISABLED" 1>&2
+        printf "%s" "$ENFORCED_COUNT"
         return 0
     fi
     return 1
@@ -193,13 +196,22 @@ do
     COUNT=$((COUNT+1))
     case "$ACTION" in
         enforceAll)
-            enforce_all "$HASH" && f5.asm.policy.apply "$HASH"
+            if CHANGED=$(enforce_all "$HASH")
+            then
+                [ "$CHANGED" -gt 0 ] && f5.asm.policy.apply "$HASH"
+            fi
             ;;
         enforceReady)
-            enforce_ready "$HASH" && f5.asm.policy.apply "$HASH"
+            if CHANGED=$(enforce_ready "$HASH")
+            then
+                [ "$CHANGED" -gt 0 ] && f5.asm.policy.apply "$HASH"
+            fi
             ;;
         disableSuggestions)
-            disable_suggestions "$HASH" && f5.asm.policy.apply "$HASH"
+            if CHANGED=$(disable_suggestions "$HASH")
+            then
+                [ "$CHANGED" -gt 0 ] && f5.asm.policy.apply "$HASH"
+            fi
             ;;
         *)
             enforcement_status "$HASH"
