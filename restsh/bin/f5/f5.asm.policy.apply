@@ -53,7 +53,8 @@ apply_by_full_path() {
     # Get the policy hash
     local POLICY_HASH
     POLICY_HASH=$(f5.asm.policy.gethash "$POLICY") && \
-        apply_by_hash "$POLICY_HASH"
+        apply_by_hash "$POLICY_HASH" && return 0
+    return 1
 }
 
 if [ -z "${1+x}" ]
@@ -64,8 +65,10 @@ then
 else
      if [ "${1:0:1}" == "/" ]
      then
-        apply_by_full_path "$1"
+        apply_by_full_path "$1" && exit 0
      else
-        apply_by_hash "$1"
+        apply_by_hash "$1" && exit 0
      fi
 fi
+
+exit 1
