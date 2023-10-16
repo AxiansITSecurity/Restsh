@@ -28,16 +28,16 @@ while read -r VS
 done < VIRTUAL_SERVERS.array
 ```
 
-## Apply all policies
+## Apply all policies that are modified
 
 ```sh
-f5.asm.policy.list -r | JQ -r ".items[].fullPath" | XARGS -n1 -P1 f5.asm.policy.apply
+f5.asm.policy.list -r | JQ -r ".items[] | select(.isModified == true) | .fullPath" | XARGS f5.asm.policy.apply
 ```
 
 ## Apply ready signatures for all policies
 
 ```sh
-f5.asm.policy.list -r | JQ -r ".items[].fullPath" | XARGS f5.asm.signaturestaging enforceReady
+f5.asm.signaturestaging enforceReady
 ```
 ## Export all policies as json
 
