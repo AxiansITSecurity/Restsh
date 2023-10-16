@@ -127,7 +127,7 @@ JQ() {
 
 # Shortcut for xargs, running the command sequentially and only with one parameter
 XARGS() {
-    xargs -n1 -p1 "$@"
+    xargs -n1 -P1 "$@"
 }
 
 # Shortcut for column with feature detection
