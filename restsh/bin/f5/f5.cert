@@ -139,17 +139,15 @@ list_certs() {
     for F in $(JQ -r ".items | .[].fullPath" <<< "$CERTLIST")
     do
         EXPIRATION=$(JQ -r ".items | .[] | select(.fullPath==\"$F\") | .expirationDate" <<< "$CERTLIST")
-    if  [ $EXPIRATION -lt $NOW ]
-    then
-        echo -e "| $F | ${RED}expired${NC} | $(date -d @$EXPIRATION) |"
-        EXITCODE=2
-    elif [ $EXPIRATION -lt $NEXTMONTH ]
-    then
-        echo -e "| $F | ${YELLOW}expires soon${NC} | $(date -d @$EXPIRATION) |"
-        [ $EXITCODE = 0 ] && EXITCODE=1
-    else
-        echo -e "| $F | ${GREEN}ok${NC} | $(date -d @$EXPIRATION) |"
-    fi
+        if  [ $EXPIRATION -lt $NOW ]
+        then
+            echo -e "| $F | ${RED}expired${NC} | $(date -d @$EXPIRATION) |"
+        elif [ $EXPIRATION -lt $NEXTMONTH ]
+        then
+            echo -e "| $F | ${YELLOW}expires soon${NC} | $(date -d @$EXPIRATION) |"
+        else
+            echo -e "| $F | ${GREEN}ok${NC} | $(date -d @$EXPIRATION) |"
+        fi
     done
 }
 
