@@ -126,13 +126,16 @@ remove_key() {
 
 # Lists all certificates
 list_certs() {
-    local CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
+    local CERTLIST
+    CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
     local RED="\033[0;31m"
     local YELLOW="\033[0;33m"
     local GREEN="\033[0;32m"
     local NC="\033[0m"
-    local NEXTMONTH=$(date -d "next month" +%s)
-    local NOW=$(date +%s)
+    local NEXTMONTH
+    NEXTMONTH=$(date -d "next month" +%s)
+    local NOW
+    NOW=$(date +%s)
 
     echo "| Certificate | State | Expiration |"
     echo "| ----------- | ----- | ---------- |"
