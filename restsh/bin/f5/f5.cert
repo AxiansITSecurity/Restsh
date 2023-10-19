@@ -126,9 +126,31 @@ remove_key() {
 
 # Lists all certificates
 list_certs() {
-    GET /mgmt/tm/sys/file/ssl-cert | \
-        jq -r ".items[] | [.fullPath, .subject, .expirationString, .isBundle] | @tsv" |\
-        COLUMN -ts $'\t' -o " | " -W "subject" -N "fullPath,subject,expiration,bundle"
+    local CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
+    local RED="\033[0;31m"
+    local YELLOW="\033[0;33m"
+    local GREEN="\033[0;32m"
+    local NC="\033[0m"
+    local NEXTMONTH=$(date -d "next month" +%s)
+    local NOW=$(date +%s)
+
+    echo "| Certificate | State | Expiration |"
+    echo "| ----------- | ----- | ---------- |"
+    for F in $(JQ -r ".items | .[].fullPath" <<< "$CERTLIST")
+    do
+        EXPIRATION=$(JQ -r ".items | .[] | select(.fullPath==\"$F\") | .expirationDate" <<< "$CERTLIST")
+    if  [ $EXPIRATION -lt $NOW ]
+    then
+        echo -e "| $F | ${RED}expired${NC} | $(date -d @$EXPIRATION) |"
+        EXITCODE=2
+    elif [ $EXPIRATION -lt $NEXTMONTH ]
+    then
+        echo -e "| $F | ${YELLOW}expires soon${NC} | $(date -d @$EXPIRATION) |"
+        [ $EXITCODE = 0 ] && EXITCODE=1
+    else
+        echo -e "| $F | ${GREEN}ok${NC} | $(date -d @$EXPIRATION) |"
+    fi
+    done
 }
 
 case "$ACTION" in

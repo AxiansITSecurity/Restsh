@@ -1,0 +1,228 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-10-19
+
+# Shortdesc: SSL certifacte and profile reporting.
+# Desc:
+# SSL certifacte and profile reporting.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get action
+if [ -n "${1+x}" ]
+then
+    ACTION=$1
+else
+    ACTION="invalid"
+fi
+
+# Get output format
+if [ -n "${2+x}" ]
+then
+    FORMAT=$2
+else
+    FORMAT="console"
+fi
+
+# Prints help
+usage() {
+    echo "Usage: $(basename "$0") <vs-ssl-profiles|ssl-profiles-vs|ssl-profiles-cert|cert-ssl-profiles> [md]"
+    return 1
+}
+
+# Extracts the profile name from a nameReference
+link_to_profile_name() {
+    sed -E -e 's|^.*/([^?]+)\?.*|\1|' -e 's|~|/|g' <<< "$1"
+}
+
+# Reports ssl profiles for all virtual servers
+vs-ssl-profiles() {
+    local NAME
+    local VS
+    while read -r LINE
+    do
+        if [ "${LINE:0:1}" == "/" ]
+        then
+            VS="$LINE"
+            local SERVER_SSL=()
+            local CLIENT_SSL=()
+        elif [[ "$LINE" =~ "/server-ssl/" ]]
+        then
+            NAME=$(link_to_profile_name "$LINE")
+            SERVER_SSL+=("$NAME")
+        elif [[ "$LINE" =~ "/client-ssl/" ]]
+        then
+            NAME=$(link_to_profile_name "$LINE")
+            CLIENT_SSL+=("$NAME")
+        elif [ "${LINE:0:2}" == "--" ]
+        then
+            if [ "$FORMAT" == "md" ]
+            then
+                printf "| %s | %s | %s |\n" "$VS" "${CLIENT_SSL[*]}" "${SERVER_SSL[*]}"
+            else
+                printf "%s\t%s\t%s\n" "$VS" "${CLIENT_SSL[*]}" "${SERVER_SSL[*]}"
+            fi
+        fi
+    done < <(GET /mgmt/tm/ltm/virtual?expandSubcollections=true \
+        | JQ -r '.items[] | .fullPath, .profilesReference.items[].nameReference.link, "--"')
+}
+
+# Gets all virtual servers that have the profile assigned
+get_vs_profiles() {
+    JQ -r ".items[] | select(.profilesReference.items[].fullPath==\"$1\") | .fullPath" <<< "$ALL_VS" | paste -sd "," -
+}
+
+# Reports all virtual servers for ssl profiles
+ssl-profiles-vs() {
+    # get all virtual servers
+    ALL_VS=$(GET "/mgmt/tm/ltm/virtual?expandSubcollections=true")
+
+    for P in client-ssl server-ssl
+    do
+        while read -r PROFILE
+        do
+            VS=$(get_vs_profiles "$PROFILE")
+            [ -z "$VS" ] && VS="unused"
+            if [ "$FORMAT" == "md" ]
+            then
+                printf "| %s | %s |\n" "$PROFILE" "$VS"
+            else
+                printf "%s\t%s\n" "$PROFILE" "$VS"
+            fi
+        done < <(GET "/mgmt/tm/ltm/profile/$P" | JQ -r ".items[].fullPath")
+    done
+}
+
+# Gets certificates for ClientSSL profiles
+client-ssl-profiles-cert() {
+    while read -r PROFILE CERT
+    do
+        if [ "$FORMAT" == "md" ]
+        then
+            printf "| %s | %s |\n" "$PROFILE" "$CERT"
+        else
+            printf "%s\t%s\n" "$PROFILE" "$CERT"
+        fi
+    done < <(GET "/mgmt/tm/ltm/profile/client-ssl" | JQ -r ".items[] | .fullPath,.certKeyChain[].cert" | paste - -)
+}
+
+# Gets certificates for ServerSSL profiles
+server-ssl-profiles-cert() {
+    while read -r PROFILE CERT
+    do
+        if [ "$FORMAT" == "md" ]
+        then
+            printf "| %s | %s |\n" "$PROFILE" "$CERT"
+        else
+            printf "%s\t%s\n" "$PROFILE" "$CERT"
+        fi
+    done < <(GET "/mgmt/tm/ltm/profile/server-ssl" | JQ -r ".items[] | .fullPath,.cert" | paste - -)
+}
+
+# Concats profiles for pretty printing
+concat_profiles() {
+    local CERT=$1
+    local CHAIN=$2
+    local PROFILES="$CERT"
+    if [ -z "${CERT}${CHAIN}" ]
+    then
+        PROFILES="unused"
+    else
+        PROFILES="$CERT"
+        [ -n "$PROFILES" ] && [ -n "$CHAIN" ] && PROFILES="${PROFILES}, "
+        PROFILES="${PROFILES}${CHAIN}"
+    fi
+    echo "$PROFILES"
+}
+
+# Gets ssl profiles for certificates
+cert-ssl-profiles() {
+    #get all client-ssl profiles
+    ALL_CLIENT_SSL_PROFILES=$(GET "/mgmt/tm/ltm/profile/client-ssl")
+    #get all server-ssl profiles
+    ALL_SERVER_SSL_PROFILES=$(GET "/mgmt/tm/ltm/profile/server-ssl")
+
+    while read -r CERT CN
+    do
+        CLIENTSSL_CERT=$(JQ -r ".items[] | select(.certKeyChain[].cert==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        CLIENTSSL_CHAIN=$(JQ -r ".items[] | select(.certKeyChain[].chain==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        CLIENTSSL=$(concat_profiles "$CLIENTSSL_CERT" "$CLIENTSSL_CHAIN")
+
+        SERVERSSL_CERT=$(JQ -r ".items[] | select(.cert==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        SERVERSSL_CHAIN=$(JQ -r ".items[] | select(.chain==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        SERVERSSL=$(concat_profiles "$SERVERSSL_CERT" "$SERVERSSL_CHAIN")
+        if [ "$FORMAT" == "md" ]
+        then
+            printf "| %s | %s | %s | %s |\n" "$CERT" "$CN" "$CLIENTSSL" "$SERVERSSL"
+        else
+            printf "%s\t%s\t%s\t%s\n" "$CERT" "$CN" "$CLIENTSSL" "$SERVERSSL"
+        fi
+    done < <(GET "/mgmt/tm/sys/crypto/cert" | JQ -r ".items[] | .fullPath, .commonName" | paste - -)
+}
+
+case "$ACTION" in
+    "vs-ssl-profiles")
+        if [ "$FORMAT" == "md" ]
+        then
+            echo "| Virtual Server | ClientSSL | ServerSSL |"
+            echo "| -------------- | --------- | --------- |"
+            vs-ssl-profiles
+        else
+            vs-ssl-profiles | COLUMN -ts $'\t' -o " | " -N "Virtual Server,ClientSSL,ServerSSL" \
+                -W "ClientSSL,ServerSSL"
+        fi
+        ;;
+    "ssl-profiles-vs")
+        if [ "$FORMAT" == "md" ]
+        then
+            echo "| PROFILE | Virtual Server |"
+            echo "| ------- | -------------- |"
+            ssl-profiles-vs
+        else
+            ssl-profiles-vs | COLUMN -ts $'\t' -o " | " -N "Profile,Virtual Server"
+        fi
+        ;;
+    "ssl-profiles-cert")
+        if [ "$FORMAT" == "md" ]
+        then
+            echo "| ClientSSL | Certificate |"
+            echo "| --------- | ----------- |"
+            client-ssl-profiles-cert
+            echo ""
+            echo "| ServerSSL | Certificate |"
+            echo "| --------- | ----------- |"
+            server-ssl-profiles-cert
+        else
+            client-ssl-profiles-cert | COLUMN -ts $'\t' -o " | " -N "ClientSSL,Certificate"
+            echo ""
+            server-ssl-profiles-cert | COLUMN -ts $'\t' -o " | " -N "ServerSSL,Certificate"
+        fi
+        ;;
+    "cert-ssl-profiles")
+        if [ "$FORMAT" == "md" ]
+        then
+            echo "| Certificate | Common Name | ClientSSL | ServerSSL |"
+            echo "| ----------- | ----------- | --------- | --------- |"
+            cert-ssl-profiles
+        else
+            cert-ssl-profiles | COLUMN -ts $'\t' -o " | " -N "Certificate,Common Name,ClientSSL,ServerSSL" \
+                -W "Common Name,ClientSSL,ServerSSL"
+        fi
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0
