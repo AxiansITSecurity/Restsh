@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2023-10-19
 
 # Shortdesc: Manages traffic management certificates on the F5.
 # Desc:
@@ -124,7 +124,7 @@ remove_key() {
     return 0
 }
 
-# Lists all certificates
+# Lists all certificates with expiration status
 list_certs() {
     local CERTLIST
     CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
