@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-10-23
+
+# Shortdesc: Imports a F5 ASM Policy in binary or xml format.
+# Desc:
+# Imports a F5 ASM Policy in binary or xml format.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <filename> <policy name>"
+    exit 1
+else
+     FILENAME=$1
+     NAME=$2
+fi
+
+# Upload the policy file
+f5.file-transfer upload "$FILENAME"
+
+# Move to the correct location for import
+FILENAME=$(basename "$FILENAME")
+f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$NAME"
+
+# Start import task
+#shellcheck disable=SC2016
+TASK_ID=$($RESTSH_JQ -n --arg filename "$NAME" \
+    --arg name "$NAME" \
+    --arg filename "/var/config/rest/downloads/$FILENAME" \
+    '{
+        "name": $name,
+        "filename": $filename
+    }' | POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" | \
+        $RESTSH_JQ -r ".id")
+
+if [ -z "${TASK_ID}" ]
+then
+    echo_err "Import of policy \"$NAME\" failed."
+    exit 1
+fi
+
+# Wait for completed task
+if ! f5.asm.taskwait import-policy "$TASK_ID"
+then
+    echo_err "Import of policy failed."
+    exit 1
+fi
