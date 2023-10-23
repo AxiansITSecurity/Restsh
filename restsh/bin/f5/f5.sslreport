@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-19
+# Date: 2023-10-23
 
 # Shortdesc: SSL certificate and profile reporting.
 # Desc:
@@ -19,7 +19,7 @@ then
     exit 1
 fi
 
-# Get action
+# Get options
 if [ -n "${1+x}" ]
 then
     ACTION=$1
@@ -27,17 +27,31 @@ else
     ACTION="invalid"
 fi
 
-# Get output format
-if [ -n "${2+x}" ]
-then
-    FORMAT=$2
-else
-    FORMAT="console"
-fi
+case "$ACTION" in
+    "report")
+        if [ -z "${2+x}" ]
+        then
+            ACTION="invalid"
+        else
+            OUTPUT_FILE=$2
+        fi
+        ;;
+    *)
+        if [ -n "${2+x}" ]
+        then
+            FORMAT=$2
+        else
+            FORMAT="console"
+        fi
+        ;;
+esac
 
 # Prints help
 usage() {
-    echo "Usage: $(basename "$0") <vs-ssl-profiles|ssl-profiles-vs|ssl-profiles-cert|cert-ssl-profiles> [md]"
+    echo "Usage:"
+    echo -e "\t$(basename "$0") <vs-ssl-profiles|ssl-profiles-vs|ssl-profiles-cert|cert-ssl-profiles> [md]"
+    echo "Create a html report with pandoc"
+    echo -e "\t$(basename "$0") report"
     return 1
 }
 
@@ -171,6 +185,40 @@ cert-ssl-profiles() {
     done < <(GET "/mgmt/tm/sys/crypto/cert" | JQ -r ".items[] | .fullPath, .commonName" | paste - -)
 }
 
+# Creates a report in html or markdown format
+report() {
+    OUTFILE=$1
+    local TITLE="SSl Profiles And Certificate Report"
+    if PANDOC=$(command -v pandoc2)
+    then
+        PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--self-contained" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
+    else
+        echo_warn "pandoc not found, creating markdown report"
+        OUTFILE=${OUTFILE/.html/.md}
+        PANDOC="cat"
+    fi
+    {
+        echo "# $TITLE"
+        echo ""
+        echo "## Virtual Server - SSL Profiles"
+        echo ""
+        $0 vs-ssl-profiles md
+        echo ""
+        echo "## SSL Profiles - Virtual Server"
+        echo ""
+        $0 ssl-profiles-vs md
+        echo ""
+        echo "## SSL Profiles - Certificates"
+        echo ""
+        $0 ssl-profiles-cert md
+        echo ""
+        echo "## Certificates - SSL profiles"
+        echo ""
+        $0 cert-ssl-profiles md
+        echo ""
+    } | $PANDOC "${PANDOC_OPTS[@]}" > "$OUTFILE"
+}
+
 case "$ACTION" in
     "vs-ssl-profiles")
         if [ "$FORMAT" == "md" ]
@@ -219,6 +267,9 @@ case "$ACTION" in
             cert-ssl-profiles | COLUMN -ts $'\t' -o " | " -N "Certificate,Common Name,ClientSSL,ServerSSL" \
                 -W "Common Name,ClientSSL,ServerSSL"
         fi
+        ;;
+    "report")
+        report "$OUTPUT_FILE"
         ;;
     *)
         usage
