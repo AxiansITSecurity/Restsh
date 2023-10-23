@@ -21,17 +21,12 @@ fi
 
 case "$MODE" in
     minimal)
-        tar -czf "restsh_min_${VERSION}.tgz" \
-            --exclude=TODO.* \
-            --exclude=restsh/bin/f5 \
-            --exclude=restsh/templates \
-            --exclude=restsh/lib/f5/f5.as3 \
-            --exclude=restsh/lib/f5/f5.asm \
-            --exclude=restsh/lib/mo/f5.as3 \
-            -- restsh .restsh-config.dist *.md
+        tar -czf "restsh_min_${VERSION}.tgz" -- \
+            restsh .restsh-config.dist
         ;;
     complete)
-        tar -czf "restsh_${VERSION}.tgz" -- restsh .restsh-config.dist *.md
+        tar -czf "restsh_${VERSION}.tgz" -- \
+            restsh .restsh-config.dist *.md
         ;;
     *)
         echo "Usage: $0 <complete|minimal>"
