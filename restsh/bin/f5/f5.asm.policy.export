@@ -36,8 +36,8 @@ then
     echo "Usage: $(basename "$0") [-f <json|xml|binary>] <policy fullPath> <filename>"
     exit 1
 else
-     POLICY=$1
-     FILENAME=$2
+    POLICY=$1
+    FILENAME=$2
 fi
 
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
