@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-23
+# Date: 2023-10-24
 
 # Shortdesc: Custom configuration file for restsh.init.
 # Desc:
@@ -31,7 +31,7 @@
 #[ -n "${RESTSH_PASS+x}" ] || export RESTSH_PASS="apipass"
 
 # Set token header and value
-#[ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-Auth-Token"
+[ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-Auth-Token"
 #[ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="the_token"
 
 # Set REST payload format

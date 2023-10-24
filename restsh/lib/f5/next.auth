@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
+# https://github.com/JuergenMang/restsh
+
+# Shortdesc: Gets, refreshes and deletes the bearer token from a f5 next.
+# Desc:
+# Gets, refreshes and deletes the bearer token from a f5 next. Ask's for username and password if not set through environment.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Gets the authentication token from a f5 next and sets the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable.
+next.auth.login() {
+    # Ask for user/password if not set
+    if [ -z "${RESTSH_USER+x}" ]
+    then
+        read -r -p "User: " RESTSH_USER
+    fi
+    if [ -z "${RESTSH_PASS+x}" ]
+    then
+        read -r -s -p "Password: " RESTSH_PASS
+        echo ""
+    fi
+
+    local RESULT
+    #shellcheck disable=SC2016
+    if RESULT=$($RESTSH_JQ -n --arg user "$RESTSH_USER" --arg pass "$RESTSH_PASS" \
+        '{
+            "username": $user,
+            "password": $pass
+        }' | POST "/api/login")
+    then
+        local ACCESS_TOKEN
+        local REFRESH_TOKEN
+        ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT")
+        REFRESH_TOKEN=$($RESTSH_JQ -r ".refresh_token" <<< "$RESULT")
+        if [ -n "${ACCESS_TOKEN}" ]
+        then
+            echo "Access Token: $ACCESS_TOKEN"
+            echo "Refresh Token: $REFRESH_TOKEN"
+            export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
+            export RESTSH_REFRESH_TOKEN="$REFRESH_TOKEN"
+            unset RESTSH_USER
+            unset RESTSH_PASS
+            return 0
+        fi
+    fi
+    export RESTSH_TOKEN_VALUE=""
+    unset RESTSH_USER
+    unset RESTSH_PASS
+    echo_err "Could not get token."
+    return 1
+}
+
+# Uses the refresh token to get a new access token.
+next.auth.refresh() {
+    local RESULT
+    #shellcheck disable=SC2016
+    if RESULT=$($RESTSH_JQ -n --arg refresh_token "$RESTSH_REFRESH_TOKEN" \
+        '{
+            "refresh_token" : $refresh_token
+        }' | POST "/api/token-refresh")
+    then
+        local ACCESS_TOKEN
+        ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT")
+        if [ -n "${ACCESS_TOKEN}" ]
+        then
+            echo "Access Token: $ACCESS_TOKEN"
+            export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
+            return 0
+        fi
+    fi
+
+    echo_err "Could not get a new access token."
+    return 1
+}
+
+# Deletes the authentication token from a f5 and clears the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable.
+next.auth.logout() {
+    local STATUS
+    if RESULT=$(POST "/api/logout")
+    then
+        STATUS=$($RESTSH_JQ -r ".status" <<< "$RESULT")
+        if [ -n "${STATUS}" ]
+        then
+            echo "F5 Authentication Token deleted"
+            export RESTSH_TOKEN_VALUE=""
+            export RESTSH_REFRESH_TOKEN=""
+            return 0
+        fi
+    fi
+
+    echo_err "Could not logout."
+    return 1
+}
+
+export -f next.auth.login
+export -f next.auth.refresh
+export -f next.auth.logout

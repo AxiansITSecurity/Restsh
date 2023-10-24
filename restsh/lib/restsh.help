@@ -65,7 +65,9 @@ restsh.help.showenv() {
     do
         echo -e "\t$LINE"
     done < <(export | grep RESTSH | \
-        sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" | \
+        sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
+            -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
+            -e "s/(RESTSH_REFRESH_TOKEN=).*/\1\"***\"/"| \
         sort | COLUMN -s"=" -t)
     return 0
 }
