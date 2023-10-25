@@ -77,13 +77,19 @@ restsh.help.categories() {
     # Print all custom categories
     echo "Additional categories":
     local CAT
-    while read -r CAT
-    do
-        local DESC=""
-        [ -f "$RESTSH_PATH/bin/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/bin/$CAT/.shortdesc")
-        [ -f "$RESTSH_PATH/lib/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$CAT/.shortdesc")
-        echo -e "\t$CAT\t$DESC"
-    done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
+    {
+        while read -r CAT
+        do
+            local DESC=""
+            [ -f "$RESTSH_PATH/bin/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/bin/$CAT/.shortdesc")
+            [ -f "$RESTSH_PATH/lib/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$CAT/.shortdesc")
+            echo -e "$CAT=$DESC"
+        done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
+    } | COLUMN -s"=" -t | \
+        while read -r LINE
+        do
+            echo -e "\t$LINE"
+        done
     return 0
 }
 
