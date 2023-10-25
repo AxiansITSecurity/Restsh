@@ -51,7 +51,7 @@ usage() {
     echo "Usage:"
     echo -e "\t$(basename "$0") <vs-ssl-profiles|ssl-profiles-vs|ssl-profiles-cert|cert-ssl-profiles> [md]"
     echo "Create a html report with pandoc"
-    echo -e "\t$(basename "$0") report"
+    echo -e "\t$(basename "$0") report <output file>"
     return 1
 }
 
@@ -189,7 +189,7 @@ cert-ssl-profiles() {
 report() {
     OUTFILE=$1
     local TITLE="SSl Profiles And Certificate Report"
-    if PANDOC=$(command -v pandoc2)
+    if PANDOC=$(command -v pandoc)
     then
         PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--self-contained" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
     else
