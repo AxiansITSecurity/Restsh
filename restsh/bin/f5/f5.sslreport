@@ -176,7 +176,8 @@ cert-ssl-profiles() {
     do
         CLIENTSSL_CERT=$(JQ -r ".items[] | select(.certKeyChain[].cert==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
         CLIENTSSL_CHAIN=$(JQ -r ".items[] | select(.certKeyChain[].chain==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
-        CLIENTSSL=$(concat_profiles "$CLIENTSSL_CERT" "$CLIENTSSL_CHAIN")
+        CLIENTSSL_CA=$(JQ -r ".items[] | select(.caFile==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        CLIENTSSL=$(concat_profiles "$CLIENTSSL_CERT" "$CLIENTSSL_CHAIN" "$CLIENTSSL_CA")
 
         SERVERSSL_CERT=$(JQ -r ".items[] | select(.cert==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
         SERVERSSL_CHAIN=$(JQ -r ".items[] | select(.chain==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
