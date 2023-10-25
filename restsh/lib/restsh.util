@@ -115,22 +115,22 @@ print_json_warn_curl() {
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
 }
 
-# Shortcut for $RESTSH_MO
+# Shortcut for $RESTSH_MO.
 MO() {
     $RESTSH_MO "$@"
 }
 
-# Shortcut for $RESTSH_JQ
+# Shortcut for $RESTSH_JQ.
 JQ() {
     $RESTSH_JQ "$@"
 }
 
-# Shortcut for xargs, running the command sequentially and only with one parameter
+# Shortcut for xargs, running the command sequentially and only with one parameter.
 XARGS() {
     xargs -n1 -P1 "$@"
 }
 
-# Shortcut for column with feature detection
+# Shortcut for column with feature detection.
 COLUMN() {
     local OPTION OPTIND
     local COLUMN_OPTIONS=()

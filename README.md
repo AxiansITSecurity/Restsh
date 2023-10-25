@@ -64,13 +64,20 @@ export RESTSH_PATH="/path/to/restsh"
 
 See [USAGE.md](USAGE.md)
 
+### Available modules
+
+| Module | Prefix |
+| ------ | ------ |
+| F5 BIG-IP | f5 |
+| F5 BIG-IP Next | next |
+
 ## Dependencies
 
 restsh works only inside the bash shell and needs standard linux utilities like sed, grep, etc.
 
 Further dependencies are:
 
-- `curl`
+- `curl`: 
 - `jq`: to support json payload
 
 ## Customize
