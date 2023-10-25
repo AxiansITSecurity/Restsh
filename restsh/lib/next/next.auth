@@ -37,8 +37,8 @@ next.auth.login() {
     then
         local ACCESS_TOKEN
         local REFRESH_TOKEN
-        ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT")
-        REFRESH_TOKEN=$($RESTSH_JQ -r ".refresh_token" <<< "$RESULT")
+        ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT" | grep -v "null")
+        REFRESH_TOKEN=$($RESTSH_JQ -r ".refresh_token" <<< "$RESULT" | grep -v "null")
         if [ -n "${ACCESS_TOKEN}" ]
         then
             echo "Access Token: $ACCESS_TOKEN"
