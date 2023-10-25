@@ -13,10 +13,6 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Note:
-# We print user oriented messages to STDERR.
-# JSON formated message are printed always to STDOUT.
-
 # Prints green ok messages to STDERR.
 echo_ok() {
     printf "\e[1;32m"
