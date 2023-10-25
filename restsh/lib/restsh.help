@@ -13,6 +13,14 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
+# Indents the lines by one tab
+indent() {
+    while read -r LINE
+    do
+        echo -e "\t$LINE"
+    done
+}
+
 # Parses the file for functions and its descriptions
 restsh.help.parse.lib() {
     local FILE=$1
@@ -38,11 +46,7 @@ restsh.help.print() {
     for K in "${!CMDS[@]}"
     do
         echo -e "$K=${CMDS["$K"]}"
-    done | sort | COLUMN -s"=" -t | \
-        while read -r LINE
-        do
-            echo -e "\t$LINE"
-        done
+    done | sort | COLUMN -s"=" -t | indent
     unset CMDS
     return 0
 }
@@ -85,11 +89,7 @@ restsh.help.categories() {
             [ -f "$RESTSH_PATH/lib/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$CAT/.shortdesc")
             echo -e "$CAT=$DESC"
         done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
-    } | COLUMN -s"=" -t | \
-        while read -r LINE
-        do
-            echo -e "\t$LINE"
-        done
+    } | COLUMN -s"=" -t | indent
     return 0
 }
 
