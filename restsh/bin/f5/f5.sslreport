@@ -146,18 +146,23 @@ server-ssl-profiles-cert() {
 
 # Concats profiles for pretty printing
 concat_profiles() {
-    local CERT=$1
-    local CHAIN=$2
-    local PROFILES="$CERT"
-    if [ -z "${CERT}${CHAIN}" ]
+    local PROFILES=("${@}")
+    local STR=""
+    for P in "${PROFILES[@]}"
+    do
+        if [ -n "$P" ]
+        then
+            [ -n "$STR" ] && STR="$STR, "
+            STR="${STR}${P}"
+        fi
+    done
+
+    if [ -z "$STR" ]
     then
-        PROFILES="unused"
+        echo "unused"
     else
-        PROFILES="$CERT"
-        [ -n "$PROFILES" ] && [ -n "$CHAIN" ] && PROFILES="${PROFILES}, "
-        PROFILES="${PROFILES}${CHAIN}"
+        echo "$STR"
     fi
-    echo "$PROFILES"
 }
 
 # Gets ssl profiles for certificates
@@ -175,7 +180,8 @@ cert-ssl-profiles() {
 
         SERVERSSL_CERT=$(JQ -r ".items[] | select(.cert==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
         SERVERSSL_CHAIN=$(JQ -r ".items[] | select(.chain==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
-        SERVERSSL=$(concat_profiles "$SERVERSSL_CERT" "$SERVERSSL_CHAIN")
+        SERVERSSL_CA=$(JQ -r ".items[] | select(.caFile==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        SERVERSSL=$(concat_profiles "$SERVERSSL_CERT" "$SERVERSSL_CHAIN" "$SERVERSSL_CA")
         if [ "$FORMAT" == "md" ]
         then
             printf "| %s | %s | %s | %s |\n" "$CERT" "$CN" "$CLIENTSSL" "$SERVERSSL"
