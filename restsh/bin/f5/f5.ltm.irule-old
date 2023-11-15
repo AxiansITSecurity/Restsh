@@ -1,0 +1,318 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-07-27
+
+# Shortdesc: Manages iRules.
+# Desc:
+# Manages iRules (must be rewritten).
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+#TODO: integrate
+BIGIP=$RESTSH_HOST
+BIGIPPARTITION="Common"
+WORKDIR="tmp"
+
+#Functions
+
+#Checks / creates the partition directory
+create_partition_dir() {
+    if [ ! -d "$BIGIPPARTITION" ]
+    then
+        if ! mkdir "$BIGIPPARTITION"
+        then
+            echo_err "Can not create partition directory: $BIGIPPARTITION"
+            return 1
+        fi
+    fi
+    return 0
+}
+
+#Downloads all iRules from the f5 and saves it in TMPFILE
+download_irules() {
+    #Remove old tmp file
+    rm -f "$TMPFILE"
+    #Downloads all iRules and saves the raw API response to tmp file
+    echo "Downloading iRules from $BIGIP"
+    if ! GET "/mgmt/tm/ltm/rule" > "$TMPFILE"
+    then
+        echo_err "Error calling F5 rest api"
+        return 1
+    fi
+    return 0
+}
+
+#Check for TMPFILE with all irules and downloads it, if not exists or is empty
+check_download_irules() {
+    #Check for API response tmp file
+    if [ ! -s "$TMPFILE" ]
+    then
+        #Download if not exists
+        if ! download_irules
+        then
+            return 1
+        fi
+    fi
+    return 0
+}
+
+#Lists all previous downloaded iRules
+list_irules() {
+    #List all iRules from the API response, skips system irules
+    echo "List iRules from $BIGIP for partition $BIGIPPARTITION"
+    JQ -r ".items[] | select(.partition==\"$BIGIPPARTITION\") | .name" < "$TMPFILE" | grep -v "^_sys_"
+    return 0
+}
+
+#Extracts all iRules from TMPFILE to individual files in the partition directory
+extract_irules() {
+    [ -d "$BIGIPPARTITION" ] || return 1
+    echo "Removing old iRules"
+    rm -f "$BIGIPPARTITION/"*.tcl
+    echo "Extracting iRules from $BIGIP for partition $BIGIPPARTITION"
+    local NAME
+    for NAME in $(JQ -r ".items[] | select(.partition==\"$BIGIPPARTITION\") | .name" < "$TMPFILE" | grep -v "^_sys_")
+    do
+        # shellcheck disable=SC2001
+        NAME=$(sed -e 's/\r|\n//g' <<< "$NAME")
+        FILENAME="$BIGIPPARTITION/$NAME.tcl"
+        echo "Extracting $FILENAME"
+        if ! JQ -r ".items[] | select((.partition==\"$BIGIPPARTITION\") and (.name==\"$NAME\")) | .apiAnonymous" < "$TMPFILE" > "$FILENAME"
+        then
+            echo_err "Error extracting $FILENAME"
+            return 1
+        fi
+    done
+    return 0
+}
+
+#Updates a existing iRule
+#helper function for upload_irule
+update_irule() {
+    local NAME=$1
+    local IRULE=$2
+    echo "Updating iRule $BIGIPPARTITION/$NAME on $BIGIP"
+    if [ "$BIGIPPARTITION" != "Common" ]
+    then
+        NAME="~${BIGIPPARTITION}~${NAME}"
+    fi
+    # shellcheck disable=SC2016
+    if JQ -n --rawfile content "$IRULE" '{ apiAnonymous: $content }' | \
+        PATCH "/mgmt/tm/ltm/rule/$NAME"
+    then
+        return 0
+    fi
+    return 1
+}
+
+#Creates a new iRule
+#helper function for upload_irule
+new_irule() {
+    local NAME=$1
+    local IRULE=$2
+    echo "Creating iRule $BIGIPPARTITION/$NAME on $BIGIP"
+    # shellcheck disable=SC2016
+    if JQ -n --arg name "$NAME" --arg partition "$BIGIPPARTITION" --rawfile content "$IRULE" \
+        '{ name: $name, partition: $partition, apiAnonymous: $content }' | \
+        POST "https://$BIGIP/mgmt/tm/ltm/rule"
+    then
+        return 0
+    fi
+    return 1
+}
+
+#Uploads one individual irule file
+#iRule name will be the basename of the file
+#Must be called with absolute filename or filename relative to WORKDIR
+upload_irule() {
+    local IRULE=$1
+    if [ ! -f "$IRULE" ]
+    then
+        echo_err "$IRULE does not exist"
+        return 1
+    fi
+    
+    if [ ! -s "$TMPFILE" ]
+    then
+        echo_err "Destination F5 iRules are not downloaded."
+        return 1
+    fi
+
+    local NAME
+    NAME=$(basename "$IRULE" .tcl)
+    local EXISTS
+    EXISTS=$(JQ -r ".items[] | select((.partition==\"$BIGIPPARTITION\") and (.name==\"$NAME\")) | .name" < "$TMPFILE")
+
+    if [ "$EXISTS" == "" ]
+    then
+        #Create new iRule
+        if new_irule "$NAME" "$IRULE"
+        then
+            return 0
+        fi
+    else
+        #Update existing iRule
+        if update_irule "$NAME" "$IRULE"
+        then
+            return 0
+        fi
+    fi
+    echo_err "Error creating/updating iRule"
+    return 1
+}
+
+#Uploads all iRules from specified directory
+#Directory defaults to current set BIGIPPARTITION
+#Files must have the .tcl extension
+upload_irules() {
+    download_irules || return 1
+    local DIRECTORY=$1
+    [ "$DIRECTORY" = "" ] && DIRECTORY=$BIGIPPARTITION
+    echo "Uploading all iRules from directory $DIRECTORY"
+    local RC=0
+    local FILE
+    for FILE in "$DIRECTORY"/*.tcl
+    do
+        if ! upload_irule "$FILE"
+        then
+            RC=1
+        fi
+    done
+    return $RC
+}
+
+#Deletes an iRule from the F5
+delete_irule() {
+    local NAME=$1
+    echo "Deleting iRule $BIGIPPARTITION/$NAME on $BIGIP"
+    if [ "$BIGIPPARTITION" != "Common" ]
+    then
+        NAME="~${BIGIPPARTITION}~${NAME}"
+    fi
+    if DELETE "/mgmt/tm/ltm/rule/$NAME"
+    then 
+        return 0
+    fi
+    echo_err "Error deleting iRule"
+    return 1
+}
+
+#Deletes all iRules matching PCRE
+delete_irules() {
+    local PCRE
+    if [ -z "${1+x}" ]
+    then
+        PCRE=".*"
+    else
+        PCRE=$1
+    fi
+    download_irules || return 1
+    local RC=0
+    for NAME in $(JQ -r ".items | .[] | select(.partition==\"$BIGIPPARTITION\") | .name" < "$TMPFILE" | grep -v "^_sys_" | grep -P "$PCRE")
+    do
+        # shellcheck disable=SC2001
+        NAME=$(sed -e 's/\r|\n//g' <<< "$NAME")
+        if ! delete_irule "$NAME"
+        then
+            RC=1
+        fi
+    done
+    return $RC
+}
+
+#main
+
+#Create working directory
+if [ ! -d "$WORKDIR" ]
+then
+    if ! mkdir "$WORKDIR"
+    then
+        echo_err "Can not create working directory: $WORKDIR"
+        exit 1
+    fi
+fi
+
+if ! cd "$WORKDIR"
+then
+    echo_err "Can not change directory to $WORKDIR"
+    exit 1
+fi
+
+#Set absolute paths
+WORKDIR=$(realpath .)
+TMPFILE="${WORKDIR}/.irules.tmp"
+
+#Create partition directory
+create_partition_dir || exit 1
+
+echo "$BIGIP/$BIGIPPARTITION:$WORKDIR"
+
+if [ -z "${1+x}" ]
+then
+    ACTION="invalid"
+else
+    ACTION=$1
+fi
+
+case "$ACTION" in
+    download)
+        download_irules
+        ;;
+    list)
+        if check_download_irules
+        then
+            list_irules
+        fi
+        ;;
+    extract)
+        if check_download_irules
+        then
+            extract_irules
+        fi
+        ;;
+    upload-all)
+        upload_irules "$2"
+        ;;
+    upload)
+        if [ -z "$2" ]
+        then
+            echo "Usage: $0 upload <IRULE>"
+            echo "  <IRULE>: irule file to upload"
+            exit 1
+        fi
+        upload_irule "$2"
+        ;;
+    delete)
+        if [ -z "$2" ]
+        then
+            echo "Usage: $0 delete <IRULE>"
+            echo "  <IRULE>: irule to delete"
+            exit 1
+        fi
+        delete_irule "$2"
+        ;;
+    delete-all)
+        delete_irules "$2"
+        ;;
+    cleanup)
+            echo "Removing $WORKDIR"
+            cd /
+            rm -rfI "$WORKDIR"
+        ;;
+    *)
+        echo "Usage: $(basename "$0") (download|list|extract|upload|upload-all|delete|delete-all|cleanup)"
+        exit 1
+        ;;
+esac
+exit 0
