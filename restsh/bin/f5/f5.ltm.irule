@@ -34,6 +34,16 @@ get_irule() {
     return 1
 }
 
+get_all() {
+    local DST=$1
+    while read -r LINE
+    do
+        local FILENAME=${LINE//\//\~}
+        echo "$FILENAME"
+        get_irule "$LINE" "${DST}/${FILENAME}.irule"
+    done < <(f5.ltm.irule list | grep -v _sys_)
+}
+
 create_irule() {
     local IRULE=$1
     local FULLPATH="${2:1}"
@@ -91,6 +101,14 @@ case "$ACTION" in
         fi
         get_irule "$2" "$3"
         ;;
+    getall)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $0 getall <dir>"
+            exit 1
+        fi
+        get_all "$2"
+        ;;
     create)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
@@ -116,7 +134,7 @@ case "$ACTION" in
         delete_irule "$2"
         ;;
     *)
-        echo "Usage: $(basename "$0") (list|get|create|update|delete)"
+        echo "Usage: $(basename "$0") (list|get|getall|create|update|delete)"
         exit 1
         ;;
 esac
