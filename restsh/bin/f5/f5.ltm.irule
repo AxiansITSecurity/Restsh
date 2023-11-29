@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-11-15
+# Date: 2023-11-29
 
 # Shortdesc: Manages iRules.
 # Desc:
@@ -20,10 +20,25 @@ then
 fi
 
 # functions
+list_irules() {
+    GET "/mgmt/tm/ltm/rule?\$select=fullPath" | JQ -r ".items[].fullPath"
+}
+
+get_irule() {
+    local FULLPATH=${1//\//\~}
+    local FILE=$2
+    if GET "/mgmt/tm/ltm/rule/$FULLPATH" | JQ -r ".apiAnonymous" > "$FILE"
+    then
+        return 0
+    fi
+    return 1
+}
+
 create_irule() {
     local IRULE=$1
-    local NAME=$2
-    local PARTITION=$3
+    local FULLPATH="${2:1}"
+    local NAME=${FULLPATH##*/}
+    local PARTITION="${FULLPATH%%/*}"
     # shellcheck disable=SC2016
     if JQ -n --arg name "$NAME" --arg partition "$PARTITION" --rawfile content "$IRULE" \
         '{ name: $name, partition: $partition, apiAnonymous: $content }' | \
@@ -36,12 +51,20 @@ create_irule() {
 
 update_irule() {
     local IRULE=$1
-    local NAME=$2
-    local PARTITION=$3
-    [ "$PARTITION" != "Common" ] && NAME="~${PARTITION}~${NAME}"
+    local FULLPATH=${2//\//\~}
+
     # shellcheck disable=SC2016
     if JQ -n --rawfile content "$IRULE" '{ apiAnonymous: $content }' | \
-        PATCH "/mgmt/tm/ltm/rule/$NAME" > /dev/null
+        PATCH "/mgmt/tm/ltm/rule/$FULLPATH" > /dev/null
+    then
+        return 0
+    fi
+    return 1
+}
+
+delete_irule() {
+    local FULLPATH=${1//\//\~}
+    if DELETE "/mgmt/tm/ltm/rule/$FULLPATH" > /dev/null
     then
         return 0
     fi
@@ -49,17 +72,6 @@ update_irule() {
 }
 
 # main
-PARTITION="Common"
-
-while getopts ':p:' OPTION
-do
-    case "$OPTION" in
-        p) PARTITION="$OPTARG" ;;
-        *) ACTION="invalid"; break ;;
-    esac
-done
-shift "$((OPTIND -1))"
-
 if [ -z "${1+x}" ]
 then
     ACTION="invalid"
@@ -68,24 +80,43 @@ else
 fi
 
 case "$ACTION" in
+    list)
+        list_irules
+        ;;
+    get)
+        if [ -z "${2+x}" ] || [ -z "${3+x}" ]
+        then
+            echo "Usage: $0 get <fullPath> <file>"
+            exit 1
+        fi
+        get_irule "$2" "$3"
+        ;;
     create)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
-            echo "Usage: $0 create <file> <name>"
+            echo "Usage: $0 create <file> <fullPath>"
             exit 1
         fi
-        create_irule "$2" "$3" "$PARTITION"
+        create_irule "$2" "$3"
         ;;
     update)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
-            echo "Usage: $0 update <file> <name>"
+            echo "Usage: $0 update <file> <fullPath>"
             exit 1
         fi
-        update_irule "$2" "$3" "$PARTITION"
+        update_irule "$2" "$3"
+        ;;
+    delete)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $0 delete <fullPath>"
+            exit 1
+        fi
+        delete_irule "$2"
         ;;
     *)
-        echo "Usage: $(basename "$0") [-p <partition>] (create|update)"
+        echo "Usage: $(basename "$0") (list|get|create|update|delete)"
         exit 1
         ;;
 esac
