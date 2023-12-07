@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-11-29
+# Date: 2023-12-07
 
 # Shortdesc: Manages iRules.
 # Desc:
@@ -46,9 +46,17 @@ get_all() {
 
 create_irule() {
     local IRULE=$1
-    local FULLPATH="${2:1}"
-    local NAME=${FULLPATH##*/}
-    local PARTITION="${FULLPATH%%/*}"
+    local FULLPATH=$2
+    local NAME
+    if [ "${FULLPATH:0:1}" != "/" ]
+    then
+        NAME=$FULLPATH
+        PARTITION="Common"
+    else
+        FULLPATH="${FULLPATH:1}"
+        local NAME=${FULLPATH##*/}
+        local PARTITION="${FULLPATH%%/*}"
+    fi
     # shellcheck disable=SC2016
     if JQ -n --arg name "$NAME" --arg partition "$PARTITION" --rawfile content "$IRULE" \
         '{ name: $name, partition: $partition, apiAnonymous: $content }' | \
@@ -59,9 +67,30 @@ create_irule() {
     return 1
 }
 
+create_all() {
+    local IRULE_DIR=$1
+    for FILE in "$IRULE_DIR/"*.irule
+    do
+        NAME=$(basename "$FILE" .irule)
+        if ! create_irule "$FILE" "$NAME" 2>/dev/null
+        then
+            if update_irule "$FILE" "$NAME"
+            then
+                echo_ok "iRule $NAME updated"
+            fi
+        else
+            echo_ok "iRule $NAME created"
+        fi
+    done
+}
+
 update_irule() {
     local IRULE=$1
     local FULLPATH=${2//\//\~}
+    if [ "${FULLPATH:0:1}" != "~" ]
+    then
+        FULLPATH="~Common~$FULLPATH"
+    fi
 
     # shellcheck disable=SC2016
     if JQ -n --rawfile content "$IRULE" '{ apiAnonymous: $content }' | \
@@ -70,6 +99,18 @@ update_irule() {
         return 0
     fi
     return 1
+}
+
+update_all() {
+    local IRULE_DIR=$1
+    for FILE in "$IRULE_DIR/"*.irule
+    do
+        NAME=$(basename "$FILE" .irule)
+        if update_irule "$FILE" "$NAME"
+        then
+            echo_ok "iRule $NAME updated"
+        fi
+    done
 }
 
 delete_irule() {
@@ -117,6 +158,14 @@ case "$ACTION" in
         fi
         create_irule "$2" "$3"
         ;;
+    create_all)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $0 createall <dir>"
+            exit 1
+        fi
+        create_all "$2"
+        ;;
     update)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
@@ -124,6 +173,14 @@ case "$ACTION" in
             exit 1
         fi
         update_irule "$2" "$3"
+        ;;
+    update_all)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $0 updateall <dir>"
+            exit 1
+        fi
+        update_all "$2"
         ;;
     delete)
         if [ -z "${2+x}" ]
@@ -134,7 +191,7 @@ case "$ACTION" in
         delete_irule "$2"
         ;;
     *)
-        echo "Usage: $(basename "$0") (list|get|getall|create|update|delete)"
+        echo "Usage: $(basename "$0") (list|get|getall|create|create_all|update|update_all|delete)"
         exit 1
         ;;
 esac
