@@ -29,6 +29,16 @@ list_ifiles_sys() {
     GET /mgmt/tm/sys/file/ifile?\$select=fullPath | JQ -r ".items[].fullPath"
 }
 
+info_ifile_ltm() {
+    local FULLPATH=$1
+    GET "/mgmt/tm/ltm/ifile/${FULLPATH//\//\~}"
+}
+
+info_ifile_sys() {
+    local FULLPATH=$1
+    GET "/mgmt/tm/sys/file/ifile/${FULLPATH//\//\~}"
+}
+
 get_ifile() {
     local FULLPATH=$1
     local FILENAME=$2
@@ -147,10 +157,26 @@ case "$ACTION" in
     list_sys)
         list_ifiles_sys
         ;;
+    info_ltm)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $0 info_ltm <fullPath>"
+            exit 1
+        fi
+        info_ifile_ltm "$2"
+        ;;
+    info_sys)
+        if [ -z "${2+x}" ]
+        then
+            echo "Usage: $0 info_sys <fullPath>"
+            exit 1
+        fi
+        info_ifile_sys "$2"
+        ;;
     get)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
-            echo "Usage: $0 create <fullPath> <filename>"
+            echo "Usage: $0 get <fullPath> <filename>"
             exit 1
         fi
         get_ifile "$2" "$3"
@@ -204,7 +230,7 @@ case "$ACTION" in
         delete_ifile_sys "$2"
         ;;
     *)
-        echo "Usage: $(basename "$0") (get|list_ltm|list_sys|create|create_ltm|create_sys|delete|delete_ltm|delete_sys)"
+        echo "Usage: $(basename "$0") (info_ltm|info_sys|get|list_ltm|list_sys|create|create_ltm|create_sys|delete|delete_ltm|delete_sys)"
         exit 1
         ;;
 esac
