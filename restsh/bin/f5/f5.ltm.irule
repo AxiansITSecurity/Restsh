@@ -39,6 +39,7 @@ get_all() {
     while read -r LINE
     do
         local FILENAME=${LINE//\//\~}
+        FILENAME=${FILENAME/~Common~/}
         echo "$FILENAME"
         get_irule "$LINE" "${DST}/${FILENAME}.irule"
     done < <(f5.ltm.irule list | grep -v _sys_)
