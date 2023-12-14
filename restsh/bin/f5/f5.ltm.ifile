@@ -22,11 +22,11 @@ fi
 
 # functions
 list_ifiles_ltm() {
-    GET /mgmt/tm/ltm/ifile | JQ -r ".items[].fullPath"
+    GET /mgmt/tm/ltm/ifile?\$select=fullPath | JQ -r ".items[].fullPath"
 }
 
 list_ifiles_sys() {
-    GET /mgmt/tm/sys/file/ifile | JQ -r ".items[].fullPath"
+    GET /mgmt/tm/sys/file/ifile?\$select=fullPath | JQ -r ".items[].fullPath"
 }
 
 get_ifile() {
