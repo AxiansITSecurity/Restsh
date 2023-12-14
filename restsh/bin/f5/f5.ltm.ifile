@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-11-15
+# Date: 2023-12-14
 
 # Shortdesc: Manages iFiles.
 # Desc:
@@ -21,6 +21,49 @@ then
 fi
 
 # functions
+list_ifiles_ltm() {
+    GET /mgmt/tm/ltm/ifile | JQ -r ".items[].fullPath"
+}
+
+list_ifiles_sys() {
+    GET /mgmt/tm/sys/file/ifile | JQ -r ".items[].fullPath"
+}
+
+get_ifile() {
+    local FULLPATH=$1
+    local FILENAME=$2
+
+    # Get iFile configuration
+    local IFILE
+    if ! IFILE=$(GET "/mgmt/tm/sys/file/ifile/${FULLPATH//\//\~}")
+    then
+        return 1
+    fi
+
+    FULLPATH="${FULLPATH:1}"
+    local NAME=${FULLPATH##*/}
+    local PARTITION="${FULLPATH%%/*}"
+    local REVISION
+    REVISION=$(JQ -r ".revision" <<< "$IFILE")
+    
+    # Find the file for download and copy it to a location where we can download it
+    # This involves some guessing of the filename
+    local F5_FILE
+    if ! F5_FILE=$(f5.run "ls -1 /config/filestore/files_d/${PARTITION}_d/ifile_d/:${PARTITION}:${NAME}_?????_${REVISION}")
+    then
+        echo_err "File not found"
+        return 1
+    fi
+    local F5_FILE_DOWNLOAD="ifile_${PARTITION}_${NAME}"
+    if f5.run "cp '$F5_FILE' '/shared/images/$F5_FILE_DOWNLOAD'"
+    then
+        f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$F5_FILE_DOWNLOAD" 0 "$FILENAME"
+        f5.file.remove "/shared/images/$F5_FILE_DOWNLOAD"
+        return 0
+    fi
+    return 1
+}
+
 create_ifile_sys() {
     local FILE=$1
     local FILENAME
@@ -94,6 +137,20 @@ else
 fi
 
 case "$ACTION" in
+    list_ltm)
+        list_ifiles_ltm
+        ;;
+    list_sys)
+        list_ifiles_sys
+        ;;
+    get)
+        if [ -z "${2+x}" ] || [ -z "${3+x}" ]
+        then
+            echo "Usage: $0 create <fullPath> <filename>"
+            exit 1
+        fi
+        get_ifile "$2" "$3"
+        ;;
     create)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
@@ -143,7 +200,7 @@ case "$ACTION" in
         delete_ifile_sys "$2"
         ;;
     *)
-        echo "Usage: $(basename "$0") (create|create_ltm|create_sys|delete|delete_ltm|delete_sys)"
+        echo "Usage: $(basename "$0") (get|list_ltm|list_sys|create|create_ltm|create_sys|delete|delete_ltm|delete_sys)"
         exit 1
         ;;
 esac
