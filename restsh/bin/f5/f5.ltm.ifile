@@ -53,12 +53,16 @@ get_ifile() {
     then
         echo_err "File not found"
         return 1
+    elif [ "$(wc -l <<< "$F5_FILE")" -ne 1 ]
+    then
+        echo_err "Multiple files found"
+        return 1
     fi
     local F5_FILE_DOWNLOAD="ifile_${PARTITION}_${NAME}"
     if f5.run "cp '$F5_FILE' '/shared/images/$F5_FILE_DOWNLOAD'"
     then
         f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$F5_FILE_DOWNLOAD" 0 "$FILENAME"
-        f5.file.remove "/shared/images/$F5_FILE_DOWNLOAD"
+        f5.file.remove "/shared/images/$F5_FILE_DOWNLOAD" > /dev/null
         return 0
     fi
     return 1
