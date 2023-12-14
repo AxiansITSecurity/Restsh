@@ -25,16 +25,9 @@ list_datagroups() {
 }
 
 get_datagroup() {
-    local FULLPATH=$1
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
 
     if GET "/mgmt/tm/ltm/data-group/internal/~${PARTITION}~${NAME}"
     then
@@ -74,19 +67,12 @@ get_records_from_file() {
 }
 
 create_datagroup() {
-    local FULLPATH=$1
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local TYPE=$2
     local INFILE=$3
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
-
+    
     local RECORDS
     RECORDS=$(get_records_from_file "$INFILE")
     if [ -z "$RECORDS" ]
@@ -108,17 +94,10 @@ create_datagroup() {
 }
 
 update_datagroup() {
-    local FULLPATH=$1
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local INFILE=$2
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
 
     local RECORDS
     RECORDS=$(get_records_from_file "$INFILE")
@@ -139,16 +118,9 @@ update_datagroup() {
 }
 
 delete_datagroup() {
-    local FULLPATH=$1
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
 
     if DELETE "/mgmt/tm/ltm/data-group/internal/~${PARTITION}~${NAME}"
     then
@@ -158,18 +130,11 @@ delete_datagroup() {
 }
 
 add_entry() {
-    local FULLPATH=$1
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local KEY=$2
     local VALUE=$3
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
 
     OPTIONS=$(JQ -sRr @uri <<< "records add { \"$KEY\" { data \"$VALUE\" } }")
     #shellcheck disable=SC2016
@@ -182,18 +147,11 @@ add_entry() {
 }
 
 remove_entry() {
-    local FULLPATH=$1
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local KEY=$2
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
-
+    
     OPTIONS=$(JQ -sRr @uri <<< "records delete { \"$KEY\" }")
     #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \

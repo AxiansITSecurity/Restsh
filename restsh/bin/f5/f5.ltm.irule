@@ -25,9 +25,12 @@ list_irules() {
 }
 
 get_irule() {
-    local FULLPATH=${1//\//\~}
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local FILE=$2
-    if GET "/mgmt/tm/ltm/rule/$FULLPATH" | JQ -r ".apiAnonymous" > "$FILE"
+
+    if GET "/mgmt/tm/ltm/rule/~${PARTITION}~${NAME}" | JQ -r ".apiAnonymous" > "$FILE"
     then
         return 0
     fi
@@ -47,17 +50,10 @@ get_all() {
 
 create_irule() {
     local IRULE=$1
-    local FULLPATH=$2
+    local PARTITION
     local NAME
-    if [ "${FULLPATH:0:1}" != "/" ]
-    then
-        NAME=$FULLPATH
-        PARTITION="Common"
-    else
-        FULLPATH="${FULLPATH:1}"
-        local NAME=${FULLPATH##*/}
-        local PARTITION="${FULLPATH%%/*}"
-    fi
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$2")
+
     # shellcheck disable=SC2016
     if JQ -n --arg name "$NAME" --arg partition "$PARTITION" --rawfile content "$IRULE" \
         '{ name: $name, partition: $partition, apiAnonymous: $content }' | \
@@ -87,15 +83,13 @@ create_all() {
 
 update_irule() {
     local IRULE=$1
-    local FULLPATH=${2//\//\~}
-    if [ "${FULLPATH:0:1}" != "~" ]
-    then
-        FULLPATH="~Common~$FULLPATH"
-    fi
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$2")
 
     # shellcheck disable=SC2016
     if JQ -n --rawfile content "$IRULE" '{ apiAnonymous: $content }' | \
-        PATCH "/mgmt/tm/ltm/rule/$FULLPATH" > /dev/null
+        PATCH "/mgmt/tm/ltm/rule/~${PARTITION}~${NAME}" > /dev/null
     then
         return 0
     fi
@@ -115,8 +109,11 @@ update_all() {
 }
 
 delete_irule() {
-    local FULLPATH=${1//\//\~}
-    if DELETE "/mgmt/tm/ltm/rule/$FULLPATH" > /dev/null
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
+
+    if DELETE "/mgmt/tm/ltm/rule/~${PARTITION}~${NAME}" > /dev/null
     then
         return 0
     fi

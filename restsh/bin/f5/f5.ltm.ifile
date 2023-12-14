@@ -40,19 +40,18 @@ info_ifile_sys() {
 }
 
 get_ifile() {
-    local FULLPATH=$1
+    local PARTITION
+    local NAME
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local FILENAME=$2
 
     # Get iFile configuration
     local IFILE
-    if ! IFILE=$(GET "/mgmt/tm/sys/file/ifile/${FULLPATH//\//\~}")
+    if ! IFILE=$(GET "/mgmt/tm/sys/file/ifile/~${PARTITION}~${NAME}")
     then
         return 1
-    fi
+    fi  
 
-    FULLPATH="${FULLPATH:1}"
-    local NAME=${FULLPATH##*/}
-    local PARTITION="${FULLPATH%%/*}"
     local REVISION
     REVISION=$(JQ -r ".revision" <<< "$IFILE")
     
