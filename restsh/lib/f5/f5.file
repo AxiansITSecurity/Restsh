@@ -48,7 +48,7 @@ f5.file.upload() {
 f5.file.download() {
     if [ "$#" -ne 4 ]
     then
-        echo "Usage: f5.file.download <download endpoint> <file> <size> <output file>" 1>&2
+        echo "Usage: f5.file.download <download endpoint> <file> <size> <local file>" 1>&2
         return 1
     fi
     local ENDPOINT=$1

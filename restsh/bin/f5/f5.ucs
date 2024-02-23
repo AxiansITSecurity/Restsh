@@ -98,7 +98,7 @@ case "$ACTION" in
     download)
         if [ -z "${2+x}" ] || [ -z "${3+x}" ]
         then
-            echo "Usage: $(basename "$0") $ACTION <file> <output file>"
+            echo "Usage: $(basename "$0") $ACTION <file> <local file>"
             exit 1
         fi
         f5.file.download "$DOWNLOAD_ENDPOINT" "$2" 0 "$3"

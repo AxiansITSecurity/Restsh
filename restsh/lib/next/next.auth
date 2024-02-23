@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# SPDX-License-Identifier: GPL-3.0-or-later
-# restsh (c) 2023 Juergen Mang <juergen.mang@axians.de>
-# https://github.com/JuergenMang/restsh
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-01-31
 
-# Shortdesc: Gets, refreshes and deletes the bearer token from a f5 next.
+# Shortdesc: Gets, refreshes and deletes the bearer token from a F5 Next Central Manager.
 # Desc:
-# Gets, refreshes and deletes the bearer token from a f5 next. Ask's for username and password if not set through environment.
+# Gets, refreshes and deletes the bearer token from a F5 Next Central Manager.
+# Ask's for username and password if not set through environment.
 
 # Strict error handling
 set -uo pipefail
@@ -59,6 +59,11 @@ next.auth.login() {
 
 # Uses the refresh token to get a new access token.
 next.auth.refresh() {
+    if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
+    then
+        echo_err "No cached refresh token."
+        return 1
+    fi
     local RESULT
     #shellcheck disable=SC2016
     if RESULT=$($RESTSH_JQ -n --arg refresh_token "$RESTSH_REFRESH_TOKEN" \
