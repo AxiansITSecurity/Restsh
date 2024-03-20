@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-03-20
+
+# Shortdesc: Manages ClientSSL profiles on the F5.
+# Desc:
+# Manages ClientSSL profiles on the F5.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -n "${1+x}" ]
+then
+    ACTION=$1
+else
+    ACTION="invalid"
+fi
+
+if [ "$ACTION" == "replace_chain" ]
+then
+    NAME=$2
+    FULLPATH=${NAME//\//\~}
+    CERT=$3
+    KEY=$4
+    if [ -n "${5+x}" ]
+    then
+        CHAIN=$5
+    else
+        CHAIN=""
+    fi
+fi
+
+# Prints help
+usage() {
+    echo "Usage:"
+    echo -e "\tf5.ltm.clientssl list"
+    echo -e "\tf5.ltm.clientssl (replace_chain) <clientssl profile> <cert> <key> [bundle]"
+    return 1
+}
+
+# Replaces the certificate chain
+replace_chain() {
+    #shellcheck disable=SC2016
+    JQ -n --arg cert "$CERT" \
+        --arg key "$KEY" \
+        --arg chain "$CHAIN" \
+        '{
+            "key": $key,
+            "cert": $cert,
+            "chain": $chain
+        }' | PATCH "/mgmt/tm/ltm/profile/client-ssl/$FULLPATH" \
+        | JQ '.certKeyChain'
+    return 0
+}
+
+clientssl_list() {
+    GET /mgmt/tm/ltm/profile/client-ssl | JQ -r '.items[] | [.fullPath, .defaultsFrom, .serverName, .cert] | @tsv' \
+            | COLUMN -ts $'\t' -o " | " -N "fullPath,parent,serverName,cert"
+}
+
+case "$ACTION" in
+    "list")
+        clientssl_list
+        ;;
+    "replace_chain")
+        replace_chain
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0

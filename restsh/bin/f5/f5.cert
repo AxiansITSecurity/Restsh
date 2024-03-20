@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-19
+# Date: 2024-03-20
 
 # Shortdesc: Manages traffic management certificates on the F5.
 # Desc:
@@ -33,6 +33,18 @@ then
 elif [ "$ACTION" == "remove_cert" ] || [ "$ACTION" == "remove_key" ]
 then
     NAME=$2
+elif [ "$ACTION" == "import" ] && [ $# -ge 3 ]
+then
+    FILE_KEY=$2
+    FILE_CERT=$3
+    if [ -n "${4+x}" ]
+    then
+        FILE_BUNDLE=$4
+    else
+        FILE_BUNDLE=""
+    fi
+else
+    ACTION="invalid"
 fi
 
 # Prints help
@@ -40,6 +52,7 @@ usage() {
     echo "Usage:"
     echo -e "\tf5.cert (add_cert|add_key) <name> <path to pem>"
     echo -e "\tf5.cert (remove_cert|remove_key) <name>"
+    echo -e "\tf5.cert import <keyfile> <certfile> [bundlefile]"
     echo -e "\tf5.cert list"
     return 1
 }
@@ -62,11 +75,11 @@ add_cert() {
     then
         echo_err "Certificate installation failed."
         echo_err "$RESPONSE"
-        f5.file remove "$F5_FILE_NAME"
+        f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
         return 1
     fi
     echo "Certificate installation successful."
-    f5.file remove "$F5_FILE_NAME"
+    f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
     return 0
 }
 
@@ -88,11 +101,11 @@ add_key() {
     then
         echo_err "Key installation failed."
         echo_err "$RESPONSE"
-        f5.file remove "$F5_FILE_NAME"
+        f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
         return 1
     fi
     echo "Key installation successful."
-    f5.file remove "$F5_FILE_NAME"
+    f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
     return 0
 }
 
@@ -152,15 +165,44 @@ list_certs() {
             echo -e "| $F | ${GREEN}ok${NC} | $(date -d @$EXPIRATION) |"
         fi
     done
+    return 0
+}
+
+# Imports Cert + Key + Bundle
+import_cert_key_chain() {
+    CN=$(openssl x509 -in "$FILE_CERT" -noout -subject | sed -r -e 's|.*CN\s*=\s*(\S+)/?.*|\1|' -e 's|^\*|wildcard|' -e 's|,||')
+    STARTDATE=$(openssl x509 -in "$FILE_CERT" -noout -startdate | sed -r 's|.*([0-9]{4}).*|\1|')
+    CERT_NAME="${CN}_${STARTDATE}"
+
+    F5_FILE_PATH_CERT="/var/config/rest/downloads/$(basename "$FILE_CERT")"
+    f5.file-transfer upload "$FILE_CERT" && \
+            add_cert "$CERT_NAME" "$F5_FILE_PATH_CERT"
+    
+    F5_FILE_PATH_KEY="/var/config/rest/downloads/$(basename "$FILE_KEY")"
+    f5.file-transfer upload "$FILE_KEY" && \
+            add_key "$CERT_NAME" "$F5_FILE_PATH_KEY"
+
+    if [ -n "$FILE_BUNDLE" ]
+    then
+        F5_FILE_PATH_BUNDLE="/var/config/rest/downloads/$(basename "$FILE_BUNDLE")"
+        f5.file-transfer upload "$FILE_BUNDLE" && \
+                add_cert "${CERT_NAME}_cabundle" "$F5_FILE_PATH_BUNDLE"
+    fi
+    return 0
 }
 
 case "$ACTION" in
+    "import")
+        import_cert_key_chain
+        ;;
     "add_cert")
-        F5_FILE_PATH=$(f5.file upload "$FILE_PATH") && \
+        F5_FILE_PATH="/var/config/rest/downloads/$(basename "$FILE_PATH")"
+        f5.file-transfer upload "$FILE_PATH" && \
             add_cert "$NAME" "$F5_FILE_PATH"
         ;;
     "add_key")
-        F5_FILE_PATH=$(f5.file upload "$FILE_PATH") && \
+        F5_FILE_PATH="/var/config/rest/downloads/$(basename "$FILE_PATH")"
+        f5.file-transfer upload "$FILE_PATH" && \
             add_key "$NAME" "$F5_FILE_PATH"
         ;;
     "remove_cert")
