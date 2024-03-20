@@ -283,7 +283,7 @@ restsh.util.setvar() {
             #shellcheck disable=SC2140
             declare -g "$VAR"=""
         fi
-        echo "Declaring Array: $VAR"
+        echo "Declaring array: $VAR"
     else
         echo_err "Invalid file type: $EXT"
         return 1
