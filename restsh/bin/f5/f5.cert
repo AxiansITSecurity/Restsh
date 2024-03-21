@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-03-20
+# Date: 2024-03-21
 
 # Shortdesc: Manages traffic management certificates on the F5.
 # Desc:
@@ -170,9 +170,14 @@ list_certs() {
 
 # Imports Cert + Key + Bundle
 import_cert_key_chain() {
-    CN=$(openssl x509 -in "$FILE_CERT" -noout -subject | sed -r -e 's|.*CN\s*=\s*(\S+)/?.*|\1|' -e 's|^\*|wildcard|' -e 's|,||')
-    STARTDATE=$(openssl x509 -in "$FILE_CERT" -noout -startdate | sed -r 's|.*([0-9]{4}).*|\1|')
+    CN=$(openssl x509 -in "$FILE_CERT" -noout -subject -nameopt compat | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|')
+
+    STARTDATE_TS=$(date +%s --date="$(openssl x509 -in "$FILE_CERT" -noout -startdate | cut -d= -f2)")
+    STARTDATE=$(date +%Y-%m --date="\@${STARTDATE_TS}")
+
     CERT_NAME="${CN}_${STARTDATE}"
+
+    echo "Importing cert $CN"
 
     F5_FILE_PATH_CERT="/var/config/rest/downloads/$(basename "$FILE_CERT")"
     f5.file-transfer upload "$FILE_CERT" && \
