@@ -41,16 +41,12 @@ pkcs12_create() {
         usage
         return 1
     fi
-    PKCS12_FILE=$1
-    CERT_FILE=$2
-    KEY_FILE=$3
+    local OPENSSL_OPTS=("pkcs12" "-export" "-inkey" "$3" "-in" "$2" "-out" "$1")
     if [ -n "${4+x}" ]
     then
-        CHAIN_FILE=$4
-        openssl pkcs12 -export -inkey "$KEY_FILE" -in "$CERT_FILE" -chain -CAfile "$CHAIN_FILE" -out "$PKCS12_FILE"
-    else
-        openssl pkcs12 -export -inkey "$KEY_FILE" -in "$CERT_FILE" -out "$PKCS12_FILE"
+        OPENSSL_OPTS+=("-chain" "-CAfile" "$4")
     fi
+    openssl "${OPENSSL_OPTS[@]}"
     return 0
 }
 
@@ -61,7 +57,7 @@ pkcs12_extract() {
         usage
         return 1
     fi
-    PKCS12_FILE=$1
+    local PKCS12_FILE=$1
     trap "rm -f .pkcs12_password .key_password" EXIT
     read -r -s -p "Password: " PKCS12_PASS
     printf "\n"
@@ -72,6 +68,7 @@ pkcs12_extract() {
     chmod 600 .key_password
     cat .pkcs12_password > .key_password
 
+    local FILENAME
     FILENAME=$(basename "$PKCS12_FILE")
     FILENAME=${FILENAME%.*}
 

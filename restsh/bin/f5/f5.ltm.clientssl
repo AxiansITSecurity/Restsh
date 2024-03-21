@@ -26,20 +26,6 @@ else
     ACTION="invalid"
 fi
 
-if [ "$ACTION" == "replace_chain" ]
-then
-    NAME=$2
-    FULLPATH=${NAME//\//\~}
-    CERT=$3
-    KEY=$4
-    if [ -n "${5+x}" ]
-    then
-        CHAIN=$5
-    else
-        CHAIN=""
-    fi
-fi
-
 # Prints help
 usage() {
     echo "Usage:"
@@ -50,6 +36,19 @@ usage() {
 
 # Replaces the certificate chain
 replace_chain() {
+    if [ $# -lt 3 ]
+    then
+        usage
+        return 1
+    fi
+
+    local NAME=$1
+    local FULLPATH=${NAME//\//\~}
+    local CERT=$2
+    local KEY=$3
+    local CHAIN=""
+    [ -n "${4+x}" ] && CHAIN=$4
+
     #shellcheck disable=SC2016
     JQ -n --arg cert "$CERT" \
         --arg key "$KEY" \
@@ -73,7 +72,8 @@ case "$ACTION" in
         clientssl_list
         ;;
     "replace_chain")
-        replace_chain
+        shift
+        replace_chain "$@"
         ;;
     *)
         usage
