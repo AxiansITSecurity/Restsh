@@ -28,6 +28,7 @@ fi
 
 # Prints help
 usage() {
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
     echo "Usage:"
     echo -e "\tcert.pkcs12 extract <pkcs12 file>"
     echo -e "\tcert.pkcs12 create <pkcs12 file> <cert> <key> [ca]"

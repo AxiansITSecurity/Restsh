@@ -35,6 +35,7 @@ fi
 
 # Prints help
 usage() {
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
     echo "Usage:"
     echo -e "\tcert.x509 show <x509 cert file>"
     echo -e "\tcert.x509 pubkey <x509 cert file>"
