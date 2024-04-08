@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-04-08
+
+# Shortdesc: Helper functions for cert bundle files.
+# Desc:
+# Helper functions for cert bundle files.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -n "${1+x}" ]
+then
+    ACTION=$1
+else
+    ACTION="invalid"
+fi
+
+if [ -n "${2+x}" ]
+then
+    CHAIN_FILE=$2
+else
+    ACTION="invalid"
+fi
+
+# Prints help
+usage() {
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage:"
+    echo -e "\tcert.bundle show <bundle file>"
+    echo -e "\tcert.bundle split <bundle file>"
+    return 1
+}
+
+bundle_split() {
+    local TMP_DIR
+    TMP_DIR=$(mktemp -d)
+    csplit -k -f "${TMP_DIR}/cert" "${CHAIN_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>/dev/null
+    for CERT in ${TMP_DIR}/cert*; do
+        if [ -s "${CERT}" ]
+        then
+            local CN
+            if CN=$(openssl x509 -in "$CERT" -noout -subject -nameopt compat \
+                | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|' -e 's|/|_|g')
+            then
+                openssl x509 -in "$CERT" -noout -subject
+                openssl x509 -in "$CERT" -out "$TMP_DIR/$CN" && rm "$CERT"
+            fi
+        fi
+    done
+    echo "Saved certificates: $TMP_DIR"
+    return 0
+}
+
+case "$ACTION" in
+    "show")
+        openssl crl2pkcs7 -nocrl -certfile "$CHAIN_FILE" | openssl pkcs7 -print_certs -noout
+        ;;
+    "split")
+        bundle_split
+        ;;
+    *)
+        usage
+        ;;
+esac
+
+exit 0
