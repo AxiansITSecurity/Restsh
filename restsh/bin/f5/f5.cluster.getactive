@@ -53,5 +53,4 @@ then
     fi
 fi
 
-echo_err "Could not detect active BIGIP."
 exit 1

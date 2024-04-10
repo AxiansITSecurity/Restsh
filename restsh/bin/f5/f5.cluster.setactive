@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-04-10
+
+# Shortdesc: Sets the RESTSH_HOST environment variable to active memeber from the F5 cluster.
+# Desc:
+# Sets the RESTSH_HOST environment variable to active memeber from the F5 cluster.
+# RESTSH_HOST can be a single address or multible addresses separated by comma or space.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Remember old value
+OLD_RESTSH_HOST=$RESTSH_HOST
+
+for BIGIP in ${RESTSH_HOST//,/$IFS}
+do
+    echo "Try BIG-IP connection to: $BIGIP"
+    export RESTSH_HOST=$BIGIP
+    restsh.init.setresturl
+    if ACTIVE_BIGIP=$(f5.cluster.getactive)
+    then
+        echo_ok "Active BIG-IP found: $ACTIVE_BIGIP"
+        export RESTSH_HOST=$ACTIVE_BIGIP
+        restsh.init.setresturl
+        break
+    fi
+    export RESTSH_HOST=""
+done
+
+if [ "$RESTSH_HOST" = "" ]
+then
+  echo_err "Could not detect active BIG-IP."
+  export RESTSH_HOST=$OLD_RESTSH_HOST
+  restsh.init.setresturl
+  exit 1
+fi
+
+if ! f5.cluster.getactive > /dev/null
+then
+    echo_err "Connection to $RESTSH_HOST failed"
+    exit 1
+fi
+
+exit 0
