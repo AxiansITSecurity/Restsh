@@ -84,3 +84,5 @@ restsh.init.check.column() {
     fi
     return 1
 }
+
+export -f restsh.init.setresturl
