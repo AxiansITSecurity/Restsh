@@ -82,7 +82,7 @@ restsh.http() {
 restsh.download() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ]
     then
-        echo "Download a file in chunks of 512kB." 1>&2
+        echo "Download a file in chunks of ${CHUNK_SIZE} bytes." 1>&2
         echo "Usage: restsh.download <uri> <size> <filename>" 1>&2
         echo "Use 0 for <size> to enable auto-detection of the size." 1>&2
         return 1
@@ -169,7 +169,7 @@ restsh.download() {
 restsh.upload() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
-        echo "Upload a file in chunks of 512kB." 1>&2
+        echo "Upload a file in chunks of ${CHUNK_SIZE} bytes." 1>&2
         echo "Usage: restsh.upload <uri> <filename>" 1>&2
         return 1
     fi
