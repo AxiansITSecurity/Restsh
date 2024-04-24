@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-03-21
+# Date: 2024-04-24
 
 # Shortdesc: Manages traffic management certificates on the F5.
 # Desc:
@@ -28,11 +28,13 @@ fi
 
 # Prints help
 usage() {
-    echo "Usage:"
-    echo -e "\tf5.cert (import_cert|import_key) <name> <path to pem>"
-    echo -e "\tf5.cert (remove_cert|remove_key) <name>"
-    echo -e "\tf5.cert import <keyfile> <certfile> [bundlefile]"
-    echo -e "\tf5.cert list"
+    echo "Usage:" 1>&2
+    echo -e "\tf5.cert (import_cert|import_key) <name> <path to pem>" 1>&2
+    echo -e "\tf5.cert (remove_cert|remove_key) <name>" 1>&2
+    echo -e "\tf5.cert import <keyfile> <certfile> [bundlefile]" 1>&2
+    echo -e "\tf5.cert list" 1>&2
+    echo -e "\tf5.cert create_csr" 1>&2
+    echo -e "\tf5.cert get_csr" 1>&2
     return 1
 }
 
@@ -197,6 +199,7 @@ import_cert_key_chain() {
     return 0
 }
 
+# Imports a certificate
 import_cert() {
     if [ $# -lt 2 ]
     then
@@ -211,6 +214,7 @@ import_cert() {
         add_cert "$NAME" "$F5_FILE_PATH"
 }
 
+# Imports a key
 import_key() {
     if [ $# -lt 2 ]
     then
@@ -223,6 +227,114 @@ import_key() {
     F5_FILE_PATH="/var/config/rest/downloads/$(basename "$FILE_PATH")"
     f5.file-transfer upload "$FILE_PATH" && \
         add_key "$NAME" "$F5_FILE_PATH"
+}
+
+# Creates a key and a certificate signing request
+create_csr() {
+    # https://community.f5.com/kb/codeshare/generate-private-key-w-csr-via-icontrol-rest/283528
+    local OPTION OPTIND
+    local FQDN=""
+    local PARTITION="Common"
+    local KEYSIZE=4096
+    local KEYTYPE="rsa-private"
+    local ORG=""
+    local OU=""
+    local CITY=""
+    local STATE=""
+    local COUNTRY=""
+    local SAN=""
+    while getopts ':-:' OPTION
+    do
+        if [ "$OPTION" = "-" ]
+        then
+            # long option: reformulate OPT and OPTARG
+            OPTION="${OPTARG%%=*}"       # extract long option name
+            OPTARG="${OPTARG#$OPTION}"   # extract long option argument (may be empty)
+            OPTARG="${OPTARG#=}"         # if long option argument, remove assigning `=`
+        fi
+        case "$OPTION" in
+            fqdn) FQDN="$OPTARG" ;;
+            partition) PARTITION="$OPTARG" ;;
+            keysize) KEYSIZE="$OPTARG" ;;
+            keytype) KEYTYPE="$OPTARG" ;;
+            org) ORG="$OPTARG" ;;
+            ou) OU="$OPTARG" ;;
+            city) CITY="$OPTARG" ;;
+            state) STATE="$OPTARG" ;;
+            country) COUNTRY="$OPTARG" ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ -z "$FQDN" ] || [ "$OPTION" == "invalid" ]
+    then
+        echo "Usage: f5.cert create_csr --fqdn <fqdn> [<options>]" 1>&2
+        echo "Options:" 1>&2
+        echo -e "\t--partition <partition>, default: Common" 1>&2
+        echo -e "\t--keysize <keysize>, default: 4096" 1>&2
+        echo -e "\t--keytype <keytype>, default: rsa-private" 1>&2
+        echo -e "\t--org <organization>" 1>&2
+        echo -e "\t--ou <organizational unit>" 1>&2
+        echo -e "\t--city <city>" 1>&2
+        echo -e "\t--state <state>" 1>&2
+        echo -e "\t--country <country>" 1>&2
+        echo -e "\t--san <subject alternative name>, default: DNS:<fqdn>" 1>&2
+        return 1
+    fi
+    if [ -z "$SAN" ]
+    then
+        SAN="DNS:$FQDN"
+    fi
+    if $RESTSH_JQ -n --arg name "${FQDN}.key" \
+        --arg fqdn "$FQDN" \
+        --arg partition "$PARTITION" \
+        --argjson keysize "$KEYSIZE" \
+        --arg keytype "$KEYTYPE" \
+        --arg org "$ORG" \
+        --arg ou "$OU" \
+        --arg city "$CITY" \
+        --arg state "$STATE" \
+        --arg country "$COUNTRY" \
+        --arg san "$SAN" \
+        '{
+            "name": $name,
+            "commonName": $fqdn,
+            "partition": $partition,
+            "keySize": $keysize,
+            "keyType": $keytype,
+            "options": [{"gen-csr": $fqdn}],
+            "organization": $org,
+            "ou": $ou,
+            "city": $city,
+            "state": $state,
+            "country": $country,
+            "subject-alternative-name": $san
+        }' | POST "/mgmt/tm/sys/crypto/key"
+    then
+        return 0
+    fi
+    return 1
+}
+
+# Gets a CSR
+get_csr() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: f5.cert get_csr <csr>" 1>&2
+        return 1
+    fi
+    CSR=$1
+    if OUTPUT=$(f5.run "tmsh list sys crypto csr $CSR")
+    then
+        if [ "$OUTPUT" = "null" ]
+        then
+            echo_err "CSR not found"
+            return 1
+        fi
+        awk '/-----BEGIN CERTIFICATE REQUEST-----/,/-----END CERTIFICATE REQUEST-----/' <<< "$OUTPUT"
+        return 0
+    fi
+    return 1
 }
 
 case "$ACTION" in
@@ -248,6 +360,14 @@ case "$ACTION" in
         ;;
     "list")
         list_certs
+        ;;
+    "create_csr")
+        shift
+        create_csr "$@"
+        ;;
+    "get_csr")
+        shift
+        get_csr "$@"
         ;;
     *)
         usage
