@@ -50,7 +50,6 @@ add_cert() {
     local F5_FILE_NAME
     F5_FILE_NAME=$(basename "$F5_FILE_PATH")
     local RESPONSE
-    #shellcheck disable=SC2016
     if ! RESPONSE=$($RESTSH_JQ -n --arg f5_cert_name "$NAME" \
         --arg f5_file_path "$F5_FILE_PATH" \
     '{
@@ -81,7 +80,6 @@ add_key() {
     local F5_FILE_NAME
     F5_FILE_NAME=$(basename "$F5_FILE_PATH")
     local RESPONSE
-    #shellcheck disable=SC2016
     if ! RESPONSE=$($RESTSH_JQ -n --arg f5_cert_name "$NAME" \
         --arg f5_file_path "$F5_FILE_PATH" \
     '{
@@ -156,14 +154,15 @@ list_certs() {
     for F in $(JQ -r ".items | .[].fullPath" <<< "$CERTLIST")
     do
         EXPIRATION=$(JQ -r ".items | .[] | select(.fullPath==\"$F\") | .expirationDate" <<< "$CERTLIST")
-        if  [ $EXPIRATION -lt $NOW ]
+        EXP_FRIENDLY=$(date -d @"$EXPIRATION")
+        if  [ "$EXPIRATION" -lt "$NOW" ]
         then
-            echo -e "| $F | ${RED}expired${NC} | $(date -d @$EXPIRATION) |"
-        elif [ $EXPIRATION -lt $NEXTMONTH ]
+            echo -e "| $F | ${RED}expired${NC} | $EXP_FRIENDLY |"
+        elif [ "$EXPIRATION" -lt "$NEXTMONTH" ]
         then
-            echo -e "| $F | ${YELLOW}expires soon${NC} | $(date -d @$EXPIRATION) |"
+            echo -e "| $F | ${YELLOW}expires soon${NC} | $EXP_FRIENDLY |"
         else
-            echo -e "| $F | ${GREEN}ok${NC} | $(date -d @$EXPIRATION) |"
+            echo -e "| $F | ${GREEN}ok${NC} | $EXP_FRIENDLY |"
         fi
     done
     return 0
@@ -248,9 +247,9 @@ create_csr() {
         if [ "$OPTION" = "-" ]
         then
             # long option: reformulate OPT and OPTARG
-            OPTION="${OPTARG%%=*}"       # extract long option name
-            OPTARG="${OPTARG#$OPTION}"   # extract long option argument (may be empty)
-            OPTARG="${OPTARG#=}"         # if long option argument, remove assigning `=`
+            OPTION="${OPTARG%%=*}"        # extract long option name
+            OPTARG="${OPTARG#"$OPTION"}"  # extract long option argument (may be empty)
+            OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
         fi
         case "$OPTION" in
             fqdn) FQDN="$OPTARG" ;;

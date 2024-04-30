@@ -30,7 +30,6 @@ else
 fi
 
 echo "Importing waf policy from uri \"$WAF_POLICY_IMPORT_URI\""
-#shellcheck disable=SC2016
 TASK_ID=$($RESTSH_JQ -n --arg waf_policy_import_uri "$WAF_POLICY_IMPORT_URI" \
     --arg waf_policy_full_path "$WAF_POLICY_FULL_PATH" \
 '{

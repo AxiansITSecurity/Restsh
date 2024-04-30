@@ -7,9 +7,6 @@
 # Desc:
 # Removes an AS3 Tenant by posting an empty declaration.
 
-#shellcheck disable=SC1090
-#shellcheck disable=SC1091
-
 # Strict error handling
 set -eEu -o pipefail
 

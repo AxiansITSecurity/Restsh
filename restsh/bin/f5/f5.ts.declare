@@ -8,9 +8,6 @@
 # Posts a Telemetry Streaming declaration, optionally runs mustache before.
 # https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/
 
-#shellcheck disable=SC1090
-#shellcheck disable=SC1091
-
 # Strict error handling
 set -eEu -o pipefail
 
@@ -49,7 +46,7 @@ fi
 TS_FILE=$1
 
 # Cleanup tmp files
-[ "$KEEP_TMP" -eq 0 ] && trap "rm -f -- "$TS_FILE.parsed"" EXIT
+[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$TS_FILE".parsed' EXIT
 
 # Main
 
@@ -64,7 +61,6 @@ then
 
     # Load variables file
     [ -z "${DEFAULTS+x}" ] && DEFAULTS="${TS_FILE}.var"
-    #shellcheck disable=SC1090
     [ -s "$DEFAULTS" ] && . "$DEFAULTS"
 
     # Process template

@@ -46,7 +46,7 @@ bundle_split() {
     local TMP_DIR
     TMP_DIR=$(mktemp -d)
     csplit -k -f "${TMP_DIR}/cert" "${CHAIN_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>/dev/null
-    for CERT in ${TMP_DIR}/cert*; do
+    for CERT in "${TMP_DIR}"/cert*; do
         if [ -s "${CERT}" ]
         then
             local CN

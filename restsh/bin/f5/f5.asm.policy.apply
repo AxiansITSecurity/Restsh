@@ -25,7 +25,6 @@ apply_by_hash() {
     # Apply the policy
     echo "Applying policy: \"$POLICY_HASH\"."
     local TASK_ID
-    #shellcheck disable=SC2016
     if ! TASK_ID=$($RESTSH_JQ -n --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HASH" \
     '{
         policyReference: {

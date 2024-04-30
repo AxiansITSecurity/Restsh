@@ -34,7 +34,6 @@ then
     exit 1
 fi
 
-#shellcheck disable=SC2016
 if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
     --arg templateLink "https://localhost/mgmt/tm/asm/policy-templates/$TEMPLATEID" \
     '{

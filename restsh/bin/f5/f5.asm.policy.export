@@ -41,7 +41,6 @@ else
 fi
 
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-#shellcheck disable=SC2016
 if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$POLICY_HASH.$FORMAT" \
     --arg format "$FORMAT" \
     --arg policyLink "https://localhost/mgmt/tm/asm/policies/$POLICY_HASH" \

@@ -10,11 +10,24 @@
 # Strict error handling
 set -eEuo pipefail
 
-SHELLCHECK_OPT="--severity=warning"
+SHELLCHECK_OPT="--severity=info"
 FILES_TO_CHECK1=(restsh/restsh.*)
 FILES_TO_CHECK2=$(find restsh/lib restsh/bin -type f ! -name .\*)
 
-xargs shellcheck "$SHELLCHECK_OPT" -- <<< "${FILES_TO_CHECK1[*]} ${FILES_TO_CHECK2[*]}" 
+ERROR=0
+for FILE in ${FILES_TO_CHECK1[*]} ${FILES_TO_CHECK2[*]}
+do
+    if ! shellcheck "$SHELLCHECK_OPT" -- $FILE
+    then
+        ERROR=1
+    fi
+done
 
-echo "OK! Shellcheck does not report any warnings or errors"
-exit 0
+if [ "$ERROR" -eq 0 ]
+then
+    echo "OK! Shellcheck does not report any warnings or errors"
+    exit 0
+fi
+
+echo "Warnings or errors found"
+exit 1

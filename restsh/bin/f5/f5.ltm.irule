@@ -54,7 +54,6 @@ create_irule() {
     local NAME
     read -r PARTITION NAME < <(f5.common.fullPathSplit "$2")
 
-    # shellcheck disable=SC2016
     if JQ -n --arg name "$NAME" --arg partition "$PARTITION" --rawfile content "$IRULE" \
         '{ name: $name, partition: $partition, apiAnonymous: $content }' | \
         POST "/mgmt/tm/ltm/rule" > /dev/null
@@ -87,7 +86,6 @@ update_irule() {
     local NAME
     read -r PARTITION NAME < <(f5.common.fullPathSplit "$2")
 
-    # shellcheck disable=SC2016
     if JQ -n --rawfile content "$IRULE" '{ apiAnonymous: $content }' | \
         PATCH "/mgmt/tm/ltm/rule/~${PARTITION}~${NAME}" > /dev/null
     then

@@ -28,7 +28,6 @@ next.auth.login() {
     fi
 
     local RESULT
-    #shellcheck disable=SC2016
     if RESULT=$($RESTSH_JQ -n --arg user "$RESTSH_USER" --arg pass "$RESTSH_PASS" \
         '{
             "username": $user,
@@ -65,7 +64,6 @@ next.auth.refresh() {
         return 1
     fi
     local RESULT
-    #shellcheck disable=SC2016
     if RESULT=$($RESTSH_JQ -n --arg refresh_token "$RESTSH_REFRESH_TOKEN" \
         '{
             "refresh_token" : $refresh_token

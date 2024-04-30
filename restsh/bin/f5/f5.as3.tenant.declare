@@ -7,9 +7,6 @@
 # Desc:
 # Posts an AS3 declaration, optionally runs mustache before.
 
-#shellcheck disable=SC1090
-#shellcheck disable=SC1091
-
 # Strict error handling
 set -eEu -o pipefail
 
@@ -51,7 +48,7 @@ fi
 AS3_FILE=$1
 
 # Cleanup tmp files
-[ "$KEEP_TMP" -eq 0 ] && trap "rm -f -- "$AS3_FILE.parsed"" EXIT
+[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE.parsed"' EXIT
 
 # Main
 
@@ -66,7 +63,6 @@ then
 
     # Load variables file
     [ -z "${DEFAULTS+x}" ] && DEFAULTS="${AS3_FILE}.var"
-    #shellcheck disable=SC1090
     [ -s "$DEFAULTS" ] && . "$DEFAULTS"
 
     # Process template

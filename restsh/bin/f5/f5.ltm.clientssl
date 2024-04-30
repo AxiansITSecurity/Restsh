@@ -49,7 +49,6 @@ replace_chain() {
     local CHAIN=""
     [ -n "${4+x}" ] && CHAIN=$4
 
-    #shellcheck disable=SC2016
     JQ -n --arg cert "$CERT" \
         --arg key "$KEY" \
         --arg chain "$CHAIN" \

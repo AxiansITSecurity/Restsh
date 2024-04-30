@@ -63,7 +63,6 @@ create_datagroup_ltm() {
     read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local FILENAME=$2
 
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         --arg filename "$FILENAME" \
@@ -90,7 +89,6 @@ create_datagroup_sys() {
         FILENAME="file:///var/config/rest/downloads/$(basename "$FILENAME")"
     fi
 
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         --arg type "$TYPE" \
@@ -110,7 +108,6 @@ update_datagroup_ltm() {
     read -r PARTITION NAME < <(f5.common.fullPathSplit "$1")
     local FILENAME=$2
 
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         --arg filename "$FILENAME" \
@@ -136,7 +133,6 @@ update_datagroup_sys() {
         FILENAME="file:///var/config/rest/downloads/$(basename "$FILENAME")"
     fi
 
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         --arg filename "$FILENAME" \

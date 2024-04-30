@@ -54,7 +54,6 @@ get_records_from_file() {
         do
             [ -z "$NAME" ] && continue
             [ "$I" -gt 0 ] && printf ","
-            #shellcheck disable=SC2016
             JQ -n --arg name "$NAME" --arg data "$DATA" \
                 '{
                     "name": $name,
@@ -80,7 +79,6 @@ create_datagroup() {
         echo_err "Invalid input file"
         return 1
     fi
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         --arg type "$TYPE" \
@@ -106,7 +104,6 @@ update_datagroup() {
         echo_err "Invalid input file"
         return 1
     fi
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         --argjson records "$RECORDS" \
@@ -137,7 +134,6 @@ add_entry() {
     local VALUE=$3
 
     OPTIONS=$(JQ -sRr @uri <<< "records add { \"$KEY\" { data \"$VALUE\" } }")
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         '{
@@ -153,7 +149,6 @@ remove_entry() {
     local KEY=$2
     
     OPTIONS=$(JQ -sRr @uri <<< "records delete { \"$KEY\" }")
-    #shellcheck disable=SC2016
     JQ -n --arg name "$NAME" \
         --arg partition "$PARTITION" \
         '{

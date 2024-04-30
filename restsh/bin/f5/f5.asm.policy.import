@@ -37,7 +37,6 @@ FILENAME=$(basename "$FILENAME")
 f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$NAME"
 
 # Start import task
-#shellcheck disable=SC2016
 TASK_ID=$($RESTSH_JQ -n --arg filename "$NAME" \
     --arg name "$NAME" \
     --arg filename "/var/config/rest/downloads/$FILENAME" \
