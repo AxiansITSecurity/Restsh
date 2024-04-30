@@ -13,11 +13,32 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
+# Gets the id of an ASM policy template
+f5.asm.template.getid() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: f5.asm.template.getid <template name>" 1>&2
+        return 1
+    fi
+    if ! TEMPLATEID=$(GET /mgmt/tm/asm/policy-templates | JQ -r '.items[] | select(.name == "'"$1"'") | .id')
+    then
+        echo_err "Failure getting template id"
+        return 1
+    fi
+    if [ -z "$TEMPLATEID" ] || [ "$TEMPLATEID" = "null" ]
+    then
+        echo_err "Failure getting template id"
+        return 1
+    fi
+    printf "%s" "$TEMPLATEID"
+    return 0
+}
+
 # Calculates the hash of a F5 ASM Policy fullPath.
 f5.asm.policy.gethash() {
     if [ -z "${1+x}" ]
     then
-        echo "Usage: $0 <policy fullPath>" 1>&2
+        echo "Usage: f5.asm.policy.gethash <policy fullPath>" 1>&2
         return 1
     fi
     local POLICY=$1
@@ -33,11 +54,11 @@ f5.asm.policy.gethash() {
     return 1
 }
 
-# Waits for a task to be finished.
+# Waits for a ASM task to be finished.
 f5.asm.taskwait() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
-        echo "Usage: $0 <entity> <id>" 1>&2
+        echo "Usage: f5.asm.taskwait <entity> <id>" 1>&2
         return 1
     fi
     local TASK_ENTITY=$1
@@ -79,5 +100,6 @@ f5.asm.taskwait() {
     return 0
 }
 
+export -f f5.asm.template.getid
 export -f f5.asm.policy.gethash
 export -f f5.asm.taskwait

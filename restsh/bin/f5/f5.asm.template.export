@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-04-30
+
+# Shortdesc: Exports a F5 ASM Policy Template.
+# Desc:
+# Exports a F5 ASM Policy Template.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <template name> <filename>"
+    exit 1
+else
+    TEMPLATE=$1
+    FILENAME=$2
+fi
+
+if ! TEMPLATEID=$(f5.asm.template.getid "$TEMPLATE")
+then
+    exit 1
+fi
+
+#shellcheck disable=SC2016
+if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
+    --arg templateLink "https://localhost/mgmt/tm/asm/policy-templates/$TEMPLATEID" \
+    '{
+        "filename": $filename,
+        "policyTemplateReference": {
+            "link": $templateLink
+        }
+    }' | POST "/mgmt/tm/asm/tasks/export-policy-template" \
+           | $RESTSH_JQ -r ".id")
+then
+    echo "Export of policy template failed."
+    exit 1
+fi
+
+# Wait for completed task
+if ! f5.asm.taskwait export-policy-template "$TASK_ID"
+then
+    echo_err "Export of policy template failed."
+    exit 1
+fi
+
+# Get file size
+TOTAL_SIZE=$(f5.run -r "stat -c%s /var/ts/var/rest/$RESTSH_USER~$FILENAME" \
+    | jq -r ".commandResult" \
+        | tr -d '\n' \
+            | tr -d '\r')
+
+# Download policy in chunks
+restsh.download "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" "$TOTAL_SIZE" "$FILENAME"
