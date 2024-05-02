@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-05-02
+
+# Shortdesc: Manages files on the F5, /var/config/rest/downloads/.
+# Desc:
+# Manages files on the F5 with the file-transfer endpoint /var/config/rest/downloads/.
+# This are only small wrappter functions for the f5.file.* functions.
+# Using the HTTP GET command to download files does not function on BIG-IP releases 15.0.0 and later.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Uploads a file to /var/config/rest/downloads
+f5.file-transfer.upload() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: f5.file-transfer.upload <file>"
+        return 1
+    fi
+    FILENAME=$1
+    if f5.file.upload "/mgmt/shared/file-transfer/uploads" "$FILENAME"
+    then
+        return 0
+    fi
+    return 1
+}
+
+# Removes a file from /var/config/rest/downloads
+f5.file-transfer.remove() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: f5.file-transfer.remove <file>"
+        return 1
+    fi
+    FILENAME=$1
+    if f5.file.remove "/var/config/rest/downloads/$FILENAME"
+    then
+        return 0
+    fi
+    return 1
+}
+
+# Lists a file in /var/config/rest/downloads
+f5.file-transfer.list() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: f5.file-transfer.list <file>"
+        return 1
+    fi
+    FILENAME=$1
+    if f5.file.list "/var/config/rest/downloads/$FILENAME"
+    then
+        return 0
+    fi
+    return 1
+}
+
+export -f f5.file-transfer.upload
+export -f f5.file-transfer.remove
+export -f f5.file-transfer.list

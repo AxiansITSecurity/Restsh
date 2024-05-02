@@ -30,7 +30,7 @@ else
 fi
 
 # Upload the policy file
-f5.file-transfer upload "$FILENAME"
+f5.file-transfer.upload "$FILENAME"
 
 # Move to the correct location for import
 FILENAME=$(basename "$FILENAME")

@@ -60,11 +60,11 @@ add_cert() {
     then
         echo_err "Certificate installation failed."
         echo_err "$RESPONSE"
-        f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
+        f5.file-transfer.remove "$F5_FILE_NAME" > /dev/null
         return 1
     fi
     echo "Certificate installation successful."
-    f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
+    f5.file-transfer.remove "$F5_FILE_NAME" > /dev/null
     return 0
 }
 
@@ -90,11 +90,11 @@ add_key() {
     then
         echo_err "Key installation failed."
         echo_err "$RESPONSE"
-        f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
+        f5.file-transfer.remove "$F5_FILE_NAME" > /dev/null
         return 1
     fi
     echo "Key installation successful."
-    f5.file-transfer remove "$F5_FILE_NAME" > /dev/null
+    f5.file-transfer.remove "$F5_FILE_NAME" > /dev/null
     return 0
 }
 
@@ -209,7 +209,7 @@ import_cert() {
     local FILE_PATH=$2
     local F5_FILE_PATH
     F5_FILE_PATH="/var/config/rest/downloads/$(basename "$FILE_PATH")"
-    f5.file-transfer upload "$FILE_PATH" && \
+    f5.file-transfer.upload "$FILE_PATH" && \
         add_cert "$NAME" "$F5_FILE_PATH"
 }
 
@@ -224,7 +224,7 @@ import_key() {
     local FILE_PATH=$2
     local F5_FILE_PATH
     F5_FILE_PATH="/var/config/rest/downloads/$(basename "$FILE_PATH")"
-    f5.file-transfer upload "$FILE_PATH" && \
+    f5.file-transfer.upload "$FILE_PATH" && \
         add_key "$NAME" "$F5_FILE_PATH"
 }
 

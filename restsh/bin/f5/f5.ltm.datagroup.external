@@ -82,7 +82,7 @@ create_datagroup_sys() {
 
     if [ "${FILENAME:0:4}" != "http" ]
     then
-        if ! f5.file-transfer upload "$FILENAME"
+        if ! f5.file-transfer.upload "$FILENAME"
         then
             return 1
         fi
@@ -126,7 +126,7 @@ update_datagroup_sys() {
 
     if [ "${FILENAME:0:4}" != "http" ]
     then
-        if ! f5.file-transfer upload "$FILENAME"
+        if ! f5.file-transfer.upload "$FILENAME"
         then
             return 1
         fi

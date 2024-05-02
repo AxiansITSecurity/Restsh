@@ -30,7 +30,7 @@ else
     exit 1
 fi
 
-if ! f5.file-transfer upload "$RPM"
+if ! f5.file-transfer.upload "$RPM"
 then
     echo_err "Uploading $RPM failed"
     exit 1
