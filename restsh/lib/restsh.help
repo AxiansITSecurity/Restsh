@@ -163,4 +163,10 @@ restsh.help() {
     return 0
 }
 
+# Prints the short description
+restsh.help.shortdesc.get() {
+    grep "^# Shortdesc" "$1" | sed 's/^# Shortdesc: //'
+}
+
 export -f restsh.help
+export -f restsh.help.shortdesc.get
