@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-03-27
+# Date: 2024-05-02
 
 # Shortdesc: Installs the AS3 package.
 # Desc:
@@ -24,14 +24,14 @@ if [ -n "${1+x}" ]
 then
     RPM=$1
 else
-    echo "Usage: f5.as3.pkg <RPM>"
-    echo ""
+    echo "Usage: $(basename "$0") <RPM>"
+    echo "Download latest version from: https://github.com/F5Networks/f5-appsvcs-extension/releases"
     exit 1
 fi
 
 if ! f5.file-transfer upload "$RPM"
 then
-    echo "Uploading $RPM failed"
+    echo_err "Uploading $RPM failed"
     exit 1
 fi
 
