@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-08-07
+
+# Shortdesc: Creates a QKView and waits for the task to finish.
+# Desc:
+# Creates a QKView and waits for the task to finish.
+# https://my.f5.com/manage/s/article/K04396542
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <name>"
+    exit 1
+fi
+
+QKVIEW_ENDPOINT="/mgmt/cm/autodeploy/qkview"
+NAME=$1
+
+# Create the task
+TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
+'{
+    "name": $name
+}' | POST -r "$QKVIEW_ENDPOINT" \
+    | $RESTSH_JQ -r ".id")
+
+# Wait for finish
+# The curl errors can be ignored
+echo "Waiting for task id \"$TASK_ID\" to finish."
+COUNTER=0
+while :
+do
+    sleep "$F5_TASK_CHECK_INTERVAL"
+    if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+    then
+        echo "Timeout waiting for task."
+        return 1
+    fi
+    COUNTER=$((COUNTER+1))
+    if ! STATUS=$(GET -r -c 5 "$QKVIEW_ENDPOINT/$TASK_ID" | \
+        $RESTSH_JQ -r ".status")
+    then
+        break
+    fi
+    case "$STATUS" in
+        IN_PROGRESS|"")
+            continue
+            ;;
+        SUCCEEDED)
+            echo_ok "QKView created successfully"
+            break
+            ;;
+        *)
+            echo "Unhandled task status: $STATUS"
+            # Print task result message
+            GET -r "$QKVIEW_ENDPOINT/$TASK_ID"
+            return 1
+    esac
+done
+
+
+exit 0

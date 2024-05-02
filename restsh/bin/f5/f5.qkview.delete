@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-08-07
+
+# Shortdesc: Deletes QKViews on the F5.
+# Desc:
+# Deletes QKViews on the F5.
+# https://my.f5.com/manage/s/article/K04396542
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <qkview-id>"
+    exit 1
+fi
+
+DELETE "/mgmt/cm/autodeploy/qkview/$1"
+
+exit 0
