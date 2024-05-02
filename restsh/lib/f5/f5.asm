@@ -13,6 +13,28 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
+# Gets the signature set id
+f5.asm.signatureset.getid() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: f5.asm.signatureset.getid <name>" 1>&2
+        return 1
+    fi
+    local SIGNATURESETID
+    if ! SIGNATURESETID=$(GET /mgmt/tm/asm/signature-sets?\$select=name,id | jq -r ".items[] | select(.name == \"$1\") | .id")
+    then
+        echo_err "Failure getting signatureset id"
+        return 1
+    fi
+    if [ -z "$SIGNATURESETID" ] || [ "$SIGNATURESETID" = "null" ]
+    then
+        echo_err "Failure getting signatureset id"
+        return 1
+    fi
+    printf "%s" "$SIGNATURESETID"
+    return 0
+}
+
 # Gets the id of an ASM policy template
 f5.asm.template.getid() {
     if [ -z "${1+x}" ]
@@ -20,6 +42,7 @@ f5.asm.template.getid() {
         echo "Usage: f5.asm.template.getid <template name>" 1>&2
         return 1
     fi
+    local TEMPLATEID
     if ! TEMPLATEID=$(GET /mgmt/tm/asm/policy-templates | JQ -r '.items[] | select(.name == "'"$1"'") | .id')
     then
         echo_err "Failure getting template id"
@@ -100,6 +123,7 @@ f5.asm.taskwait() {
     return 0
 }
 
+export -f f5.asm.signatureset.getid
 export -f f5.asm.template.getid
 export -f f5.asm.policy.gethash
 export -f f5.asm.taskwait
