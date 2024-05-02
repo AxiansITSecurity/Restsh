@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-05-02
 
 # Shortdesc: General functions for the F5 ASM module.
 # Desc:
@@ -12,6 +12,15 @@ set -uo pipefail
 
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# All signatures in staging
+export F5_ASM_SIGNATURE_FILTER_STAGING="?\$filter=performStaging+eq+true+AND+enabled+eq+true"
+# All signatures that are in staging and are ready to be enforced
+export F5_ASM_SIGNATURE_FILTER_READY="?\$filter=hasSuggestions+eq+false+AND+wasUpdatedWithinEnforcementReadinessPeriod+eq+false+AND+performStaging+eq+true+AND+enabled+eq+true"
+# All signatures that are in staging and have learning suggestions
+export F5_ASM_SIGNATURE_FILTER_SUGGESTIONS="?\$filter=hasSuggestions+eq+true+AND+performStaging+eq+true+AND+enabled+eq+true"
+# All disabled signatures
+export F5_ASM_SIGNATURE_FILTER_DISABLED="?\$filter=enabled+eq+false"
 
 # Gets the signature set id
 f5.asm.signatureset.getid() {
