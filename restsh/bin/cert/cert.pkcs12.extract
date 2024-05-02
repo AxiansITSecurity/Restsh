@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Extracts a pkcs12 file, key is encrypted with pkcs12 password
+# Desc:
+# Extracts a pkcs12 file, key is encrypted with pkcs12 password
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ $# -lt 1 ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <pkcs12 file>"
+    exit 1
+fi
+
+PKCS12_FILE=$1
+trap "rm -f .pkcs12_password .key_password" EXIT
+
+read -r -s -p "Password: " PKCS12_PASS
+printf "\n"
+
+touch .pkcs12_password
+chmod 600 .pkcs12_password
+printf "%s" "$PKCS12_PASS" > .pkcs12_password
+
+touch .key_password
+chmod 600 .key_password
+cat .pkcs12_password > .key_password
+
+FILENAME=$(basename "$PKCS12_FILE")
+FILENAME=${FILENAME%.*}
+
+openssl pkcs12 -in "$PKCS12_FILE" -passin file:.pkcs12_password -passout file:.key_password -nocerts \
+    | sed -ne '/-BEGIN ENCRYPTED PRIVATE KEY-/,/-END ENCRYPTED PRIVATE KEY-/p' > "$FILENAME.key.pem"
+openssl pkcs12 -in "$PKCS12_FILE" -passin file:.pkcs12_password -nokeys -clcerts \
+    | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "$FILENAME.cert.pem"
+openssl pkcs12 -in "$PKCS12_FILE" -passin file:.pkcs12_password -nokeys -cacerts \
+    | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "$FILENAME.chain.pem"
+exit 0

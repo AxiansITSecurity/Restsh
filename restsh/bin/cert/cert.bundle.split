@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Splits a cert bundle file.
+# Desc:
+# Splits a cert bundle file.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <bundle file>"
+    exit 1
+fi
+
+CHAIN_FILE=$1
+TMP_DIR=$(mktemp -d)
+csplit -k -f "${TMP_DIR}/cert" "${CHAIN_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>/dev/null
+for CERT in "${TMP_DIR}"/cert*; do
+    if [ -s "${CERT}" ]
+    then
+        if CN=$(openssl x509 -in "$CERT" -noout -subject -nameopt compat \
+            | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|' -e 's|/|_|g')
+        then
+            openssl x509 -in "$CERT" -noout -subject
+            openssl x509 -in "$CERT" -out "$TMP_DIR/$CN" && rm "$CERT"
+        fi
+    fi
+done
+echo "Saved certificates: $TMP_DIR"
+exit 0
