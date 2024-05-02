@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Lists all suggestions.
+# Desc:
+# Lists all suggestions.
+# https://my.f5.com/manage/s/article/K000132467
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage:"
+    echo "$(basename "$0") <policy name or hash>"
+    exit 1
+fi
+
+POLICY=$1
+if [ "${POLICY:0:1}" == "/" ]
+then
+    POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+else
+    POLICY_HASH=$POLICY
+fi
+
+GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | $RESTSH_JQ ".items[]"
+
+exit 0
