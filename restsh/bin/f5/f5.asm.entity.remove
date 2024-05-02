@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-05-02
 # Shortdesc: Removes an entity from a F5 ASM Policy.
 # Desc:
 # Removes an entity from a F5 ASM Policy.
@@ -43,4 +43,4 @@ then
 fi
 
 # Remove the entity
-DELETE "/mgmt/tm/asm/policies/$POLICY_HASH/whitelist-ips/$ENTITY_ID" | $RESTSH_JQ "."
+DELETE "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY/$ENTITY_ID" | $RESTSH_JQ "."
