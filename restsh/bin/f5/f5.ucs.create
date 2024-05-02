@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Creates an ucs file on the F5, /var/local/ucs/.
+# Desc:
+# Creates an ucs file on the F5, /var/local/ucs/.
+# https://community.f5.com/t5/technical-forum/using-an-asynchronous-task-creating-ucs-file/td-p/272613
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+UCS_TASK_ENDPOINT="/mgmt/tm/task/sys/ucs"
+F5_DIR="/var/local/ucs"
+
+if [ -z "${1+x}" ]
+then
+    echo "Usage: $(basename "$0") <output file>"
+    echo "Archive is created in $F5_DIR"
+    exit 1
+fi
+
+NAME=$1
+
+# Create the task
+TASK_ID=$($RESTSH_JQ -n --arg name "$F5_DIR/$NAME" \
+'{
+    "command": "save",
+    "name": $name
+}' | POST -r "$UCS_TASK_ENDPOINT" \
+    | $RESTSH_JQ -r "._taskId")
+# Start the task
+if ! PUT -r "$UCS_TASK_ENDPOINT/$TASK_ID" <<< '{"_taskState":"VALIDATING"}' > /dev/null
+then
+    echo_err "Could not start task with id \"$TASK_ID\""
+    return 1
+fi
+
+# Wait for finish
+# The curl errors can be ignored
+echo "Waiting for task id \"$TASK_ID\" to finish."
+COUNTER=0
+while :
+do
+    sleep "$F5_TASK_CHECK_INTERVAL"
+    if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+    then
+        echo "Timeout waiting for task."
+        return 1
+    fi
+    COUNTER=$((COUNTER+1))
+    if ! STATUS=$(GET -r -c 5 "$UCS_TASK_ENDPOINT/$TASK_ID" | \
+        $RESTSH_JQ -r "._taskState")
+    then
+        break
+    fi
+    case "$STATUS" in
+        STARTED|NEW|"")
+            continue
+            ;;
+        COMPLETED)
+            echo_ok "UCS created successfully"
+            break
+            ;;
+        *)
+            echo "Unhandled task status: $STATUS"
+            # Print task result message
+            GET -r "$UCS_TASK_ENDPOINT/$TASK_ID"
+            return 1
+    esac
+done
+
+exit 0
