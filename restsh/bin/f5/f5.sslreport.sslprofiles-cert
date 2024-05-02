@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Gets certificates for ClientSSL profiles.
+# Desc:
+# Gets certificates for ClientSSL profiles.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+FORMAT=""
+while getopts ':m' OPTION
+do
+    case "$OPTION" in
+        m) FORMAT="md" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-m]"
+    echo -e "\tUse -m for markdown output."
+    exit 1
+fi
+
+client-ssl-profiles-cert() {
+    while read -r PROFILE CERT
+    do
+        if [ "$FORMAT" == "md" ]
+        then
+            printf "| %s | %s |\n" "$PROFILE" "$CERT"
+        else
+            printf "%s\t%s\n" "$PROFILE" "$CERT"
+        fi
+    done < <(GET "/mgmt/tm/ltm/profile/client-ssl" | JQ -r ".items[] | .fullPath,.certKeyChain[].cert" | paste - -)
+}
+
+if [ "$FORMAT" = "md" ]
+then
+    echo "| ClientSSL | Certificate |"
+    echo "| --------- | ----------- |"
+    client-ssl-profiles-cert
+    echo ""
+    echo "| ServerSSL | Certificate |"
+    echo "| --------- | ----------- |"
+    server-ssl-profiles-cert
+else
+    client-ssl-profiles-cert | COLUMN -ts $'\t' -o " | " -N "ClientSSL,Certificate"
+    echo ""
+    server-ssl-profiles-cert | COLUMN -ts $'\t' -o " | " -N "ServerSSL,Certificate"
+fi
+
+exit 0

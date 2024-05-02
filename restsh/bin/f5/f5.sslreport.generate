@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-10-23
+
+# Shortdesc: Creates a certifacte and ssl profiles usage report in html or markdown format.
+# Desc:
+# Creates a certifacte and ssl profiles usage report in html or markdown format.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <output file>"
+    exit 1
+fi
+
+OUTFILE=$1
+TITLE="SSl Profiles And Certificate Report"
+if PANDOC=$(command -v pandoc)
+then
+    PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--self-contained" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
+else
+    echo_warn "pandoc not found, creating markdown report"
+    OUTFILE=${OUTFILE/.html/.md}
+    PANDOC="cat"
+fi
+
+{
+    echo "# $TITLE"
+    echo ""
+    echo "## Virtual Server - SSL Profiles"
+    echo ""
+    f5.sslreport.vs-sslprofiles -m
+    echo ""
+    echo "## SSL Profiles - Virtual Server"
+    echo ""
+    f5.sslreport.sslprofiles-vs -m
+    echo ""
+    echo "## SSL Profiles - Certificates"
+    echo ""
+    f5.sslreport.sslprofiles-cert -m
+    echo ""
+    echo "## Certificates - SSL profiles"
+    echo ""
+    f5.sslreport.cert-sslprofiles -m
+    echo ""
+} | $PANDOC "${PANDOC_OPTS[@]}" > "$OUTFILE"
+
+exit 0

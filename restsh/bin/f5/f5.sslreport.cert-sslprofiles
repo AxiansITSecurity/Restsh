@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Gets ssl profiles for certificates.
+# Desc:
+# Gets ssl profiles for certificates.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+FORMAT=""
+while getopts ':m' OPTION
+do
+    case "$OPTION" in
+        m) FORMAT="md" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-m]"
+    echo -e "\tUse -m for markdown output."
+    exit 1
+fi
+
+# Concats profiles for pretty printing
+concat_profiles() {
+    local PROFILES=("${@}")
+    local STR=""
+    for P in "${PROFILES[@]}"
+    do
+        if [ -n "$P" ]
+        then
+            [ -n "$STR" ] && STR="$STR, "
+            STR="${STR}${P}"
+        fi
+    done
+
+    if [ -z "$STR" ]
+    then
+        echo "unused"
+    else
+        echo "$STR"
+    fi
+}
+
+cert-ssl-profiles() {
+    # Get all client-ssl profiles
+    ALL_CLIENT_SSL_PROFILES=$(GET "/mgmt/tm/ltm/profile/client-ssl")
+    # Get all server-ssl profiles
+    ALL_SERVER_SSL_PROFILES=$(GET "/mgmt/tm/ltm/profile/server-ssl")
+
+    while read -r CERT CN
+    do
+        CLIENTSSL_CERT=$(JQ -r ".items[] | select(.certKeyChain[].cert==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        CLIENTSSL_CHAIN=$(JQ -r ".items[] | select(.certKeyChain[].chain==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        CLIENTSSL_CA=$(JQ -r ".items[] | select(.caFile==\"$CERT\") | .fullPath" <<< "$ALL_CLIENT_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        CLIENTSSL=$(concat_profiles "$CLIENTSSL_CERT" "$CLIENTSSL_CHAIN" "$CLIENTSSL_CA")
+
+        SERVERSSL_CERT=$(JQ -r ".items[] | select(.cert==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        SERVERSSL_CHAIN=$(JQ -r ".items[] | select(.chain==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        SERVERSSL_CA=$(JQ -r ".items[] | select(.caFile==\"$CERT\") | .fullPath" <<< "$ALL_SERVER_SSL_PROFILES" | paste -sd "," - | sed 's/,/, /g')
+        SERVERSSL=$(concat_profiles "$SERVERSSL_CERT" "$SERVERSSL_CHAIN" "$SERVERSSL_CA")
+        if [ "$FORMAT" == "md" ]
+        then
+            printf "| %s | %s | %s | %s |\n" "$CERT" "$CN" "$CLIENTSSL" "$SERVERSSL"
+        else
+            printf "%s\t%s\t%s\t%s\n" "$CERT" "$CN" "$CLIENTSSL" "$SERVERSSL"
+        fi
+    done < <(GET "/mgmt/tm/sys/crypto/cert" | JQ -r ".items[] | .fullPath, .commonName" | paste - -)
+}
+
+if [ "$FORMAT" = "md" ]
+then
+    echo "| Certificate | Common Name | ClientSSL | ServerSSL |"
+    echo "| ----------- | ----------- | --------- | --------- |"
+    cert-ssl-profiles
+else
+    cert-ssl-profiles | COLUMN -ts $'\t' -o " | " -N "Certificate,Common Name,ClientSSL,ServerSSL" \
+        -W "Common Name,ClientSSL,ServerSSL"
+fi
+
+exit 0

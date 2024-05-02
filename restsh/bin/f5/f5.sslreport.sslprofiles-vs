@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Lists all ssl profiles with its associated virtual servers.
+# Desc:
+# Lists all ssl profiles with its associated virtual servers.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+FORMAT=""
+while getopts ':m' OPTION
+do
+    case "$OPTION" in
+        m) FORMAT="md" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-m]"
+    echo -e "\tUse -m for markdown output."
+    exit 1
+fi
+
+# Gets all virtual servers that have the profile assigned
+get_vs_profiles() {
+    JQ -r ".items[] | select(.profilesReference.items[].fullPath==\"$1\") | .fullPath" <<< "$ALL_VS" | paste -sd "," -
+}
+
+ssl-profiles-vs() {
+    # get all virtual servers
+    ALL_VS=$(GET "/mgmt/tm/ltm/virtual?expandSubcollections=true")
+
+    for P in client-ssl server-ssl
+    do
+        while read -r PROFILE
+        do
+            VS=$(get_vs_profiles "$PROFILE")
+            [ -z "$VS" ] && VS="unused"
+            if [ "$FORMAT" == "md" ]
+            then
+                printf "| %s | %s |\n" "$PROFILE" "$VS"
+            else
+                printf "%s\t%s\n" "$PROFILE" "$VS"
+            fi
+        done < <(GET "/mgmt/tm/ltm/profile/$P" | JQ -r ".items[].fullPath")
+    done
+}
+
+if [ "$FORMAT" = "md" ]
+then
+    echo "| PROFILE | Virtual Server |"
+    echo "| ------- | -------------- |"
+    ssl-profiles-vs
+else
+    ssl-profiles-vs | COLUMN -ts $'\t' -o " | " -N "Profile,Virtual Server"
+fi
+
+exit 0
