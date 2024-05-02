@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-10
+# Date: 2024-05-02
 
 # Shortdesc: Some utility functions.
 # Desc:
@@ -10,14 +10,20 @@
 # Strict error handling
 set -uo pipefail
 
+# Terminal colors
+export COLOR_RED="\033[0;31m"
+export COLOR_GREEN="\033[0;32m"
+export COLOR_YELLOW="\033[0;33m"
+export COLOR_RESET="\033[0m"
+
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
 # Prints green ok messages to STDERR.
 echo_ok() {
-    printf "\e[1;32m"
+    echo -ne "$COLOR_GREEN"
     echo "$@"
-    printf "\e[m"
+    echo -ne "$COLOR_RESET"
 }
 
 # Prints green ok message in JSON format to STDOUT.
@@ -43,9 +49,9 @@ print_json_ok_curl() {
 
 # Prints red error messages to STDERR.
 echo_err() {
-    printf "\e[0;31mERROR: " 1>&2
+    echo -ne "${COLOR_RED}ERROR: " 1>&2
     echo "$@" 1>&2
-    printf "\e[m" 1>&2
+    echo -ne "$COLOR_RESET" 1>&2
 }
 
 # Prints red error message in JSON format to STDOUT.
@@ -75,9 +81,9 @@ print_json_err_curl() {
 
 # Prints yellow warning messages to STDERR.
 echo_warn() {
-    printf "\e[1;33mWARN: " 1>&2
+    echo -ne "${COLOR_YELLOW}WARN: " 1>&2
     echo "$@" 1>&2
-    printf "\e[m" 1>&2
+    echo -ne "$COLOR_RESET" 1>&2
 }
 
 # Prints yellow warning message in JSON format to STDOUT.
