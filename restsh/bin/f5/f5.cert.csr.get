@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Gets a CSR.
+# Desc:
+# Gets a CSR.
+# https://community.f5.com/kb/codeshare/generate-private-key-w-csr-via-icontrol-rest/283528
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <csr>" 1>&2
+    exit 1
+fi
+
+CSR=$1
+if OUTPUT=$(f5.run "tmsh list sys crypto csr $CSR")
+then
+    if [ "$OUTPUT" = "null" ]
+    then
+        echo_err "CSR not found"
+        exit 1
+    fi
+    awk '/-----BEGIN CERTIFICATE REQUEST-----/,/-----END CERTIFICATE REQUEST-----/' <<< "$OUTPUT"
+    exit 0
+fi
+
+exit 1

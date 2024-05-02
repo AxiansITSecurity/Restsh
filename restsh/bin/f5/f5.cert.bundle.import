@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc: Imports traffic management key + cert + optional chain file.
+# Desc:
+# Imports traffic management key + cert + optional chain file.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ $# -lt 2 ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <key> <cert> [<chain bundle>]" 1>&2
+    exit 1
+fi
+
+FILE_KEY=$1
+FILE_CERT=$2
+FILE_BUNDLE=""
+[ -n "${3+x}" ] && FILE_BUNDLE=$3
+
+CN=$(openssl x509 -in "$FILE_CERT" -noout -subject -nameopt compat | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|')
+STARTDATE_TS=$(date +%s --date="$(openssl x509 -in "$FILE_CERT" -noout -startdate | cut -d= -f2)")
+STARTDATE=$(date +%Y-%m --date=@"${STARTDATE_TS}")
+CERT_NAME="${CN}_${STARTDATE}"
+
+echo "Importing cert $CN"
+
+f5.cert.import "$CERT_NAME" "$FILE_CERT"
+f5.cert.key.import "$CERT_NAME" "$FILE_KEY"
+[ -n "$FILE_BUNDLE" ] && f5.cert.import "${CERT_NAME}_cabundle" "$FILE_BUNDLE"
+
+exit 0

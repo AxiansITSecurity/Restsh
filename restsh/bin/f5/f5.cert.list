@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-02
+
+# Shortdesc:Lists traffic management certificates on the F5.
+# Desc:
+# Lists traffic management certificates on the F5.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if ! CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
+then
+    exit 1
+fi
+
+NEXTMONTH=$(date -d "next month" +%s)
+NOW=$(date +%s)
+
+{
+    for F in $(JQ -r ".items | .[].fullPath" <<< "$CERTLIST")
+    do
+        EXPIRATION=$(JQ -r ".items | .[] | select(.fullPath==\"$F\") | .expirationDate" <<< "$CERTLIST")
+        EXP_FRIENDLY=$(date -d @"$EXPIRATION")
+        if  [ "$EXPIRATION" -lt "$NOW" ]
+        then
+            echo -e "$F|${COLOR_RED}expired${COLOR_RESET}|$EXP_FRIENDLY"
+        elif [ "$EXPIRATION" -lt "$NEXTMONTH" ]
+        then
+            echo -e "$F|${COLOR_YELLOW}expires soon${COLOR_RESET}|$EXP_FRIENDLY"
+        else
+            echo -e "$F|${COLOR_GREEN}ok${COLOR_RESET}|$EXP_FRIENDLY"
+        fi
+    done
+} | COLUMN -t -s\| -N "Certificate,State,Expiration"
+
+exit 0
