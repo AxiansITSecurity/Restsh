@@ -7,7 +7,6 @@
 # Desc:
 # General file management functions for F5
 
-
 # Strict error handling
 set -uo pipefail
 
@@ -17,8 +16,8 @@ set -uo pipefail
 # Splits the fullPath into partition and name
 f5.common.fullPathSplit() {
     local FULLPATH=$1
-    local NAME
     local PARTITION
+    local NAME
     if [ "${FULLPATH:0:1}" != "/" ]
     then
         NAME=$FULLPATH
@@ -26,7 +25,8 @@ f5.common.fullPathSplit() {
     else
         FULLPATH="${FULLPATH:1}"
         NAME=${FULLPATH##*/}
-        PARTITION="${FULLPATH%%/*}"
+        PARTITION="${FULLPATH%/*}"
+        PARTITION=${PARTITION//\//\~}
     fi
     echo "$PARTITION $NAME"
 }
