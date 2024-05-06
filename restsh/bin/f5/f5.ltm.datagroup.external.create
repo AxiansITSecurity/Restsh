@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-05-06
+
+# Shortdesc: Creates an external datagroup.
+# Desc:
+# Creates an external datagroup.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+# Get options
+UPLOAD=0
+DG_TYPE=""
+while getopts ':ut' OPTION
+do
+    case "$OPTION" in
+        u) UPLOAD=1 ;;
+        t) DG_TYPE="$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage:"
+  echo -e "\t$(basename "$0") <full path> <filename>"
+  echo -e "\t$(basename "$0") -u -t <type> <full path> <filename>"
+  echo -e "\tValid types: string, integer, ip"
+  exit 1
+fi
+
+FULLPATH=$1
+FILENAME=$2
+read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
+
+if [ "$UPLOAD" -eq 1 ]
+then
+    f5.sys.datagroup.external.create "$FULLPATH" "$DG_TYPE" "$FILENAME"
+fi
+
+JQ -n --arg name "$NAME" \
+    --arg partition "$PARTITION" \
+    --arg filename "$FILENAME" \
+    '{
+        "name": $name,
+        "partition": $partition,
+        "externalFileName": $filename
+    }' | POST "/mgmt/tm/ltm/data-group/external"
+
+exit 0

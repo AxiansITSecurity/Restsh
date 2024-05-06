@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-06
+
+# Shortdesc: Downloads an external system datagroup.
+# Desc:
+# Downloads an external system datagroup.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage: $(basename "$0") <full path> <filename>"
+  exit 1
+fi
+
+FULLPATH=$1
+FILENAME=$2
+read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
+
+# Get config$
+IFILE=$(GET "/mgmt/tm/sys/file/data-group/${FULLPATH//\//\~}")
+REVISION=$(JQ -r ".revision" <<< "$IFILE")
+
+# Find the file for download and copy it to a location where we can download it
+# This involves some guessing of the filename
+if ! F5_FILE=$(f5.run "ls -1 /config/filestore/files_d/${PARTITION}_d/data_group_d/:${PARTITION}:${NAME}_?????_${REVISION}")
+then
+    echo_err "File not found"
+    exit 1
+elif [ "$(wc -l <<< "$F5_FILE")" -ne 1 ]
+then
+    echo_err "Multiple files found"
+    exit 1
+fi
+
+F5_FILE_DOWNLOAD="dg_ext_${PARTITION}_${NAME}"
+if f5.run "cp '$F5_FILE' '/shared/images/$F5_FILE_DOWNLOAD'"
+then
+    f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$F5_FILE_DOWNLOAD" 0 "$FILENAME"
+    f5.file.remove "/shared/images/$F5_FILE_DOWNLOAD" > /dev/null
+    exit 0
+fi
+
+exit 1
