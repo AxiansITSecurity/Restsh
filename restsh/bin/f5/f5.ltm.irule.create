@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-06
 
-# Shortdesc: Creates a iRule.
+# Shortdesc: Creates an iRule.
 # Desc:
-# Creates a iRule.
+# Creates an iRule.
 
 # Strict error handling
 set -eEu -o pipefail

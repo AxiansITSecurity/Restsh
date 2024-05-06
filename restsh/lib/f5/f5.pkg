@@ -13,7 +13,7 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Waits for a task to be finished
+# Waits for a package management task to be finished.
 f5.pkg.taskwait() {
     if [ -z "${1+x}" ]
     then

@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-06
 
-# Shortdesc: Downloads a iRule.
+# Shortdesc: Downloads an iRule.
 # Desc:
-# Downloads a iRule.
+# Downloads an iRule.
 
 # Strict error handling
 set -eEu -o pipefail
