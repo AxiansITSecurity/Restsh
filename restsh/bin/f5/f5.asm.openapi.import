@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-06
+
+# Shortdesc: Imports a OpenAPI File into a F5 ASM Policy.
+# Desc:
+# Imports a OpenAPI File into a F5 ASM Policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <filename> <policy name>"
+    exit 1
+else
+    FILENAME=$1
+    POLICY=$2
+fi
+
+# Upload the openapi file
+f5.file.upload "/mgmt/tm/asm/file-transfer/uploads" "$FILENAME"
+
+FILENAME=$(basename "$FILENAME")
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+
+# Start import swagger file task
+TASK_ID=$($RESTSH_JQ -n --arg swagger_file "$FILENAME" \
+       --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HASH" \
+'{
+    apiType: "swagger",
+    filename: $swagger_file,
+    policyReference: {
+        link: $waf_policy
+    }
+}' | POST "/mgmt/tm/asm/tasks/import-open-api?\$select=id" | \
+        $RESTSH_JQ -r ".id")
+
+if [ -z "${TASK_ID}" ]
+then
+    echo_err "Importing swagger file \"$FILENAME\" failed"
+    f5.file.remove "/var/ts/var/rest/$FILENAME"
+    exit 1
+fi
+
+# Wait for completed task
+if ! f5.asm.taskwait import-open-api "$TASK_ID"
+then
+    echo_err "Import of policy failed."
+    f5.file.remove "/var/ts/var/rest/$FILENAME"
+    exit 1
+fi
+
+f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~${FILENAME}"
+
+# Apply policy
+f5.asm.policy.apply "$POLICY_HASH"
+
+exit 0
