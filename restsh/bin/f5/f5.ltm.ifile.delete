@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-06
+
+# Shortdesc: Deletes a LTM iFile.
+# Desc:
+# Deletes a LTM iFile.
+# https://community.f5.com/t5/codeshare/syncing-local-repositories-and-ifiles-using-icontrol-rest-api/ta-p/290848
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage: $(basename "$0") <full path>"
+  exit 1
+fi
+
+FULLPATH=$1
+DELETE DELETE "/mgmt/tm/ltm/ifile/${FULLPATH//\//\~}"
+
+exit 0
