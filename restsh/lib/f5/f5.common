@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2023-08-04
 
-# Shortdesc: General file management functions for F5.
+# Shortdesc: Helper functions for F5.
 # Desc:
-# General file management functions for F5
+# Helper functions for F5
 
 # Strict error handling
 set -uo pipefail
