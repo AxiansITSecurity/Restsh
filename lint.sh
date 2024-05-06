@@ -11,17 +11,17 @@
 set -eEuo pipefail
 
 SHELLCHECK_OPT="--severity=info"
-FILES_TO_CHECK1=(restsh/restsh.*)
-FILES_TO_CHECK2=$(find restsh/lib restsh/bin -type f ! -name .\*)
-
 ERROR=0
-for FILE in ${FILES_TO_CHECK1[*]} ${FILES_TO_CHECK2[*]}
+
+for FILE in restsh/restsh.*
 do
-    if ! shellcheck "$SHELLCHECK_OPT" -- $FILE
-    then
-        ERROR=1
-    fi
+    shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
 done
+
+while read -r FILE
+do
+    shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
+done < <(find restsh/lib restsh/bin -type f ! -name .\*)
 
 if [ "$ERROR" -eq 0 ]
 then
