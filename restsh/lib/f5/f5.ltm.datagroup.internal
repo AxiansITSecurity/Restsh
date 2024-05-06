@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-05-02
+
+# Shortdesc: Helper functions for F5 internal datagroups.
+# Desc:
+# Helper functions for F5 internal datagroups.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Returns the formated internal datagroup records from a file
+f5.ltm.datagroup.internal.get_records_from_file() {
+    local INFILE=$1
+    if JQ -r ".records" < "$INFILE" 2> /dev/null
+    then
+        # Native format of a datagroup
+        return 0
+    elif [ "$(JQ -r < "$INFILE" 2> /dev/null | head -c1)" = "[" ]
+    then
+        # JSON array of name/data pairs
+        cat "$INFILE"
+        return 0
+    else
+        # Assume csv
+        printf "%s" "["
+        local I=0
+        while IFS=";" read -r NAME DATA
+        do
+            [ -z "$NAME" ] && continue
+            [ "$I" -gt 0 ] && printf ","
+            JQ -n --arg name "$NAME" --arg data "$DATA" \
+                '{
+                    "name": $name,
+                    "data": $data
+                }'
+            I=$((I+1))
+        done < "$INFILE"
+        printf "%s" "]"
+        return 0
+    fi
+}
+
+export -f f5.ltm.datagroup.internal.get_records_from_file

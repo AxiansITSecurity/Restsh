@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2023-05-06
+
+# Shortdesc: Updates an internal datagroup.
+# Desc:
+# Updates an internal datagroup.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage: $(basename "$0") <fullPath> <input file>"
+  echo -e "\rValid input file types: json, csv"
+  exit 1
+fi
+
+FULLPATH=$1
+INFILE=$2
+
+RECORDS=$(f5.ltm.datagroup.internal.get_records_from_file "$INFILE")
+if [ -z "$RECORDS" ]
+then
+    echo_err "Invalid input file"
+    return 1
+fi
+JQ -n --argjson records "$RECORDS" \
+    '{
+        "records": $records
+    }' | PATCH "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}"
+
+exit 0
