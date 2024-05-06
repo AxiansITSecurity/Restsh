@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-06
+
+# Shortdesc: Deletes a iRule.
+# Desc:
+# Deletes a iRule.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage: $(basename "$0") <full path>"
+  exit 1
+fi
+
+FULLPATH=$1
+
+DELETE "/mgmt/tm/ltm/rule/${FULLPATH//\//\~}" > /dev/null
+exit 0
