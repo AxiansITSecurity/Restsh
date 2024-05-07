@@ -67,6 +67,22 @@ MO_CSV_GET_ENTRY() {
     printf "%s" "${CSV[$NR]}" | tr -d '\n'
 }
 
+# Returns an entry from a comma separated list or default value if not found
+# Usage: {{MO_CSV_GET_ENTRY {{.}} '1'}}
+MO_CSV_GET_ENTRY_OR_DEFAULT() {
+    local VALUE=${MO_FUNCTION_ARGS[0]}
+    local NR=${MO_FUNCTION_ARGS[1]}
+    local DEFAULT=${MO_FUNCTION_ARGS[1]}
+    local CSV
+    mapfile -t -d, <<< "$VALUE" CSV
+    if [ "${CSV[$NR]}" = "" ]
+    then
+        printf "%s" "$DEFAULT"
+    else
+        printf "%s" "${CSV[$NR]}" | tr -d '\n'
+    fi
+}
+
 # Includes a file base64 encoded
 # Returns an unquoted string
 # Usage: {{MO_INCLUDE_BASE64 '<filename>'}}
