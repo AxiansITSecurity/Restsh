@@ -79,11 +79,10 @@ f5.asm.policy.gethash() {
     then
         # Reference: https://my.f5.com/manage/s/article/K40414407
         printf "%s" "$POLICY" | openssl dgst -md5 -binary | base64 | cut -c-22 | sed 'y/+\//-_/'
-        return 0
+    else
+        echo_err "Policy fullPath must start with /"
+        return 1
     fi
-
-    echo_err "Policy fullPath must start with /"
-    return 1
 }
 
 # Waits for a ASM task to be finished.
