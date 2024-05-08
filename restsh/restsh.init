@@ -8,6 +8,7 @@
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
 
+#shellcheck disable=SC2009
 if ! ps --no-heading -p $$ -o command | grep -q bash
 then
     echo "Detected shell: $(ps --no-heading -p $$ -o command)"
