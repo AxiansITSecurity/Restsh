@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-08
+
+# Shortdesc: Common functions and definitions for the GitLab module.
+# Desc:
+# Common functions and definitions for the GitLab module.
+
+# Prefix for the GitLab REST API
+export GITLAB_API_PREFIX="/api/v4"

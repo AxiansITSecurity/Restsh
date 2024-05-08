@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-08
+
+# Shortdesc: Updates a group variable.
+# Desc:
+# Updates a group variable.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+MASK=0
+EXPAND=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        m) MASK=1 ;;
+        e) EXPAND=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage: $(basename "$0") [-m] [-e] <group id> <key> <value>"
+  echo -e "\t-e Expand variable"
+  echo -e "\t-m Mask variable"
+  exit 1
+fi
+
+GROUP=$1
+KEY=$2
+VALUE=$3
+
+case $MASK in
+    0) MASK=false ;;
+    1) MASK=true ;;
+esac
+
+case $EXPAND in
+    0) EXPAND=true ;;
+    1) EXPAND=false ;;
+esac
+
+JQ -n --arg key "$KEY" \
+    --arg value "$VALUE" \
+    --argjson masked "$MASK" \
+    --argjson raw "$EXPAND" \
+    '{
+        "value": $value,
+        "masked": $masked,
+        "raw": $raw
+    }' | PUT "$GITLAB_API_PREFIX/groups/$GROUP/variables/$KEY"
+
+exit 0
