@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2023-10-24
 
-# Shortdesc: Custom configuration file for restsh.init.
+# Shortdesc: Custom configuration file for restsh.init, preconfigured for a F5 Next Central Manager.
 # Desc:
-# Custom configuration file for restsh.init.
+# Custom configuration file for restsh.init, preconfigured for a F5 Next Central Manager.
 # Set central environment variables if not already set.
 
 # Debugging
