@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-08
 
-# Shortdesc: Lists all groups.
+# Shortdesc: Creates an empty project.
 # Desc:
-# Lists all groups.
+# Creates an empty project.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -30,26 +30,35 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
+    echo "Usage: $(basename "$0") <namespace id> <name>"
     echo -e "\tUse -r for raw output."
     exit 1
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups")
+NAMESPACE_ID=$1
+NAME=$2
+
+if RESULT=$(JQ -n --arg name "$NAME" \
+    --argjson namespace_id "$NAMESPACE_ID" \
+    '{
+        "name": $name,
+        "namespace_id": $namespace_id
+    }' | POST -r "$GITLAB_API_PREFIX/projects")
 then
+    ID=$(JQ -r ".id" <<< "$RESULT")
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        echo "$ID"
     else
-        JQ -r '.[] | [.id, .full_path] | @tsv' <<< "$RESULT" | \
-            COLUMN -ts $'\t' -o " | " -N "id,full_path"
+        echo_ok "Empty project created with id $ID"
     fi
+    exit 0
 else
+    echo_err "Failure creating project."
+    echo_err "$RESULT"
     exit 1
 fi
-
-exit 0

@@ -30,11 +30,12 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <name>"
+    echo -e "\tUse -r for raw output."
     exit 1
 fi
 
@@ -44,8 +45,7 @@ if RESULT=$(JQ -n --arg name "$NAME" \
     --arg path "$NAME" \
     '{
         "name": $name,
-        "path": $path,
-        "auto_devops_enabled": false
+        "path": $path
     }' | POST -r "$GITLAB_API_PREFIX/groups")
 then
     ID=$(JQ -r ".id" <<< "$RESULT")

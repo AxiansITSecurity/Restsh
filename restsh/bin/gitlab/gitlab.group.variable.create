@@ -22,7 +22,7 @@ fi
 # Get options
 MASK=0
 EXPAND=0
-while getopts ':r' OPTION
+while getopts ':me' OPTION
 do
     case "$OPTION" in
         m) MASK=1 ;;
@@ -32,11 +32,11 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
+if [ $# -ne 4 ] || [ "$OPTION" = "invalid" ]
 then
   exec 1>&2
   restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") [-m] [-e] <group id> <key> <value>"
+  echo "Usage: $(basename "$0") [-m] [-e] <group id> <key> <value> <description>"
   echo -e "\t-e Expand variable"
   echo -e "\t-m Mask variable"
   exit 1
@@ -45,6 +45,7 @@ fi
 GROUP=$1
 KEY=$2
 VALUE=$3
+DESC=$4
 
 case $MASK in
     0) MASK=false ;;
@@ -58,11 +59,13 @@ esac
 
 JQ -n --arg key "$KEY" \
     --arg value "$VALUE" \
+    --arg desc "$DESC" \
     --argjson masked "$MASK" \
     --argjson raw "$EXPAND" \
     '{
         "key": $key,
         "value": $value,
+        "description": $desc,
         "masked": $masked,
         "raw": $raw
     }' | POST "$GITLAB_API_PREFIX/groups/$GROUP/variables"
