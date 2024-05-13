@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-13
 
-# Shortdesc: Lists all groups.
+# Shortdesc: Lists all projects.
 # Desc:
-# Lists all groups.
+# Lists all projects.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -45,14 +45,14 @@ then
     PAGE=$1
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups?page=$PAGE&per_page=100")
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects?page=$PAGE&per_page=100")
 then
     if [ "$RAW" -eq 1 ]
     then
         echo "$RESULT"
     else
-        JQ -r '.[] | [.id, .full_path] | @tsv' <<< "$RESULT" | \
-            COLUMN -ts $'\t' -o " | " -N "id,full_path"
+        JQ -r '.[] | [.id, .path_with_namespace, .owner.username] | @tsv' <<< "$RESULT" | \
+            COLUMN -ts $'\t' -o " | " -N "id,path_with_namespace,owner"
     fi
 else
     exit 1
