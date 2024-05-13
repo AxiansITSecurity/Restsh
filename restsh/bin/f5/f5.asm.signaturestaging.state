@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-05-13
 # Shortdesc: Lists ASM signature staging status.
 # Desc:
 # Lists ASM signature staging status.
@@ -29,7 +29,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ "$OPTION" = "invalid" ]
 then
     restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-v] [<policy name>]"
@@ -47,7 +47,7 @@ fi
 # Signature list for verbose mode
 print_detail() {
     local COUNT=$1
-    if [ "$VERBOSE" = "stateVerbose" ] && [ "$COUNT" -gt 0 ]
+    if [ "$VERBOSE" -eq 1 ] && [ "$COUNT" -gt 0 ]
     then
         echo "$SIG_STAGING"
     fi
