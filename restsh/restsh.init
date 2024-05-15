@@ -45,7 +45,7 @@ done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
-. "${RESTSH_PATH}/lib/mo/functions"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
 
 # Set default mustache options
 export RESTSH_MO="mo --fail-on-function --fail-on-file"
