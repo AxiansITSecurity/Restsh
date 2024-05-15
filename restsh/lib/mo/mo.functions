@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-31
+# Date: 2024-05-15
 
 # Shortdesc: Some helper functions for mustache.
 # Desc:
@@ -40,6 +40,20 @@ MO_COMMA_IF_NOT_EMPTY() {
     if [ -n "$BEFORE_VALUES" ] && [ -n "$LAST_VALUE" ]
     then
         printf ","
+    fi
+}
+
+# Prints variable value or provided default if the variable is empty
+# Usage: {{VALUE_OR_DEFAULT 'BAD_UNESCAPE' 'true'}}
+MO_VALUE_OR_DEFAULT() {
+    local ARG="VAR_${MO_FUNCTION_ARGS[0]}"
+    local DEFAULT=${MO_FUNCTION_ARGS[1]}
+    local VALUE="${!ARG}"
+    if [ -n "$VALUE" ]
+    then 
+        printf "%s" "$VALUE"
+    else
+        printf "%s" "$DEFAULT"
     fi
 }
 
