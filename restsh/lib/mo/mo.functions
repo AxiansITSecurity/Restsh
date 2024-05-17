@@ -57,6 +57,19 @@ MO_VALUE_OR_DEFAULT() {
     fi
 }
 
+# Prints true if variable is not empty, else false
+# Usage: {{MO_TRUE_IF_NOT_EMPTY 'ALLOWED_HOSTNAMES'}}
+MO_TRUE_IF_NOT_EMPTY() {
+    local ARG="VAR_${MO_FUNCTION_ARGS[0]}"
+    local VALUE="${!ARG}"
+    if [ -n "$VALUE" ]
+    then
+        printf "true"
+    else
+        printf "false"
+    fi
+}
+
 # Returns the first entry from a comma separated list
 # Usage: {{MO_CSV_GET_FIRST {{.}}}}
 MO_CSV_GET_FIRST() {
