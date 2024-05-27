@@ -44,9 +44,9 @@ MO_COMMA_IF_NOT_EMPTY() {
 }
 
 # Prints variable value or provided default if the variable is empty
-# Usage: {{VALUE_OR_DEFAULT 'BAD_UNESCAPE' 'true'}}
+# Usage: {{VALUE_OR_DEFAULT 'VAR_BAD_UNESCAPE' 'true'}}
 MO_VALUE_OR_DEFAULT() {
-    local ARG="VAR_${MO_FUNCTION_ARGS[0]}"
+    local ARG=${MO_FUNCTION_ARGS[0]}
     local DEFAULT=${MO_FUNCTION_ARGS[1]}
     local VALUE="${!ARG}"
     if [ -n "$VALUE" ]
@@ -58,9 +58,9 @@ MO_VALUE_OR_DEFAULT() {
 }
 
 # Prints true if variable is not empty, else false
-# Usage: {{MO_TRUE_IF_NOT_EMPTY 'ALLOWED_HOSTNAMES'}}
+# Usage: {{MO_TRUE_IF_NOT_EMPTY 'VAR_ALLOWED_HOSTNAMES'}}
 MO_TRUE_IF_NOT_EMPTY() {
-    local ARG="VAR_${MO_FUNCTION_ARGS[0]}"
+    local ARG=${MO_FUNCTION_ARGS[0]}
     local VALUE="${!ARG}"
     if [ -n "$VALUE" ]
     then
@@ -128,4 +128,16 @@ MO_INCLUDE_PLAIN() {
 # Usage: {{MO_INCLUDE_JSON_ENCODE '<filename>'}}
 MO_INCLUDE_JSON_ENCODE() {
     jq "@json" "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
+}
+
+# Parses the file with mustache before including it
+MO_INCLUDE_PARSE() {
+    $RESTSH_MO -- "${MO_FUNCTION_ARGS[0]}"
+}
+
+# Parses the variable with mustache before including it
+MO_VAR_PARSE() {
+    local ARG="${MO_FUNCTION_ARGS[0]}"
+    local VALUE="${!ARG}"
+    $RESTSH_MO -- <<< "$VALUE"
 }
