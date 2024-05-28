@@ -31,7 +31,7 @@ NAME=$1
 PARENT=$2
 CERT=$3
 KEY=$4
-CHAIN=""
+CHAIN="none"
 [ -n "${5+x}" ] && CHAIN=$5
 
 JQ -n --arg name "$NAME" \
@@ -42,9 +42,12 @@ JQ -n --arg name "$NAME" \
     '{
         "name": $name,
         "defaultsFrom": $parent,
-        "key": $key,
-        "cert": $cert,
-        "chain": $chain
+        "certKeyChain": [{
+            "name": "default",
+            "key": $key,
+            "cert": $cert,
+            "chain": $chain
+        }]
     }' | POST "/mgmt/tm/ltm/profile/client-ssl"
 
 exit 0
