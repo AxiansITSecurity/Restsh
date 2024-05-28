@@ -21,12 +21,11 @@ MO_COMMA_IF_NOT_FIRST() {
 MO_COMMA_IF_NOT_EMPTY() {
     local ARG_COUNT=${#MO_FUNCTION_ARGS[@]}
     local MAX_ARG_INDEX=$((ARG_COUNT-1))
-
     local BEFORE_VALUES=""
     # Join arguments but last
     local COUNT=0
     local ARG
-    for ARG in ${MO_FUNCTION_ARGS}
+    for ARG in "${MO_FUNCTION_ARGS[@]}"
     do
         BEFORE_VALUES="${BEFORE_VALUES}${!ARG}"
         COUNT=$((COUNT+1))
