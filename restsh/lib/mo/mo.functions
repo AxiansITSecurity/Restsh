@@ -47,7 +47,9 @@ MO_COMMA_IF_NOT_EMPTY() {
 MO_VALUE_OR_DEFAULT() {
     local ARG=${MO_FUNCTION_ARGS[0]}
     local DEFAULT=${MO_FUNCTION_ARGS[1]}
+    set +u # Do not fail if not defined
     local VALUE="${!ARG}"
+    set -u
     if [ -n "$VALUE" ]
     then 
         printf "%s" "$VALUE"
@@ -139,4 +141,17 @@ MO_VAR_PARSE() {
     local ARG="${MO_FUNCTION_ARGS[0]}"
     local VALUE="${!ARG}"
     $RESTSH_MO -- <<< "$VALUE"
+}
+
+# Includes the variable if condition is true
+# Usage: {{MO_INCLUDE_IF 'VAR_F5_VERSION' '17' 'VARIABLE'}}
+MO_INCLUDE_IF() {
+    local ARG="${MO_FUNCTION_ARGS[0]}"
+    local VALUE="${!ARG}"
+    if [ "$VALUE" = "${MO_FUNCTION_ARGS[1]}" ]
+    then
+        ARG="${MO_FUNCTION_ARGS[2]}"
+        VALUE="${!ARG}"
+        $RESTSH_MO -- <<< "$VALUE"
+    fi
 }
