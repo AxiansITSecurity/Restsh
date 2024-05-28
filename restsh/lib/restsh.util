@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-05-28
 
 # Shortdesc: Some utility functions.
 # Desc:
@@ -290,6 +290,16 @@ restsh.util.setvar() {
     fi
 }
 
+# URL encoding
+restsh.util.urlencode() {
+    if [ -z "${1+x}" ]
+    then
+        echo "Usage: restsh.util.urlencode <string>" 1>&2
+        return 1
+    fi
+    $RESTSH_JQ -rn --arg x "$1" '$x|@uri' | tr -d "\n"
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -308,3 +318,4 @@ export -f restsh.util.setcurloptions
 export -f restsh.util.parseoutput
 export -f restsh.util.setvars
 export -f restsh.util.setvar
+export -f restsh.util.urlencode
