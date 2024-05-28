@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-05-28
+
+# Shortdesc: Creates a new ClientSSL profile on the F5.
+# Desc:
+# Creates a new ClientSSL profile on the F5.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ $# -lt 4 ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <clientssl profile> <parent> <cert> <key> [bundle]"
+    exit 1
+fi
+
+NAME=$1
+PARENT=$2
+CERT=$3
+KEY=$4
+CHAIN=""
+[ -n "${5+x}" ] && CHAIN=$5
+
+JQ -n --arg name "$NAME" \
+    --arg parent "$PARENT" \
+    --arg cert "$CERT" \
+    --arg key "$KEY" \
+    --arg chain "$CHAIN" \
+    '{
+        "name": $name,
+        "defaultsFrom": $parent,
+        "key": $key,
+        "cert": $cert,
+        "chain": $chain
+    }' | POST "/mgmt/tm/ltm/profile/client-ssl"
+
+exit 0
