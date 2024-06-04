@@ -300,6 +300,37 @@ restsh.util.urlencode() {
     $RESTSH_JQ -rn --arg x "$1" '$x|@uri' | tr -d "\n"
 }
 
+# JSON validation, pipe string to stdin
+restsh.util.json_validate() {
+    if ! ERROR=$(jq "." 2>&1 >/dev/null)
+    then
+        IFS="," read -r LINE COL <<< "${ERROR//[!0-9,]/}"
+        echo_err "Invalid json - $ERROR"
+        # Print the line with failure with some context
+        echo "--"
+        LINE=$((LINE+5))
+        I=0
+        while read -r LINE
+        do
+            [ "$I" -eq 3 ] && echo -ne "${COLOR_RED}"
+            echo "$LINE"
+            if [ "$I" -eq 3 ]
+            then
+                for ((J=0; J<COL; J++)); do
+                    printf "-"
+                done
+                # Mark the column
+                echo "^"
+                echo -ne "${COLOR_RESET}"
+            fi
+            I=$((I+1))
+        done < <(head "-$LINE" -- "$POLICY_FILE" | tail -10)
+        echo "--"
+        return 1
+    fi
+    return 0
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -319,3 +350,4 @@ export -f restsh.util.parseoutput
 export -f restsh.util.setvars
 export -f restsh.util.setvar
 export -f restsh.util.urlencode
+export -f restsh.util.json_validate
