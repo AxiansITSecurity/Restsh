@@ -43,7 +43,7 @@ MO_COMMA_IF_NOT_EMPTY() {
 }
 
 # Prints variable value or provided default if the variable is empty
-# Usage: {{VALUE_OR_DEFAULT 'VAR_BAD_UNESCAPE' 'true'}}
+# Usage: {{MO_VALUE_OR_DEFAULT 'VAR_BAD_UNESCAPE' 'true'}}
 MO_VALUE_OR_DEFAULT() {
     local ARG=${MO_FUNCTION_ARGS[0]}
     local DEFAULT=${MO_FUNCTION_ARGS[1]}
@@ -52,6 +52,22 @@ MO_VALUE_OR_DEFAULT() {
     set -u
     if [ -n "$VALUE" ]
     then 
+        printf "%s" "$VALUE"
+    else
+        printf "%s" "$DEFAULT"
+    fi
+}
+
+# Prints the expanded variable value of first two arguments or provided default (last value) if the variable is empty
+# Usage: {{MO_VALUE_EXPAND_OR_DEFAULT 'VAR_JSON_MAX_ARRAY_LENGTH_' {{JCP_FRIENDLY_VAR}} {{VAR_JSON_MAX_ARRAY_LENGTH}}}}
+MO_VALUE_EXPAND_OR_DEFAULT() {
+    local ARG=${MO_FUNCTION_ARGS[0]}${MO_FUNCTION_ARGS[1]}
+    local DEFAULT=${MO_FUNCTION_ARGS[2]}
+    set +u # Do not fail if not defined
+    local VALUE="${!ARG}"
+    set -u
+    if [ -n "$VALUE" ]
+    then
         printf "%s" "$VALUE"
     else
         printf "%s" "$DEFAULT"
