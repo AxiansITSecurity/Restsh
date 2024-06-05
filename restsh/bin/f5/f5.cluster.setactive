@@ -3,10 +3,10 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-04-10
 
-# Shortdesc: Sets the RESTSH_HOST environment variable to active memeber from the F5 cluster.
+# Shortdesc: Sets the RESTSH_HOST environment variable to the active member from the F5 cluster.
 # Desc:
-# Sets the RESTSH_HOST environment variable to active memeber from the F5 cluster.
-# RESTSH_HOST can be a single address or multible addresses separated by comma or space.
+# Sets the RESTSH_HOST environment variable to active the member from the F5 cluster.
+# RESTSH_HOST can be a single address or multiple addresses separated by comma or space.
 
 # Strict error handling
 set -eEu -o pipefail
