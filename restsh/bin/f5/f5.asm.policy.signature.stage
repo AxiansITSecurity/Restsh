@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-06-05
+# Shortdesc: Stages a specific attack signature in a policy.
+# Desc:
+# Stages a specific attack signature in a policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ $# -ne 2 ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <policy name> <signature id>"
+    exit 1
+fi
+POLICY=$1
+SIGNATURE=$2
+
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+SIGNATURE_ID=$(f5.asm.policy.signature.getid "$POLICY_HASH" "$SIGNATURE")
+
+PATCH "/mgmt/tm/asm/policies/$POLICY_HASH/signatures/$SIGNATURE_ID" <<< '{"performStaging":true, "enabled":true}'

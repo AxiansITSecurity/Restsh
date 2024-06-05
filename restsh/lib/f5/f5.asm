@@ -22,6 +22,28 @@ export F5_ASM_SIGNATURE_FILTER_SUGGESTIONS="?\$filter=hasSuggestions+eq+true+AND
 # All disabled signatures
 export F5_ASM_SIGNATURE_FILTER_DISABLED="?\$filter=enabled+eq+false"
 
+# Gets the id of signature for a policy by global signatureId
+f5.asm.policy.signature.getid() {
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+    then
+        echo "Usage: f5.asm.policy.signature.getid <policy hash> <signature id>" 1>&2
+        return 1
+    fi
+    local POLICY_HASH=$1
+    local GETID=$2
+    while read -r ID SIGNATUREID
+    do
+        if [ "$SIGNATUREID" = "$GETID" ]
+        then
+            printf "%s" "$ID"
+            return 0
+        fi
+    done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/signatures" \
+        | JQ -r ".items[] | .id,.signatureReference.signatureId" \
+        | paste - -)
+    return 1
+}
+
 # Gets the signature set id
 f5.asm.signatureset.getid() {
     if [ -z "${1+x}" ]
@@ -131,6 +153,7 @@ f5.asm.taskwait() {
     return 0
 }
 
+export -f f5.asm.policy.signature.getid
 export -f f5.asm.signatureset.getid
 export -f f5.asm.template.getid
 export -f f5.asm.policy.gethash
