@@ -13,7 +13,7 @@
 
 # REST host to connect to
 #[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
-[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="gitlab"
+[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="<gitlab-host>"
 #[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
 
 # Curl options
