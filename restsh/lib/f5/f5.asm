@@ -41,6 +41,7 @@ f5.asm.policy.signature.getid() {
     done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/signatures" \
         | JQ -r ".items[] | .id,.signatureReference.signatureId" \
         | paste - -)
+    echo_err "Failure getting signature id"
     return 1
 }
 
