@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-23
+# Date: 2024-06-12
 
 # Shortdesc: Imports a F5 ASM Policy in binary or xml format.
 # Desc:
@@ -33,10 +33,11 @@ fi
 f5.file-transfer.upload "$FILENAME"
 
 FILENAME=$(basename "$FILENAME")
+f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$FILENAME"
 
 # Start import task
 TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
-    --arg filename "/var/config/rest/downloads/$FILENAME" \
+    --arg filename "$FILENAME" \
     '{
         "name": $name,
         "filename": $filename
