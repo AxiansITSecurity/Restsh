@@ -41,6 +41,18 @@ else
     POLICY_FILE=$1
 fi
 
+if [ ! -f "$POLICY_FILE" ]
+then
+    echo_err "File not found: $POLICY_FILE"
+    exit 1
+fi
+
+if [ ! -d "$RULES_DIR" ]
+then
+    echo_err "Rules directory not found: $RULES_DIR"
+    exit 1
+fi
+
 # Main
 COUNTER=0
 echo ""
