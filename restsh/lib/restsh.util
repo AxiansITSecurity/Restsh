@@ -146,7 +146,8 @@ COLUMN() {
                 ;;
         esac
     done
-    local TMPFILE="$(mktemp)"
+    local TMPFILE
+    TMPFILE="$(mktemp)"
     local SED_OPTS=("-e" "s/^ //")
     if [ -n "$COLUMN_NAMES" ]
     then
