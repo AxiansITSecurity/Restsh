@@ -92,7 +92,7 @@ then
     echo "| ----------- | ----------- | --------- | --------- |"
     cert-ssl-profiles
 else
-    cert-ssl-profiles | COLUMN -ts $'\t' -o " | " -N "Certificate,Common Name,ClientSSL,ServerSSL" \
+    cert-ssl-profiles | COLUMN -o " | " -N "Certificate,Common Name,ClientSSL,ServerSSL" \
         -W "Common Name,ClientSSL,ServerSSL"
 fi
 

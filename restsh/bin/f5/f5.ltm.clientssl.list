@@ -44,7 +44,7 @@ then
     GET /mgmt/tm/ltm/profile/client-ssl | JQ -r '.items[] | [.fullPath, .defaultsFrom, .serverName, .cert]'
 else
     GET /mgmt/tm/ltm/profile/client-ssl | JQ -r '.items[] | [.fullPath, .defaultsFrom, .serverName, .cert] | @tsv' \
-        | COLUMN -ts $'\t' -o " | " -N "fullPath,parent,serverName,cert"
+        | COLUMN -o " | " -N "fullPath,parent,serverName,cert"
 fi
 
 exit 0

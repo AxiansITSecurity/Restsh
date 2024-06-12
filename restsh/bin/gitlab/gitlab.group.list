@@ -52,7 +52,7 @@ then
         echo "$RESULT"
     else
         JQ -r '.[] | [.id, .full_path] | @tsv' <<< "$RESULT" | \
-            COLUMN -ts $'\t' -o " | " -N "id,full_path"
+            COLUMN -o " | " -N "id,full_path"
     fi
 else
     exit 1

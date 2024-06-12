@@ -126,36 +126,19 @@ XARGS() {
     xargs -n1 -P1 "$@"
 }
 
-# Shortcut for column with feature detection.
+# Replacement for the column command, separator is \t
 COLUMN() {
-    local OPTION OPTIND
-    local COLUMN_OPTIONS=()
     local COLUMN_NAMES=""
-    local COLUMN_SEPARATOR=""
-    while getopts ':ts:o:N:W:' OPTION
+    local OUTPUT_SEPARATOR=""
+    local OPTION OPTIND
+    while getopts ':N:o:' OPTION
     do
         case "$OPTION" in
-            t)
-                # table mode
-                COLUMN_OPTIONS+=("-t")
-                ;;
-            s)
-                # column separator
-                COLUMN_OPTIONS+=("-s" "$OPTARG")
-                COLUMN_SEPARATOR="$OPTARG"
-                ;;
-            o)
-                # output separator
-                COLUMN_OPTIONS+=("-o" "$OPTARG")
-                ;;
             N)
-                # manually add header, if column cmd is too old
-                [ "$RESTSH_COLUMN_ADV" -eq 1 ] && COLUMN_OPTIONS+=("-N" "$OPTARG")
                 COLUMN_NAMES="$OPTARG"
                 ;;
-            W)
-                # ignore -W option, if column cmd is too old
-                [ "$RESTSH_COLUMN_ADV" -eq 1 ] && COLUMN_OPTIONS+=("-W" "$OPTARG")
+            o)
+                OUTPUT_SEPARATOR="$OPTARG"
                 ;;
             *) 
                 echo_err "Invalid column options"
@@ -163,19 +146,31 @@ COLUMN() {
                 ;;
         esac
     done
-
-    # replace separator
-    [ "$RESTSH_COLUMN_ADV" -eq 0 ] && COLUMN_NAMES="${COLUMN_NAMES//,/$COLUMN_SEPARATOR}"
-
-    {
-        # manually add header, if column cmd is too old
-        [ "$RESTSH_COLUMN_ADV" -eq 0 ] && echo "$COLUMN_NAMES"
-        # read/print STDIN
-        while read -r LINE
-        do
-            echo "$LINE"
-        done
-    } | column "${COLUMN_OPTIONS[@]}"
+    local TMPFILE="$(mktemp)"
+    local SED_OPTS=("-e" "s/^ //")
+    if [ -n "$COLUMN_NAMES" ]
+    then
+        echo -e "${COLUMN_NAMES//,/\\t}" > "$TMPFILE"
+        SED_OPTS+=("-e" "1s/\(.*\)/\x1b[1m\1\x1b[0m/")
+    fi
+    cat >> "$TMPFILE"
+    awk -F "\t" -v sep="$OUTPUT_SEPARATOR" '
+        FNR == 1 { if (NR == FNR) next }
+        NR == FNR {
+            for (i = 1; i <= NF; i++) {
+            l = length($i)
+            if (w[i] < l)
+                w[i] = l
+            }
+            next
+        }
+        {
+            for (i = 1; i <= NF; i++)
+                printf " %s %-*s", sep, w[i] + (i > 1 ? 1 : 0), $i
+            printf " %s\n", sep
+        }
+        ' "$TMPFILE" "$TMPFILE" | sed "${SED_OPTS[@]}"
+    rm -f "$TMPFILE"
 }
 
 # Sets the RESTSH_CURL_OPTIONS environment variable.

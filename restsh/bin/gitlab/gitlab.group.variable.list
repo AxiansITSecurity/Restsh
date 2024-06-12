@@ -48,7 +48,7 @@ then
         echo "$RESULT"
     else
         JQ -r '.[] | [.key, .value, .masked, .raw] | @tsv' <<< "$RESULT" | \
-            COLUMN -ts $'\t' -o " | " -N "key,value,masked,raw"
+            COLUMN -o " | " -N "key,value,masked,raw"
     fi
 else
     exit 1

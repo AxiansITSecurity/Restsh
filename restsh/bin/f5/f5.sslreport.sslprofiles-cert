@@ -73,9 +73,9 @@ then
     echo "| --------- | ----------- |"
     server-ssl-profiles-cert
 else
-    client-ssl-profiles-cert | COLUMN -ts $'\t' -o " | " -N "ClientSSL,Certificate"
+    client-ssl-profiles-cert | COLUMN -o " | " -N "ClientSSL,Certificate"
     echo ""
-    server-ssl-profiles-cert | COLUMN -ts $'\t' -o " | " -N "ServerSSL,Certificate"
+    server-ssl-profiles-cert | COLUMN -o " | " -N "ServerSSL,Certificate"
 fi
 
 exit 0

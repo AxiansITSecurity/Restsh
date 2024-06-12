@@ -45,8 +45,8 @@ restsh.help.print() {
     local K
     for K in "${!CMDS[@]}"
     do
-        echo -e "$K=${CMDS["$K"]}"
-    done | sort | COLUMN -s"=" -t | indent
+        echo -e "$K\t${CMDS["$K"]}"
+    done | sort | COLUMN | indent
     unset CMDS
     return 0
 }
@@ -72,7 +72,7 @@ restsh.help.showenv() {
         sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
             -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
             -e "s/(RESTSH_REFRESH_TOKEN=).*/\1\"***\"/"| \
-        sort | COLUMN -s"=" -t)
+        sort | sed -e 's/=/\t/' | COLUMN)
     return 0
 }
 
@@ -87,9 +87,9 @@ restsh.help.categories() {
             local DESC=""
             [ -f "$RESTSH_PATH/bin/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/bin/$CAT/.shortdesc")
             [ -f "$RESTSH_PATH/lib/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$CAT/.shortdesc")
-            echo -e "$CAT=$DESC"
+            echo -e "$CAT\t$DESC"
         done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
-    } | COLUMN -s"=" -t | indent
+    } | COLUMN | indent
     return 0
 }
 
