@@ -51,6 +51,18 @@ client-ssl-profiles-cert() {
     done < <(GET "/mgmt/tm/ltm/profile/client-ssl" | JQ -r ".items[] | .fullPath,.certKeyChain[].cert" | paste - -)
 }
 
+server-ssl-profiles-cert() {
+    while read -r PROFILE CERT
+    do
+        if [ "$FORMAT" == "md" ]
+        then
+            printf "| %s | %s |\n" "$PROFILE" "$CERT"
+        else
+            printf "%s\t%s\n" "$PROFILE" "$CERT"
+        fi
+    done < <(GET "/mgmt/tm/ltm/profile/client-ssl" | JQ -r ".items[] | .fullPath,.certKeyChain[].cert" | paste - -)
+}
+
 if [ "$FORMAT" = "md" ]
 then
     echo "| ClientSSL | Certificate |"
