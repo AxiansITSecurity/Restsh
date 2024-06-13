@@ -81,7 +81,7 @@ then
     echo "| -------------- | --------- | --------- |"
     vs-ssl-profiles
 else
-    vs-ssl-profiles | COLUMN -o " | " -N "Virtual Server,ClientSSL,ServerSSL" \
+    vs-ssl-profiles | COLUMN -o "|" -N "Virtual Server,ClientSSL,ServerSSL" \
         -W "ClientSSL,ServerSSL"
 fi
 

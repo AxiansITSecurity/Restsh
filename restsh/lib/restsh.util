@@ -156,7 +156,6 @@ COLUMN() {
     fi
     cat >> "$TMPFILE"
     awk -F "\t" -v sep="$OUTPUT_SEPARATOR" '
-        FNR == 1 { if (NR == FNR) next }
         NR == FNR {
             for (i = 1; i <= NF; i++) {
             l = length($i)

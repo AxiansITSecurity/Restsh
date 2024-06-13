@@ -36,6 +36,6 @@ else
 fi
 
 GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
-    COLUMN -o " | " -N "id,action,entityName,score,occurrences"
+    COLUMN -o "|" -N "id,action,entityName,score,occurrences"
 
 exit 0

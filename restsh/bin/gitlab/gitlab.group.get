@@ -48,7 +48,7 @@ then
         echo "$RESULT"
     else
         JQ -r '[.id, .web_url] | @tsv' <<< "$RESULT" | \
-            COLUMN -o " | " -N "id,url"
+            COLUMN -o "|" -N "id,url"
     fi
 else
     exit 1

@@ -45,8 +45,8 @@ then
     then
         echo "$RESULT"
     else
-        $RESTSH_JQ -r '.items[] | [.fullPath, .isModified, .parentPolicyName, .description, .enforcementMode, .id] | @tsv' <<< "$RESULT" | \
-            COLUMN -o " | " -N "fullPath,isModified,parentPolicyName,description,enforcementMode,id"
+        $RESTSH_JQ -r '.items[] | [.fullPath, .isModified, .enforcementMode, .id] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "fullPath,Modified,enforcementMode,id"
     fi
 fi
 

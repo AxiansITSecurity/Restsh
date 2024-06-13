@@ -34,14 +34,14 @@ NOW=$(date +%s)
         EXP_FRIENDLY=$(date -d @"$EXPIRATION")
         if  [ "$EXPIRATION" -lt "$NOW" ]
         then
-            echo -e "$F\t${COLOR_RED}expired${COLOR_RESET}\t$EXP_FRIENDLY"
+            echo -e "$F\texpired\t$EXP_FRIENDLY"
         elif [ "$EXPIRATION" -lt "$NEXTMONTH" ]
         then
-            echo -e "$F\t${COLOR_YELLOW}expires soon${COLOR_RESET}\t$EXP_FRIENDLY"
+            echo -e "$F\texpires soon\t$EXP_FRIENDLY"
         else
-            echo -e "$F\t${COLOR_GREEN}ok${COLOR_RESET}\t$EXP_FRIENDLY"
+            echo -e "$F\tok\t$EXP_FRIENDLY"
         fi
     done
-} | COLUMN -N "Certificate,State,Expiration"
+} | COLUMN -o "|" -N "Certificate,State,Expiration"
 
 exit 0

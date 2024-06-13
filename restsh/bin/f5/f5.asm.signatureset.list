@@ -21,4 +21,4 @@ fi
 
 GET /mgmt/tm/asm/signature-sets?\$select=name,id,signatureCount,isUserDefined \
     | JQ -r '.items[] | select(.isUserDefined == true) | [.name,.id,.signatureCount] | @tsv' \
-    | COLUMN -o " | " -N "Name,Id,Count"
+    | COLUMN -o "|" -N "Name,Id,Count"

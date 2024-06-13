@@ -47,7 +47,7 @@ then
 else
     GET -r "/mgmt/cm/autodeploy/qkview" \
         | $RESTSH_JQ -r ".items[] | [.name,.status,.id] | @tsv" \
-        | COLUMN
+        | COLUMN -o "|" -N "Name,Status,Id"
 fi
 
 exit 0

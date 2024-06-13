@@ -52,7 +52,7 @@ then
         echo "$RESULT"
     else
         JQ -r '.[] | [.id, .path_with_namespace, .owner.username] | @tsv' <<< "$RESULT" | \
-            COLUMN -o " | " -N "id,path_with_namespace,owner"
+            COLUMN -o "|" -N "id,path_with_namespace,owner"
     fi
 else
     exit 1

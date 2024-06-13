@@ -46,7 +46,7 @@ then
         echo "$RESULT"
     else
         $RESTSH_JQ -r '.items[] | [.title, .name, .id, .description] | @tsv' <<< "$RESULT" | \
-            COLUMN -o " | " -N "title,name,id,description"
+            COLUMN -o "|" -N "title,name,id,description"
     fi
 fi
 
