@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-06-13
+
+# Shortdesc: Exports a project.
+# Desc:
+# Exports a project.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-r] <projectname> <output filename>"
+    echo -e "\tUse -r for raw output."
+    exit 1
+fi
+
+PROJECT_ID=$(restsh.util.urlencode "$1")
+OUT_FILE="$2"
+
+POST "$GITLAB_API_PREFIX/projects/$PROJECT_ID/export" <<< ""
+
+echo "Waiting for export to finish."
+COUNTER=0
+while :
+do
+    sleep "$F5_TASK_CHECK_INTERVAL"
+    if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+    then
+        echo_err "Timeout waiting for task."
+        return 1
+    fi
+    COUNTER=$((COUNTER+1))
+    if ! STATUS=$(GET -r "$GITLAB_API_PREFIX/projects/$PROJECT_ID/export" | \
+        JQ -r ".export_status")
+    then
+        echo_err "Could not get export status."
+        return 1
+    fi
+    case "$STATUS" in
+        none|queued|started|regeneration_in_progress)
+            continue
+            ;;
+        finished)
+            break
+            ;;
+        *)
+            echo_err "Unhandled export status: $STATUS"
+            exit 1
+        ;;
+    esac
+done
+
+DOWNLOAD "$GITLAB_API_PREFIX/projects/$PROJECT_ID/export/download" "$OUT_FILE"
