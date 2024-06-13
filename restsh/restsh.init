@@ -10,7 +10,7 @@
 
 if [ "$(basename "$SHELL")" != "bash" ] && [ "$0" != "bash" ]
 then
-    echo "restsh supports only bash."
+    echo "restsh supports only bash, found $SHELL / $0."
     exit 1
 fi
 
