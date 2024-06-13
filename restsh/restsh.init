@@ -32,7 +32,10 @@ then
 fi
 
 # Set path
-PATH=$PATH:$RESTSH_PATH$(find "$RESTSH_PATH/bin/" -type d -printf ":%p" )
+while read -r LINE
+do
+    PATH=$PATH:$LINE
+done < <(find "$RESTSH_PATH/bin" -type d)
 export PATH
 
 # Include functions
