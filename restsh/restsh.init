@@ -8,9 +8,8 @@
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
 
-if [ "$(basename "$SHELL")" != "bash" ]
+if [ "$(basename "$SHELL")" != "bash" ] && [ "$0" != "bash" ]
 then
-    echo "Detected shell: $0"
     echo "restsh supports only bash."
     exit 1
 fi
