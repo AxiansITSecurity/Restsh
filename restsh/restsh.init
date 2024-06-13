@@ -43,7 +43,7 @@ done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
 # Set default mustache options
-export RESTSH_MO="mo --fail-on-function --fail-on-file"
+export RESTSH_MO="mo --fail-on-function --fail-on-file --fail-not-set"
 
 # Use default or custom config file
 if [ -z "${RESTSH_CONFIG+x}" ]
