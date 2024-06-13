@@ -18,13 +18,15 @@ restsh.http() {
     local BODY=0
     local RAW=0
     local RETRIES=0
+    local OUTPUT_FILE=""
     local OPTION OPTIND
-    while getopts ':brc:' OPTION
+    while getopts ':brc:o:' OPTION
     do
         case "$OPTION" in
             b) BODY=1 ;;
             r) RAW=1 ;;
             c) RETRIES="$OPTARG" ;;
+            o) OUTPUT_FILE="$OPTARG" ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -35,6 +37,7 @@ restsh.http() {
         echo -e "\tUse -b for a body and pipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries" 1>&2
+        echo -e "\tUse -o to define an output file" 1>&2
         return 1
     fi
     local METHOD=$1
@@ -54,6 +57,11 @@ restsh.http() {
     if [ "$RETRIES" -gt 0 ]
     then
         RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "--retry-all-errors" --retry-delay "10")
+    fi
+
+    if [ -n "$OUTPUT_FILE" ]
+    then
+        RESTSH_CURL_OPTS+=("-o" "$OUTPUT_FILE")
     fi
 
     local ERROR_TMP
@@ -248,12 +256,34 @@ DELETE() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: DELETE [-r] <uri>" 1>&2
+        echo "Usage: DELETE [-r] [-c] <uri>" 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
     ARGS+=("DELETE" "$1")
+    restsh.http "${ARGS[@]}"
+}
+
+# Downloads a file
+DOWNLOAD() {
+    local ARGS=()
+    local OPTION OPTIND
+    while getopts ':c:' OPTION
+    do
+        case "$OPTION" in
+            c) ARGS+=("-c" "$OPTARG") ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ]  || [ "$OPTION" == "invalid" ]
+    then
+        echo "Usage: DOWNLOAD [-r] [-c] <uri> <output filename>" 1>&2
+        echo -e "\tUse -c to define retries." 1>&2
+        return 1
+    fi
+    ARGS+=("-o" "$2" "GET" "$1")
     restsh.http "${ARGS[@]}"
 }
 
@@ -272,7 +302,7 @@ GET() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: GET [-r] <uri>" 1>&2
+        echo "Usage: GET [-r] [-c] <uri>" 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
         return 1
@@ -296,7 +326,7 @@ OPTIONS() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: OPTIONS [-r] <uri>" 1>&2
+        echo "Usage: OPTIONS [-r] [-c] <uri>" 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
         return 1
@@ -320,7 +350,7 @@ PATCH() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: PATCH [-r] <uri>" 1>&2
+        echo "Usage: PATCH [-r] [-c] <uri>" 1>&2
         echo -e "\tPipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
@@ -345,7 +375,7 @@ POST() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: POST [-r] <uri>" 1>&2
+        echo "Usage: POST [-r] [-c] <uri>" 1>&2
         echo -e "\tPipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
@@ -370,7 +400,7 @@ PUT() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Usage: PUT [-r] <uri>" 1>&2
+        echo "Usage: PUT [-r] [-c] <uri>" 1>&2
         echo -e "\tPipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
@@ -384,6 +414,7 @@ export -f restsh.http
 export -f restsh.download
 export -f restsh.upload
 export -f DELETE
+export -f DOWNLOAD
 export -f GET
 export -f OPTIONS
 export -f PATCH
