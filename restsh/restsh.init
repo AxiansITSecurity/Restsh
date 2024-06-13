@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-07
+# Date: 2024-06-13
 
 # Shortdesc: Bash initialization file for the restsh framework.
 # Desc:
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
 
-if [ "$0" != "bash" ]
+if [ "$(basename "$SHELL")" != "bash" ]
 then
     echo "Detected shell: $0"
     echo "restsh supports only bash."
