@@ -37,7 +37,7 @@ f5.asm.policy.list -r | JQ -r ".items[] | select(.isModified == true) | .fullPat
 ## Apply ready signatures for all policies
 
 ```sh
-f5.asm.signaturestaging enforceReady
+f5.asm.signaturestaging.enforce
 ```
 
 ## Export all policies as json
