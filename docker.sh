@@ -16,7 +16,7 @@ case "$ACTION" in
         docker build -t restsh .
         ;;
     "run")
-        docker run --rm -it -v ./:/restsh --entrypoint restsh/restsh/restsh.start -e RESTSH_CONFIG="restsh/$CONFIG" restsh
+        docker run --rm -it -v "$(pwd):/restsh" --entrypoint restsh/restsh/restsh.start -e RESTSH_CONFIG="restsh/$CONFIG" restsh
         ;;
     *)
         echo "Runs restsh in a container."
