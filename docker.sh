@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-13
+# Date: 2024-06-17
 
 ACTION="$1"
 CONFIG="$2"
@@ -20,7 +20,7 @@ case "$ACTION" in
         ;;
     *)
         echo "Runs restsh in a container."
-        echo "Usage: $(basename $0) <build|run> [restsh-config]"
+        echo "Usage: $(basename "$0") <build|run> [restsh-config]"
         exit 1
         ;;
 esac
