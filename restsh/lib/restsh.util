@@ -261,7 +261,7 @@ restsh.util.setvar() {
         local VAR
         VAR="VAR_$(basename "$FILE" .txt)"
         # set variable from config file
-        declare -g "$VAR"="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\n')"
+        declare -g "$VAR"="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n')"
         echo "Declaring variable: $VAR"
     elif [ "$EXT" == "array" ]
     then
@@ -270,7 +270,7 @@ restsh.util.setvar() {
         VAR="VAR_$(basename "$FILE" .array)"
         # set array from config file
         local LINES
-        LINES=$(grep -v -P '^(#|\s*$)' "$FILE" || true)
+        LINES=$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r' || true)
         if [ -n "$LINES" ]
         then
             mapfile -t "$VAR" <<< "$LINES"
