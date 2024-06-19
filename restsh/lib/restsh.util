@@ -299,8 +299,15 @@ restsh.util.urlencode() {
 restsh.util.json_validate() {
     if ! ERROR=$(jq "." 2>&1 >/dev/null)
     then
+        local LINE
+        local COL
         IFS="," read -r LINE COL <<< "${ERROR//[!0-9,]/}"
         echo_err "Invalid json - $ERROR"
+        if [ -z "${LINE+x}" ] || [ -z "${COL+x}" ]
+        then
+            # jq output cannot be parsed
+            return 1
+        fi
         # Print the line with failure with some context
         echo "--"
         LINE=$((LINE+5))
