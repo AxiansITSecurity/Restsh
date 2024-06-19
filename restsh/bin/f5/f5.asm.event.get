@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-06-19
+
+# Shortdesc: Export ASM Event Report in html.
+# Desc:
+# Export ASM Event Report in html.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <support id>"
+    exit 1
+fi
+
+SUPPORTID=$1
+FILENAME="ASM_security_event_report_${SUPPORTID}.html"
+
+TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
+       --arg filter "id eq '$SUPPORTID'" \
+'{
+    "restPath": "/mgmt/tm/asm/events/requests",
+    "filename": $filename,
+    "filter": $filter
+}' | POST "/mgmt/tm/asm/tasks/export-to-file?\$select=id" | \
+        $RESTSH_JQ -r ".id")
+
+f5.asm.taskwait "export-to-file" "$TASK_ID"
+
+# Get file size
+if ! TOTAL_SIZE=$(f5.file.size "/var/ts/var/rest/$RESTSH_USER~$FILENAME")
+then
+    echo_err "Can not retrieve file size for $FILENAME"
+    exit 1
+fi
+
+# Download policy in chunks
+restsh.download "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" "$TOTAL_SIZE" "$FILENAME"
