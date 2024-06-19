@@ -117,12 +117,12 @@ restsh.download() {
             -i "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" 2>"$ERROR_TMP" \
             | awk -F/ '/Content-Range/ {print $2}' | tr -d '\r')
         # Check if TOTAL_SIZE is gt 0
-        if [ "$TOTAL_SIZE" -le 0 ]
+        if [ "$TOTAL_SIZE" = "*" ] || [ "$TOTAL_SIZE" -le 0 ]
         then
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
-            print_json_err_curl "Could not determine download size: $ERROR" "$METHOD ${RESTSH_URL}${URI}"
+            print_json_err_curl "Could not determine download size: $ERROR" "GET ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
