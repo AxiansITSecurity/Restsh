@@ -56,10 +56,11 @@ then
 fi
 
 # Get file size
-TOTAL_SIZE=$(f5.run -r "stat -c%s /var/ts/var/rest/$RESTSH_USER~$FILENAME" \
-    | jq -r ".commandResult" \
-        | tr -d '\n' \
-            | tr -d '\r')
+if ! TOTAL_SIZE=$(f5.file.size "/var/ts/var/rest/$RESTSH_USER~$FILENAME")
+then
+    echo_err "Can not retrieve file size for /var/ts/var/rest/$RESTSH_USER~$FILENAME"
+    exit 1
+fi
 
 # Download policy in chunks
 restsh.download "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" "$TOTAL_SIZE" "$FILENAME"
