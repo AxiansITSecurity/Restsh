@@ -301,7 +301,7 @@ restsh.util.json_validate() {
     then
         local LINE
         local COL
-        IFS="," read -r LINE COL <<< "${ERROR//[!0-9,]/}"
+        read -r LINE COL < <(sed -E 's/.*at line ([[:digit:]]+), column ([[:digit:]]+).*/\1 \2/' <<< "$ERROR")
         echo_err "Invalid json - $ERROR"
         if [ -z "${LINE+x}" ] || [ -z "${COL+x}" ]
         then
