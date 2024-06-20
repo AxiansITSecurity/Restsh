@@ -333,6 +333,28 @@ restsh.util.json_validate() {
     return 0
 }
 
+# Returns 1 if string is empty or null
+restsh.util.check.empty() {
+    if [ -z "$1" ] || [ "$1" = "null" ]
+    then
+        return 1
+    fi
+    return 0
+}
+
+# Declares a variable KEY=VALUE
+restsh.util.declare.var() {
+    local DEF=$1
+    local KEY=${DEF%%=*}
+    local VALUE=${DEF##*=}
+    if [ -z "$KEY" ] || [ -z "$VALUE" ]
+    then
+        return 1
+    fi
+    declare -g "$KEY"="$VALUE"
+    return 0
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -353,3 +375,5 @@ export -f restsh.util.setvars
 export -f restsh.util.setvar
 export -f restsh.util.urlencode
 export -f restsh.util.json_validate
+export -f restsh.util.check.empty
+export -f restsh.util.declare.var
