@@ -21,7 +21,7 @@ fi
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
-. "${RESTSH_PATH}/lib/mo/functions"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
 
 if [ -z "${1+x}" ]
 then

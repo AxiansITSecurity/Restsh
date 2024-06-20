@@ -22,7 +22,7 @@ fi
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
-. "${RESTSH_PATH}/lib/mo/functions"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
 
 # Assigns an ASM policy by hash
 assign_by_hash() {

@@ -56,8 +56,8 @@ then
     echo "Processing template"
     # Include mustache
     . "${RESTSH_PATH}/dist/mo/mo"
-    . "${RESTSH_PATH}/lib/mo/functions"
-    . "${RESTSH_PATH}/lib/mo/f5.as3"
+    . "${RESTSH_PATH}/lib/mo/mo.functions"
+    . "${RESTSH_PATH}/lib/mo/mo.f5.as3"
 
     # Load variables file
     [ -z "${DEFAULTS+x}" ] && DEFAULTS="${TS_FILE}.var"

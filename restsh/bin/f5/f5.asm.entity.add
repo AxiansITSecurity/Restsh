@@ -36,7 +36,7 @@ POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
-. "${RESTSH_PATH}/lib/mo/functions"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
 
 if ! $RESTSH_MO -s="$DEFAULTS" -- "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
 then

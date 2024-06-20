@@ -33,7 +33,7 @@ TEMPLATE="$RESTSH_PATH/templates/f5/as3/tenant.remove.json"
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
-. "${RESTSH_PATH}/lib/mo/functions"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
 
 # Main
 if ! TASK_ID=$($RESTSH_MO -- "$TEMPLATE" | POST "/mgmt/shared/appsvcs/declare?async=true" | \
