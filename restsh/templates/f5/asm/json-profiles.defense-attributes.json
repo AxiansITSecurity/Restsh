@@ -1,0 +1,8 @@
+{
+    "defenseAttributes": {
+        "maximumTotalLengthOfJSONData": {{VAR_JSON_MAX_DATA_LENGTH}},
+        "maximumArrayLength": {{VAR_JSON_MAX_ARRAY_LENGTH}},
+        "maximumStructureDepth": {{VAR_JSON_MAX_STRUCTURE_DEPTH}},
+        "maximumValueLength": {{VAR_JSON_MAX_VALUE_LENGTH}}
+    }
+}
