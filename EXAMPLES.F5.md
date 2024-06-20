@@ -73,5 +73,5 @@ done < tmp/disallowed_urls.array
 - Json profile: `json_POST_~trading~rest~sell_stocks.php`
 
 ```sh
-f5.asm.entity.modify -t json-profiles.defense-attributes.json -sVAR_JSON_MAX_DATA_LENGTH=5 -sVAR_JSON_MAX_ARRAY_LENGTH=2 -sVAR_JSON_MAX_STRUCTURE_DEPTH=3 -sVAR_JSON_MAX_VALUE_LENGTH=10 /Common/apisecurity json_POST_~trading~rest~sell_stocks.php
+f5.asm.entity.modify -t json-profiles.defense-attributes.json -sVAR_JSON_MAX_DATA_LENGTH=5 -sVAR_JSON_MAX_ARRAY_LENGTH=2 -sVAR_JSON_MAX_STRUCTURE_DEPTH=3 -sVAR_JSON_MAX_VALUE_LENGTH=10 /Common/apisecurity json-profiles json_POST_~trading~rest~sell_stocks.php
 ```
