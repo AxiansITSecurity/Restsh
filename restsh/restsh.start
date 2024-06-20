@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-31
+# Date: 2024-06-20
 
 # Shortdesc: Starts the restsh environment.
 # Desc:
@@ -18,7 +18,33 @@ export RESTSH_PATH
 export RESTSH_INTERACTIVE=1
 
 # Set restsh custom configuration file.
-[ -n "${1+x}" ] && export RESTSH_CONFIG=$1
+if [ -n "${1+x}" ]
+then
+    export RESTSH_CONFIG=$1
+else
+    if WHIPTAIL=$(command -v whiptail)
+    then
+        export NEWT_COLORS='
+    root=,blue
+    checkbox=black,lightgray
+    actlistbox=white,blue
+    roottext=,blue
+    disabledentry=gray,
+    entry=white,gray'
+        CONFIG_FILES=()
+        while read -r FILE
+        do
+            NAME=$(basename "$FILE")
+            [ "$NAME" = ".restsh-config.dist.f5" ] && continue
+            [ "$NAME" = ".restsh-config.dist.gitlab" ] && continue
+            [ "$NAME" = ".restsh-config.dist.next" ] && continue
+            [ "$NAME" = ".restsh-config.dist" ] && continue
+            CONFIG_FILES+=("$NAME" "")
+        done < <(find ./ -maxdepth 1 -name .restsh-config\* -type f)
+        SELECT=$($WHIPTAIL --clear --backtitle "restsh" --noitem --menu "Choose configuration file" 0 80 0 -- "${CONFIG_FILES[@]}" 3>&1 1>&2 2>&3)
+        export RESTSH_CONFIG="$SELECT"
+    fi
+fi
 
 # Start restsh in a sub shell, to avoid clobbering the existing environment.
 bash --init-file "$RESTSH_PATH/restsh.init"
