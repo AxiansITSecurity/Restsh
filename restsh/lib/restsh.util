@@ -292,7 +292,7 @@ restsh.util.urlencode() {
         echo "Usage: restsh.util.urlencode <string>" 1>&2
         return 1
     fi
-    $RESTSH_JQ -rn --arg x "$1" '$x|@uri' | tr -d "\n"
+    $RESTSH_JQ -rn --arg x "$1" '$x | @uri' | tr -d "\n"
 }
 
 # JSON validation, pipe string to stdin

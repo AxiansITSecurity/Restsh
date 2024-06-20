@@ -2,8 +2,7 @@
 
 - Module for F5 Distributed Cloud
 - Module for F5 Next
-- Module for NAP
-- Integrate LTM features from https://github.com/joel74/POSH-LTM-Rest
+- Module for NGINX App Protect
 - List output options for console/json/markdown
 - Migrate healthcheck to use the REST-API
 - Best practices checker for LTM
