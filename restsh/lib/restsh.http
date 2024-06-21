@@ -138,7 +138,7 @@ restsh.download() {
     [ "$TOTAL_SIZE" -lt "$CHUNK_SIZE" ] && CHUNK_SIZE=$TOTAL_SIZE
 
     # Initialize Connection type at Keep-Alive
-	local CONNECTION="Keep-Alive"
+    local CONNECTION="Keep-Alive"
 
     while [ "$END" -lt "$RANGE_END" ]
     do
@@ -202,7 +202,7 @@ restsh.upload() {
     [ "$TOTAL_SIZE" -lt "$CHUNK_SIZE" ] && CHUNK_SIZE=$TOTAL_SIZE
 
     # Initialize Connection type at Keep-Alive
-	local CONNECTION="Keep-Alive"
+    local CONNECTION="Keep-Alive"
 
     local ERROR_TMP
     ERROR_TMP=$(mktemp)
