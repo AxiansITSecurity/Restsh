@@ -7,5 +7,11 @@
 # Desc:
 # Common functions and definitions for the GitLab module.
 
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
 # Prefix for the GitLab REST API
 export GITLAB_API_PREFIX="/api/v4"
