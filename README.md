@@ -43,7 +43,7 @@ restsh/restsh.start custom-config1
 
 ### Debug
 
-Print all executed commands and enables verbose mode of curl and mustache.
+Print all executed commands and enables verbose mode of curl.
 
 ```sh
 export RESTSH_DEBUG=1
@@ -66,14 +66,16 @@ See [USAGE.md](USAGE.md)
 
 ### Available modules
 
-| Module | Prefix |
-| ------ | ------ |
-| F5 BIG-IP | f5 |
-| F5 BIG-IP Next | next |
+| Prefix | Description |
+| ------ | ----------- |
+| cert | Certificate handling |
+| f5 | F5 BIG-IP Classic |
+| next | F5 BIG-IP Next |
+| gitlab | GitLab |
 
 ## Dependencies
 
-restsh works only inside the bash shell and needs standard linux utilities like sed, grep, etc.
+restsh works only inside the bash shell and needs standard Linux utilities like sed, grep, etc.
 
 Further dependencies are:
 
