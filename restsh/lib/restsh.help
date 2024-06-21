@@ -36,7 +36,7 @@ restsh.help.parse.lib() {
             CMDS[${LINE}]=$DESC
             DESC=""
         fi
-    done < <(grep -B1 --no-group-separator "() {" "$FILE" | sed -e 's/# //' -e 's/() {//')
+    done < <(grep -B1 -- "() {" "$FILE" | grep -v -- "--" | sed -e 's/# //' -e 's/() {//')
     return 0
 }
 
