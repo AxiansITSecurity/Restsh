@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-06-21
 
-# Shortdesc: Lists all iRules.
+# Shortdesc: Gets the WAF Policy schema.
 # Desc:
-# Lists all iRules.
+# Gets the WAF Policy schema.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,4 +23,4 @@ fi
 next.auth.check
 
 # Main
-GET "${NEXT_API_PREFIX}/spaces/default/irules?select=name" | JQ -r "._embedded.irules[].name"
+GET "${NEXT_API_PREFIX}/security/waf/policy-schema" | JQ

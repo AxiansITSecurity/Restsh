@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-01-31
+# Date: 2024-06-21
 
 # Shortdesc: Gets, refreshes and deletes the bearer token from a F5 Next Central Manager.
 # Desc:
@@ -40,16 +40,20 @@ next.auth.login() {
         REFRESH_TOKEN=$($RESTSH_JQ -r ".refresh_token" <<< "$RESULT" | grep -v "null")
         if [ -n "${ACCESS_TOKEN}" ]
         then
-            echo "Access Token: $ACCESS_TOKEN"
-            echo "Refresh Token: $REFRESH_TOKEN"
+            echo "New Refresh Token retrieved" >&2
+            echo "New Access Token retrieved" >&2
             export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
             export RESTSH_REFRESH_TOKEN="$REFRESH_TOKEN"
-            unset RESTSH_USER
+            local NOW
+            NOW=$(date +%s)
+            # 5 Minutes lifetime
+            export RESTSH_TOKEN_LIFETIME=$((NOW+300))
             unset RESTSH_PASS
             return 0
         fi
     fi
     export RESTSH_TOKEN_VALUE=""
+    export RESTSH_TOKEN_LIFETIME=0
     unset RESTSH_USER
     unset RESTSH_PASS
     echo_err "Could not get token."
@@ -73,14 +77,38 @@ next.auth.refresh() {
         ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT")
         if [ -n "${ACCESS_TOKEN}" ]
         then
-            echo "Access Token: $ACCESS_TOKEN"
+            echo "New Access Token retrieved" >&2
             export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
+            local NOW
+            NOW=$(date +%s)
+            # 5 Minutes lifetime
+            export RESTSH_TOKEN_LIFETIME=$((NOW+300))
             return 0
         fi
     fi
 
     echo_err "Could not get a new access token."
     return 1
+}
+
+# Checks the lifetime of the auth token and refreshes it on demand
+next.auth.check() {
+    if [ -z "$RESTSH_REFRESH_TOKEN" ]
+    then
+        echo_err "No refresh token found, you must login with f5.auth.login"
+        return 1
+    fi
+    local NOW
+    NOW=$(date +%s)
+    if [ "$RESTSH_TOKEN_LIFETIME" -lt "$NOW" ]
+    then
+        if next.auth.refresh
+        then
+            return 0
+        fi
+        return 1
+    fi
+    return 0
 }
 
 # Deletes the authentication token from a f5 and clears the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable.
@@ -94,6 +122,9 @@ next.auth.logout() {
             echo "F5 Authentication Token deleted"
             export RESTSH_TOKEN_VALUE=""
             export RESTSH_REFRESH_TOKEN=""
+            export RESTSH_TOKEN_LIFETIME=0
+            export RESTSH_USER=""
+            export RESTSH_PASS=""
             return 0
         fi
     fi
@@ -104,4 +135,5 @@ next.auth.logout() {
 
 export -f next.auth.login
 export -f next.auth.refresh
+export -f next.auth.check
 export -f next.auth.logout
