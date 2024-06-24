@@ -4,3 +4,4 @@
 *.tgz
 /tmp
 /restsh/tmp
+/restsh/.RESTSH_TOKEN_LIFETIME
