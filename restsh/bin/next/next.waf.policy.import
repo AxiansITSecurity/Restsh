@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-06-21
 
-# Shortdesc: Exports a WAF Policy.
+# Shortdesc: Imports a WAF Policy (Update or create).
 # Desc:
-# Exports a WAF Policy.
+# Imports a WAF Policy (Update or create).
 
 # Strict error handling
 set -eEu -o pipefail
@@ -26,22 +26,17 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") <policy name> <filename>"
+    echo "Usage: $(basename "$0") <filename> <policy>"
     exit 2
 fi
-POLICY=$1
-FILENAME=$2
+FILENAME=$1
+POLICY=$2
 
-if ! POLICYID=$(next.waf.policy.getid "$POLICY")
+if ! next.waf.policy.getid "$POLICY" > /dev/null 2>&1
 then
-    exit 1
-fi
-
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/${POLICYID}")
-then
-    echo "$RESULT" > "$FILENAME"
-    exit 0
+    # Policy does not exist, create a new one
+    next.waf.policy.create "$FILENAME"
 else
-    JQ "." <<< "$RESULT"
-    exit 1
+    # Update existing policy
+    next.waf.policy.update "$FILENAME" "$POLICY"
 fi

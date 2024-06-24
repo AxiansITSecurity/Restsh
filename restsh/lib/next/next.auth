@@ -47,7 +47,7 @@ next.auth.login() {
             local NOW
             NOW=$(date +%s)
             # 2 Minutes lifetime
-            export RESTSH_TOKEN_LIFETIME=$((NOW+120))
+            printf "%s" "$((NOW+120))" > "$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME"
             unset RESTSH_PASS
             return 0
         fi
@@ -124,7 +124,7 @@ next.auth.refresh() {
             local NOW
             NOW=$(date +%s)
             # 2 Minutes lifetime
-            export RESTSH_TOKEN_LIFETIME=$((NOW+120))
+            printf "%s" "$((NOW+120))" > "$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME"
             return 0
         fi
     fi
@@ -133,18 +133,25 @@ next.auth.refresh() {
     return 1
 }
 
-# Checks the lifetime of the auth token and refreshes it on demand
+# Checks the lifetime of the auth token
 next.auth.check() {
-    if [ -z "$RESTSH_REFRESH_TOKEN" ]
+    if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
     then
         echo_err "No refresh token found, you must login with f5.auth.login"
         return 1
     fi
     local NOW
+    local RESTSH_TOKEN_LIFETIME
     NOW=$(date +%s)
+    if [ -s "$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME" ]
+    then
+        RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME")
+    else
+        RESTSH_TOKEN_LIFETIME=0
+    fi
     if [ "$RESTSH_TOKEN_LIFETIME" -lt "$NOW" ]
     then
-        if next.auth.refresh
+        if next.auth.refresh > /dev/null
         then
             return 0
         fi

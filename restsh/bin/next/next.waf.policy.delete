@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-21
+# Date: 2024-06-24
 
-# Shortdesc: Exports a WAF Policy.
+# Shortdesc: Deletes a WAF Policy.
 # Desc:
-# Exports a WAF Policy.
+# Deletes a WAF Policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,26 +22,18 @@ fi
 # Check for a valid auth token
 next.auth.check
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ -z "${1+x}" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") <policy name> <filename>"
+    echo "Usage: $(basename "$0") <policy>"
     exit 2
 fi
 POLICY=$1
-FILENAME=$2
 
 if ! POLICYID=$(next.waf.policy.getid "$POLICY")
 then
     exit 1
 fi
 
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/${POLICYID}")
-then
-    echo "$RESULT" > "$FILENAME"
-    exit 0
-else
-    JQ "." <<< "$RESULT"
-    exit 1
-fi
+DELETE "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/$POLICYID"

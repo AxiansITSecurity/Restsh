@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-06-21
 
-# Shortdesc: Exports a WAF Policy.
+# Shortdesc: Updates a WAF Policy.
 # Desc:
-# Exports a WAF Policy.
+# Updates a WAF Policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -26,22 +26,23 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") <policy name> <filename>"
+    echo "Usage: $(basename "$0") <filename> <policy>"
     exit 2
 fi
-POLICY=$1
-FILENAME=$2
+FILENAME=$1
+POLICY=$2
 
 if ! POLICYID=$(next.waf.policy.getid "$POLICY")
 then
     exit 1
 fi
 
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/${POLICYID}")
+if RESULT=$(PUT "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/$POLICYID" < "$FILENAME")
 then
-    echo "$RESULT" > "$FILENAME"
+    ID=$(jq ".id" <<< "$RESULT")
+    echo "Policy with id $ID updated."
     exit 0
-else
-    JQ "." <<< "$RESULT"
-    exit 1
 fi
+
+echo_err "Error updating policy with id $POLICYID."
+exit 1

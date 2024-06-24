@@ -1,6 +1,6 @@
 # Use restsh with F5 next
 
-API documentation: https://clouddocs.f5.com/products/big-iq/mgmt-api/v0.0.1/ApiReferences/bigip_public_api_ref/r_openapi-next.html
+API documentation: https://clouddocs.f5.com/products/bigip-next/mgmt-api/latest/ApiReferences/bigip_public_api_ref/r_openapi-next.html
 
 ## Authentication
 
@@ -13,6 +13,6 @@ You must use token based authentication.
 
 restsh asks for the credentials to retrieve the token. If you want to integrate restsh in a pipeline script you can simply set the environment variables `RESTSH_USER` and `RESTSH_PASS`.
 
-To get a token run `next.auth.login` to retrieve the access and refresh token. It uses the provided username and password to retrieve the tokens and sets the `RESTSH_TOKEN_VALUE` and `RESTSH_REFRESH_TOKEN` environment variables.
+To get a token run `next.auth.login` to retrieve the access and refresh token. It uses the provided username and password to retrieve the tokens and sets the `RESTSH_TOKEN_VALUE` and `RESTSH_REFRESH_TOKEN` environment variables. The Auth token lifetime is saved in the `.RESTSH_TOKEN_LIFETIME` file in the restsh folder. The expiration of the Auth Token is checked before each script execution and refreshed on demand.
 
 To renew the access token run `next.auth.refresh`.

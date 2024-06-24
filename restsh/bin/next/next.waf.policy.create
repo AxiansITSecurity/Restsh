@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-06-21
 
-# Shortdesc: Exports a WAF Policy.
+# Shortdesc: Creates a new WAF Policy.
 # Desc:
-# Exports a WAF Policy.
+# Create a new WAF Policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,26 +22,21 @@ fi
 # Check for a valid auth token
 next.auth.check
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ -z "${1+x}" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") <policy name> <filename>"
+    echo "Usage: $(basename "$0") <filename>"
     exit 2
 fi
-POLICY=$1
-FILENAME=$2
+FILENAME=$1
 
-if ! POLICYID=$(next.waf.policy.getid "$POLICY")
+if RESULT=$(POST "${NEXT_API_PREFIX}/spaces/default/security/waf-policies" < "$FILENAME")
 then
-    exit 1
-fi
-
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/${POLICYID}")
-then
-    echo "$RESULT" > "$FILENAME"
+    ID=$(jq ".id" <<< "$RESULT")
+    echo "New policy created with id $ID"
     exit 0
-else
-    JQ "." <<< "$RESULT"
-    exit 1
 fi
+
+echo_err "Error creating new policy"
+exit 1

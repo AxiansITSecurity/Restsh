@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-06-24
+
+# Shortdesc: Imports a OpenAPI File from an URI into a policy.
+# Desc:
+# Imports a OpenAPI File from an URI into a policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+echo_err "This function is not working"
+exit 2
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <uri> <policy name>"
+    exit 2
+else
+    URI=$1
+    POLICY=$2
+fi
+
+# Check for a valid auth token
+next.auth.check
+
+if ! POLICYID=$(next.waf.policy.getid "$POLICY")
+then
+    exit 1
+fi
+
+if RESULT=$($RESTSH_JQ -n --arg uri "$URI" \
+'{
+    "declaration": {
+        policy: {
+            "open-api-files": [
+                { link: $uri }
+            ]
+        }
+    }
+}' | PUT "${NEXT_API_PREFIX}/spaces/default/security/waf-policies/$POLICYID")
+then
+    ID=$(jq ".id" <<< "$RESULT")
+    echo "Policy with id $ID updated."
+    exit 0
+fi
+
+exit 0
