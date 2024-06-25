@@ -36,8 +36,16 @@ next.auth.login() {
     then
         local ACCESS_TOKEN
         local REFRESH_TOKEN
-        ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT" | grep -v "null")
-        REFRESH_TOKEN=$($RESTSH_JQ -r ".refresh_token" <<< "$RESULT" | grep -v "null")
+        if ! ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT" 2> /dev/null | grep -v "null")
+        then
+            echo_err "Login failed"
+            return 1
+        fi
+        if ! REFRESH_TOKEN=$($RESTSH_JQ -r ".refresh_token" <<< "$RESULT" 2> /dev/null | grep -v "null")
+        then
+            echo_err "Login failed"
+            return 1
+        fi
         if [ -n "${ACCESS_TOKEN}" ]
         then
             echo "New Refresh Token retrieved" >&2
