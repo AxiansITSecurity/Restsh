@@ -160,8 +160,8 @@ MO_VAR_PARSE() {
 }
 
 # Includes the variable if condition is true
-# Usage: {{MO_INCLUDE_IF 'VAR_F5_VERSION' '17' 'VARIABLE'}}
-MO_INCLUDE_IF() {
+# Usage: {{MO_VAR_PARSE_IF 'VAR_F5_VERSION' '17' 'VARIABLE'}}
+MO_VAR_PARSE_IF() {
     local ARG="${MO_FUNCTION_ARGS[0]}"
     local VALUE="${!ARG}"
     if [ "$VALUE" = "${MO_FUNCTION_ARGS[1]}" ]
