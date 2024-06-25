@@ -25,12 +25,12 @@ OLD_RESTSH_HOST=$RESTSH_HOST
 
 for BIGIP in ${RESTSH_HOST//,/$IFS}
 do
-    echo "Try BIG-IP connection to: $BIGIP"
+    echo "Try connection to: $BIGIP"
     export RESTSH_HOST=$BIGIP
     restsh.init.setresturl
     if ACTIVE_BIGIP=$(f5.cluster.getactive)
     then
-        echo_ok "Active BIG-IP found: $ACTIVE_BIGIP"
+        echo_ok "Active F5 device found: $ACTIVE_BIGIP"
         export RESTSH_HOST=$ACTIVE_BIGIP
         restsh.init.setresturl
         break
@@ -40,7 +40,7 @@ done
 
 if [ "$RESTSH_HOST" = "" ]
 then
-  echo_err "Could not detect active BIG-IP."
+  echo_err "Could not detect active F5 device."
   export RESTSH_HOST=$OLD_RESTSH_HOST
   restsh.init.setresturl
   exit 1

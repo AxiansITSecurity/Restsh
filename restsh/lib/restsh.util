@@ -126,7 +126,7 @@ XARGS() {
     xargs -n1 -P1 "$@"
 }
 
-# Replacement for the column command, separator is \t
+# Replacement for the column command, separator is tab
 COLUMN() {
     local COLUMN_NAMES=""
     local OUTPUT_SEPARATOR=""

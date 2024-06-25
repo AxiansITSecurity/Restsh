@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-21
+# Date: 2024-06-25
 
 # Shortdesc: Gets, refreshes and deletes the bearer token from a F5 Next Central Manager.
 # Desc:
@@ -55,7 +55,8 @@ next.auth.login() {
             local NOW
             NOW=$(date +%s)
             # 2 Minutes lifetime
-            printf "%s" "$((NOW+120))" > "$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME"
+            RESTSH_TOKEN_LIFETIME=$((NOW+120))
+            export RESTSH_TOKEN_LIFETIME
             unset RESTSH_PASS
             return 0
         fi
@@ -110,7 +111,7 @@ next.auth.change-password() {
     return 0
 }
 
-# Uses the refresh token to get a new access token.
+# Uses the refresh token to get a new access token. Can be used in sub-shells.
 next.auth.refresh() {
     if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
     then
@@ -131,8 +132,10 @@ next.auth.refresh() {
             export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
             local NOW
             NOW=$(date +%s)
-            # 2 Minutes lifetime
-            printf "%s" "$((NOW+120))" > "$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME"
+            # We write the values to files and read it with the prompt command
+            # to set the value in the initial restsh bash session
+            printf "%s" "$((NOW+120))" > "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+            printf "%s" "$RESTSH_TOKEN_VALUE" > "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
             return 0
         fi
     fi
@@ -141,7 +144,7 @@ next.auth.refresh() {
     return 1
 }
 
-# Checks the lifetime of the auth token
+# Checks the lifetime of the auth token.
 next.auth.check() {
     if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
     then
@@ -149,14 +152,7 @@ next.auth.check() {
         return 1
     fi
     local NOW
-    local RESTSH_TOKEN_LIFETIME
     NOW=$(date +%s)
-    if [ -s "$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME" ]
-    then
-        RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_PATH/.RESTSH_TOKEN_LIFETIME")
-    else
-        RESTSH_TOKEN_LIFETIME=0
-    fi
     if [ "$RESTSH_TOKEN_LIFETIME" -lt "$NOW" ]
     then
         if next.auth.refresh > /dev/null

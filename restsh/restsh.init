@@ -91,6 +91,31 @@ export RESTSH_VERSION
 # Set restsh url
 restsh.init.setresturl
 
+# Set restsh tmp dir
+RESTSH_TMP=$(mktemp -d)
+export RESTSH_TMP
+# Remove it on exit
+trap "rm -rf ""$RESTSH_TMP" EXIT
+
+# Set a prompt command to get the refreshed credentials from subsession
+# to initial restsh bash session
+prompt_command() {
+    if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME" ]
+    then
+        RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME")
+        export RESTSH_TOKEN_LIFETIME
+        rm "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+    fi
+    if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_VALUE" ]
+    then
+        RESTSH_TOKEN_VALUE=$(<"$RESTSH_TMP/.RESTSH_TOKEN_VALUE")
+        export RESTSH_TOKEN_VALUE
+        rm "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
+    fi
+}
+
+PROMPT_COMMAND=prompt_command
+
 # OK
 echo_ok "restsh $RESTSH_VERSION initialized"
 
