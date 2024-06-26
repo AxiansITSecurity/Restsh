@@ -21,10 +21,12 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+PARENT=""
+while getopts ':rp:' OPTION
 do
     case "$OPTION" in
         r) RAW=1 ;;
+        p) PARENT="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -34,19 +36,43 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <name>"
-    echo -e "\tUse -r for raw output."
-    exit 1
+    echo "Usage: $(basename "$0") [-r] [-p <parent group>] <name>"
+    echo -e "\t-r Raw output."
+    echo -e "\t-p Parent group name"
+    exit 2
 fi
 
 NAME=$1
+PARENTID=""
+
+if [ -n "$PARENT" ]
+then
+    if ! PARENTID=$(gitlab.group.get -r "$PARENT" | JQ -r ".id")
+    then
+        echo_err "Parent group not found"
+        exit 1
+    fi
+    if ! restsh.util.check.empty "$PARENTID"
+    then
+        echo_err "Parent group not found"
+        exit 1
+    fi
+    PAYLOAD='{
+        "name": $name,
+        "parent_id": $parent,
+        "path": $path
+    }'
+else
+    PAYLOAD='{
+        "name": $name,
+        "path": $path
+    }'
+fi
 
 if RESULT=$(JQ -n --arg name "$NAME" \
     --arg path "$NAME" \
-    '{
-        "name": $name,
-        "path": $path
-    }' | POST -r "$GITLAB_API_PREFIX/groups")
+    --argjson parent "$PARENTID" \
+    "$PAYLOAD" | POST -r "$GITLAB_API_PREFIX/groups")
 then
     ID=$(JQ -r ".id" <<< "$RESULT")
     if [ "$RAW" -eq 1 ]
