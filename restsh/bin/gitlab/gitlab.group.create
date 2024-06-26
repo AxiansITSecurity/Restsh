@@ -43,7 +43,7 @@ then
 fi
 
 NAME=$1
-PARENTID=""
+PARENTID="0"
 
 if [ -n "$PARENT" ]
 then
