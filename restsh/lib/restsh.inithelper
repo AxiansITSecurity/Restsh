@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-06-27
 
 # Shortdesc: Some init helper functions.
 # Desc:
@@ -64,6 +64,17 @@ restsh.init.check.cmd() {
         return 1
     fi
     export RESTSH_JQ
+    if stat -c%s "$RESTSH_PATH/restsh.init" > /dev/null 2>&1
+    then
+        RESTSH_STAT=$(command -v stat)
+    elif gstat -c%s "$RESTSH_PATH/restsh.init" > /dev/null 2>&1
+    then
+        RESTSH_STAT=$(command -v gstat)
+    else
+        echo_err "Invalid stat command, missing -c parameter"
+        return 1
+    fi
+    export RESTSH_STAT
     return 0
 }
 
