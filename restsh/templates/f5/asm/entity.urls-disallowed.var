@@ -1,0 +1,1 @@
+[ -z "${VAR_URL_TYPE+x}" ] && VAR_URL_TYPE="wildcard"

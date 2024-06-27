@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-06-27
 
 # Shortdesc: Adds a disallowed filetype to a F5 ASM Policy.
 # Desc:
@@ -19,26 +19,38 @@ then
     exit 1
 fi
 
+TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.filetypes-disallowed.json"
+DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.filetypes-disallowed.var"
+ENTITY="filetypes"
+
+while getopts ':d:t:' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        t) TEMPLATE=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
+    exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") <policy full path> <filetype>"
+    echo "$(basename "$0") [-t <modify template>] [-d variables file] <policy full path> <filetype>"
     echo ""
-    echo "Template for add is: $MODIFY_TEMPLATE"
+    echo "Template for add is: $TEMPLATE"
     echo "Defaults for add are:"
-    sed -E 's/.*&& (.*)/\t\1/' "$RESTSH_PATH/$MODIFY_DEFAULTS"
+    sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
+    exit 2
 fi
 
 POLICY=$1
 FILETYPE=$2
 
-ENTITY="filetypes"
-MODIFY_TEMPLATE="templates/f5/asm/entity.filetypes-disallowed.json"
-MODIFY_DEFAULTS="templates/f5/asm/entity.filetypes-disallowed.var"
-
 export VAR_DISALLOWED_FILETYPE=$FILETYPE
-if ! RESULT=$(f5.asm.entity.add "$POLICY" "$RESTSH_PATH/$MODIFY_TEMPLATE" "$RESTSH_PATH/$MODIFY_DEFAULTS" "$ENTITY")
+if ! RESULT=$(f5.asm.entity.add "$POLICY" "$TEMPLATE" "$DEFAULTS" "$ENTITY")
 then
     echo_err "Failed"
     echo_err "$RESULT"

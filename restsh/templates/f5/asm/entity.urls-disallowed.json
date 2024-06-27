@@ -6,7 +6,7 @@
     "method" : "*",
     "name" : "{{VAR_DISALLOWED_URL}}",
     "protocol" : "http",
-    "type" : "wildcard",
+    "type" : "{{VAR_URL_TYPE}}",
     "wildcardIncludesSlash" : true,
     "wildcardOrder" : 1
 }
