@@ -24,8 +24,24 @@ cat > log-profile.json << EOL
 EOL
 
 while read -r VS
-    do PATCH "/mgmt/tm/ltm/virtual/$VS" < log-profile.json
+do
+    PATCH "/mgmt/tm/ltm/virtual/$VS" < log-profile.json
 done < VIRTUAL_SERVERS.array
+```
+
+## Change enforcement mode of an asm policy
+
+- Policy: /Common/t
+
+```sh
+# Calculate the policy hash
+HASH=$(f5.asm.policy.gethash /Common/t)
+
+# Change to blocking mode
+PATCH "/mgmt/tm/asm/policies/$HASH" <<< '{"enforcementMode": "blocking" }' | JQ "[.fullPath,.enforcementMode]"
+
+# Do not forget to apply the policy
+f5.asm.policy.apply "$HASH"
 ```
 
 ## Apply all policies that are modified
@@ -51,20 +67,37 @@ done < <(f5.asm.policy.list -r | JQ -r ".items[].fullPath")
 
 ## Add disallowed filetypes
 
+- Policy: /Common/policy
+
 ```sh
-while read VAR_DISALLOWED_FILETYPE
+# Read an array into VAR_DISALLOWED_FILETYPES
+# One filetype per line
+restsh.util.setvars ../ax-f5-waf-jump-start/awaftemplate/config/default-policy-v16/FILETYPES_DISALLOWED.array
+
+# Iterate through the array and add one filetype at a time
+for FILETYPE in "${VAR_FILETYPES_DISALLOWED[@]}"
 do
-  f5.asm.entity.filetypes-disallowed add /Common/policy "$VAR_DISALLOWED_FILETYPE"
-done < tmp/disallowed_filetypes.array
+    f5.asm.entity.filetypes-disallowed.add /Common/policy "$FILETYPE"
+done
+
+# Do not forget to apply the policy
+f5.asm.policy.apply /Common/policy
 ```
 
 ## Add disallowed urls
 
+- Policy: /Common/policy
+
 ```sh
-while read VAR_DISALLOWED_URL
+# Read an array into VAR_DISALLOWED_FILETYPES
+# One url per line
+restsh.util.setvars ../ax-f5-waf-jump-start/awaftemplate/config/default-policy-v16/URLS_DISALLOWED.array
+
+# Iterate through the array and add one url at a time
+for URL in "${VAR_URLS_DISALLOWED[@]}"
 do
-  f5.asm.entity.urls-disallowed add /Common/policy "$VAR_DISALLOWED_URL"
-done < tmp/disallowed_urls.array
+    f5.asm.entity.urls-disallowed.add /Common/policy "$URL"
+done
 ```
 
 ## Modify defense attributes of an json profile
