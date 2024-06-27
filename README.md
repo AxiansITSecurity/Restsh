@@ -84,6 +84,6 @@ Further dependencies are:
 
 ## Customize
 
-You can add your own scripts into the `restsh/bin` and `restsh/lib` folders.
+You can add your own scripts into the `restsh/bin/custom` and `restsh/lib/custom` folders.
 
 - [DEVELOPING.md](DEVELOPING.md)
