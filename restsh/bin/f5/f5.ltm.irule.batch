@@ -35,9 +35,9 @@ create_all() {
     for FILE in "$IRULE_DIR/"*.irule
     do
         NAME=$(basename "$FILE" .irule)
-        if ! f5.ltm.irule.create "$FILE" "$NAME" 2>/dev/null
+        if ! f5.ltm.irule.create "$NAME" "$FILE" 2>/dev/null
         then
-            if f5.ltm.irule.update "$FILE" "$NAME"
+            if f5.ltm.irule.update "$NAME" "$FILE"
             then
                 echo_ok "iRule $NAME updated"
             fi
@@ -52,7 +52,7 @@ update_all() {
     for FILE in "$IRULE_DIR/"*.irule
     do
         NAME=$(basename "$FILE" .irule)
-        if f5.ltm.irule.update "$FILE" "$NAME"
+        if f5.ltm.irule.update "$NAME" "$FILE"
         then
             echo_ok "iRule $NAME updated"
         fi
