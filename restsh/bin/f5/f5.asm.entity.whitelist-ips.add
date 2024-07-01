@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-07-01
 
 # Shortdesc: Adds ips to the whitelist of a F5 ASM Policy.
 # Desc:
@@ -19,22 +19,37 @@ then
     exit 1
 fi
 
-if [ -z "${1+x}" ]
+TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.whitelist-ips.json"
+DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.whitelist-ips.var"
+ENTITY="whitelist-ips"
+
+while getopts ':d:t:s:' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        t) TEMPLATE=$OPTARG ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
+    exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") <policy full path>"
+    echo "$(basename "$0") [-t <add template>] [-d variables file] [-sVAR=VALUE] <policy full path>"
     echo ""
-    echo "Template is: $MODIFY_TEMPLATE"
+    echo "Template is: $TEMPLATE"
     echo "Defaults are:"
-    sed -E 's/.*&& (.*)/\t\1/' "$RESTSH_PATH/$MODIFY_DEFAULTS"
+    sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
+    exit 2
 fi
 
 POLICY=$1
-MODIFY_TEMPLATE="templates/f5/asm/entity.whitelist-ips.json"
-MODIFY_DEFAULTS="templates/f5/asm/entity.whitelist-ips.var"
 
-if ! RESULT=$(f5.asm.entity.add "$POLICY" "$RESTSH_PATH/$MODIFY_TEMPLATE" "$RESTSH_PATH/$MODIFY_DEFAULTS" "whitelist-ips")
+if ! RESULT=$(f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "$POLICY" "$ENTITY")
 then
     echo_err "Failed"
     echo_err "$RESULT"

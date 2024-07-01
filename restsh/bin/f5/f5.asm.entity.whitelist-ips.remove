@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-07-01
 
 # Shortdesc: Remove the ip from the whitelist of a F5 ASM Policy.
 # Desc:
@@ -21,9 +21,11 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
+    exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage:"
     echo "$(basename "$0") <policy full path> <ip>"
+    exit 2
 fi
 
 POLICY=$1

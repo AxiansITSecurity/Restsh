@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-07-01
 
 # Shortdesc: Adds an entity to a F5 ASM Policy.
 # Desc:
@@ -19,17 +19,40 @@ then
     exit 1
 fi
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ] || [ -z "${4+x}" ]
+TEMPLATE=""
+DEFAULTS=""
+while getopts ':d:t:s:' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        t) TEMPLATE=$OPTARG ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$#" -lt 2 ] || [ "$OPTION" = "invalid" ] || [ -z "$TEMPLATE" ]
 then
+    exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") <policy full path> <template> <defaults> <entity>"
-    exit 1
+    echo "Usage: $(basename "$0") -t <modify template> [-sVAR=VALUE] [-d variables file] <policy full path> <entity>"
+    exit 2
 fi
 
 POLICY=$1
-TEMPLATE=$2
-DEFAULTS=$3
-ENTITY=$4
+ENTITY=$2
+
+if [ ! -f "$TEMPLATE" ]
+then
+    if [ -f "${RESTSH_PATH}/templates/f5/asm/$TEMPLATE" ]
+    then
+        TEMPLATE="${RESTSH_PATH}/templates/f5/asm/$TEMPLATE"
+    else
+        echo_err "Template not found"
+        exit 1
+    fi
+fi
 
 # Get the policy hash
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
@@ -38,7 +61,10 @@ POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 . "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
-if ! $RESTSH_MO -s="$DEFAULTS" -- "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
+MO_OPTIONS=()
+[ -n "$DEFAULTS" ] && MO_OPTIONS+=("-s=""$DEFAULTS")
+
+if ! $RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
 then
     echo_err "Failed to modify policy"
     exit 1
