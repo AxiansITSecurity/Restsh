@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-01
+
+# Shortdesc: Sets the defense attributes of all json content profiles for specified ASM policy.
+# Desc:
+# Sets the defense attributes of all json content profiles for specified ASM policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+TEMPLATE="$RESTSH_PATH/templates/f5/asm/json-profiles.defense-attributes.json"
+DEFAULTS="$RESTSH_PATH/templates/f5/asm/json-profiles.defense-attributes.var"
+ENTITY="json-profiles"
+
+while getopts ':d:t:s:' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        t) TEMPLATE=$OPTARG ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+# Check options
+if [ $# -lt 1 ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage:"
+    echo "$(basename "$0") [-t <modify template>] [-d variables file] [-sVAR=VALUE] <policy full path>"
+    echo ""
+    echo "Template is: $TEMPLATE"
+    echo "Defaults are:"
+    sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
+    exit 2
+fi
+
+# Main
+POLICY_NAME=$1
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY_NAME")
+
+while read -r PROFILE
+do
+    f5.asm.entity.modify -t "$TEMPLATE" -d "$DEFAULTS" "$POLICY_NAME" "$ENTITY" "$PROFILE" \
+        | JQ -r ".name"
+done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY" | JQ -r ".items[] | .name")
