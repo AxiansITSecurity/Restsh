@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-13
+# Date: 2024-07-01
 
 # Shortdesc: Bash initialization file for the restsh framework.
 # Desc:
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
+
+# Check if we are in a valid GitLab CI/CD pipeline
+if [ -n "${CI_PROJECT_DIR+x}" ] && [ -d "${CI_PROJECT_DIR}/restsh/restsh" ]
+then
+    # In GitLab pipeline
+    # Use empty .restsh-config, settings must be set by CI/CD variables.
+    [ -f "$CI_PROJECT_DIR/.restsh-config" ] || echo "#" > "$CI_PROJECT_DIR/.restsh-config"
+    export RESTSH_CONFIG="$CI_PROJECT_DIR/.restsh-config"
+    export RESTSH_PATH="${CI_PROJECT_DIR}/restsh/restsh"
+fi
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
