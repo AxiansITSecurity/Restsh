@@ -351,7 +351,7 @@ restsh.util.declare.var() {
     then
         return 1
     fi
-    declare -g "$KEY"="$VALUE"
+    export "$KEY"="$VALUE"
     return 0
 }
 
