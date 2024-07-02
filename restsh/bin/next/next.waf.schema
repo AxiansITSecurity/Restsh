@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-21
+# Date: 2024-07-02
 
 # Shortdesc: Gets the WAF Policy schema.
 # Desc:
@@ -22,5 +22,14 @@ fi
 # Check for a valid auth token
 next.auth.check
 
+if [ -z "${1+x}" ] 
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <filename>"
+    exit 2
+fi
+FILENAME=$1
+
 # Main
-GET "${NEXT_API_PREFIX}/security/waf/policy-schema" | JQ
+GET "${NEXT_API_PREFIX}/security/waf/policy-schema" > "$FILENAME"
