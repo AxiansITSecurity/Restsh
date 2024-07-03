@@ -24,11 +24,12 @@ fi
 IS_TEMPLATE=0
 DRY=0
 KEEP_TMP=0
-while getopts ':d:ktv' OPTION
+while getopts ':d:ks:tv' OPTION
 do
     case "$OPTION" in
         d) DEFAULTS=$OPTARG ;;
         k) KEEP_TMP=1 ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
         t) IS_TEMPLATE=1 ;;
         v) DRY=1 ;;
         *) OPTION="invalid"; break ;;
@@ -39,9 +40,10 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
 then
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] <tenant> <as3 declaration file>"
+    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] [-sVAR=VALUE] <tenant> <as3 declaration file>"
     echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
     echo -e "\t-k\tKeeps the temporary files."
+    echo -e "\t-s\tDefine a custom variable."
     echo -e "\t-t\tProcess the as3 declaration file with mustache."
     echo -e "\t-v\tValidate the declaration by the dry-run action."
     exit 1
