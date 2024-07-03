@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2023-07-27
 
-# Shortdesc: Posts an AS3 declaration, optionally runs mustache before.
+# Shortdesc: Posts an AS3 declaration to declare a complete tenant, optionally runs mustache before.
 # Desc:
-# Posts an AS3 declaration, optionally runs mustache before.
+# Posts an AS3 declaration to declare a complete tenant, optionally runs mustache before.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -46,9 +46,10 @@ then
     exit 1
 fi
 AS3_FILE=$1
+AS3_FILE_PARSED="$RESTSH_TMP/$AS3_FILE"
 
 # Cleanup tmp files
-[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE.parsed"' EXIT
+[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE_PARSED"' EXIT
 
 # Main
 
@@ -66,26 +67,26 @@ then
     [ -s "$DEFAULTS" ] && . "$DEFAULTS"
 
     # Process template
-    if ! $RESTSH_MO -- "$AS3_FILE" > "$AS3_FILE.parsed"
+    if ! $RESTSH_MO -- "$AS3_FILE" > "$AS3_FILE_PARSED"
     then
         echo_err "Processing the template failed."
         exit 1
     fi
 else
-    cp "$AS3_FILE" "$AS3_FILE.parsed"
+    cp "$AS3_FILE" "$AS3_FILE_PARSED"
 fi
 
 if [ "$DRY" -eq 1 ]
 then
     # Dry-run: change action from deploy to dry-run
-    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$AS3_FILE.parsed"
+    sed -i -e 's/"action": "deploy"/"action": "dry-run"/' "$AS3_FILE_PARSED"
     echo "Dry-run enabled"
 fi
 
 # Post the declaration
 echo "Posting declaration"
-if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE.parsed" | \
-        jq -r ".id")
+if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE_PARSED" | \
+        JQ -r ".id")
 then
     echo_err "Posting the declaration failed."
     exit 1
@@ -94,7 +95,7 @@ fi
 # Wait for completed task
 if f5.as3.taskwait "$TASK_ID"
 then
-    echo_ok "AS3 declared successfully."
+    echo_ok "AS3 Tenant declared successfully."
     exit 0
 fi
 
