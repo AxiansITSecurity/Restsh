@@ -49,7 +49,7 @@ then
     then
         echo "$RESULT"
     else
-        $RESTSH_JQ -r '._embedded | .policies[] | [.name, .last_modified, .enforcement_mode, .id] | @tsv' <<< "$RESULT" | \
+        $RESTSH_JQ -r '._embedded.policies[] | [.name, .last_modified, .enforcement_mode, .id] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "Name,Modified,Enforcement Mode,Id"
     fi
 fi
