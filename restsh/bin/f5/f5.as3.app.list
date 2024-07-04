@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-21
+# Date: 2024-07-03
 
-# Shortdesc: Lists all WAF-Policies.
+# Shortdesc: Lists all applications in an AS3 tenant.
 # Desc:
-# Lists all WAF-Policies.
+# Lists all applications in an AS3 tenant.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -15,12 +15,9 @@ set -eEu -o pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
-
-# Check for a valid auth token
-next.auth.check
 
 # Get options
 RAW=0
@@ -33,26 +30,24 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
-    exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-r]"
+    echo "Usage: $(basename "$0") [-r] <tenant>"
     echo -e "\tUse -r for raw output."
-    exit 2
+    exit 1
 fi
+TENANT=$1
 
 # Main
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies")
+if RESULT=$(GET "/mgmt/shared/appsvcs/declare/${TENANT}/applications")
 then
     if [ "$RAW" -eq 1 ]
     then
         echo "$RESULT"
     else
-        $RESTSH_JQ -r '._embedded.policies[] | [.name, .last_modified, .enforcement_mode, .id] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "Name,Modified,Enforcement Mode,Id"
+        $RESTSH_JQ -r 'keys[]' <<< "$RESULT" | grep -v schemaVersion
     fi
-    exit 0
 fi
 
-exit 1
+exit 0

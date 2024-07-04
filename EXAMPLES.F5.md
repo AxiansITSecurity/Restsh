@@ -9,7 +9,7 @@ GET /mgmt/tm/ltm/virtual?\$select=fullPath
 ## Get details of a virtual servers
 
 ```sh
-GET /mgmt/tm/ltm/virtual/vs_test?expandSubcollections=true
+GET f5.ltm.vs.get /Common/vs_test
 ```
 
 ## Attach a log profile to a list of virtual servers

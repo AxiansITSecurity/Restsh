@@ -7,4 +7,3 @@
 - Migrate healthcheck to use the REST-API
 - Best practices checker for LTM
 - Add debug option to print curl data
-- Support per App AS3 declarations

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-21
+# Date: 2024-07-03
 
-# Shortdesc: Lists all WAF-Policies.
+# Shortdesc: Lists Virtual Servers.
 # Desc:
-# Lists all WAF-Policies.
+# Lists Virtual Servers.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -18,9 +18,6 @@ then
   echo "Script must be run in the restsh environment."
   exit 1
 fi
-
-# Check for a valid auth token
-next.auth.check
 
 # Get options
 RAW=0
@@ -36,23 +33,16 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-r]"
     echo -e "\tUse -r for raw output."
     exit 2
 fi
 
-# Main
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies")
+if [ "$RAW" -eq 1 ]
 then
-    if [ "$RAW" -eq 1 ]
-    then
-        echo "$RESULT"
-    else
-        $RESTSH_JQ -r '._embedded.policies[] | [.name, .last_modified, .enforcement_mode, .id] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "Name,Modified,Enforcement Mode,Id"
-    fi
-    exit 0
+    GET /mgmt/tm/ltm/virtual
+else
+    GET /mgmt/tm/ltm/virtual | JQ -r ".items[] | [.fullPath,.destination] | @tsv" \
+        | COLUMN -o "|" -N "Full Path,Destination"
 fi
-
-exit 1
