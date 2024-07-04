@@ -17,7 +17,7 @@ set -uo pipefail
 next.task.waitfor() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
-        echo "Usage: next.task.waitfor <task_path> <expected status>" 1>&2
+        echo "Usage: next.task.waitfor <task_path> <expected state>" 1>&2
         return 2
     fi
     local TASK_PATH=$1
