@@ -1,0 +1,1148 @@
+get /api/v1/security/waf/policy-templates
+	Retrieves a list of WAF templates.
+get /api/v1/security/waf/policy-templates/{id}
+	Retrieves a specific WAF template.
+get /api/v1/spaces/default/security/waf-policies
+	Retrieves a list of WAF policies.
+post /api/v1/spaces/default/security/waf-policies
+	Creates a policy using a template's default settings.
+delete /api/v1/spaces/default/security/waf-policies/{id}
+	Deletes a specific WAF policy.
+get /api/v1/spaces/default/security/waf-policies/{id}
+	Retrieves a specific WAF policy.
+put /api/v1/spaces/default/security/waf-policies/{id}
+	Updates a specific WAF policy.
+get /api/v1/spaces/default/security/waf-policies/{id}/general-settings
+	Retrieves a list of the policy general settings.
+put /api/v1/spaces/default/security/waf-policies/{id}/general-settings
+	Updates the policy general settings.
+get /api/v1/spaces/default/security/waf-policies/{id}/disallowed-geolocations
+	Retrieves a list of the policy disallowed geolocations.
+get /api/v1/spaces/default/security/waf-policies/{id}/disallowed-geolocations/{country_id}
+	Retrieves a specific policy disallowed geolocation.
+get /api/v1/spaces/default/security/waf-policies/{id}/signature-sets
+	Retrieves a list of policy signature-sets.
+post /api/v1/spaces/default/security/waf-policies/{id}/signature-sets
+	Creates a policy signature-set.
+delete /api/v1/spaces/default/security/waf-policies/{id}/signature-sets/{set_id}
+	Deletes a specific policy signature-set.
+get /api/v1/spaces/default/security/waf-policies/{id}/signature-sets/{set_id}
+	Retrieves a specific policy signature-set.
+put /api/v1/spaces/default/security/waf-policies/{id}/signature-sets/{set_id}
+	Updates a specific policy signature-set.
+get /api/v1/spaces/default/security/waf-policies/{id}/ip-addresses
+	Retrieves a list of policy IP addresses.
+get /api/v1/spaces/default/security/waf-policies/{id}/ip-addresses/{ip_address_and_mask}
+	Retrieves a specific policy IP address.
+get /api/v1/spaces/default/security/waf-policies/{id}/signatures
+	Retrieves a list of policy signatures.
+get /api/v1/spaces/default/security/waf-policies/{id}/signatures/{sig_id}
+	Retrieves a specific policy signature.
+get /api/v1/security/waf/signatures
+	Retrieves a list of signature details.
+get /api/v1/security/waf/signatures/{sig_id}
+	Returns signature details.
+get /api/v1/security/waf/bot-signatures
+	Retrieves a list of bot-signature details for the collection.
+get /api/v1/security/waf/bot-signatures/{sig_id}
+	Retrieves the bot-signature details for the specified bot-signature.
+get /api/v1/security/waf/threat-campaigns
+	Retrieves a list of threat-campaigns.
+get /api/v1/security/waf/threat-campaigns/{threat_campaign_id}
+	Request threat-campaigns details.
+get /api/v1/spaces/default/security/waf-policies/{id}/filetypes
+	Retrieves a list of policy file types.
+post /api/v1/spaces/default/security/waf-policies/{id}/filetypes
+	Creates a policy file type.
+delete /api/v1/spaces/default/security/waf-policies/{id}/filetypes/{filetype_id}
+	Deletes a specific policy file type.
+get /api/v1/spaces/default/security/waf-policies/{id}/filetypes/{filetype_id}
+	Retrieves a specific policy file type.
+put /api/v1/spaces/default/security/waf-policies/{id}/filetypes/{filetype_id}
+	Updates a specific policy file type.
+get /api/v1/spaces/default/security/waf-policies/{id}/evasion-violations
+	Retrieves a list of policy evasion violations. Query the '/api/v1/security/waf/evasion-violations' endpoint for detailed information about each violation.
+get /api/v1/spaces/default/security/waf-policies/{id}/evasion-violations/{viol_id}
+	Retrieves a specific policy evasion violation. Query the '/api/v1/security/waf/evasion-violations' endpoint for detailed information about the violation.
+put /api/v1/spaces/default/security/waf-policies/{id}/evasion-violations/{viol_id}
+	Updates a specific policy evasion violation.
+get /api/v1/spaces/default/security/waf-policies/{id}/http-rfc-violations
+	Retrieves a list of policy HTTP RFC violations. Query the '/api/v1/security/waf/http-rfc-violations' endpoint for detailed information about each violation.
+get /api/v1/spaces/default/security/waf-policies/{id}/http-rfc-violations/{viol_id}
+	Retrieves a specific policy HTTP RFC violation. Query the '/api/v1/security/waf/http-rfc-violations' endpoint for detailed information about the violation.
+put /api/v1/spaces/default/security/waf-policies/{id}/http-rfc-violations/{viol_id}
+	Updates a specific policy HTTP RFC violation.
+get /api/v1/spaces/default/security/waf-policies/{id}/filetype-violations
+	Requests a list of policy file type violations. Query the '/api/v1/security/filetype-violations' endpoint for detailed information about each violation. This endpoint is deprecated, use '/api/v1/spaces/default/security/waf-policies/{id}/violations' instead.
+get /api/v1/spaces/default/security/waf-policies/{id}/filetype-violations/{viol_id}
+	Requests a specific policy file type violation. Query the '/api/v1/security/filetype-violations' endpoint for detailed information about the violation. This endpoint is deprecated, use '/api/v1/spaces/default/security/waf-policies/{id}/violations/{viol_id}' instead.
+put /api/v1/spaces/default/security/waf-policies/{id}/filetype-violations/{viol_id}
+	Updates a specific policy file type violation. This endpoint is deprecated, use '/api/v1/spaces/default/security/waf-policies/{id}/violations/{viol_id}' instead.
+get /api/v1/spaces/default/security/waf-policies/{id}/violations
+	Retrieves a list of policy violations. Query the '/api/v1/security/waf/violations' endpoint for detailed information about each violation.
+get /api/v1/spaces/default/security/waf-policies/{id}/violations/{viol_id}
+	Retrieves a specific policy violation. Query the '/api/v1/security/waf/violations' endpoint for detailed information about the violation.
+put /api/v1/spaces/default/security/waf-policies/{id}/violations/{viol_id}
+	Updates a policy violation specified by id.
+post /api/v1/spaces/default/security/waf/policy-ip-addresses
+	Creates, updates or deletes an IP address.
+get /api/waf/v1/tasks/policy-restore
+	Retrieves a list of restore policy tasks and statuses.
+post /api/waf/v1/tasks/policy-restore
+	Starts a WAF policy restore task.
+get /api/waf/v1/tasks/policy-restore/{id}
+	Retrieves a specific restore policy task and current status.
+get /api/waf/v1/tasks/policy-import
+	Retrieve a list of policy import tasks.
+post /api/waf/v1/tasks/policy-import
+	Starts a WAF policy import task.
+get /api/waf/v1/tasks/policy-import/{id}
+	Retrieves a specific policy import task.
+get /api/waf/v1/tasks/update-signatures-enforcement
+	Retrieves a list of update-signatures-enforcement tasks.
+post /api/waf/v1/tasks/update-signatures-enforcement
+	Starts WAF policy update-signatures-enforcement task. Either `filter` or `signature_ids` is required. These must be used together with the `action` and `policies` attributes. Note that `action` will be applied to all policies if the `policies` attribute is missing.
+get /api/waf/v1/tasks/update-signatures-enforcement/{id}
+	Retrieves a specific update-signatures-enforcement task.
+get /api/waf/v1/tasks/deploy-policy
+	Retrieves a list of policy deployment tasks.
+post /api/waf/v1/tasks/deploy-policy
+	Starts WAF policy deployment task to re-deploy the policy to all associated instances.
+get /api/waf/v1/tasks/deploy-policy/{id}
+	Retrieves a specific policy deployment task.
+get /api/v1/security/waf/signature-sets
+	Retrieves a list of signature-sets.
+post /api/v1/security/waf/signature-sets
+	Creates a signature-set.
+delete /api/v1/security/waf/signature-sets/{id}
+	Deletes a specific signature-set.
+get /api/v1/security/waf/signature-sets/{id}
+	Retrieves a specific signature-set.
+put /api/v1/security/waf/signature-sets/{id}
+	Updates a specific signature-set.
+get /api/v1/spaces/default/security/waf/policy-tags
+	Retrieves a list of tags on WAF policies.
+get /api/v1/security/geolocations
+	Retrieves a list of all supported geolocations.
+post /api/v1/spaces/default/security/waf/policy-geolocations
+	Allows or disallows a geolocation.
+post /api/v1/spaces/default/security/waf/policy-violations
+	Updates the policy violations.
+post /api/v1/spaces/default/security/waf/policy-http-protocol-compliance
+	Updates the http protocol compliance sub violation.
+post /api/v1/spaces/default/security/waf/policy-evasions
+	Updates the evasion technique sub violation.
+get /api/v1/security/waf/application-languages
+	Retrieves a list of all supported application languages.
+get /api/v1/security/waf/evasion-violations
+	Retrieve a list of all supported evasion violations.
+get /api/v1/security/waf/http-rfc-violations
+	Retrieves a list of all supported HTTP RFC violations.
+get /api/v1/security/filetype-violations
+	Requests a list of all supported file type violations. This endpoint is deprecated, use '/api/v1/security/violations' instead.
+get /api/v1/security/waf/violations
+	Retrieves a list of all supported violations.
+get /api/v1/security/waf/violations/{viol_id}
+	Retrieves a specific violation.
+post /api/v1/analytics/waf/count
+	Retrieves the number of web application requests counted during a specified time interval.
+post /api/v1/analytics/waf/trend
+	Retrieves the trend of web application requests counted during a specified time interval.
+get /api/v1/event-logs/waf
+	Retrieves a list of web application traffic logs.
+post /api/v1/event-logs/waf/cleanup
+	Deletes web application WAF traffic logs
+delete /api/v1/event-logs/waf/{support_id}
+	Deletes a specific web application WAF traffic log
+get /api/v1/event-logs/waf/{support_id}
+	Retrieves a specific web application traffic log.
+put /api/v1/event-logs/waf/{support_id}
+	Updates a web application traffic log specified by request support ID
+post /api/v1/analytics/event-logs/waf/trend
+	Retrieves the trends of web application requests which were made during a particular time period.
+post /api/v1/analytics/event-logs/waf/top-count
+	Retrieves the 20 most abundant web application requests which were made during a time period.
+post /api/v1/analytics/event-logs/waf/aggregated-count
+	Retrieves web application request aggregated statistics for policy or application during a particular time period.
+post /api/v1/analytics/event-logs/waf/details
+	Retrieve statistics for entity
+post /api/v1/analytics/event-logs/waf/count-range
+	Retrieves the time interval which was used to get the number of web application requests.
+post /api/v1/analytics/event-logs/waf/detailed-trend
+	Retrieves the trends of web application requests which were made during a particular time period.
+get /api/v1/spaces/default/security/waf-policies/{id}/request-logger
+	Retrieves a specific policy request logger.
+post /api/v1/spaces/default/security/waf-policies/{id}/request-logger
+	Creates a policy request logger.
+put /api/v1/spaces/default/security/waf-policies/{id}/request-logger
+	Updates policy request logger.
+get /api/v1/spaces/default/security/waf-policies/{id}/suggestions
+	Retrieves a list of a specific policy suggestion.
+delete /api/v1/spaces/default/security/waf-policies/{id}/suggestions/{suggestion_id}
+	Deletes a specific policy suggestion.
+get /api/v1/spaces/default/security/waf-policies/{id}/suggestions/{suggestion_id}
+	Retrieves a policy suggestion's details.
+put /api/v1/spaces/default/security/waf-policies/{id}/suggestions/{suggestion_id}
+	Updates a specific policy suggestion.
+post /api/v1/spaces/default/security/waf-policies/{id}/suggestions/update
+	Updates a list of policy suggestions.
+post /api/v1/spaces/default/security/waf-policies/{id}/suggestions/cleanup
+	Deletes a list of policy suggestions.
+get /api/v1/spaces/default/security/waf-policies/{id}/policy-builder
+	Retrieves the policy builder settings.
+patch /api/v1/spaces/default/security/waf-policies/{id}/policy-builder
+	Partially updates the policy builder settings.
+put /api/v1/spaces/default/security/waf-policies/{id}/policy-builder
+	Updates the policy builder settings.
+post /api/v1/spaces/default/security/waf-policies/{id}/policy-convert
+	Retrieves a converted policy.
+get /api/waf/v1/tasks/accept-suggestions
+	Retrieves a list of accept-suggestions tasks.
+post /api/waf/v1/tasks/accept-suggestions
+	Starts the WAF policy accept-suggestions task. Required fields are policy, suggestions_ids, and action.
+get /api/waf/v1/tasks/accept-suggestions/{id}
+	Retrieves a specific accept-suggestions task.
+get /api/waf/v1/tasks/enforce-ready-entities
+	Retrieves a list of enforce-ready-entities tasks.
+post /api/waf/v1/tasks/enforce-ready-entities
+	Starts the WAF task to enforce ready entities. Required fields are policy and sections.
+get /api/waf/v1/tasks/enforce-ready-entities/{id}
+	Retrieves a specific enforce-ready-entities task.
+get /api/waf/v1/tasks/accept-request
+	Retrieves a list of accept-request tasks.
+post /api/waf/v1/tasks/accept-request
+	Starts the WAF accept-request task.
+get /api/waf/v1/tasks/accept-request/{id}
+	Retrieves a specific accept-request task.
+get /api/waf/v1/tasks/clone-policy
+	Retrieves a list of clone-policy tasks and statuses.
+post /api/waf/v1/tasks/clone-policy
+	Starts the WAF clone-policy task.
+get /api/waf/v1/tasks/clone-policy/{id}
+	Retrieves a specific clone-policy task and current status.
+post /api/v1/spaces/default/security/waf-policies/export
+	Download a zip file of selected WAF policies.
+get /api/v1/spaces/default/security/waf-policies/{id}/enforcement-readiness
+	Retrieves a policy enforcement readiness.
+get /api/v1/spaces/default/security/waf-policies/{id}/download
+	Retrieves a WAF policy file in JSON format.
+get /api/v1/spaces/default/security/waf-policies/{id}/history
+	Retrieves a list of WAF policy history in JSON format.
+get /api/v1/spaces/default/security/waf-policies/{id}/history/{history_id}
+	Requests a WAF policy deployment history.
+get /api/waf/v1/tasks/live-update/upload
+	Retrieves a list of live update upload tasks.
+post /api/waf/v1/tasks/live-update/upload
+	Starts a live update upload task.
+get /api/waf/v1/tasks/live-update/upload/{id}
+	Retrieves a specific live update upload task.
+get /api/waf/v1/tasks/live-update/check-status
+	Retrieves a list of live update check-status tasks.
+post /api/waf/v1/tasks/live-update/check-status
+	Starts a live update check-status task.
+get /api/waf/v1/tasks/live-update/check-status/{id}
+	Retrieves a specific live update check-status task.
+get /api/waf/v1/tasks/live-update/install
+	Retrieves a list of live update installation tasks.
+post /api/waf/v1/tasks/live-update/install
+	Starts a live update installation task.
+get /api/waf/v1/tasks/live-update/install/{id}
+	Retrieves a specific live update installation task.
+get /api/waf/v1/tasks/live-update/install-bulk
+	Retrieves a list of live update bulk installation tasks.
+post /api/waf/v1/tasks/live-update/install-bulk
+	Starts a live update bulk installation task.
+get /api/waf/v1/tasks/live-update/install-bulk/{id}
+	Retrieves a specific live update bulk installation task.
+get /api/waf/v1/tasks/live-update/preview
+	Retrieves a list of live update preview tasks.
+post /api/waf/v1/tasks/live-update/preview
+	Starts a task to preview changes included in the live update.
+get /api/waf/v1/tasks/live-update/preview/{id}
+	Retrieves a specific live update preview task.
+get /api/v1/security/live-update/{file_type}
+	Retrieves a list of live update files.
+delete /api/v1/security/live-update/{file_type}/{id}
+	Deletes a specific live update file.
+get /api/v1/security/live-update/{file_type}/{id}
+	Retrieves a specific live update file.
+get /api/v1/security/live-update/{file_type}/{id}/preview
+	Retrieves a specific live update file preview.
+get /api/v1/security/live-update/{file_type}/settings
+	Retrieves a live update settings per file type.
+put /api/v1/security/live-update/{file_type}/settings
+	Configures live update settings per file type.
+get /api/v1/system/waf/configs
+	Retrieves configuration variable details of WAF feature.
+put /api/v1/system/waf/configs
+	Updates WAF configuration values.
+get /api/v1/spaces/default/security/waf/reports
+	Retrieves a list of the report configuration for all WAF security reports.
+post /api/v1/spaces/default/security/waf/reports
+	Creates a new WAF security report.
+delete /api/v1/spaces/default/security/waf/reports/{report_id}
+	Deletes a specific WAF security report.
+get /api/v1/spaces/default/security/waf/reports/{report_id}
+	Retrieves a specific WAF security report
+put /api/v1/spaces/default/security/waf/reports/{report_id}
+	Updates a specific security report identified by report_id
+get /api/v1/spaces/default/security/waf/files
+	Retrieves a list of files.
+get /api/v1/spaces/default/security/waf/files/{id}
+	Download a file.
+get /api/waf/v1/tasks/reports
+	Retrieves a list of WAF security report tasks.
+post /api/waf/v1/tasks/reports
+	Starts a WAF security report task.
+get /api/waf/v1/tasks/reports/{id}
+	Retrieves a specific WAF security report task.
+get /api/v1/security/waf/policy-schema
+	Retrieves WAF policy schema.
+get /api/v1/event-logs/bados
+	Retrieves a list of BADOS traffic logs.
+delete /api/v1/event-logs/bados/{event_id}
+	Deletes a specific BADOS WAF traffic log.
+get /api/v1/event-logs/bados/{event_id}
+	Retrieves a specific BADOS traffic log
+put /api/v1/event-logs/bados/{event_id}
+	Updates a specific of BADOS traffic log.
+post /api/v1/event-logs/bados/cleanup
+	Deletes the BADOS traffic logs.
+post /api/v1/analytics/event-logs/bados/top-geolocations
+	Retrieves the 10 most abundant (by count) bad actor detection requests for geolocation during a specified time interval.
+get /api/v1/analytics/event-logs/bados/app-status
+	Retrieves a list of Application behavioral DOS statuses.
+get /api/v1/analytics/event-logs/bados/vs-status
+	Retrieves a list of virtual server behavioral DOS statuses.
+post /api/v1/analytics/event-logs/bados/app-stats
+	Return the BADOS application statistics for the given time interval.
+post /api/v1/analytics/event-logs/bados/vs-stats
+	Return the BADOS virtual server statistics for the given time interval.
+get /api/v1/spaces/default/analytics/instances/metrics
+	Retrieve time series instance-related metrics for a specified time frame and resolution, optionally matching a provided filter.
+get /api/v1/spaces/default/analytics/access/metrics
+	Retrieve time series access-related metrics for a specified time frame and resolution, optionally matching a provided filter.
+get /api/v1/spaces/default/analytics/application-services/metrics
+	Retrieves applications-related time series metrics for a specified time frame and resolution, optionally matching a provided filter.
+get /api/v1/spaces/default/analytics/application-services/health
+	Retrieve the health status of all existing application services that match an optionally provided filter. This API supports paging.
+get /api/v1/spaces/default/analytics/application-services/{app_service_name}/topology/locations
+	Retrieve a list of application-services locations, for the application-service topology view.
+get /api/v1/spaces/default/analytics/application-services/{app_service_name}/topology
+	Returns a list of virtual servers for a given application service, with their health.
+get /api/v1/spaces/default/analytics/application-services/{app_service_name}/virtual-servers/{virtual_server_name}/pools/{pool_name}/properties
+	Retrieves pool properties for the specified pool.
+get /api/v1/spaces/default/analytics/application-services/{app_service_name}/properties
+	Retrieves application service properties for the specified application-service.
+get /api/v1/spaces/default/analytics/application-services/waf/policy/summary
+	Retrieves summary of the WAF policies attached to applications.
+get /api/v1/spaces/default/analytics/application-services/health/summary
+	Retrieve a summary of the distribution of applications health to generate a pie chart.
+get /api/v1/spaces/default/analytics/application-services/alerts/summary
+	Retrieve a summary of the distribution of application alerts by level to generate a pie chart.
+get /api/v1/spaces/default/analytics/application-services/{app_name}/virtual-servers/{virtual_name}/pools/{pool_name}/endpoints
+	Retrieves endpoints data for a specified pool.
+get /api/v1/spaces/default/analytics/application-services/{app_name}/health
+	Retrieves application health status for a specified application.
+get /api/v1/spaces/default/analytics/application-services/{app_service_name}/virtual-servers/{virtual_server_name}/properties
+	Retrieves virtual server properties for a specified virtual server.
+get /api/v1/spaces/default/analytics/application-services/{app_service_name}/virtual-servers/{virtual_server_name}/pools/{pool_name}/endpoints/{endpoint-name}/properties
+	Returns endpoint properties for a specified endpoint.
+get /api/v1/spaces/default/analytics/gslb/fqdns/{fqdn_name}/properties
+	Retrieves properties of a specific Fully Qualified Domain Name (FQDN) in the GSLB.
+get /api/v1/spaces/default/analytics/gslb/fqdns/{fqdn_name}/instances
+	Retrieves instances details of a specific FQDN in the GSLB.
+get /api/v1/spaces/default/analytics/gslb/fqdns/{fqdn_name}/status
+	Retrieve the Fully Qualified Domain Name (FQDN) status as reported by each of the existing DNS servers within that Global Resiliency Group.
+get /api/v1/spaces/default/analytics/access/sessions
+	Retrieves access sessions.
+get /api/v1/spaces/default/analytics/access/sessions/metrics
+	Retrieves access sessions metrics.
+get /api/v1/spaces/default/analytics/access/sessions/summary
+	Retrieves access sessions summary.
+get /api/v1/spaces/default/analytics/access/sessions/state/summary
+	Retrieves access sessions state summary.
+get /api/v1/spaces/default/analytics/access/sessions/applications/summary
+	Retrieves access sessions applications summary.
+get /api/v1/alerts
+	Retrieves a list of all the alerts and notifications.
+post /api/v1/alerts
+	Request to save the aggregated alerts from aggregator services.
+get /api/v1/alerts/{id}
+	Retrieves a specific alert.
+post /api/v1/alerts/inactivate
+	Inactivates multiple alerts.
+delete /api/v1/alerts/type
+	Deletes alert type.
+post /api/v1/alerts/type
+	Stores alert types.
+put /api/v1/alerts/type
+	Updates alert type by name and source.
+delete /api/v1/alerts/types
+	Deletes an alert type.
+get /api/v1/alerts/types
+	Retrieves a list of all the alert types.
+post /api/v1/alerts/types
+	Adds alert types.
+put /api/v1/alerts/types
+	Updates an alert type by name and source.
+delete /api/v1/alerts/types/{id}
+	Deletes an alert type specified by id.
+get /api/v1/alerts/types/{id}
+	Retrieves a specific alert type.
+put /api/v1/alerts/types/{id}
+	Updates a specific alert type identified by id.
+post /api/v1/alerts/inactivate/{id}
+	Inactivates a specific alert.
+post /api/v1/alerts/seen
+	Updates the status of multiple alerts to seen alert status. Provide a list of alert IDs to specify which alerts will have their status changed to seen.
+post /api/v1/alerts/seen/{id}
+	Updates a specific alert to seen alert status.
+delete /api/v1/notifications
+	Deletes a notification configuration.
+get /api/v1/notifications
+	Retrieves a list of all the notifications.
+post /api/v1/notifications
+	Creates a new notification configuration from data.
+put /api/v1/notifications
+	Updates an existing notification configuration.
+delete /api/v1/notifications/{id}
+	Deletes a notification identified by ID.
+get /api/v1/notifications/{id}
+	Retrieves a specific notification
+put /api/v1/notifications/{id}
+	Update an specific notification by ID.
+post /api/v1/notifications/suppress
+	Suppresses notifications specified by a list of notification IDs.
+post /api/v1/notifications/suppress/{id}
+	Suppresses a single notification specified by the notification ID.
+post /api/v1/notifications/unsuppress
+	Reactivate multiple suppressed notifications specified by a list of notification IDs.
+post /api/v1/notifications/unsuppress/{id}
+	Reactivates a suppressed notifications specified by a notification ID.
+get /api/v1/alerts/rules
+	Retrieves a list of all the alert rules.
+get /api/v1/spaces/default/appsvcs/documents
+	Request all the AS3 application services, their deployments details, and last deployment records.
+post /api/v1/spaces/default/appsvcs/documents
+	Save an AS3 declaration to BIG-IP Next Central Manager.
+delete /api/v1/spaces/default/appsvcs/documents/{document-id}
+	Remove an AS3 application service from the deployed instance and also delete from BIG-IP Next Central Manager.
+get /api/v1/spaces/default/appsvcs/documents/{document-id}
+	Request a specific AS3 application service, its deployment details, and last deployment records.
+put /api/v1/spaces/default/appsvcs/documents/{document-id}
+	Updates an application service with new AS3 declaration and re-deploy changes to instances. This action deploys updates only to instances on which the AS3 declaration was previously deployed.
+post /api/v1/spaces/default/appsvcs/documents/{document-id}/deployments
+	Deploy an AS3 declaration to a specified instance managed by BIG-IP Next Central Manager. If the deployment already exists on a different instance, the application service is removed from the existing instance before deploying to the new instance. This action will delete all verification results for all instances if the action is not set to 'dry-run'.
+delete /api/v1/spaces/default/appsvcs/documents/{document-id}/deployments/{deployment-id}
+	Remove the specified application service deployment from BIG-IP Next Central Manager. An application service is first removed from its instance deployment(s) before it is deleted from BIG-IP Next Central Manager.
+get /api/v1/spaces/default/appsvcs/documents/{document-id}/deployments/{deployment-id}
+	Request all records for a specific deployment.
+put /api/v1/spaces/default/appsvcs/documents/{document-id}/deployments/{deployment-id}
+	Re-deploys an AS3 application service declaration to a BIG-IP Next instance if the deployment had previously failed.
+delete /api/v1/spaces/default/appsvcs/declare
+	Deletes AS3 declarative configuration, which behaves similarly to the BIG-IP AS3 API.
+get /api/v1/spaces/default/appsvcs/declare
+	Lists AS3 declarative configuration, which behaves similarly to the BIG-IP AS3 API.
+post /api/v1/spaces/default/appsvcs/declare
+	Deploys AS3 declarative configuration, which behaves similarly to the BIG-IP AS3 API.
+delete /api/v1/spaces/default/appsvcs/declare/{tenant-name}
+	Deletes AS3 declarative configuration for specific tenant, which behaves similarly to the BIG-IP AS3 API.
+post /api/v1/spaces/default/certificates/create
+	Requests to create certificate, key, and certificate signing request (CSR).
+post /api/v1/spaces/default/certificates/import
+	Requests to import certificates/keys.
+post /api/v1/spaces/default/certificates/renew
+	Requests to renew certificates.
+delete /api/v1/spaces/default/certificates
+	Deletes the list of certificates.
+get /api/v1/spaces/default/certificates
+	Requests a list of all the certificates and keys.
+delete /api/v1/spaces/default/certificates/{id}
+	Deletes a specific certificate.
+get /api/v1/spaces/default/certificates/{id}
+	Requests a specific certificate.
+get /api/v1/spaces/default/certificates/{id}/{topic}
+	Requests the content of a specific certificate.
+get /api/v1/spaces/default/appsvcs/applications
+	Returns a list of all deployed applications.
+post /api/v1/spaces/default/instances/{id}/proxy-file-upload
+	Proxy a file upload request for a BIG-IP Next instance.
+post /api/v1/spaces/default/instances/license
+	Get license details for a BIG-IP Next instance using basic auth.
+get /api/v1/spaces/default/instances
+	Retrieves a list of all managed BIG-IP Next instances.
+post /api/v1/spaces/default/instances
+	Requests a task to add (discover) a BIG-IP Next instance to BIG-IP Next Central Manager for management.
+delete /api/v1/spaces/default/instances/{id}
+	Deletes a a BIG-IP Next instance from BIG-IP Next Central Manager.
+get /api/v1/spaces/default/instances/{id}
+	Retrieves a specific managed BIG-IP Next instance.
+get /api/v1/spaces/default/instances/{id}/health
+	Retrieves the health of a BIG-IP Next HA or standalone instance.
+get /api/v1/spaces/default/instances/{id}/onboarding-manifest
+	Requests the onboarding manifest on a BIG-IP Next Instance.  
+
+**Note**: The autoFailback parameter is currently not supported.
+post /api/v1/spaces/default/instances/{id}/module-provision
+	Requests a task to provision BIG-IP Next modules.
+post /api/v1/spaces/default/instances/{id}/validate-cert
+	Validates the certificate of a BIG-IP Next instance with a TLS handshake.
+post /api/v1/spaces/default/instances/{id}/upgrade
+	Upgrades a BIG-IP Next instance.
+post /api/v1/spaces/default/instances/{id}/ha
+	Requests a task to create a BIG-IP Next HA instance from two managed standalone BIG-IP Next instances.
+
+**Note:** The auto_failback parameter is currently not supported.
+post /api/v1/spaces/default/instances/{id}/ha/failover
+	Requests a task to force failover from the primary to the standby node in a BIG-IP Next HA instance.
+post /api/v1/spaces/default/instances/{id}/backup
+	Requests a backup of a BIG-IP Next instance.
+post /api/v1/spaces/default/instances/backups/schedules
+	Schedules the back up of multiple BIG-IP Next instances.
+delete /api/v1/spaces/default/instances/backups/schedules/{id}
+	Requests to delete an instance backup schedule.
+get /api/v1/spaces/default/instances/backups/schedules/{id}
+	Retrieves the information about a scheduled instance backup
+put /api/v1/spaces/default/instances/backups/schedules/{id}
+	Updates an instance backup schedule.
+post /api/v1/spaces/default/instances/{id}/restore
+	Restores a BIG-IP Next instance.
+get /api/v1/spaces/default/providers
+	Get a list of providers and instances info associate with each provider.
+get /api/v1/spaces/default/providers/f5os
+	Retrieves a list of all F5 VELOS chassis partitions or F5OS rSeries system.
+post /api/v1/spaces/default/providers/f5os
+	Stores information for a new F5OS VELOS chassis partition or F5OS rSeries system.
+delete /api/v1/spaces/default/providers/f5os/{id}
+	Delete the partitions and credentials for either the F5OS VELOS or the F5OS rSeries system.
+get /api/v1/spaces/default/providers/f5os/{id}
+	Retrieves a specific F5OS VELOS partition or F5OS rSeries system.
+put /api/v1/spaces/default/providers/f5os/{id}
+	Update a specific F5OS VELOS partition or F5OS rSeries system.
+get /api/v1/spaces/default/providers/f5os/{id}/nodes
+	Retrieves a list of nodes used by the F5OS VELOS partition.
+get /api/v1/spaces/default/providers/f5os/{id}/product-name
+	Retrieves rSeries provider product name.
+get /api/v1/spaces/default/providers/f5os/{id}/vlans
+	Retrieves a list of VLANs from a specific F5OS VELOS partition or F5OS rSeries system.
+post /api/v1/spaces/default/providers/f5os/{id}/vlans
+	Adds VLAN for a specific F5OS VELOS partition or F5OS rSeries system.
+delete /api/v1/spaces/default/providers/f5os/{id}/vlans/{vlanid}
+	Removes a specific VLAN from a stored F5OS VELOS partition or F5OS rSeries.
+get /api/v1/spaces/default/providers/f5os/{id}/tenants
+	Retrieves a list of tenants for a specific F5 VELOS chassis partition or rSeries system.
+get /api/v1/spaces/default/providers/f5os/{id}/tenants/{tenantName}
+	Retrieves a specific tenant details from a specific F5 VELOS chassis partition or rSeries system.
+get /api/v1/spaces/default/providers/f5os/{id}/images
+	Retrieves a list of images of a specific F5 VELOS chassis partition.
+post /api/v1/spaces/default/providers/velos/authenticate
+	Send user credentials to an F5 VELOS chassis partition via proxy to check authentication.
+get /api/v1/spaces/default/providers/vsphere
+	Retrieves a list of all Vsphere providers.
+post /api/v1/spaces/default/providers/vsphere
+	Creates a new Vsphere provider.
+delete /api/v1/spaces/default/providers/vsphere/{id}
+	Deletes a Vsphere provider.
+get /api/v1/spaces/default/providers/vsphere/{id}
+	Retrieves a specific Vsphere provider.
+put /api/v1/spaces/default/providers/vsphere/{id}
+	Updates a specific Vsphere provider.
+get /api/v1/spaces/default/instances/instantiation-tasks
+	Retrieves a list of instantiation tasks.
+get /api/v1/spaces/default/instances/instantiation-tasks/{id}
+	Retrieves a specific instantiation task for a vm creation in third party cloud.
+get /api/v1/spaces/default/instances/nodes
+	Retrieves a list of all nodes
+get /api/v1/spaces/default/instances/nodes/{id}
+	Retrieves a specified node
+get /api/v1/spaces/default/instances/upgrade-tasks
+	Retrieves a list of all upgrade instance tasks.
+get /api/v1/spaces/default/instances/upgrade-tasks/{id}
+	Retrieves a specific upgrade task for a BIG-IP Next instance.
+patch /api/v1/spaces/default/instances/upgrade-tasks/{id}
+	Updates a specific BIG-IP Next instance upgrade task. As of now, we only accept whether to accept or reject untrusted certificate.
+get /api/v1/spaces/default/instances/discovery-tasks
+	Retrieves a list of discovery tasks for all managed BIG-IP Next instances.
+get /api/v1/spaces/default/instances/discovery-tasks/{id}
+	Retrieves a specific discovery task for a BIG-IP Next instance.
+patch /api/v1/spaces/default/instances/discovery-tasks/{id}
+	Updates a specific BIG-IP Next instance discovery task. As of now, we only accept whether to accept or reject untrusted certificate.
+get /api/v1/spaces/default/instances/ha-creation-tasks
+	Retrieves a list of all BIG-IP Next HA instance creation tasks.
+get /api/v1/spaces/default/instances/ha-creation-tasks/{id}
+	Retrieves a specific BIG-IP Next HA instance creation task.
+
+**Note**: The auto_failback parameter is currently not supported.
+get /api/v1/spaces/default/instances/ha-failover-tasks
+	Retrieves a list of all BIG-IP Next HA instance failover tasks.
+get /api/v1/spaces/default/instances/ha-failover-tasks/{id}
+	Retrieves a specific BIG-IP Next HA instance failover task.
+get /api/v1/spaces/default/instances/deletion-tasks
+	Retrieves a list of BIG-IP Next instance deletion tasks.
+get /api/v1/spaces/default/instances/deletion-tasks/{id}
+	Retrieves a specific BIG-IP Next instance deletion task.
+get /api/v1/spaces/default/instances/backup-tasks
+	Retrieves a list of BIG-IP Next instance backup tasks.
+get /api/v1/spaces/default/instances/backup-tasks/{id}
+	Retrieves a specific BIG-IP Next instance backup task.
+get /api/v1/spaces/default/instances/module-provision-tasks
+	Retrieves a list of all BIG-IP Next HA module provision tasks.
+get /api/v1/spaces/default/instances/module-provision-tasks/{id}
+	Retrieves a specific BIG-IP Next module provision task.
+get /api/v1/spaces/default/instances/groups
+	Retrieves a list of all instance groups.
+post /api/v1/spaces/default/instances/groups
+	Creates a new instance group.
+delete /api/v1/spaces/default/instances/groups/{id}
+	Removes an instance group.
+get /api/v1/spaces/default/instances/groups/{id}
+	Retrieves a specific instance group.
+put /api/v1/spaces/default/instances/groups/{id}
+	Updates a specific instance group.
+get /api/v1/spaces/default/instances/groups/{id}/devices
+	Lists all instances in an instance group.
+post /api/v1/spaces/default/instances/groups/{id}/devices
+	Adds an instance to an instance group.
+delete /api/v1/spaces/default/instances/groups/{groupID}/devices/{instanceID}
+	Removes a BIG-IP Next instance from an instance group.
+get /api/v1/spaces/default/instances/groups/{groupID}/devices/{instanceID}
+	Retrieves a specific BIG-IP Next instance in an instance group.
+get /api/v1/spaces/default/instances/backups
+	Retrieves a list of backup files for managed BIG-IP Next instances.
+post /api/v1/spaces/default/instances/backups
+	Requests a backup be performed on multiple BIG-IP Next instances.
+delete /api/v1/spaces/default/instances/backups/{file_name}
+	Deletes a backup file specified by name.
+get /api/v1/spaces/default/instances/backups/{file_name}
+	Retrieves the specified backup file for a managed BIG-IP Next instance.
+get /api/v1/spaces/default/instances/restore-tasks
+	Retrieves a list of BIG-IP Next instance restore tasks.
+get /api/v1/spaces/default/instances/restore-tasks/{id}
+	Retrieves a specific BIG-IP Next instance restore task.
+get /api/v1/spaces/default/instances/vlans/tags
+	Returns all VLAN tag numbers for both nodes in a BIG-IP Next HA instance. This endpoint is only for VELOS and rSeries instances.
+get /api/v1/spaces/default/instances/vlans/controlplane
+	Retrieves all control planes for both BIG-IP Next instances.
+get /api/v1/spaces/default/instances/vlans/dataplane
+	Retrieves all data plane VLANs for both BIG-IP Next instances.
+post /api/v1/spaces/default/instances/initialization
+	Composes a workflow task which instantiates, onboards and discovers a BIG-IP Next. Depends on payload.
+get /api/v1/spaces/default/instances/initialization/{instance_id}
+	Retrieves a specific BIG-IP Next instance creation configuration.
+patch /api/v1/spaces/default/instances/initialization/{instance_id}
+	Updates a specific BIG-IP Next instance configuration.
+put /api/v1/spaces/default/instances/initialization/{instance_id}/ha
+	Updates a BIG-IP Next HA instance
+get /api/v1/spaces/default/instances/initialization/tasks
+	Retrieves a list of all BIG-IP Next instance creation tasks.
+get /api/v1/spaces/default/instances/initialization/tasks/{id}
+	Retrieves a specific BIG-IP Next creation task.
+get /api/v1/spaces/default/instances/{instanceID}/trafficvlans
+	Retrieves all VLANs used for traffic for a BIG-IP Next HA instance
+get /api/v1/spaces/default/instances/{instanceID}/interfaces
+	Retrieves the names of all network interfaces (except management interface) on a BIG-IP Next.
+get /api/v1/spaces/default/instances/initialization/templates
+	Retrieves a list of all templates used for instantiation, onboarding, and discovery of BIG-IP Next instances.
+get /api/v1/spaces/default/instances/initialization/templates/{name}
+	Retrieves a specific template used for instantiation, onboarding, and discovery of BIG-IP Next instances.
+get /api/v1/spaces/default/instances/initialization/templates/{name}/schema
+	Requests the JSON schema describing the parameters in the named instantiation, onboarding, and discovery template. Primarily intended for use by the BIG-IP Next Central Manager GUI.
+post /api/v1/spaces/default/instances/initialization/templates/{name}/render
+	Applies the provided template parameter values to the instantiation, onboarding, and discovery template, and returns the rendered template body.
+get /api/v1/spaces/default/instances/onboarding-tasks
+	Retrieves a list of all BIG-IP Next Central Manager onboarding tasks.
+get /api/v1/spaces/default/instances/onboarding-tasks/{id}
+	Retrieves a specific BIG-IP Next onboarding task.
+post /api/v1/spaces/default/instances/{id}/log-archive
+	Creates a log archive on a BIG-IP Next instance.
+get /api/v1/spaces/default/instances/log-archive-tasks
+	Retrieves a list of BIG-IP Next instance log archive tasks.
+get /api/v1/spaces/default/instances/log-archive-tasks/{id}
+	Retrieves a specific BIG-IP Next instance log archive task.
+get /api/v1/spaces/default/instances/summary
+	Retrieves a list of all managed BIG-IP Next instances and the associated tasks.
+get /api/v1/spaces/default/instances/{instance_id}/vlans
+	Retrieves a list of VLANs on a managed BIG-IP Next instance.
+get /api/v1/spaces/default/instances/{instance_id}/vrfs
+	Retrieves a list of VRFs on a managed BIG-IP Next instance.
+post /api/v1/spaces/default/instances/{instance_id}/vrfs
+	Creates a VRF on the BIG-IP Next Central Manager and the BIG-IP Next instance.
+delete /api/v1/spaces/default/instances/{instance_id}/vrfs/{vrf_id}
+	Removes a VRF from the BIG-IP Next Central Manager and the BIG-IP Next instance.
+get /api/v1/spaces/default/instances/{instance_id}/vrfs/{vrf_id}
+	Returns a single VRF object on a managed BIG-IP Next instance.
+put /api/v1/spaces/default/instances/{instance_id}/vrfs/{vrf_id}
+	Updates a VRF on the BIG-IP Next Central Manager and the BIG-IP Next instance.
+get /api/v1/spaces/default/instances/{instance_id}/l3forwards
+	Retrieves a list of L3-Forwards on a managed BIG-IP Next instance.
+post /api/v1/spaces/default/instances/{instance_id}/l3forwards
+	Create a L3-Forward on BIG-IP Next Central Manager and BIG-IP Next instance.
+delete /api/v1/spaces/default/instances/{instance_id}/l3forwards/{l3forwards_id}
+	Delete a L3-Forward on BIG-IP Next Central Manager and BIG-IP Next instance.
+get /api/v1/spaces/default/instances/{instance_id}/l3forwards/{l3forwards_id}
+	Retrieves a L3-Forward object on a managed BIG-IP Next instance.
+put /api/v1/spaces/default/instances/{instance_id}/l3forwards/{l3forwards_id}
+	Update a L3-Forward on BIG-IP Next Central Manager and BIG-IP Next instance
+get /api/v1/spaces/default/integrations
+	Lists all integration details.
+delete /api/v1/spaces/default/integrations/{id}
+	Deletes a specific integration details.
+get /api/v1/spaces/default/integrations/{id}
+	Receives a specific integration details.
+get /api/v1/spaces/default/integrations/register
+	Receives all registrations task details.
+post /api/v1/spaces/default/integrations/register
+	Creates and run a CM regstration task.
+get /api/v1/spaces/default/integrations/register/{id}
+	Receives a specific registration task details.
+get /api/v1/spaces/default/application-templates
+	Retrieves a list of all the TemplateSetName and TemplateName pairs.
+post /api/v1/spaces/default/application-templates
+	Creates a new FAST template.
+get /api/v1/spaces/default/application-template-sets
+	Retrieves a list of the template sets, each containing a list of templates in that set.
+get /api/v1/spaces/default/application-templates/list
+	Retrieves a list of all of the templates.
+delete /api/v1/spaces/default/application-templates/{set_name}/{name}
+	Deletes an unpublished FAST template from BIG-IP Next Central Manager.
+get /api/v1/spaces/default/application-templates/{set_name}/{name}
+	Retrieves the specified template.
+patch /api/v1/spaces/default/application-templates/{set_name}/{name}
+	Partially updates the FAST template object. The PATCH operation enables updates to only the name, set_name, description, and published properties of the template.
+put /api/v1/spaces/default/application-templates/{set_name}/{name}
+	Replaces the entire FAST template object. Payload must contain all the required properties. The PUT operation enables updates to the name, set_name, file_type, description, published and body properties of the template.
+get /api/v1/spaces/default/application-template-sets/list
+	Retrieves all template sets.
+get /api/v1/spaces/default/appsvcs/blueprints
+	Retrieves a list of all applications.
+post /api/v1/spaces/default/appsvcs/blueprints
+	Creates an AS3 application using the FAST template.
+delete /api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}
+	Deletes FAST application by deleting all the deployments attached to that application. The application will only be deleted if all the deployments attached to it are successfully deleted first.
+get /api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}
+	Retrieves a specific application.
+patch /api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}
+	Updates an existing FAST Application with the supplied values. This API can be used to add new deployments to an application, edit and delete existing deployments as well as attach new objects to the application.
+post /api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}/deployments
+	Creates a FAST application deployment
+delete /api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}/deployments/{deployment-id}
+	Deletes a specified deployment of a FAST application.
+get /api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}/deployments/{deployment-id}
+	Returns specific FAST application deployment records.
+delete /api/v1/spaces/default/appsvcs/blueprints/instances/{id}/deployments
+	Deletes the deployments of multiple FAST applications to an instance.
+post /api/login
+	Login with user name and password. Validates the username and password and returns an authentication token and a refresh token. The authentication token has a short lifetime and should be included in subsequent API requests. The refresh token has a longer lifetime and can be used to get a new authentication token.
+post /api/token-refresh
+	Use a user refresh token to generate an authentication token
+post /api/logout
+	Logs out the user by closing their session state.
+get /api/system-info
+	Retrieves system information.
+post /api/change-password
+	Replaces a temporary password with a new password.
+get /api/v1/system/infra/bootstrap
+	Retrieves bootstrap status of Central Manager infrastructure.
+post /api/v1/spaces/default/instances/license/activate
+	Initiates license activation for all the instances identified by their device id.
+post /api/v1/spaces/default/instances/license/switch
+	Initiates switch license  for all the instances identified by their device ids.
+post /api/v1/spaces/default/license/tokens/verify
+	Verifies JWT content, checks for the format and validates the jwt signature with the configured certificate bundle. Returns token details if a matching token is found.
+get /api/v1/spaces/default/instances/license/report
+	Retrieves reports archive for multiple instances. This is a multipart response to be sent to F5 for reporting.
+put /api/v1/spaces/default/instances/license/report
+	This is a multipart request that involves uploading zipped files of F5 signed acknowledgements for multiple instances.
+post /api/v1/spaces/default/instances/license/deactivate
+	Initiates deactivation of license for a list of instances which were identified by device id.
+get /api/v1/spaces/default/instances/license/license-info/{device_id}
+	Retrieves the latest state of the instance license, including all the enabled features.
+post /api/v1/spaces/default/instances/license/license-info
+	Retrieves the latest state of the instance license, including all the features enabled for multiple instances.
+get /api/v1/spaces/default/license/tasks/{task_id}
+	Retrieves the latest state of the license state task.
+post /api/v1/spaces/default/license/tasks
+	Retrieves the latest status of multiple license state tasks which are identified by task id.
+get /api/v1/system/license/config
+	Retrieves the license configuration of the central manager instance.
+put /api/v1/system/license/config
+	Updates the configuration values set of local license manager (LLM).
+get /api/v1/spaces/default/license/tokens
+	Retrieves details of multiple tokens.
+post /api/v1/spaces/default/license/tokens
+	Creates a new token with the JWT provided.
+delete /api/v1/spaces/default/license/tokens/{token_id}
+	Delete token details.
+get /api/v1/spaces/default/license/tokens/{token_id}
+	Retrieves details of a token by token id.
+get /api/v1/spaces/default/instances/license/report/ready
+	Retrieves list of instances for which the report is available for download. Report type could be any one of activation/switch/telemetry/terminate.
+post /api/v1/ihealth/test-connection
+	Only tests the iHealth server connection without storing iHealth token details.
+post /api/v1/ihealth/authenticate
+	Authenticates the iHealth server using client ID and secret and stores and overwrites iHealth token details.
+get /api/v1/ihealth/config
+	Retrieves all iHealth configurations.
+post /api/v1/ihealth/config
+	Stores iHealth credentials in BIG-IP Next Central Manager.
+delete /api/v1/ihealth/config/{key}
+	Deletes iHealth configuration in BIG-IP Next Central Manager.
+put /api/v1/ihealth/config/{key}
+	Updates iHealth credentials in BIG-IP Next Central Manager.
+get /api/v1/spaces/default/qkviews
+	Retrieves a list of all the QKViews in the space.
+get /api/v1/spaces/default/instances/{instance_id}/qkviews
+	Retrieves a list of all the qkviews in an instance.
+post /api/v1/spaces/default/instances/{instance_id}/qkviews
+	Generates QKView for the BIG-IP Next instance and uploads the QKView file to iHealth Server
+delete /api/v1/spaces/default/instances/{instance_id}/qkviews/{id}
+	If an instance ID is sent, all QKView files for that instance are deleted; if a QKView ID is sent, all the associated QKView files are deleted, if a file ID is sent, that specific file is deleted.
+get /api/v1/spaces/default/instances/{instance_id}/qkviews/{id}
+	Retrieves a specific QKView
+put /api/v1/spaces/default/instances/{instance_id}/qkviews/{id}
+	Updates the data in the qkview table.
+get /api/v1/spaces/default/configs
+	Retrieves configuration variable details for QKView feature.
+put /api/v1/spaces/default/configs
+	Updates QKView configuration values.
+post /api/v1/spaces/default/instances/{instance_id}/qkviews/{id}/upload
+	File is extracted based on the file id and the file data is uploaded to iHealth server
+get /api/v1/spaces/default/instances/{instance_id}/qkviews/{id}/files/{filename}/download
+	Retrieves the file from storage specified by qkview id.
+get /api/v1/spaces/default/instances/{instance_id}/qkviews/files/{id}/download
+	Retrieves the file from storage specified by the file id.
+delete /api/v1/spaces/default/instances/{instance_id}/qkviews/files/{id}
+	Deletes the particular file of the mentioned qkview id
+get /api/v1/spaces/default/security/inspection-services
+	Retrieves all inspection services.
+post /api/v1/spaces/default/security/inspection-services
+	Creates an inspection service.
+delete /api/v1/spaces/default/security/inspection-services/{id}
+	Deletes the inspection service.
+get /api/v1/spaces/default/security/inspection-services/{id}
+	Retrieves an inspection service.
+put /api/v1/spaces/default/security/inspection-services/{id}
+	Updates an inspection service.
+post /api/v1/spaces/default/security/inspection-services/{id}/deployment
+	Deploys an inspection service.
+post /api/v1/spaces/default/security/inspection-services/{id}/deployment/validate
+	Retrieves validation status of instances for an inspection service.
+get /api/v1/spaces/default/security/policies
+	Retrieves list of policies with associated rules.
+post /api/v1/spaces/default/security/policies
+	Creates a SSL Orchestrator policy.
+delete /api/v1/spaces/default/security/policies/{id}
+	Deletes a SSL Orchestrator policy.
+get /api/v1/spaces/default/security/policies/{id}
+	Retrieves a SSL Orchestrator policy.
+put /api/v1/spaces/default/security/policies/{id}
+	Updates a SSL Orchestrator policy.
+post /api/v1/spaces/default/security/ssl-orchestrator-policies/{id}/deploy
+	Starts an SSL orchestrator policy deployment task to re-deploy the policy to all associated instances.
+get /api/v1/spaces/default/security/service-chains
+	Retrieves all service chains.
+post /api/v1/spaces/default/security/service-chains
+	Creates inspection service chain.
+delete /api/v1/spaces/default/security/service-chains/{id}
+	Deletes service chain.
+get /api/v1/spaces/default/security/service-chains/{id}
+	Retrieves a service chain.
+put /api/v1/spaces/default/security/service-chains/{id}
+	Updates service chain.
+post /api/v1/spaces/default/security/service-chains/{id}/deploy
+	Starts a service chain deployment task to re-deploy the affected policies to all associated instances.
+get /api/v1/spaces/default/security/inspection-services/{id}/instances-config
+	Retrieves network configuration specific to the instance.
+post /api/v1/spaces/default/security/inspection-services/{id}/instances-config
+	Creates network configuration specific to the instance.
+delete /api/v1/spaces/default/security/inspection-services/{id}/instances-config/{instance-id}
+	Deletes the inspection service instance specific network configuration.
+get /api/v1/spaces/default/security/inspection-services/{id}/instances-config/{instance-id}
+	Retrieves an inspection service instance specific network configuration in JSON format.
+put /api/v1/spaces/default/security/inspection-services/{id}/instances-config/{instance-id}
+	Updates inspection service specific instance network configuration.
+get /api/v1/system/feature-flags
+	Retrieves feature flag properties information for all feature flags in collection.
+patch /api/v1/system/feature-flags
+	Create a new feature flag or updates an existing feature flag's value.
+get /api/v1/system/feature-flags/{flag_name}
+	Retrieves a specific feature flag's property information.
+get /api/v1/users
+	Retrieves a list of all system users.
+post /api/v1/users
+	Requests to add a user to system.
+delete /api/v1/users/{id}
+	Deletes a specified user from system.
+get /api/v1/users/{id}
+	Retrieves a specific user.
+put /api/v1/users/{id}
+	Updates the user information of a specified user.
+get /api/v1/users/{id}/roles
+	Retrieves a list of all the role groups belonging to user.
+post /api/v1/users/{id}/roles
+	Assign roles to a user.
+delete /api/v1/users/{id}/roles/{role_id}
+	Removes a role from a user.
+get /api/v1/users/{id}/roles/{role_id}
+	Requests a specific UserRoleMap object.
+get /api/v1/users/{id}/feature-permissions
+	Retrieves all the feature permissions associated to the user.
+get /api/v1/spaces/default/files/{id}/meta-data
+	Retrieves the metadata of a specific file.
+put /api/v1/spaces/default/files/{id}/meta-data
+	Updates a file's metadata. Note that only the file_name and description can be updated.
+delete /api/v1/spaces/default/files/{id}
+	Deletes a specified file.
+get /api/v1/spaces/default/files/{id}
+	Retrieves the content of a file.
+get /api/v1/spaces/default/files
+	Retrieves a list of metadata for all files.
+post /api/v1/spaces/default/files
+	Uploads a specified file to the system.
+get /api/v1/roles
+	Retrieves a list of all roles in the system.
+get /api/v1/roles/{id}
+	Retrieves a specific role in the system.
+get /api/v1/logs/audit
+	Retrieves a list of audit log records, filtered based on the query parameters.
+post /api/v1/system/smtp-servers/connect
+	Checks whether the connection can reach the SMTP server.
+get /api/v1/system/smtp-servers
+	Retrieves a list of all SMTP servers.
+post /api/v1/system/smtp-servers
+	Adds SMTP server to the system.
+delete /api/v1/system/smtp-servers/{id}
+	Requests to delete a SMTP server.
+get /api/v1/system/smtp-servers/{id}
+	Retrieves a configuration of a specific SMTP server.
+put /api/v1/system/smtp-servers/{id}
+	Updates the information of a SMTP server.
+post /api/v1/users/reset-password
+	Requests a temporary password to be generated for the user to login.
+post /api/v1/users/restore-password
+	Request the temporay password fields and restore the password to non-temporary password.
+post /api/v1/users/change-password
+	Changes the temporary password to the new password.
+get /api/v1/spaces/default/auth-providers
+	Retrieves all configured authentication providers.
+post /api/v1/spaces/default/auth-providers
+	Configures authentication provider.
+post /api/v1/spaces/default/auth-providers/validate
+	Validate the authentication provider details using the authentication provider setting and user credentials.
+get /api/v1/spaces/default/auth-providers/{id}
+	Retrieves information for a specific authentication provider.
+put /api/v1/spaces/default/auth-providers/{id}
+	Updates an authentication provider.
+get /api/v1/migrations
+	Request a list of all migrations.
+post /api/v1/migrations
+	Create a new migration.
+delete /api/v1/migrations/{migration_id}
+	Deletes a specific migration.
+get /api/v1/migrations/{migration_id}
+	Retrieves specific migration details.
+patch /api/v1/migrations/{migration_id}
+	Updates migration with current page and updates visited pages list.
+put /api/v1/migrations/{migration_id}
+	It also updates visited pages list
+delete /api/v1/migrations-clean
+	Deletes multiple migrations.
+delete /api/v1/migrations/{migration_id}/upload
+	Cancels UCS upload task.
+post /api/v1/migrations/{migration_id}/upload
+	Uploads UCS file for migration.
+get /api/v1/migrations/{migration_id}/virtuals
+	Retrieves virtual servers list.
+get /api/v1/migrations/{migration_id}/virtuals/{virtual_id}
+	Retrieves specified virtual server.
+patch /api/v1/migrations/{migration_id}/virtuals/{virtual_id}
+	Updates virtual server object.
+post /api/v1/migrations/{migration_id}/virtuals/{virtual_id}/stage
+	Stages the virtual server to output AS3.
+post /api/v1/migrations/{migration_id}/virtuals/{virtual_id}/unstage
+	Unstages the virtual server from output AS3.
+put /api/v1/migrations/{migration_id}/virtuals-stage
+	Sets staged virtuals list.
+get /api/v1/migrations/{migration_id}/virtuals/{virtual_id}/preview
+	Retrieves preview AS3 for a given virtual server.
+get /api/v1/migrations/{migration_id}/virtuals/{virtual_id}/files/{file_name}
+	Retrieves content of the virtual server configuration file.
+post /api/v1/migrations/{migration_id}/virtuals-install-dependencies
+	Installs virtuals' referenced objects onto Central Manager.
+get /api/v1/migrations/{migration_id}/applications
+	Retrieves applications list.
+post /api/v1/migrations/{migration_id}/applications
+	Creates a new application.
+delete /api/v1/migrations/{migration_id}/applications/{application_id}
+	Removes specified application.
+get /api/v1/migrations/{migration_id}/applications/{application_id}
+	Retrieves specified application.
+patch /api/v1/migrations/{migration_id}/applications/{application_id}
+	Updates application object.
+post /api/v1/migrations/{migration_id}/applications/{application_id}/stage
+	Sets staged applications.
+post /api/v1/migrations/{migration_id}/applications/{application_id}/unstage
+	Unstages the application from output AS3.
+put /api/v1/migrations/{migration_id}/applications-stage
+	Sets staged applications list.
+post /api/v1/migrations/{migration_id}/applications-install-dependencies
+	Installs application level referenced objects onto Central Manager.
+post /api/v1/migrations/{migration_id}/applications/{application_id}/assign
+	Moves virtual server to another application.
+get /api/v1/migrations/{migration_id}/applications/{application_id}/preview
+	Retrieves preview AS3 for a given application.
+get /api/v1/migrations/{migration_id}/root-files/{file_path}
+	Retrieves content of the migrations root file.
+post /api/v1/migrations/{migration_id}/output
+	Retrieves output AS3.
+post /api/v1/migrations/{migration_id}/deployments-dry-run
+	null
+get /api/v1/migrations/{migration_id}/deployments
+	Retrieves deployments list.
+post /api/v1/migrations/{migration_id}/deployments
+	Deploys configuration to given system.
+get /api/v1/migrations/{migration_id}/deployments/{deployment_id}
+	Retrieves status of deployment operation.
+get /api/v1/spaces/default/irules
+	Retrieves all iRules details
+post /api/v1/spaces/default/irules
+	Creates an iRule
+delete /api/v1/spaces/default/irules/{nameOrID}
+	Deletes all iRule versions with the specified name.
+get /api/v1/spaces/default/irules/{nameOrID}
+	Retrieves iRule details by iRule name
+put /api/v1/spaces/default/irules/{nameOrID}
+	Update iRule specified by id
+get /api/v1/spaces/default/irules/{nameOrID}/version/{version}/content
+	Retrieves iRules content by name and version
+get /api/v1/spaces/default/irules/tasks
+	Retrieves the details of all iRule tasks.
+post /api/v1/spaces/default/irules/tasks
+	Deploys and runs applications with specified iRule version or reverts applications to a previous iRule version. Before performing this operation, the application must have the corresponding iRule attached.
+get /api/v1/spaces/default/irules/tasks/{id}
+	Retrieves the details for the iRule task specified by task ID.
+post /api/v1/spaces/default/irules/validate
+	Validates the iRule script.
+get /api/v1/system/tasks
+	Retrieves a list of all tasks.
+get /api/v1/system/tasks/{id}
+	Retrieves a specific task.
+get /api/v1/system/schedules
+	Retrieves all schedules.
+get /api/v1/system/schedules/{id}
+	Retrieves specific schedule details.
+get /api/v1/system/schedules/{id}/run-instances
+	Retrieves schedule all run details.
+get /api/v1/system/schedules/{id}/run-instances/{run_id}
+	Retrieves schedule specific run details.
+get /api/v1/system/schedules/configs
+	Retrieves configuration variable details for Task manager feature.
+put /api/v1/system/schedules/configs
+	Updates the Task manager configuration values.
+get /api/v1/spaces/default/security/access-policies
+	Retrieves the list of all Access policies.
+post /api/v1/spaces/default/security/access-policies
+	Creates an Access policy.
+delete /api/v1/spaces/default/security/access-policies/{id}
+	Deletes the Access policy.
+get /api/v1/spaces/default/security/access-policies/{id}
+	Retrieves the Access policy in a JSON format.
+put /api/v1/spaces/default/security/access-policies/{id}
+	Updates the Access policy.
+post /api/v1/security/access/oauth/discover
+	Discovers the OAuth provider.
+get /api/v1/spaces/default/instances/access-sessions
+	Retrieves the list of active sessions on all discovered instances.
+get /api/v1/spaces/default/instances/{instance-id}/access-sessions
+	Retrieves a list of active sessions in a json format.
+delete /api/v1/spaces/default/instances/{instance-id}/access-sessions/{session-id}
+	Ends the active session on the BIG-IP Next instance.
+get /api/v1/spaces/default/instances/{instance-id}/access-sessions/{session-id}
+	Retrieves the active session in a json format.
+get /api/v1/spaces/default/instances/{instance-id}/access-sessions/{session-id}/variables
+	Retrieves the active session variables in a JSON format.
+delete /api/v1/spaces/default/security/access/client-files/{file_id}/epsec
+	Deletes the previously saved parsed result of EPSEC file.
+get /api/v1/spaces/default/security/access/client-files/{file_id}/epsec
+	Retrieves the parsed contents of the EPSEC file
+post /api/v1/spaces/default/security/access/client-files/{file_id}/epsec
+	Requests to parse the contents of the EPSEC file.
+get /api/v1/spaces/default/security/access/client-files/{file_id}/installers/{package_name}
+	Retrieves installer package by given file id and installer name.
+post /api/v1/security/access/saml/import-identity-provider
+	Extracts identity provider details from metadata and returns IdP Connector as JSON.
+post /api/v1/security/access/saml/export-service-provider
+	Reads service provider details from JSON and returns service provider metadata.
+get /api/v1/spaces/default/security/access/client-files
+	Retrieves available client files in a JSON format.
+get /api/v1/spaces/default/security/access/client-files/{file_id}
+	Retrieves a client file information and instances identified by the given file id.
+post /api/v1/spaces/default/security/access/client-files/{file_id}/install
+	Installs file.
+get /api/v1/spaces/default/security/access-policies/{id}/deployments
+	Retrieves a list of deployment configuration for a policy like server pools, lease pools, dns resolvers.
+post /api/v1/spaces/default/security/access-policies/{id}/deployments
+	Creates deployment configuration for a policy like server pools, lease pools, dns resolvers.
+delete /api/v1/spaces/default/security/access-policies/{id}/deployments/{deploy_config_id}
+	Deletes deployment configuration for a policy like server pools, lease pools, dns resolvers.
+get /api/v1/spaces/default/security/access-policies/{id}/deployments/{deploy_config_id}
+	Retrieves deployment configuration for a policy like server pools, lease pools, dns resolvers.
+put /api/v1/spaces/default/security/access-policies/{id}/deployments/{deploy_config_id}
+	Updates deployment configuration for a policy like server pools, lease pools, dns resolvers.
+get /api/v1/spaces/default/security/access-policies/{id}/edge-client
+	Retrieves edge client installer options.
+post /api/v1/spaces/default/security/access-policies/{id}/edge-client
+	Generates edge client installer.
+get /api/v1/spaces/default/gslb/gr-groups
+	Retrieves a list of all Global Resiliency Groups.
+post /api/v1/spaces/default/gslb/gr-groups
+	Creates a Global Resiliency Group (GR group)
+delete /api/v1/spaces/default/gslb/gr-groups/{id}
+	Deletes a Global Resiliency Group.
+get /api/v1/spaces/default/gslb/gr-groups/{id}
+	Retrieves a specific Global Resiliency Group details.
+put /api/v1/spaces/default/gslb/gr-groups/{id}
+	Updates a Global Resiliency Group.
+get /api/v1/spaces/default/gslb/gr-groups/{id}/fqdns
+	Retrieves a list of Fully Qualified Domain Names(FQDNs) deployed on a specific Global Resiliency Group.
+get /api/v1/system/infra/nodes
+	Retrieves all nodes in a Central Manager infrastructure.
+post /api/v1/system/infra/nodes
+	Add nodes to Central Manager infrastructure. A maximum of 5 nodes can be added to the infra in a single request.
+get /api/v1/system/infra/nodes/cert-fingerprint
+	Retrieves the certificate of a Central Manager node with a TLS handshake and returns it's fingerprint.
+delete /api/v1/system/infra/nodes/{name}
+	Delete node from Central Manager infrastructure.
+get /api/v1/system/infra/external-storage
+	Retrieve current external storage configuration for Central Manager infrastructure if available. Details vary based on storage type.
+post /api/v1/system/infra/external-storage
+	Configure external storage for Central Manager infrastructure. Detailed configuration varies based on storage type.
+post /api/v1/system/infra/external-storage/verify
+	Verify external storage configuration for Central Manager infrastructure without saving.
+delete /api/v1/system/infra/virtual-ip
+	Deletes virtual IP configuration in Central Manager infrastructure.
+get /api/v1/system/infra/virtual-ip
+	Retrieves virtual IP configuration status in a Central Manager infrastructure.
+post /api/v1/system/infra/virtual-ip
+	Add virtual IP to Central Manager infrastructure.
+get /api/v1/system/infra/info
+	Retrieves information about the Central Manager Infrastructure.
+post /api/v1/system/backups/schedule
+	Creates a schedule for CM backup.
+delete /api/v1/system/backups/schedule/{id}
+	Deletes a CM backup schedule.
+put /api/v1/system/backups/schedule/{id}
+	Updates a CM backup schedule.
+get /api/v1/system/backups
+	Retrieves a list of all CM backup files information.
+post /api/v1/system/backups
+	Creates a backup for CM.
+post /api/v1/system/restore
+	Restores a CM.
+get /api/v1/system/backup-tasks
+	Retrieves list of all CM backup tasks.
+get /api/v1/system/backup-tasks/{id}
+	Retrieves a specific CM backup task.
+get /api/v1/system/restore-tasks
+	Retrieves a list of all CM restore tasks.
