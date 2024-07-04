@@ -52,6 +52,7 @@ then
         $RESTSH_JQ -r '._embedded | .policies[] | [.name, .last_modified, .enforcement_mode, .id] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "Name,Modified,Enforcement Mode,Id"
     fi
+    exit 0
 fi
 
-exit 0
+exit 1

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-07-04
 
 # Shortdesc: Lists all iRules.
 # Desc:
@@ -22,5 +22,30 @@ fi
 # Check for a valid auth token
 next.auth.check
 
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-r]"
+    echo -e "\tUse -r for raw output."
+    exit 2
+fi
+
 # Main
-GET "${NEXT_API_PREFIX}/spaces/default/irules?select=name" | JQ -r "._embedded.irules[].name"
+if [ "$RAW" -eq 1 ]
+then
+  GET "${NEXT_API_PREFIX}/spaces/default/irules?select=name" | JQ -r "._embedded.irules[].name"
+else
+  GET "${NEXT_API_PREFIX}/spaces/default/irules?select=name"
+fi
