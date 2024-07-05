@@ -14,11 +14,12 @@ _method() {
     local opts=""
     case "$prev" in
         DELETE|GET|PATCH|POST|PUT)
-            opts=$(sed -E "s|($cur[^/]+/).*|\1|" "$RESTSH_PATH/autocomplete/next/method_$prev" | sort -u)
+            local escaped
+            escaped=$(sed -E 's/\{([^}]+)\}/\\\{\1\\\}/g' <<< "$cur")
+            opts=$(sed -E "s|(${escaped}[^/]+/).*|\1|" "$RESTSH_PATH/autocomplete/next/method_$prev" | sort -u)
             ;;
     esac
-
-    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- ${cur})
 }
 
 complete -o nospace -F _method DELETE
