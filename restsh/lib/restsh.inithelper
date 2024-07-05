@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-27
+# Date: 2024-07-05
 
 # Shortdesc: Some init helper functions.
 # Desc:
@@ -85,6 +85,22 @@ restsh.init.setresturl() {
     [ "$RESTSH_SCHEME" == "http" ] && [ "$RESTSH_PORT" != "80" ] && URL="${URL}:${RESTSH_PORT}"
     export RESTSH_URL="$URL"
     return 0
+}
+
+# Sets a prompt command to get the refreshed credentials from subsession to initial restsh bash session.
+restsh.init.prompt_command() {
+    if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME" ]
+    then
+        RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME")
+        export RESTSH_TOKEN_LIFETIME
+        rm "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+    fi
+    if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_VALUE" ]
+    then
+        RESTSH_TOKEN_VALUE=$(<"$RESTSH_TMP/.RESTSH_TOKEN_VALUE")
+        export RESTSH_TOKEN_VALUE
+        rm "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
+    fi
 }
 
 export -f restsh.init.setresturl
