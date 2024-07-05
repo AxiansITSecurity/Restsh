@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-04
+# Date: 2024-07-05
 
 # Shortdesc: Updates the autocompletion and help from the OpenAPI file.
 # Desc:
@@ -31,6 +31,8 @@ OPENAPI_FILE="$RESTSH_PATH/autocomplete/next/openapi.json"
 if [ ! -s "$OPENAPI_FILE" ]
 then
     echo_err "Empty OpenAPI file"
+    echo "Download: https://clouddocs.f5.com/products/bigip-next/mgmt-api/latest/ApiReferences/bigip_public_api_ref/r_openapi-next.html"
+    echo "Save it to: $RESTSH_PATH/autocomplete/next/openapi.json"
     exit 1
 fi
 
@@ -40,10 +42,13 @@ then
     exit 1
 fi
 
+METHODS=(DELETE GET PATCH PUT POST)
+
 # Remove old files
-for F in delete get patch put post
+for F in "${METHODS[@]}"
 do
-    rm -f "$RESTSH_PATH/autocomplete/next/method_$F"
+    rm -f "$RESTSH_PATH/autocomplete/next/method_${F}"
+    rm -f "$RESTSH_PATH/autocomplete/next/method_${F}.tmp"
 done
 
 echo "Generating completion files"
@@ -53,51 +58,41 @@ do
     do
         case "$METHOD" in
             delete)
-                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_DELETE"
+                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_DELETE.tmp"
             ;;
             get)
-                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_GET"
+                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_GET.tmp"
             ;;
             patch)
-                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_PATCH"
+                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_PATCH.tmp"
             ;;
             put)
-                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_PUT"
+                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_PUT.tmp"
             ;;
             post)
-                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_POST"
+                echo "$URI" >> "$RESTSH_PATH/autocomplete/next/method_POST.tmp"
             ;;
         esac
     done < <(JQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
 done < <(JQ -r '.paths[] | ."x-f5-cm-public-api-path"' < "$OPENAPI_FILE")
 
+echo "Sorting completion files"
+for F in "${METHODS[@]}"
+do
+    sort -u "$RESTSH_PATH/autocomplete/next/method_${F}.tmp" > "$RESTSH_PATH/autocomplete/next/method_${F}"
+    rm -f "$RESTSH_PATH/autocomplete/next/method_${F}.tmp"
+done
 
-echo "Generating OpenAPI help file"
-desc() {
-    DESC=$(JQ -r ".paths.\"$URI\".$METHOD.description" < "$OPENAPI_FILE")
-    printf "%s %s\n\t%s\n" "$METHOD" "$URI" "$DESC"
-}
-
+echo "Generating help file"
 {
     while read -r URI
     do
         while read -r METHOD
         do
             case "$METHOD" in
-                delete)
-                    desc
-                ;;
-                get)
-                    desc
-                ;;
-                patch)
-                    desc
-                ;;
-                put)
-                    desc
-                ;;
-                post)
-                    desc
+                delete|get|patch|put|post)
+                    DESC=$(JQ -r ".paths.\"$URI\".$METHOD.description" < "$OPENAPI_FILE")
+                    printf "%s %s\n\t%s\n" "$METHOD" "$URI" "$DESC"
                 ;;
             esac
         done < <(JQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
