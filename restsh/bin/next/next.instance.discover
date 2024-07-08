@@ -58,8 +58,8 @@ if RESULT=$(JQ -n --arg ip "$IP" \
     port: 5443,
     device_user: "admin",
     device_password: $instance_pass,
-    "management_user": "admin-cm",
-    "management_password": $instance_pass_new
+    management_user: "admin-cm",
+    management_password: $instance_pass_new
 }' | POST "${NEXT_API_PREFIX}/spaces/default/instances")
 then
     if ! TASK_PATH=$(JQ -r ".path" <<< "$RESULT")

@@ -3,12 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-07-04
 
-# Shortdesc: Creates an AS3 deployment.
+# Shortdesc: Re-tries a failed AS3 deployment.
 # Desc:
-# Deploy an AS3 declaration to a specified instance managed by BIG-IP Next Central Manager.
-# If the deployment already exists on a different instance, the application service is removed
-# from the existing instance before deploying to the new instance. This action will delete all
-# verification results for all instances if the action is not set to 'dry-run'.
+# Re-deploys an AS3 application service declaration to a BIG-IP Next instance if the deployment had previously failed.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -26,15 +23,13 @@ fi
 next.auth.check
 
 # Get options
-ACTION="deploy"
 RAW=0
 SHOW="base"
 UPDATE_MODE="complete"
 VALIDATION="strict"
-while getopts ':a:rs:u:v:' OPTION
+while getopts ':rs:u:v:' OPTION
 do
     case "$OPTION" in
-        a) ACTION=$OPTARG ;;
         r) RAW=1 ;;
         s) SHOW=$OPTARG ;;
         u) UPDATE_MODE=$OPTARG ;;
@@ -48,8 +43,7 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-a <action>] [-r] [-u <updateMode>] [-v <validation>] <document id> <target>"
-    echo -e "\t-a\tAction: dry-run, deploy (default)"
+    echo "Usage: $(basename "$0") [-r] [-u <updateMode>] [-v <validation>] <document id> <deployment id>"
     echo -e "\t-r\tRaw output."
     echo -e "\t-s\tShow: base, full, expanded"
     echo -e "\t-u\tUpdate mode: complete (default), selective"
@@ -57,13 +51,12 @@ then
     exit 2
 fi
 DOCUMENT_ID=$1
-TARGET=$2
+DEPLOYMENT_ID=$2
 
 QUERY="updateMode=$UPDATE_MODE&validation=$VALIDATION&show=$SHOW"
-[ "$ACTION" = "dry-run" ] && QUERY+="&action=dry-run"
 
 # Main
-if RESULT=$(POST -r "$NEXT_API_PREFIX/spaces/default/appsvcs/documents/${DOCUMENT_ID}/deployments?$QUERY" <<< "{ \"target\": \"$TARGET\" }")
+if RESULT=$(PUT -r "$NEXT_API_PREFIX/spaces/default/appsvcs/documents/${DOCUMENT_ID}/deployments/${DEPLOYMENT_ID}?$QUERY" <<< "")
 then
     TASK_ID=$(JQ -r '.task_id' <<< "$RESULT")
     next.task.waitfor "$NEXT_API_PREFIX/system/tasks/$TASK_ID" "done" 1>/dev/null

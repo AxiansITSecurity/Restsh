@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-04
+# Date: 2024-07-08
 
-# Shortdesc: Lists AS3 declarations.
+# Shortdesc: Lists all instances.
 # Desc:
-# Lists AS3 declarations.
+# Lists all instances.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,9 +22,8 @@ fi
 # Check for a valid auth token
 next.auth.check
 
-# Get options
 RAW=0
-while getopts ':r' OPTION
+while getopts ':d:krs:t' OPTION
 do
     case "$OPTION" in
         r) RAW=1 ;;
@@ -42,18 +41,16 @@ then
     exit 2
 fi
 
-# Main
-if RESULT=$(GET -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents")
+if RESULT=$(GET "/api/v1/spaces/default/instances")
 then
-    if [ "$RAW" -eq 0 ]
+    if [ "$RAW" -eq 1 ]
     then
-        JQ -r '._embedded.appsvcs[] | [.name, .tenant_name, .type, .id] | @tsv' <<< "$RESULT" 2>/dev/null | \
-            COLUMN -o "|" -N "Name,Tenant,Type,Id"
-    else
         JQ "." <<< "$RESULT"
+    else
+        JQ -r '._embedded.devices[] | [.hostname, .address, .mode, .version, .id] | @tsv' <<< "$RESULT" 2>/dev/null | \
+            COLUMN -o "|" -N "Name,Address,Mode,Version,Id"
     fi
     exit 0
 fi
 
-echo "$RESULT"
 exit 1

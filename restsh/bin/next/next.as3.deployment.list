@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-07-04
 
-# Shortdesc: Lists AS3 declarations.
+# Shortdesc: Lists all deployments for specific document id.
 # Desc:
-# Lists AS3 declarations.
+# Request all the AS3 application services, their deployments details, and last deployment records.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -33,24 +33,25 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-r]"
+    echo "Usage: $(basename "$0") [-r] <document id>"
     echo -e "\t-r\tRaw output."
     exit 2
 fi
+DOCUMENT_ID=$1
 
 # Main
-if RESULT=$(GET -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents")
+if RESULT=$(GET -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$DOCUMENT_ID")
 then
     if [ "$RAW" -eq 0 ]
     then
-        JQ -r '._embedded.appsvcs[] | [.name, .tenant_name, .type, .id] | @tsv' <<< "$RESULT" 2>/dev/null | \
-            COLUMN -o "|" -N "Name,Tenant,Type,Id"
+        JQ -r '.deployments[] | [.target.instance_ip, .last_successful_deploy_time, .id, .last_record.status] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "Instance,Deploy Time,Id,Status"
     else
-        JQ "." <<< "$RESULT"
+        JQ '.deployments' <<< "$RESULT"
     fi
     exit 0
 fi

@@ -3,9 +3,11 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-07-04
 
-# Shortdesc: Posts an AS3 declaration, optionally runs mustache before.
+# Shortdesc: Posts an AS3 declaration to update a complete tenant, optionally runs mustache before.
 # Desc:
-# Save an AS3 declaration to BIG-IP Next Central Manager.
+# Updates an application service with new AS3 declaration and re-deploy changes to instances.
+# This action deploys updates only to instances on which the AS3 declaration was previously deployed.
+# Optionally runs mustache to create the declaration from a template.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -31,19 +33,19 @@ do
     case "$OPTION" in
         d) DEFAULTS=$OPTARG ;;
         k) KEEP_TMP=1 ;;
-        r) RAW=1 ;;
-        s) restsh.util.declare.var "$OPTARG" ;;
         t) IS_TEMPLATE=1 ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-d <defaults file>] [-sVAR=VALUE] [-t] [-v] [-k] <as3 declaration file>"
+    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] [-sVAR=VALUE] <as3 declaration file> <document id>"
     echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
     echo -e "\t-k\tKeeps the temporary files."
     echo -e "\t-r\tRaw output."
@@ -52,6 +54,7 @@ then
     exit 2
 fi
 AS3_FILE=$1
+DOCUMENT_ID=$2
 AS3_FILE_PARSED="$RESTSH_TMP/$(basename "AS3_FILE")"
 
 # Cleanup tmp files
@@ -84,7 +87,7 @@ fi
 
 # Post the declaration
 [ "$RAW" -eq 0 ] && echo "Posting declaration"
-if RESULT=$(POST -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents" < "$AS3_FILE_PARSED")
+if RESULT=$(PUT -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$DOCUMENT_ID" < "$AS3_FILE_PARSED")
 then
     if [ "$RAW" -eq 0 ]
     then

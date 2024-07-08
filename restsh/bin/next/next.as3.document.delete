@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-07-04
 
-# Shortdesc: Deletes an AS3 declarations.
+# Shortdesc: Deletes an AS3 declarations from instance and CM.
 # Desc:
-# Deletes an AS3 declarations.
+# Remove an AS3 application service from the deployed instance and also delete from BIG-IP Next Central Manager.
 
 # Strict error handling
 set -eEu -o pipefail

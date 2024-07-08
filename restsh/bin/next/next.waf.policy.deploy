@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-05
+
+# Shortdesc: Re-deploy the policy to all associated instances.
+# Desc:
+# Re-deploy the policy to all associated instances.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Check for a valid auth token
+next.auth.check
+
+if [ -z "${1+x}" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <policy name>"
+    exit 2
+fi
+POLICYNAME=$1
+
+if RESULT=$(POST -r "/api/waf/v1/tasks/deploy-policy" <<< "{ \"policy_name\": \"$POLICYNAME\" }")
+then
+    TASK_PATH=$(JQ -r '.path' <<< "$RESULT")
+    next.task.waitfor "/api/waf$TASK_PATH" "completeTask" 1>/dev/null
+    echo "WAF Policy re-deployed."
+    exit 0
+fi
+
+echo_err "WAF Policy deployment failed."
+echo "$RESULT"
+exit 1

@@ -5,7 +5,7 @@
 
 # Shortdesc: Deletes an AS3 deployment.
 # Desc:
-# Deletes an AS3 deployment.
+# Remove an AS3 application service from the deployed instance and also delete from BIG-IP Next Central Manager.
 
 # Strict error handling
 set -eEu -o pipefail
