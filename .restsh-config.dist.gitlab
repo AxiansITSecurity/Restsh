@@ -39,3 +39,5 @@
 
 # Chunk size in bytes for restsh.upload and restsh.download, default 512kB
 #[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
+
+#[ -n "${GITLAB_ENABLE_AUTOCOMPLETE+x}" ] || export GITLAB_ENABLE_AUTOCOMPLETE=0

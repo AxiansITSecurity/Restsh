@@ -1,0 +1,144 @@
+get /api/v4/admin/batched_background_migrations
+	Get the list of batched background migrations
+get /api/v4/admin/batched_background_migrations/{id}
+	Retrieve a batched background migration
+put /api/v4/admin/batched_background_migrations/{id}/pause
+	Pause a batched background migration
+put /api/v4/admin/batched_background_migrations/{id}/resume
+	Resume a batched background migration
+get /api/v4/admin/ci/variables
+	List all instance-level variables
+post /api/v4/admin/ci/variables
+	Create a new instance-level variable
+delete /api/v4/admin/ci/variables/{key}
+	Delete an existing instance-level variable
+get /api/v4/admin/ci/variables/{key}
+	Get the details of a specific instance-level variable
+put /api/v4/admin/ci/variables/{key}
+	Update an instance-level variable
+get /api/v4/admin/clusters
+	This feature was introduced in GitLab 13.2. Returns a list of instance clusters.
+post /api/v4/admin/clusters/add
+	This feature was introduced in GitLab 13.2. Adds an existing Kubernetes instance cluster.
+delete /api/v4/admin/clusters/{cluster_id}
+	This feature was introduced in GitLab 13.2. Deletes an existing instance cluster. Does not remove existing resources within the connected Kubernetes cluster.
+get /api/v4/admin/clusters/{cluster_id}
+	This feature was introduced in GitLab 13.2. Returns a single instance cluster.
+put /api/v4/admin/clusters/{cluster_id}
+	This feature was introduced in GitLab 13.2. Updates an existing instance cluster.
+get /api/v4/admin/databases/{database_name}/dictionary/tables/{table_name}
+	Retrieve dictionary details
+post /api/v4/admin/migrations/{timestamp}/mark
+	Mark the migration as successfully executed
+get /api/v4/application/appearance
+	Get the current appearance
+put /api/v4/application/appearance
+	Modify appearance
+get /api/v4/application/plan_limits
+	List the current limits of a plan on the GitLab instance.
+put /api/v4/application/plan_limits
+	Modify the limits of a plan on the GitLab instance.
+get /api/v4/applications
+	List all registered applications
+post /api/v4/applications
+	This feature was introduced in GitLab 10.5
+delete /api/v4/applications/{id}
+	Delete a specific application
+get /api/v4/avatar
+	Return avatar url for a user
+get /api/v4/broadcast_messages
+	This feature was introduced in GitLab 8.12.
+post /api/v4/broadcast_messages
+	This feature was introduced in GitLab 8.12.
+delete /api/v4/broadcast_messages/{id}
+	This feature was introduced in GitLab 8.12.
+get /api/v4/broadcast_messages/{id}
+	This feature was introduced in GitLab 8.12.
+put /api/v4/broadcast_messages/{id}
+	This feature was introduced in GitLab 8.12.
+get /api/v4/bulk_imports
+	This feature was introduced in GitLab 14.1.
+post /api/v4/bulk_imports
+	This feature was introduced in GitLab 14.2.
+get /api/v4/bulk_imports/entities
+	This feature was introduced in GitLab 14.1.
+get /api/v4/bulk_imports/{import_id}
+	This feature was introduced in GitLab 14.1.
+get /api/v4/bulk_imports/{import_id}/entities
+	This feature was introduced in GitLab 14.1.
+get /api/v4/bulk_imports/{import_id}/entities/{entity_id}
+	This feature was introduced in GitLab 14.1.
+get /api/v4/groups/{id}/access_requests
+	This feature was introduced in GitLab 8.11.
+post /api/v4/groups/{id}/access_requests
+	This feature was introduced in GitLab 8.11.
+delete /api/v4/groups/{id}/access_requests/{user_id}
+	This feature was introduced in GitLab 8.11.
+put /api/v4/groups/{id}/access_requests/{user_id}/approve
+	This feature was introduced in GitLab 8.11.
+get /api/v4/groups/{id}/badges
+	This feature was introduced in GitLab 10.6.
+post /api/v4/groups/{id}/badges
+	This feature was introduced in GitLab 10.6.
+get /api/v4/groups/{id}/badges/render
+	This feature was introduced in GitLab 10.6.
+delete /api/v4/groups/{id}/badges/{badge_id}
+	This feature was introduced in GitLab 10.6.
+get /api/v4/groups/{id}/badges/{badge_id}
+	This feature was introduced in GitLab 10.6.
+put /api/v4/groups/{id}/badges/{badge_id}
+	This feature was introduced in GitLab 10.6.
+get /api/v4/metadata
+	This feature was introduced in GitLab 15.2.
+get /api/v4/projects/{id}/access_requests
+	This feature was introduced in GitLab 8.11.
+post /api/v4/projects/{id}/access_requests
+	This feature was introduced in GitLab 8.11.
+delete /api/v4/projects/{id}/access_requests/{user_id}
+	This feature was introduced in GitLab 8.11.
+put /api/v4/projects/{id}/access_requests/{user_id}/approve
+	This feature was introduced in GitLab 8.11.
+get /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images
+	Metric Images for alert
+post /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images
+	Upload a metric image for an alert
+post /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/authorize
+	Workhorse authorize metric image file upload
+delete /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/{metric_image_id}
+	Remove a metric image for an alert
+put /api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/{metric_image_id}
+	Update a metric image for an alert
+get /api/v4/projects/{id}/badges
+	This feature was introduced in GitLab 10.6.
+post /api/v4/projects/{id}/badges
+	This feature was introduced in GitLab 10.6.
+get /api/v4/projects/{id}/badges/render
+	This feature was introduced in GitLab 10.6.
+delete /api/v4/projects/{id}/badges/{badge_id}
+	This feature was introduced in GitLab 10.6.
+get /api/v4/projects/{id}/badges/{badge_id}
+	This feature was introduced in GitLab 10.6.
+put /api/v4/projects/{id}/badges/{badge_id}
+	This feature was introduced in GitLab 10.6.
+get /api/v4/projects/{id}/jobs
+	null
+get /api/v4/projects/{id}/jobs/{job_id}
+	null
+post /api/v4/projects/{id}/jobs/{job_id}/play
+	null
+get /api/v4/projects/{id}/repository/branches
+	Get a project repository branches
+post /api/v4/projects/{id}/repository/branches
+	Create branch
+delete /api/v4/projects/{id}/repository/branches/{branch}
+	Delete a branch
+get /api/v4/projects/{id}/repository/branches/{branch}
+	Get a single repository branch
+put /api/v4/projects/{id}/repository/branches/{branch}/protect
+	Protect a single branch
+put /api/v4/projects/{id}/repository/branches/{branch}/unprotect
+	Unprotect a single branch
+delete /api/v4/projects/{id}/repository/merged_branches
+	Delete all merged branches
+get /api/v4/version
+	This feature was introduced in GitLab 8.13 and deprecated in 15.5. We recommend you instead use the Metadata API.

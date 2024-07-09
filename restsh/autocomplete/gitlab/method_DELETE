@@ -1,0 +1,11 @@
+/api/v4/admin/ci/variables/{key}
+/api/v4/admin/clusters/{cluster_id}
+/api/v4/applications/{id}
+/api/v4/broadcast_messages/{id}
+/api/v4/groups/{id}/access_requests/{user_id}
+/api/v4/groups/{id}/badges/{badge_id}
+/api/v4/projects/{id}/access_requests/{user_id}
+/api/v4/projects/{id}/alert_management_alerts/{alert_iid}/metric_images/{metric_image_id}
+/api/v4/projects/{id}/badges/{badge_id}
+/api/v4/projects/{id}/repository/branches/{branch}
+/api/v4/projects/{id}/repository/merged_branches
