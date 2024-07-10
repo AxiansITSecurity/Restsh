@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-09
+# Date: 2024-07-10
 
 # Shortdesc: Updates the autocompletion and help from the OpenAPI file.
 # Desc:
@@ -17,6 +17,12 @@ if [ -z "${RESTSH_PATH+x}" ]
 then
     echo "Script must be run in the restsh environment."
     exit 1
+fi
+
+if ! RESTSH_YQ=$(command -v yq)
+then
+    echo_err "Command not found: yq"
+    return 1
 fi
 
 OPENAPI_FILE="$RESTSH_PATH/autocomplete/gitlab/openapi.yaml"
@@ -36,7 +42,7 @@ then
     exit 1
 fi
 
-if ! yq "." "$OPENAPI_FILE" > /dev/null 2>&1
+if ! $RESTSH_YQ "." "$OPENAPI_FILE" > /dev/null 2>&1
 then
     echo_err "Invalid OpenAPI file"
     exit 1
@@ -70,8 +76,8 @@ do
                 echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/autocomplete/gitlab/method_POST.tmp"
             ;;
         esac
-    done < <(yq -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
-done < <(yq -r '.paths | keys | .[]' < "$OPENAPI_FILE")
+    done < <($RESTSH_YQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
+done < <($RESTSH_YQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
 
 echo "Sorting completion files"
 for F in "${METHODS[@]}"
@@ -88,10 +94,10 @@ echo "Generating help file"
         do
             case "$METHOD" in
                 delete|get|put|post)
-                    DESC=$(yq -r ".paths.\"$URI\".$METHOD.description" < "$OPENAPI_FILE")
+                    DESC=$($RESTSH_YQ -r ".paths.\"$URI\".$METHOD.description" < "$OPENAPI_FILE")
                     printf "%s %s\n\t%s\n" "$METHOD" "${GITLAB_API_PREFIX}$URI" "$DESC"
                 ;;
             esac
-        done < <(yq -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
-    done < <(yq -r '.paths | keys | .[]' < "$OPENAPI_FILE")
+        done < <($RESTSH_YQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
+    done < <($RESTSH_YQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
 } > "$RESTSH_PATH/autocomplete/gitlab/openapi_help.txt"
