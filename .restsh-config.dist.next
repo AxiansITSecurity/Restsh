@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-24
+# Date: 2024-07-05
 
 # Shortdesc: Custom configuration file for restsh.init, preconfigured for a F5 Next Central Manager.
 # Desc:
@@ -44,3 +44,9 @@
 # F5 specific settings
 #[ -n "${F5_TASK_CHECK_INTERVAL+x}" ] || export F5_TASK_CHECK_INTERVAL=10
 #[ -n "${F5_TASK_TIMEOUT+x}" ] || export F5_TASK_TIMEOUT=18
+
+###############################################################################
+# F5 Next specific settings
+#[ -n "${NEXT_TASK_CHECK_INTERVAL+x}" ] || export NEXT_TASK_CHECK_INTERVAL=2
+#[ -n "${NEXT_TASK_TIMEOUT+x}" ] || export NEXT_TASK_TIMEOUT=18
+#[ -n "${NEXT_ENABLE_AUTOCOMPLETE+x}" ] || export NEXT_ENABLE_AUTOCOMPLETE=0

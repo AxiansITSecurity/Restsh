@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-04
+
+# Shortdesc: Creates an AS3 deployment.
+# Desc:
+# Deploy an AS3 declaration to a specified instance managed by BIG-IP Next Central Manager.
+# If the deployment already exists on a different instance, the application service is removed
+# from the existing instance before deploying to the new instance. This action will delete all
+# verification results for all instances if the action is not set to 'dry-run'.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Check for a valid auth token
+next.auth.check
+
+# Get options
+ACTION="deploy"
+RAW=0
+SHOW="base"
+UPDATE_MODE="complete"
+VALIDATION="strict"
+while getopts ':a:rs:u:v:' OPTION
+do
+    case "$OPTION" in
+        a) ACTION=$OPTARG ;;
+        r) RAW=1 ;;
+        s) SHOW=$OPTARG ;;
+        u) UPDATE_MODE=$OPTARG ;;
+        v) VALIDATION=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-a <action>] [-r] [-u <updateMode>] [-v <validation>] <document id> <target>"
+    echo -e "\t-a\tAction: dry-run, deploy (default)"
+    echo -e "\t-r\tRaw output."
+    echo -e "\t-s\tShow: base, full, expanded"
+    echo -e "\t-u\tUpdate mode: complete (default), selective"
+    echo -e "\t-v\tValidation: strict (default), lazy"
+    exit 2
+fi
+DOCUMENT_ID=$1
+TARGET=$2
+
+QUERY="updateMode=$UPDATE_MODE&validation=$VALIDATION&show=$SHOW"
+[ "$ACTION" = "dry-run" ] && QUERY+="&action=dry-run"
+
+# Main
+if RESULT=$(POST -r "$NEXT_API_PREFIX/spaces/default/appsvcs/documents/${DOCUMENT_ID}/deployments?$QUERY" <<< "{ \"target\": \"$TARGET\" }")
+then
+    TASK_ID=$(JQ -r '.task_id' <<< "$RESULT")
+    next.task.waitfor "$NEXT_API_PREFIX/system/tasks/$TASK_ID" "done" 1>/dev/null
+    DEPLOYMENT_ID=$(JQ -r '.id' <<< "$RESULT")
+    if [ "$RAW" -eq 0 ]
+    then
+        echo "Deployment with id $DEPLOYMENT_ID created."
+    else
+        echo "$DEPLOYMENT_ID"
+    fi
+    exit 0
+fi
+
+[ "$RAW" -eq 0 ] && echo_err "Deployment failed"
+echo "$RESULT"
+exit 1

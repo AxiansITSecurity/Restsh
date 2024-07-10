@@ -1,0 +1,10 @@
+/api/v1/migrations/{migration_id}
+/api/v1/migrations/{migration_id}/applications/{application_id}
+/api/v1/migrations/{migration_id}/virtuals/{virtual_id}
+/api/v1/spaces/default/application-templates/{set_name}/{name}
+/api/v1/spaces/default/appsvcs/blueprints/{appsvc-id}
+/api/v1/spaces/default/instances/discovery-tasks/{id}
+/api/v1/spaces/default/instances/initialization/{instance_id}
+/api/v1/spaces/default/instances/upgrade-tasks/{id}
+/api/v1/spaces/default/security/waf-policies/{id}/policy-builder
+/api/v1/system/feature-flags

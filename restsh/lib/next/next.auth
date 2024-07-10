@@ -148,7 +148,7 @@ next.auth.refresh() {
 next.auth.check() {
     if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
     then
-        echo_err "No refresh token found, you must login with f5.auth.login"
+        echo_err "No refresh token found, you must login with next.auth.login"
         return 1
     fi
     local NOW

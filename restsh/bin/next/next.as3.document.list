@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-21
+# Date: 2024-07-04
 
-# Shortdesc: Lists all WAF-Policies.
+# Shortdesc: Lists AS3 declarations.
 # Desc:
-# Lists all WAF-Policies.
+# Lists AS3 declarations.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -15,8 +15,8 @@ set -eEu -o pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 # Check for a valid auth token
@@ -33,26 +33,27 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
     echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo -e "\t-r\tRaw output."
     exit 2
 fi
 
 # Main
-if RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies")
+if RESULT=$(GET -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents")
 then
-    if [ "$RAW" -eq 1 ]
+    if [ "$RAW" -eq 0 ]
     then
-        echo "$RESULT"
+        JQ -r '._embedded.appsvcs[] | [.name, .tenant_name, .type, .id] | @tsv' <<< "$RESULT" 2>/dev/null | \
+            COLUMN -o "|" -N "Name,Tenant,Type,Id"
     else
-        $RESTSH_JQ -r '._embedded.policies[] | [.name, .last_modified, .enforcement_mode, .id] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "Name,Modified,Enforcement Mode,Id"
+        JQ "." <<< "$RESULT"
     fi
     exit 0
 fi
 
+echo "$RESULT"
 exit 1

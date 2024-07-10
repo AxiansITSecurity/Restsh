@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-03
+
+# Shortdesc: Discover and bring a BIG-IP Next instance under management.
+# Desc:
+# Discover and bring a BIG-IP Next instance under management.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Check for a valid auth token
+next.auth.check
+
+if [ -z "${1+x}" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") <ip address>"
+    exit 2
+fi
+IP=$1
+
+# Ask for passwords
+if [ -z "${INSTANCE_PASS+x}" ]
+then
+    read -r -s -p "Instance Password: " INSTANCE_PASS
+    echo ""
+fi
+if [ -z "${INSTANCE_PASS_NEW+x}" ]
+then
+    read -r -s -p "New instance Password: " INSTANCE_PASS_NEW
+    echo ""
+    read -r -s -p "Confirm new instance Password: " INSTANCE_PASS_NEW2
+    echo ""
+    if [ "$INSTANCE_PASS_NEW" != "$INSTANCE_PASS_NEW2" ]
+    then
+        echo_err "New instance passwords do not match."
+        exit 1
+    fi
+fi
+
+if RESULT=$(JQ -n --arg ip "$IP" \
+    --arg instance_pass "$INSTANCE_PASS" \
+    --arg instance_pass_new "$INSTANCE_PASS_NEW" \
+'{
+    address: $ip,
+    port: 5443,
+    device_user: "admin",
+    device_password: $instance_pass,
+    management_user: "admin-cm",
+    management_password: $instance_pass_new
+}' | POST "${NEXT_API_PREFIX}/spaces/default/instances")
+then
+    if ! TASK_PATH=$(JQ -r ".path" <<< "$RESULT")
+    then
+        echo_err "$RESULT"
+        exit 1
+    fi
+    TASK_ID=$(next.task.waitfor "$TASK_PATH" "discoveryWaitForUserInput")
+    [ -z "$TASK_ID" ] && exit 1
+    echo "Accepting fingerprint"
+    PATCH "$TASK_PATH" <<< '{ "is_user_accepted_untrusted_cert": true }'
+    TASK_ID=$(next.task.waitfor "$TASK_PATH" "discoveryDone")
+    [ -z "$TASK_ID" ] && exit 1
+fi
+
+echo_ok "Instance discovered successfully."

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-01
+# Date: 2024-07-05
 
 # Shortdesc: Bash initialization file for the restsh framework.
 # Desc:
@@ -26,6 +26,34 @@ fi
 
 # Strict error handling
 set -eEu -o pipefail
+
+# Use default or custom config file
+if [ -z "${RESTSH_CONFIG+x}" ]
+then
+    # try config in current directory
+    RESTSH_CONFIG=".restsh-config"
+    if [ ! -s "$RESTSH_CONFIG" ]
+    then
+        # fall back to config in user home
+        RESTSH_CONFIG="$HOME/.restsh-config"
+    fi
+fi
+# Check for existing config file
+if [ -s "$RESTSH_CONFIG" ]
+then
+    . "$RESTSH_CONFIG"
+    export RESTSH_CONFIG="$RESTSH_CONFIG"
+else
+    echo "No config file found, using defaults"
+    export RESTSH_CONFIG=""
+fi
+
+# Set defaults if not already set
+[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
+[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
+[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
+[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
+[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
 
 # Enable debug mode
 if [ -n "${RESTSH_DEBUG+x}" ]
@@ -55,34 +83,6 @@ done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
 # Set default mustache options
 export RESTSH_MO="mo --fail-on-function --fail-on-file --fail-not-set"
 
-# Use default or custom config file
-if [ -z "${RESTSH_CONFIG+x}" ]
-then
-    # try config in current directory
-    RESTSH_CONFIG=".restsh-config"
-    if [ ! -s "$RESTSH_CONFIG" ]
-    then
-        # fall back to config in user home
-        RESTSH_CONFIG="$HOME/.restsh-config"
-    fi
-fi
-# Check for existing config file
-if [ -s "$RESTSH_CONFIG" ]
-then
-    . "$RESTSH_CONFIG"
-    export RESTSH_CONFIG="$RESTSH_CONFIG"
-else
-    echo_warn "Config file not found: $RESTSH_CONFIG"
-    export RESTSH_CONFIG=""
-fi
-
-# Set defaults if not already set
-[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
-[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
-[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
-[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
-[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
-
 # Some initial checks
 if ! restsh.init.check.env
 then
@@ -106,25 +106,6 @@ RESTSH_TMP=$(mktemp -d)
 export RESTSH_TMP
 # Remove it on exit
 trap "rm -rf ""$RESTSH_TMP" EXIT
-
-# Set a prompt command to get the refreshed credentials from subsession
-# to initial restsh bash session
-prompt_command() {
-    if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME" ]
-    then
-        RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME")
-        export RESTSH_TOKEN_LIFETIME
-        rm "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
-    fi
-    if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_VALUE" ]
-    then
-        RESTSH_TOKEN_VALUE=$(<"$RESTSH_TMP/.RESTSH_TOKEN_VALUE")
-        export RESTSH_TOKEN_VALUE
-        rm "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
-    fi
-}
-
-PROMPT_COMMAND=prompt_command
 
 # OK
 echo_ok "restsh $RESTSH_VERSION initialized"
@@ -153,6 +134,12 @@ then
     echo "Use exit to finish."
     echo "Happy RESTing"
     echo ""
+
+    # Set prompt command
+    if [ "$RESTSH_AUTH" = "token" ]
+    then
+        PROMPT_COMMAND=restsh.init.prompt_command
+    fi
 
     # Set prompt
     export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "

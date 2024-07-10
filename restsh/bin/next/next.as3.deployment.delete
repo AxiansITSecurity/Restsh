@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-04
+
+# Shortdesc: Deletes an AS3 deployment.
+# Desc:
+# Remove an AS3 application service from the deployed instance and also delete from BIG-IP Next Central Manager.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Check for a valid auth token
+next.auth.check
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-r] <document id> <deployment id>"
+    echo -e "\t-r\tRaw output."
+    exit 2
+fi
+DOCUMENT_ID=$1
+DEPLOYMENT_ID=$2
+
+# Main
+if RESULT=$(DELETE -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$DOCUMENT_ID/deployments/$DEPLOYMENT_ID")
+then
+    TASK_ID=$(JQ -r '.task_id' <<< "$RESULT")
+    next.task.waitfor "$NEXT_API_PREFIX/system/tasks/$TASK_ID" "done" 1>/dev/null
+    DEPLOYMENT_ID=$(JQ -r '.id' <<< "$RESULT")
+    if [ "$RAW" -eq 0 ]
+    then
+        echo "Deployment with id $DEPLOYMENT_ID deleted."
+    else
+        echo "$DEPLOYMENT_ID"
+    fi
+    exit 0
+fi
+
+echo "$RESULT"
+exit 1
