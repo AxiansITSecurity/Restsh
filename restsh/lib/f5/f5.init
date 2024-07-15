@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-07-15
 
 # Shortdesc: Sets environment variables for F5.
 # Desc:
@@ -15,3 +15,12 @@ set -uo pipefail
 
 [ -n "${F5_TASK_CHECK_INTERVAL+x}" ] || export F5_TASK_CHECK_INTERVAL=10
 [ -n "${F5_TASK_TIMEOUT+x}" ] || export F5_TASK_TIMEOUT=18
+[ -n "${F5_ENABLE_AUTOCOMPLETE+x}" ] || export F5_ENABLE_AUTOCOMPLETE=0
+
+if [ -n "${RESTSH_INTERACTIVE+x}" ]
+then
+    if [ "$F5_ENABLE_AUTOCOMPLETE" -eq 1 ]
+    then
+        . "$RESTSH_PATH/autocomplete/f5/autocomplete.sh"
+    fi
+fi

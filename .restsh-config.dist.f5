@@ -44,3 +44,4 @@
 # F5 specific settings
 #[ -n "${F5_TASK_CHECK_INTERVAL+x}" ] || export F5_TASK_CHECK_INTERVAL=10
 #[ -n "${F5_TASK_TIMEOUT+x}" ] || export F5_TASK_TIMEOUT=18
+[ -n "${F5_ENABLE_AUTOCOMPLETE+x}" ] || export F5_ENABLE_AUTOCOMPLETE=1
