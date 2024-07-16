@@ -297,7 +297,9 @@ restsh.util.urlencode() {
 
 # JSON validation, pipe string to stdin
 restsh.util.json_validate() {
-    if ! ERROR=$(jq "." 2>&1 >/dev/null)
+    local JSON
+    JSON=$(cat)
+    if ! ERROR=$(jq "." <<< "$JSON" 2>&1 >/dev/null)
     then
         local LINE
         local COL
@@ -312,7 +314,7 @@ restsh.util.json_validate() {
         echo "--"
         LINE=$((LINE+5))
         I=0
-        while read -r LINE
+        while IFS= read -r LINE
         do
             [ "$I" -eq 4 ] && echo -ne "${COLOR_RED}"
             echo "$LINE"
@@ -326,7 +328,7 @@ restsh.util.json_validate() {
                 echo -ne "${COLOR_RESET}"
             fi
             I=$((I+1))
-        done < <(head "-$LINE" -- "$POLICY_FILE" | tail -10)
+        done < <(head "-$LINE" <<< "$JSON" | tail -10)
         echo "--"
         return 1
     fi
