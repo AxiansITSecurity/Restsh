@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-07-16
 
 # Shortdesc: Posts an AS3 declaration to declare a complete tenant, optionally runs mustache before.
 # Desc:
@@ -48,7 +48,7 @@ then
     exit 1
 fi
 AS3_FILE=$1
-AS3_FILE_PARSED="$RESTSH_TMP/$AS3_FILE"
+AS3_FILE_PARSED="$RESTSH_TMP/$(basename "$AS3_FILE")"
 
 # Cleanup tmp files
 [ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE_PARSED"' EXIT
