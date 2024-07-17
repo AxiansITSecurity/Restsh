@@ -44,7 +44,7 @@ f5.pkg.taskwait() {
             STARTED|NEW|"")
                 continue
                 ;;
-            COMPLETED)
+            COMPLETED|FINISHED)
                 break
                 ;;
             *)
