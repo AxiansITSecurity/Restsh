@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-07-17
 
 # Shortdesc: General functions for the F5 package management.
 # Desc:
@@ -35,31 +35,25 @@ f5.pkg.taskwait() {
         COUNTER=$((COUNTER+1))
         local STATUS
         if ! STATUS=$(GET -r "$CHECK_TASK_URI" | \
-            $RESTSH_JQ -r ".results[] | .code" | tr '\n' ' ')
+            $RESTSH_JQ -r ".status")
         then
             echo_err "Could not get task status."
             return 1
         fi
-        local RC=0
-        for CODE in $STATUS
-        do
-            case "$CODE" in
-                0)
-                    # In progress
-                    RC=$CODE
-                    ;;
-                200)
-                    # ok
-                    RC=$CODE
-                    ;;
-                *)
-                    echo_err "Taskfailed: $CODE"
-                    # Print result message from f5
-                    GET -r "$CHECK_TASK_URI" | $RESTSH_JQ -r ".results"
-                    return 1
-                    ;;
-            esac
-        done
+        case "$STATUS" in
+            STARTED|NEW|"")
+                continue
+                ;;
+            COMPLETED)
+                break
+                ;;
+            *)
+                echo_err "Unhandled task status: $STATUS"
+                # Print task result message
+                GET "$CHECK_TASK_URI" | JQ -r ".errorMessage"
+                return 1
+            ;;
+        esac
         [ "$RC" -eq 200 ] && break
     done
     return 0

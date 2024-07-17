@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-07-17
 
 # Shortdesc: Installs the AS3 package.
 # Desc:
@@ -24,10 +24,11 @@ if [ -n "${1+x}" ]
 then
     RPM=$1
 else
+    exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <RPM>"
     echo "Download latest version from: https://github.com/F5Networks/f5-appsvcs-extension/releases"
-    exit 1
+    exit 2
 fi
 
 if ! f5.file-transfer.upload "$RPM"
@@ -36,11 +37,14 @@ then
     exit 1
 fi
 
+# Strip path
+RPM=$(basename "$RPM")
+
 if ! TASK_ID=$($RESTSH_JQ -n --arg rpm "/var/config/rest/downloads/$RPM" \
     '{
         "operation": "INSTALL",
         "packageFilePath": $rpm
-    }' | POST "/mgmt/shared/iapp/package-management-tasks" | jq -r ".id")
+    }' | POST "/mgmt/shared/iapp/package-management-tasks" | JQ -r ".id")
 then
     echo_err "Posting install command failed."
     exit 1
