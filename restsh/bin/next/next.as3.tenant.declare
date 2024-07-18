@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-18
+
+# Shortdesc: Creates or updates an AS3 document and deploys or updates it.
+# Desc:
+# Creates or updates an AS3 document and deploys it or updates the deployment.
+# This function uses NOT the compatibility API.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Check for a valid auth token
+next.auth.check
+
+# Get options
+DEPLOY_OPTIONS=()
+UPDATE_OPTIONS=()
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) DEPLOY_OPTIONS+=("-r"); UPDATE_OPTIONS+=("-r") ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    echo "Usage: $(basename "$0") [-r] <tenant> <declaration> <target>"
+    echo -e "\t-r\tRaw output."
+    exit 2
+fi
+AS3_TENANT_NAME=$1
+AS3_DECLARATION_FILE=$2
+TARGET=$3
+
+# Get the document id by tenant name
+get_document_id() {
+    local FILTER
+    FILTER=$(restsh.util.urlencode "tenant_name eq $AS3_TENANT_NAME")
+    local DOCUMENT_ID
+    if DOCUMENT_ID=$(GET -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents?select=tenant_name,name,id&filter=${FILTER}" \
+        | JQ -r "._embedded.appsvcs[].id" 2>/dev/null)
+    then
+        printf "%s" "$DOCUMENT_ID"
+    fi
+    return 0
+}
+
+# Get the deployment status for the document and specified target
+get_deployment_status() {
+    local DEPLOYED=0
+    while IFS=$'\t' read -r INSTANCE_IP
+    do
+        if [ "$INSTANCE_IP" = "$TARGET" ]
+        then
+            printf "1"
+            return 0
+        fi
+    done < <(GET "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$DOCUMENT_ID" \
+        | JQ -r ".deployments[] | .target.instance_ip")
+    printf "0"
+    return 1
+}
+
+# Main
+DOCUMENT_ID=$(get_document_id)
+DEPLOYED=0
+
+if [ -z "$DOCUMENT_ID" ]
+then
+    echo "Creating document"
+    if ! DOCUMENT_ID=$(next.as3.document.create -r "$AS3_DECLARATION_FILE" \
+        | JQ -r ".id")
+    then
+        echo_err "Failure creating document."
+        exit 1
+    fi
+else
+    # Update document only if it was not yet deployed
+    if ! DEPLOYED=$(get_deployment_status)
+    then
+        echo "Updating document"
+        if ! next.as3.document.update -r "$AS3_DECLARATION_FILE" "$DOCUMENT_ID" 1>/dev/null
+        then
+            echo_err "Failure updating document with id \"$DOCUMENT_ID\"."
+            exit 1
+        fi
+    fi
+fi
+
+if [ "$DEPLOYED" -eq 1 ]
+then
+    echo "Update deployment, document id: $DOCUMENT_ID"
+    next.as3.deployment.update "${UPDATE_OPTIONS[@]}" "$DOCUMENT_ID" "$AS3_DECLARATION_FILE"
+else
+    echo "Creating deployment, document id: $DOCUMENT_ID"
+    next.as3.deployment.create "${DEPLOY_OPTIONS[@]}" "$DOCUMENT_ID" "$TARGET"
+fi

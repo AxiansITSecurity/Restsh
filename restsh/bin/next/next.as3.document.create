@@ -52,7 +52,7 @@ then
     exit 2
 fi
 AS3_FILE=$1
-AS3_FILE_PARSED="$RESTSH_TMP/$(basename "AS3_FILE")"
+AS3_FILE_PARSED="$RESTSH_TMP/$(basename "$AS3_FILE")"
 
 # Cleanup tmp files
 [ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE_PARSED"' EXIT

@@ -48,7 +48,7 @@ if RESULT=$(GET -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$DOCUMEN
 then
     if [ "$RAW" -eq 0 ]
     then
-        JQ -r '.deployments[] | [.target.instance_ip, .last_successful_deploy_time, .id, .last_record.status] | @tsv' <<< "$RESULT" | \
+        JQ -r '.deployments[] | [.target.instance_ip, .last_successful_deploy_time, .id, .last_record.status] | @tsv' <<< "$RESULT" 2>/dev/null | \
             COLUMN -o "|" -N "Instance,Deploy Time,Id,Status"
     else
         JQ '.deployments' <<< "$RESULT"

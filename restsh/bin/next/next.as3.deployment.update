@@ -58,7 +58,7 @@ then
 fi
 DOCUMENT_ID=$1
 AS3_FILE=$2
-AS3_FILE_PARSED="$RESTSH_TMP/$(basename "AS3_FILE")"
+AS3_FILE_PARSED="$RESTSH_TMP/$(basename "$AS3_FILE")"
 
 QUERY="retry_failed=$RETRY_FAILED"
 
