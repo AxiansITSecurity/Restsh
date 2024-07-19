@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-15
+# Date: 2024-07-19
 
 # Shortdesc: F5 AS3 helper functions for mustache.
 # Desc:
@@ -11,8 +11,23 @@
 MO_F5_AS3_INCLUDE_DECLARATION() {
     local JSON_FILE=${MO_FUNCTION_ARGS[0]}
     local JSON_PATH=${MO_FUNCTION_ARGS[1]}
-
-    $RESTSH_MO -- "$JSON_FILE" | \
-        jq -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
+    # Set remaining arguments as variables for mustache
+    local I
+    for I in {2..11}
+    do
+        [ -z "${MO_FUNCTION_ARGS[$I]+x}" ] && break
+        local ARG=${MO_FUNCTION_ARGS[$I]}
+        local VALUE=${ARG#*=}
+        [ "${VALUE:0:4}" = "VAR_" ] && local VALUE="${!VALUE}" # Resolve variable
+        declare "ARG_${ARG%%=*}"="$VALUE"
+    done
+    echo "Including snippet: $JSON_FILE" 1>&2
+    if ! $RESTSH_MO -- "$JSON_FILE" | \
+        JQ -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
             sed -e 's/^{$//' -e 's/^}$//'
+    then
+        echo_err "JSON failure including $JSON_FILE"
+        return 1
+    fi
+    return 0
 }
