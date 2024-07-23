@@ -18,8 +18,18 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
         [ -z "${MO_FUNCTION_ARGS[$I]+x}" ] && break
         local ARG=${MO_FUNCTION_ARGS[$I]}
         local VALUE=${ARG#*=}
-        [ "${VALUE:0:4}" = "VAR_" ] && local VALUE="${!VALUE}" # Resolve variable
-        declare "ARG_${ARG%%=*}"="$VALUE"
+        local NAME="ARG_${ARG%%=*}"
+        if [ "${VALUE:0:4}" = "VAR_" ]
+        then
+            declare "$NAME"="${!VALUE}"
+        elif [ "${VALUE:0:6}" = "ARRAY_" ]
+        then
+            local TMP=("${VALUE}[@]")
+            local ARRAY="${!TMP}"
+            declare -a "$NAME"="(${ARRAY[*]})"
+        else
+            declare "$NAME"="$VALUE"
+        fi
     done
     echo "Including snippet: $JSON_FILE" 1>&2
     if ! $RESTSH_MO -- "$JSON_FILE" | \
