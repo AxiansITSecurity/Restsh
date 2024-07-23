@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-19
+# Date: 2024-07-23
 
 # Shortdesc: F5 AS3 helper functions for mustache.
 # Desc:
@@ -39,5 +39,59 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
         echo_err "JSON failure including $JSON_FILE"
         return 1
     fi
+    return 0
+}
+
+# Includes all iRules from specified folder
+MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER() {
+    [ -z "${MO_FUNCTION_ARGS[0]+x}" ] && return 1
+    local SUBDIR=${MO_FUNCTION_ARGS[0]}
+    local IRULE
+    local NAME
+    local CONTENT
+    local I=0
+    while IFS= read -r -d $'\0' IRULE
+    do
+        NAME=$(basename "$IRULE" .irule)
+        echo "Including iRule: $NAME" 1>&2
+        CONTENT=$(base64 < "$IRULE" | tr -d '\n')
+        [ "$I" -ne 0 ] && printf ","
+        cat << EOL
+"$NAME": {
+    "class": "iRule",
+    "iRule": {
+        "base64": "$CONTENT"
+    }
+}
+EOL
+        I=$((I+1))
+    done < <(find "${SUBDIR}" -maxdepth 1 -type f -name \*.irule -print0)
+    return 0
+}
+
+# Includes all iFiles from specified folder
+MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER() {
+    [ -z "${MO_FUNCTION_ARGS[0]+x}" ] && return 1
+    local SUBDIR=${MO_FUNCTION_ARGS[0]}
+    local IFILE
+    local NAME
+    local CONTENT
+    local I=0
+    while IFS= read -r -d $'\0' IFILE
+    do
+        NAME=$(basename "$IFILE")
+        echo "Including iFile: $NAME" 1>&2
+        CONTENT=$(base64 < "$IFILE" | tr -d '\n')
+        [ "$I" -ne 0 ] && printf ","
+        cat << EOL
+"$NAME": {
+    "class": "iFile",
+    "iFile": {
+        "base64": "$CONTENT"
+    }
+}
+EOL
+        I=$((I+1))
+    done < <(find "${SUBDIR}" -maxdepth 1 -type f ! -name .\* -print0)
     return 0
 }
