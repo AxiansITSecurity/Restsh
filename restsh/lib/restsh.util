@@ -266,19 +266,23 @@ restsh.util.setvar() {
     elif [ "$EXT" == "array" ]
     then
         # construct array name
-        local VAR
-        VAR="VAR_$(basename "$FILE" .array)"
+        local VAR1
+        VAR1="ARRAY_$(basename "$FILE" .array)"
+        # backward compatibilty name
+        VAR2="VAR_$(basename "$FILE" .array)"
         # set array from config file
         local LINES
         LINES=$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r' || true)
         if [ -n "$LINES" ]
         then
-            mapfile -t "$VAR" <<< "$LINES"
+            mapfile -t "$VAR1" <<< "$LINES"
+            mapfile -t "$VAR2" <<< "$LINES"
         else
             #shellcheck disable=SC2140
-            declare -g "$VAR"=""
+            declare -g "$VAR1"=""
+            declare -g "$VAR2"=""
         fi
-        echo "Declaring array: $VAR"
+        echo "Declaring array: $VAR1, $VAR2"
     else
         echo_err "Invalid file type: $EXT"
         return 1
