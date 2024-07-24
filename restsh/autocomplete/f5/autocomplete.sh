@@ -19,7 +19,7 @@ _method() {
             opts=$(sed -E "s|(${escaped}[^/]+/).*|\1|" "$RESTSH_PATH/autocomplete/f5/methods" | sort -u)
             ;;
     esac
-    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- ${cur})
+    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
 }
 
 complete -o nospace -F _method DELETE

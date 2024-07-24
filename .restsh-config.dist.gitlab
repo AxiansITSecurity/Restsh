@@ -8,6 +8,11 @@
 # Custom configuration file for restsh.init.
 # Set central environment variables if not already set.
 
+# Enabled modules
+#RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next")
+# shellcheck disable=SC2034
+RESTSH_MODULES=("cert" "custom" "gitlab")
+
 # Debugging
 # export RESTSH_DEBUG="true"
 
@@ -40,4 +45,5 @@
 # Chunk size in bytes for restsh.upload and restsh.download, default 512kB
 #[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
 
+# GitLab specific settings
 [ -n "${GITLAB_ENABLE_AUTOCOMPLETE+x}" ] || export GITLAB_ENABLE_AUTOCOMPLETE=1

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-05
+# Date: 2024-07-24
 
 # Shortdesc: Bash initialization file for the restsh framework.
 # Desc:
@@ -15,7 +15,7 @@ then
     # Use empty .restsh-config, settings must be set by CI/CD variables.
     [ -f "$CI_PROJECT_DIR/.restsh-config" ] || echo "#" > "$CI_PROJECT_DIR/.restsh-config"
     export RESTSH_CONFIG="$CI_PROJECT_DIR/.restsh-config"
-    export RESTSH_PATH="${CI_PROJECT_DIR}/restsh/restsh"
+    export RESTSH_PATH="$CI_PROJECT_DIR/restsh/restsh"
 fi
 
 if [ -z "${RESTSH_PATH+x}" ]
@@ -63,22 +63,39 @@ then
     set -x
 fi
 
-# Set path
-while read -r LINE
+# Check for enabled modules, enable all if not defined
+if [ -z "${RESTSH_MODULES+x}" ]
+then
+    # Include all modules
+    RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next")
+fi
+
+# Include enabled modules by setting path and including functions
+for MODULE in "${RESTSH_MODULES[@]}"
 do
-    PATH=$PATH:$LINE
-done < <(find "$RESTSH_PATH/bin" -type d)
+    [ -d "$RESTSH_PATH/bin/$MODULE" ] && PATH="$PATH:$RESTSH_PATH/bin/$MODULE"
+    if [ -d "$RESTSH_PATH/lib/$MODULE" ]
+    then
+        while read -r LINE
+        do
+            . "$LINE"
+        done < <(find "$RESTSH_PATH/lib/$MODULE" -maxdepth 1 -type f ! -name .\*)
+    fi
+done
 export PATH
 
-# Include functions
+# Include general functions
 while read -r LINE
 do
     . "$LINE"
-done < <(find "$RESTSH_PATH/lib" -type f ! -name .\*)
+done < <(find "$RESTSH_PATH/lib" -maxdepth 1 -type f ! -name .\*)
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
-. "${RESTSH_PATH}/lib/mo/mo.functions"
+while read -r LINE
+do
+    . "$LINE"
+done < <(find "$RESTSH_PATH/lib/mo" -maxdepth 1 -type f ! -name .\*)
 
 # Set default mustache options
 export RESTSH_MO="mo --fail-on-function --fail-on-file --fail-not-set"
@@ -113,22 +130,23 @@ echo_ok "restsh $RESTSH_VERSION initialized"
 # Interactive mode
 if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
-    echo -e "\tConfig: ${RESTSH_CONFIG}"
-    echo -e "\tHost:   ${RESTSH_URL}"
+    echo -e "\tConfig:  ${RESTSH_CONFIG}"
+    echo -e "\tHost:    ${RESTSH_URL}"
     case "$RESTSH_AUTH" in
         basic)
-            echo -e "\tUser:   $RESTSH_USER"
+            echo -e "\tUser:    $RESTSH_USER"
             ;;
         token)
-            echo -e "\tAuth:   token"
+            echo -e "\tAuth:    token"
             ;;
         netrc)
-            echo -e "\tUser:   from .netrc"
+            echo -e "\tUser:    from .netrc"
             ;;
         *)
             echo -e "\tAuth:   anonymous"
             ;;
     esac
+    echo -e "\tModules: ${RESTSH_MODULES[*]}"
     echo ""
     echo "Run restsh.help for available commands."
     echo "Use exit to finish."

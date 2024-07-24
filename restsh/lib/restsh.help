@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-01-31
+# Date: 2024-07-24
 
 # Shortdesc: Displays this help.
 # Desc:
@@ -76,37 +76,37 @@ restsh.help.showenv() {
     return 0
 }
 
-# Prints additional categories
-restsh.help.categories() {
-    # Print all custom categories
-    echo "Additional categories":
-    local CAT
+# Prints additional modules
+restsh.help.modules() {
+    # Print all custom modules
+    echo "Enabled modules":
+    local MODULE
     {
-        while read -r CAT
+        for MODULE in "${RESTSH_MODULES[@]}"
         do
             local DESC=""
-            [ -f "$RESTSH_PATH/bin/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/bin/$CAT/.shortdesc")
-            [ -f "$RESTSH_PATH/lib/$CAT/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$CAT/.shortdesc")
-            echo -e "$CAT\t$DESC"
-        done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
+            [ -f "$RESTSH_PATH/bin/$MODULE/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/bin/$MODULE/.shortdesc")
+            [ -f "$RESTSH_PATH/lib/$MODULE/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$MODULE/.shortdesc")
+            echo -e "$MODULE\t$DESC"
+        done
     } | COLUMN | indent
     return 0
 }
 
-# Prints all commands from a category
-restsh.help.categories.cmds() {
-    local CAT=$1
+# Prints all commands from a module
+restsh.help.modules.cmds() {
+    local MODULE=$1
     echo ""
-    echo "$CAT commands:"
+    echo "$MODULE commands:"
     declare -A CMDS
-    if [ -d "$RESTSH_PATH/lib/$CAT" ]
+    if [ -d "$RESTSH_PATH/lib/$MODULE" ]
     then
         while read -r FILE
         do
             restsh.help.parse.lib "$FILE"
-        done < <(find "$RESTSH_PATH/lib/$CAT" -type f)
+        done < <(find "$RESTSH_PATH/lib/$MODULE" -type f)
     fi
-    if [ -d "$RESTSH_PATH/bin/$CAT" ]
+    if [ -d "$RESTSH_PATH/bin/$MODULE" ]
     then
         while read -r FILE
         do
@@ -114,7 +114,7 @@ restsh.help.categories.cmds() {
             FILE=$(basename "$FILE")
             [ "$FILE" == ".shortdesc" ] && continue
             CMDS[$FILE]=$DESC
-        done < <(find "$RESTSH_PATH/bin/$CAT" -type f)
+        done < <(find "$RESTSH_PATH/bin/$MODULE" -type f ! -name .\*)
     fi
     restsh.help.print
 }
@@ -123,9 +123,9 @@ restsh.help.categories.cmds() {
 restsh.help() {
     if [ -z "${1+x}" ]
     then
-        CATEGORIES="none"
+        MODULES="none"
     else
-        CATEGORIES=$1
+        MODULES=$1
     fi
 
     restsh.help.version
@@ -143,21 +143,22 @@ restsh.help() {
     restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.util"
     restsh.help.print
 
-    if [ "$CATEGORIES" == "none" ]
+    if [ "$MODULES" == "none" ]
     then
-        # Print additional categories
+        # Print additional modules
         echo ""
-        restsh.help.categories
-    elif [ "$CATEGORIES" == "all" ]
+        restsh.help.modules
+    elif [ "$MODULES" == "all" ]
     then
-        # Print all custom commands
-        while read -r CAT
+        # Print all module commands
+        local MODULE
+        for MODULE in "${RESTSH_MODULES[@]}"
         do
-            restsh.help.categories.cmds "$CAT"
-        done < <(find "$RESTSH_PATH/bin" "$RESTSH_PATH/lib" -mindepth 1 -maxdepth 1 -type d | sed 's!.*/!!' | sort -u)
+            restsh.help.modules.cmds "$MODULE"
+        done
     else
-        # Print commands from one category
-        restsh.help.categories.cmds "$CATEGORIES"
+        # Print commands from one module
+        restsh.help.modules.cmds "$MODULES"
     fi
 
     return 0

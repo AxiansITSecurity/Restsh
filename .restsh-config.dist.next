@@ -8,6 +8,11 @@
 # Custom configuration file for restsh.init, preconfigured for a F5 Next Central Manager.
 # Set central environment variables if not already set.
 
+# Enabled modules
+#RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next")
+# shellcheck disable=SC2034
+RESTSH_MODULES=("cert" "custom" "next")
+
 # Debugging
 # export RESTSH_DEBUG="true"
 
