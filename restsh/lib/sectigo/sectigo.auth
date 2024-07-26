@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-06-25
+
+# Shortdesc: Gets the bearer token from Sectigo OAuth Authorization Server.
+# Desc:
+# Gets the bearer token from Sectigo OAuth Authorization Server.
+# Define SECTIGO_CLIENTID and SECTIGO_SECRET variables.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Gets the bearer token from the Sectigo OAuth authorization server
+sectigo.auth.login() {
+    if [ -z "${SECTIGO_CLIENTID+x}" ] || [ -z "${SECTIGO_SECRET+x}" ]
+    then
+        echo_err "You must define SECTIGO_CLIENTID and SECTIGO_SECRET"
+        return 1
+    fi
+    restsh.util.setcurloptions
+    RESTSH_CURL_OPTS+=("-X" "POST" "-H" "Content-Type: application/x-www-form-urlencoded")
+    RESTSH_CURL_OPTS+=("-d" "client_id=$SECTIGO_CLIENTID" "-d" "client_secret=$SECTIGO_SECRET")
+    RESTSH_CURL_OPTS+=("-d" "grant_type=client_credentials")
+    local RESULT
+    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "https://auth.sso.sectigo.com/auth/realms/apiclients/protocol/openid-connect/token")
+    then
+        local ACCESS_TOKEN
+        if ! ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT" 2> /dev/null)
+        then
+            echo_err "Login failed"
+            return 1
+        fi
+        if restsh.util.check.notempty "${ACCESS_TOKEN}"
+        then
+            echo "New Access Token retrieved" >&2
+            export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
+            return 0
+        fi
+    fi
+    export RESTSH_TOKEN_VALUE=""
+    echo_err "Could not get token."
+    return 1
+}
+
+export -f sectigo.auth.login
+

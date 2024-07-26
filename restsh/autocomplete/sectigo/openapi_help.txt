@@ -1,0 +1,377 @@
+post /api/acme/v1/evdetails/validation
+	ACME EV details validation
+get /api/acme/v1/pca/account
+	Query universal ACME accounts available according to filtering parameters supplied
+post /api/acme/v1/pca/account
+	Creates Universal ACME account with given parameters
+delete /api/acme/v1/pca/account/{id}
+	Delete universal ACME account with given ID
+get /api/acme/v1/pca/account/{id}
+	Returns Universal ACME account detailed info
+put /api/acme/v1/pca/account/{id}
+	Updates Universal ACME account with given Name parameter
+get /api/acme/v1/pca/account/{id}/client
+	Query universal ACME account with given ID for available clients according to filtering parameters supplied
+delete /api/acme/v1/pca/account/{id}/client/{clientId}
+	Delete client by its ID for universal ACME account with given ID
+get /api/acme/v1/server
+	Query public ACME servers available according to filtering parameters supplied
+get /api/acme/v2/account
+	Query Public ACME accounts available according to filtering parameters supplied
+post /api/acme/v2/account
+	Creates public ACME account with given parameters
+delete /api/acme/v2/account/{id}
+	Delete Public ACME account with given ID
+get /api/acme/v2/account/{id}
+	Returns Public ACME account detailed info
+put /api/acme/v2/account/{id}
+	Updates ACME account details with given Name parameter
+get /api/acme/v2/account/{id}/client
+	Query Public ACME account's clients available according to filtering parameters supplied
+delete /api/acme/v2/account/{id}/client/{clientId}
+	Delete Public ACME account client with given ID for specified account ID
+delete /api/acme/v2/account/{id}/domain
+	Remove list of given domains from Public ACME account with given id
+get /api/acme/v2/account/{id}/domain
+	Query Public ACME account's domains available according to filtering parameters supplied
+post /api/acme/v2/account/{id}/domain
+	Adds list of given domains to Public ACME account with given id
+get /api/admin-template/v1
+	List IdP Templates according to the specified filter.
+post /api/admin-template/v1
+	Create IdP Template for automatic creation of IdP Administrators during login via Identity Provider.
+delete /api/admin-template/v1/{id}
+	Delete IdP template. By default, all related administrators will be deleted automatically with the template. It is also possible to unlink all related administrators from this template. In order to get a list of administrators that are currently assigned to this template, please use "List administrators" method from the "Administrators" API with filter by "templateId" parameter.
+get /api/admin-template/v1/{id}
+	Get detailed information about IdP template.
+put /api/admin-template/v1/{id}
+	Update IdP Template. Fields that are not changed can be omitted in request. Please note that requested changes (except name) are automatically applied to all IdP admins assigned to this template. In order to get a list of administrators that are currently assigned to this template, please use "List administrators" method from the "Administrators Management" API with filter by "templateId" parameter.
+get /api/admin/v1
+	List administrators according to the specified filter and pagination. Note: "IdP Template" administrators are not supported by current method and are filtered out. In order to receive a list of IdP templates, please use "List IdP Templates" method from "Template Administrators" section.
+post /api/admin/v1
+	Create administrator account. This method supports following admin types: STANDARD, API, IDP, SAS.
+post /api/admin/v1/changepassword
+	Change of administrator's own password. Available for Standard and API administrators.
+get /api/admin/v1/idp
+	Get list of available Identity Providers that can be assigned to Standard, IdP administrators and IdP templates.
+get /api/admin/v1/password
+	Get current state of administrator password. Available for Standard and API administrators.
+get /api/admin/v1/privileges
+	Get privileges the administrator can assign to other administrators who they may update.
+get /api/admin/v1/roles
+	Get roles the administrator can assign to other administrators who they may update.
+delete /api/admin/v1/{id}
+	Delete administrator account.
+get /api/admin/v1/{id}
+	Get detailed information about administrator.
+put /api/admin/v1/{id}
+	Update administrator account. Fields that are not changed can be omitted. This method supports following admin types: STANDARD, API, IDP, SAS. Changing of admin type is supported, available transitions are: 
+ - STANDARD -> API, IDP, SAS; 
+ - API -> STANDARD; 
+ - IDP -> STANDARD, SAS; 
+ - SAS -> STANDARD.
+put /api/admin/v1/{id}/unlink
+	This method removes the link to IdP template for IdP administrator, thus admin will no longer be managed by it.
+get /api/agent/v1/ms
+	List all MS Agents that match the requested filter.
+post /api/agent/v1/ms
+	Adds a new MS Agent and returns the "installation token" needed for agent installation.
+delete /api/agent/v1/ms/{id}
+	Delete MS Agent.
+get /api/agent/v1/ms/{id}
+	Get MS Agent details.
+put /api/agent/v1/ms/{id}
+	Update MS Agent details.
+get /api/agent/v1/network
+	List all Network Agents that match the requested filter.
+post /api/agent/v1/network
+	Adds a new Network Agent and returns the "installation token" needed for agent installation.
+get /api/agent/v1/network/{agentId}/server
+	List all servers that match the requested filter.
+post /api/agent/v1/network/{agentId}/server
+	Add a new server to a Network Agent.
+delete /api/agent/v1/network/{agentId}/server/{id}
+	Delete server from network agent.
+get /api/agent/v1/network/{agentId}/server/{id}
+	Get network agent server details.
+put /api/agent/v1/network/{agentId}/server/{id}
+	Update server details.
+get /api/agent/v1/network/{agentId}/server/{serverId}/node
+	List all nodes that match the requested filter.
+get /api/agent/v1/network/{agentId}/server/{serverId}/node/{id}
+	Get server node details.
+delete /api/agent/v1/network/{id}
+	Delete Network Agent.
+get /api/agent/v1/network/{id}
+	Get network agent details.
+put /api/agent/v1/network/{id}
+	Update Network Agent details.
+get /api/azure/v1/accounts
+	null
+get /api/azure/v1/accounts/{accountId}/resource-groups
+	null
+get /api/azure/v1/accounts/{accountId}/subscriptions/{subscriptionId}/resource-groups/{resourceGroup}/vaults
+	null
+get /api/customField/v2
+	List all custom fields according to filter. Includes complete details.
+post /api/customField/v2
+	Create the custom field for a particular type of certificate.
+put /api/customField/v2
+	Update the custom field
+delete /api/customField/v2/{id}
+	Delete custom field
+get /api/customField/v2/{id}
+	Get custom field details
+get /api/dcv/v2/validation
+	List all domain validations that match the requested filter.
+post /api/dcv/v2/validation/clear
+	Reset the parameters of a requested DCV,  reset domain validation and DCV order statuses of the domain to the initial values.
+post /api/dcv/v2/validation/delete
+	Delete DCV
+post /api/dcv/v2/validation/start/domain/cname
+	Start Domain Control Validation using CName method. "Host" and "Point" details for CName DCV are provided in the response. After you create a CNAME DNS record for your domain, you should proceed with the "Submit CName validation" method.
+post /api/dcv/v2/validation/start/domain/email
+	Start Domain Control Validation using Email method. A list of available emails for Email DCV is returned in the response.In order to proceed with the particular email address from this list, call "Submit Validation via Email" method.
+post /api/dcv/v2/validation/start/domain/http
+	Start Domain Control Validation using HTTP method. Required details for HTTP DCV are provided in the response. After you prepare txt validation file on the HTTP server, you should proceed with the "Submit HTTP Validation" method.
+post /api/dcv/v2/validation/start/domain/https
+	Start Domain Control Validation using HTTPS method. Required details for HTTPS DCV are provided in the response. After you prepare txt validation file on the HTTPS server, you should proceed with the "Submit HTTPS validation" method.
+post /api/dcv/v2/validation/status
+	Get domain validation details
+post /api/dcv/v2/validation/submit/domain/cname
+	Submit a request for Domain Control Validation using CName method. Required details dor CNAME DNS record should be taken via "Start CName validation" method
+post /api/dcv/v2/validation/submit/domain/email
+	Submit a request for Domain Control Validation using Email method. The email message will be sent to the email address specified in the request. Note: The list of email addresses that can be used for Email DCV is available via "Start validation via Email" method.
+post /api/dcv/v2/validation/submit/domain/http
+	Submit a validation request for Domain Control Validation using HTTP method. This method validates that the txt validation file on the HTTP server matches the validation details provided by the "Start validation HTTP" method.
+post /api/dcv/v2/validation/submit/domain/https
+	Submit a validation request for Domain Control Validation using HTTPS method. This method validates that the txt validation file on the HTTPS server matches the validation details provided by the "Start validation HTTPS" method.
+post /api/dcv/v2/validation/sync
+	Synchronize domain validation details with backend
+get /api/device/v1
+	List all device certificates that match the requested filter.
+post /api/device/v1/approve/{deviceCertId}
+	Allows admin to approve the requested Device certificate.
+get /api/device/v1/collect/{deviceCertId}
+	Delivering the newly issued Device certificate from CA to the administrator for download.
+get /api/device/v1/customFields
+	List device certificate custom fields. An enrollment require will require all mandatory custom fields be specified.
+post /api/device/v1/decline/{deviceCertId}
+	Allows admin to decline the requested Device certificate.
+post /api/device/v1/enroll
+	Creation and submission of a request for a new Device certificate.
+post /api/device/v1/renew/order/{deviceCertId}
+	Submission of a request for a new Device certificate using the CSR and parameters of the initial Device certificate.
+post /api/device/v1/renew/serial/{serialNumber}
+	Submission of a request for a new Device certificate using the CSR and parameters of the initial Device certificate.
+post /api/device/v1/replace/order/{deviceCertId}
+	Submission of a request for a replace of a Device certificate using new CSR and the parameters of the initial Device certificate.
+The initial certificate is defined by its Id.
+post /api/device/v1/revoke/order/{deviceCertId}
+	Sending a request to CA to add the Device certificate under the particular Id to certificate revocation list.
+post /api/device/v1/revoke/serial/{sn}
+	Sending a request to CA to add the Device certificate under the particular serial number to certificate revocation list.
+get /api/device/v1/types
+	List device certificate profiles, previously known as a certificate type. An enrollment request will require the certificate profile be specified.
+delete /api/device/v1/{certId}
+	Submission of a request for deleting Device certificate for a given Id.
+get /api/device/v1/{deviceCertId}
+	Get device certificate details.
+get /api/discovery/v1/assignmentrule
+	Enables Admins to get the list of existing assignment rules IDs for the organization or department delegated to them
+post /api/discovery/v1/assignmentrule
+	Assignment rules are associated with discovery tasks to assign 'Unmanaged' certificates (those not issued by SCM) to a particular Organization or Department
+put /api/discovery/v1/assignmentrule
+	Enables the administrator to edit the existing assignment rule
+get /api/discovery/v1/assignmentrule/count
+	Enables administrators to get the number of existing assignment rules for the organization or department delegated to them
+delete /api/discovery/v1/assignmentrule/{ruleId}
+	Enables the administrator to delete a particular assignment rule that is applicable to the organization or department delegated to them
+get /api/discovery/v1/assignmentrule/{ruleId}
+	Enables the administrator to find the assignment rule by its ID
+get /api/discovery/v1/bucket
+	Query certificate buckets available according to filtering parameters supplied
+post /api/discovery/v1/bucket
+	Creates certificate bucket with given parameters
+delete /api/discovery/v1/bucket/{bucketId}
+	Deletes certificate bucket
+get /api/discovery/v1/bucket/{bucketId}
+	Returns certificate bucket detailed info
+put /api/discovery/v1/bucket/{bucketId}
+	Updates certificate bucket
+post /api/discovery/v1/bucket/{bucketId}/assign
+	Assigns certificates in certificate bucket
+get /api/discovery/v1/bucket/{bucketId}/certificates
+	Query bucket's certificates according to paging parameters supplied
+put /api/discovery/v1/bucket/{bucketId}/delegations
+	Delegates organizations to existing certificate bucket
+put /api/discovery/v1/bucket/{bucketId}/reset-client-secret
+	Resets certificate bucket client secret
+post /api/discovery/v1/bucket/{bucketId}/runrules
+	Runs rules against certificate bucket
+get /api/discovery/v1/{type}/{taskId}/operation
+	Query certificate discovery operations according to paging parameters supplied
+get /api/discovery/v1/{type}/{taskId}/operation/{opId}/result
+	Query operation result list according to paging parameters supplied
+post /api/discovery/v1/{type}/{taskId}/operation/{opId}/stop
+	Cancel certificate discovery operation
+get /api/discovery/v4/ad_task
+	Enables the administrator to get the list of existing tasks of scanning which he/she is authorized to view and manage
+post /api/discovery/v4/ad_task
+	Enables administrators to create a scan task in search of SSL certificates
+put /api/discovery/v4/ad_task/{id}
+	Enables administrators to edit MS AD scan task
+delete /api/discovery/v4/ad_task/{taskId}
+	Enables administrators to delete specific MS AD scanning task
+get /api/discovery/v4/ad_task/{taskId}
+	Enables the administrator to get the parameters of a particular task which he/she is authorized to view and manage
+post /api/discovery/v4/ad_task/{taskId}/start
+	Enables administrators to start MS AD scan for a specific task
+get /api/discovery/v4/net_task
+	Enables the administrator to get the list of existing tasks of scanning the network(s) which they are authorized to view and manage.
+post /api/discovery/v4/net_task
+	Enables administrators to create a scan task for the private and/or public network(s) in search of SSL certificates.
+put /api/discovery/v4/net_task/{id}
+	Enables administrators to edit a network scan task.
+delete /api/discovery/v4/net_task/{taskId}
+	Enables administrators to delete a specific network scanning task.
+get /api/discovery/v4/net_task/{taskId}
+	Enables the administrator to get the parameters of a particular task of network scanning which they are authorized to view and manage.
+post /api/discovery/v4/net_task/{taskId}/start
+	Enables administrators to start a network(s) scan for a specific task.
+get /api/domain/v1
+	Get list of domains according to the specified filter and pagination.
+post /api/domain/v1
+	Creates new domain according to the provided request.
+delete /api/domain/v1/{id}
+	Delete domain. Operation is allowed only for admins with role MRAO.
+get /api/domain/v1/{id}
+	Get detailed information about domain.
+put /api/domain/v1/{id}/activate
+	Activate domain. Operation is allowed only for admins with role MRAO.
+delete /api/domain/v1/{id}/delegation
+	Remove domain delegation from organization / department in context of particular certificate types.
+post /api/domain/v1/{id}/delegation
+	Add domain delegation to organization / department in context of particular certificate types.
+post /api/domain/v1/{id}/delegation/approve
+	Approve requested domain delegation to organization / department.
+post /api/domain/v1/{id}/delegation/reject
+	Reject requested domain delegation to organization / department.
+put /api/domain/v1/{id}/suspend
+	Suspended domain. Operation is allowed only for admins with role MRAO.
+get /api/notification/v1
+	Get notifications according to applied filter
+post /api/notification/v1
+	Create notification
+get /api/notification/v1/types
+	Get permitted notification types for logged in client admin
+delete /api/notification/v1/{notificationId}
+	Delete notification
+put /api/notification/v1/{notificationId}
+	Update notification
+get /api/organization/v1
+	Query organizations available for logged in client admin
+post /api/organization/v1
+	Creates organization with given parameters
+get /api/organization/v1/managed-by/{role}
+	Returns list of organizations delegated to specified role
+get /api/organization/v1/report-type/{report-type}
+	Returns list of organizations related to specific certificate type
+delete /api/organization/v1/{id}
+	Delete organization by ID
+get /api/organization/v1/{id}
+	Returns organization detailed info
+put /api/organization/v1/{id}
+	Updates organization with given parameters
+get /api/person/v2
+	List of person info objects according to applied filters.
+post /api/person/v2
+	Create person with specified info.
+get /api/person/v2/id/byEmail/{email}
+	Will return ID for a person with given email.
+delete /api/person/v2/{id}
+	Delete person.
+get /api/person/v2/{id}
+	Will return info for a person with given id.
+put /api/person/v2/{id}
+	Update person by id with specified person info.
+get /api/person/v2/{id}/invitation/endpoint
+	List of endpoints available for person invitation. Account for enrollment form can be specified in request.
+get /api/person/v2/{id}/invitation/endpoint/{endpointId}/account
+	List of accounts available for specific enrollment endpoint.
+post /api/person/v2/{id}/invitation/send
+	Invitation email will be sent with link to enrollment form. Account for enrollment form can be specified in request.
+post /api/person/v2/{personId}/import-key
+	Import private key to key store. Multiple entries allowed.
+post /api/report/v1/activity
+	Retrieves a log of SCM activities for a customer’s account, including actions on Certificates and actions of Agents.
+post /api/report/v1/client-certificates
+	Retrieves a log for an existing Client Certificates.
+post /api/report/v1/device-certificates
+	Retrieves a log for an existing Device Certificates.
+post /api/report/v1/domains
+	Retrieves a log for an existing Domains.
+post /api/report/v1/ssl-certificates
+	Retrieves a log for an existing SSL Certificates.
+get /api/smime/v2
+	List all client certificates that match the requested filter.
+get /api/smime/v2/byPersonEmail/{email}
+	List all Client Certificates for a person with given email.
+get /api/smime/v2/byPersonId/{pid}
+	List all Client Certificates for a person with given ID.
+get /api/smime/v2/collect/{orderNum}
+	Delivering the newly issued Client certificate from CA to the administrator for download.
+get /api/smime/v2/customFields
+	List Client Certificate custom fields. An enrollment requires all mandatory custom fields to be specified.
+post /api/smime/v2/enroll
+	Creation and submission of a request for a new Client Certificate.
+post /api/smime/v2/renew/order/{orderNum}
+	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its order number.
+post /api/smime/v2/renew/serial/{serial}
+	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its serial number.
+post /api/smime/v2/revoke
+	Sending a request to CA to add all Client certificates issued for the person with the particular email address in certificate revocation list.
+post /api/smime/v2/revoke/order/{orderNum}
+	Sending a request to CA to add the particular Client certificate in certificate revocation list.
+post /api/smime/v2/revoke/serial/{serial}
+	Sending a request to CA to add the Client certificate under the particular serial number in certificate revocation list.
+get /api/smime/v2/types
+	List Client Certificate profiles, previously known as a certificate type. An enrollment request will require the Certificate Profile be specified.
+delete /api/smime/v2/{certId}
+	Submission of a request for deleting Client certificate for a given Id.
+get /api/ssl/v1
+	List all SSL certificates that match the requested filter.
+put /api/ssl/v1
+	Update SSL certificate.
+post /api/ssl/v1/approve/{id}
+	Approve a SSL certificate request that needs approval
+get /api/ssl/v1/collect/{sslId}
+	Delivering the newly issued SSL Certificate from CA to the administrator for download.
+get /api/ssl/v1/customFields
+	List SSL certificate custom fields. An enrollment require will require all mandatory custom fields be specified.
+post /api/ssl/v1/decline/{id}
+	Decline a SSL certificate request
+post /api/ssl/v1/enroll
+	Submit request for a new SSL certificate.
+post /api/ssl/v1/enroll-keygen
+	Submit request for a new SSL certificate with generated keypair
+post /api/ssl/v1/import
+	Import certificates to SCM.
+get /api/ssl/v1/keystore/{sslId}/{formatType}
+	Generation of a link to download private key from Private Key Agent.
+post /api/ssl/v1/renew/{renewId}
+	Submission of a request for a new SSL certificate using the CSR and parameters of the initial certificate. The initial certificate is the one that is selected by the administrator for renewal in this case.
+post /api/ssl/v1/renewById/{sslId}
+	Submission of a request for a new SSL certificate using the CSR and parameters of the initial SSL certificate. The initial certificate is defined by its ID in this case.
+post /api/ssl/v1/replace/{sslId}
+	Submission of a request for the substition of the particular SSL certificate applying its parameters and a new CSR.
+post /api/ssl/v1/revoke/serial/{serialNumber}
+	Sending a request to CA to add the particular SSL certificate in certificate revocation list
+post /api/ssl/v1/revoke/{id}
+	Sending a request to CA to add the particular SSL certificate in certificate revocation list.
+get /api/ssl/v1/types
+	List SSL certificate profiles, previously known as a certificate type. An enrollment request will require the certificate profile be specified.
+delete /api/ssl/v1/{sslId}
+	Submission of a request for deleting SSL certificate for a given SSL Id.
+get /api/ssl/v1/{sslId}
+	Get SSL certificate details.
