@@ -52,7 +52,7 @@ then
         echo_err "Parent group not found"
         exit 1
     fi
-    if ! restsh.util.check.empty "$PARENTID"
+    if ! restsh.util.check.notempty "$PARENTID"
     then
         echo_err "Parent group not found"
         exit 1
