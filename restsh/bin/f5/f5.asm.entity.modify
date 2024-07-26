@@ -62,7 +62,7 @@ POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 ENTITY_ID=$(GET "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY_TYPE" \
     | JQ -r --arg name "$ENTITY_NAME" '.items[] | select(.name == $name) | .id')
 
-if ! restsh.util.check.empty "$ENTITY_ID"
+if ! restsh.util.check.notempty "$ENTITY_ID"
 then
     echo_err "Entity not found"
     exit 1

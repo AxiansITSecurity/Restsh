@@ -349,7 +349,7 @@ restsh.util.json_validate() {
 }
 
 # Returns 1 if string is empty or null
-restsh.util.check.empty() {
+restsh.util.check.notempty() {
     if [ -z "${1+x}" ] || [ "${1+x}" = "null" ]
     then
         return 1
@@ -405,6 +405,6 @@ export -f restsh.util.setvars
 export -f restsh.util.setvar
 export -f restsh.util.urlencode
 export -f restsh.util.json_validate
-export -f restsh.util.check.empty
+export -f restsh.util.check.notempty
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
