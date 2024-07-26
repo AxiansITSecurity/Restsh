@@ -9,7 +9,6 @@
 # Set central environment variables if not already set.
 
 # Enabled modules
-#RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next")
 # shellcheck disable=SC2034
 RESTSH_MODULES=("cert" "custom" "next")
 
