@@ -58,6 +58,14 @@ restsh.init.check.cmd() {
         return 1
     fi
     export RESTSH_CURL_BIN
+    if curl --help all | grep -q -- "--fail-with-body"
+    then
+        # Supported since 7.76.0
+        export RESTSH_CURL_OPT_FAIL="--fail-with-body"
+    else
+        export RESTSH_CURL_OPT_FAIL="--fail"
+    fi
+
     if ! RESTSH_JQ=$(command -v jq)
     then
         echo_err "Command not found: jq"

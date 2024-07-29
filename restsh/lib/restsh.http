@@ -71,7 +71,7 @@ restsh.http() {
         local ERROR
         ERROR=$(<"$ERROR_TMP")
         rm -f "$ERROR_TMP"
-        print_json_err_curl "$ERROR" "$METHOD ${RESTSH_URL}${URI}"
+        print_json_err_curl "$ERROR" "$OUTPUT" "$METHOD ${RESTSH_URL}${URI}"
         unset RESTSH_CURL_OPTS
         return 1
     fi
@@ -122,7 +122,7 @@ restsh.download() {
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
-            print_json_err_curl "Could not determine download size: $ERROR" "GET ${RESTSH_URL}${URI}"
+            print_json_err_curl "Could not determine download size" "$ERROR" "GET ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
@@ -159,7 +159,7 @@ restsh.download() {
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
-            print_json_err_curl "$ERROR" "GET ${RESTSH_URL}${URI}"
+            print_json_err_curl "Download failed" "$ERROR" "GET ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
@@ -228,7 +228,7 @@ restsh.upload() {
             local ERROR
             ERROR=$(<"$ERROR_TMP")
             rm -f "$ERROR_TMP"
-            print_json_err_curl "$ERROR" "POST ${RESTSH_URL}${URI}"
+            print_json_err_curl "Upload failed" "$ERROR" "POST ${RESTSH_URL}${URI}"
             unset RESTSH_CURL_OPTS
             return 1
         fi
