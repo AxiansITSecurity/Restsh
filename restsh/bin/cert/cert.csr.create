@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-29
+
+# Shortdesc: Creates a CSR for a key pair.
+# Desc:
+# Creates a CSR for a key pair.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+usage() {
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <key file> <csr file>"
+    echo -e "\t-a\tDNS Alternative Name"
+    echo -e "\t-c\tCountry"
+    echo -e "\t-i\tIP Alternative Name"
+    echo -e "\t-l\tLocality or City"
+    echo -e "\t-n\tCommon Name"
+    echo -e "\t-o\tOrganization"
+    echo -e "\t-p\tProvince or State"
+    exit 2
+}
+
+# Get options
+ORG=""
+COUNTRY=""
+CITY=""
+PROVINCE=""
+CN=""
+ALT_NAMES=()
+ALT_IPS=()
+while getopts ':a:c:i:l:n:o:p:' OPTION
+do
+    case "$OPTION" in
+        a) ALT_NAMES+=("$OPTARG") ;;
+        c) COUNTRY=$OPTARG ;;
+        i) ALT_IPS+=("$OPTARG") ;;
+        l) CITY=$OPTARG ;;
+        n) CN=$OPTARG ;;
+        o) ORG=$OPTARG ;;
+        p) PROVINCE=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
+then
+    usage
+fi
+
+KEY_FILE=$1
+CSR_FILE=$2
+CSR_CONFIG="$RESTSH_TMP/csr.cnf"
+[ -z "$CN" ] && CN="${ALT_NAMES[0]}"
+
+cat > "$CSR_CONFIG" << EOL
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+CN = $CN
+EOL
+
+[ -n "$CITY" ] && echo "L = $CITY" >> "$CSR_CONFIG"
+[ -n "$COUNTRY" ] && echo "C = $COUNTRY" >> "$CSR_CONFIG"
+[ -n "$ORG" ] && echo "O = $ORG" >> "$CSR_CONFIG"
+[ -n "$PROVINCE" ] && echo "ST = $PROVINCE" >> "$CSR_CONFIG"
+
+cat >> "$CSR_CONFIG" << EOL
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+EOL
+
+I=0
+for ALT_NAME in "${ALT_NAMES[@]}"
+do
+    echo "DNS.$I = $ALT_NAME" >> "$CSR_CONFIG"
+    I=$((I+1))
+done
+I=0
+for ALT_IP in "${ALT_IPS[@]}"
+do
+    echo "IP.$I = $ALT_IP" >> "$CSR_CONFIG"
+    I=$((I+1))
+done
+
+openssl req -new -key "$KEY_FILE" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE" -batch
+rm -f "$CSR_CONFIG"
+
+exit 0

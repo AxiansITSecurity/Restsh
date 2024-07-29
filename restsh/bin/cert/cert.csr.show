@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-07-29
 
-# Shortdesc: Lists the certifactes in a cert bundle file.
+# Shortdesc: Shows details of a CSR.
 # Desc:
-# Lists the certificates in a cert bundle file.
+# Shows details of a CSR.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -19,14 +19,19 @@ then
     exit 1
 fi
 
-if [ -z "${1+x}" ]
-then
+usage() {
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <bundle file>"
+    echo "Usage: $(basename "$0") <csr file>"
     exit 2
+}
+
+if [ -z "${1+x}" ]
+then
+    usage
 fi
 
-CHAIN_FILE=$1
-openssl crl2pkcs7 -nocrl -certfile "$CHAIN_FILE" | openssl pkcs7 -print_certs -noout
+CSR_FILE=$1
+
+openssl req -in "$CSR_FILE" -text
 exit 0
