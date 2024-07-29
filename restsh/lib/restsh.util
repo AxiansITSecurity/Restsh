@@ -69,11 +69,20 @@ print_json_err() {
 # Prints red error message in JSON format to STDOUT for curl.
 print_json_err_curl() {
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
-    $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
+    local MESSAGE=$1
+    local OUTPUT=$2
+    local REQUEST=$3
+    if [ "${OUTPUT:0:1}" != "{" ] && [ "${OUTPUT:0:1}" != "[" ]
+    then
+        # Not an JSON object, escape it
+        OUTPUT=$(JQ -R -s '.' <<< "$OUTPUT")
+    fi
+    $RESTSH_JQ -n --arg message "$MESSAGE" --argjson output "$OUTPUT" --arg request "$REQUEST" \
     '{
         error: {
             request: $request,
-            message: $message
+            message: $message,
+            output: $output
         }
     }' 1>&2
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
@@ -175,7 +184,7 @@ COLUMN() {
 
 # Sets the RESTSH_CURL_OPTIONS environment variable.
 restsh.util.setcurloptions() {
-    RESTSH_CURL_OPTS=("-f" "--show-error")
+    RESTSH_CURL_OPTS=("$RESTSH_CURL_OPT_FAIL" "--show-error")
 
     if [ "$RESTSH_CURL_INSECURE" -eq 1 ]
     then
