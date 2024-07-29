@@ -9,9 +9,8 @@
 # Set central environment variables if not already set.
 
 # Enabled modules
-#RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "sectigo")
 # shellcheck disable=SC2034
-RESTSH_MODULES=("cert" "custom" "sectigo")
+RESTSH_MODULES=("cert" "custom" "scm")
 
 # Debugging
 # export RESTSH_DEBUG="true"
@@ -37,7 +36,7 @@ RESTSH_MODULES=("cert" "custom" "sectigo")
 
 # Set token header and value
 [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="Authorization"
-#[ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="the_token"
+[ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE=""
 
 # Set REST payload format
 #[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
@@ -45,8 +44,8 @@ RESTSH_MODULES=("cert" "custom" "sectigo")
 # Chunk size in bytes for restsh.upload and restsh.download, default 512kB
 #[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
 
-[ -n "${SECTIGO_ENABLE_AUTOCOMPLETE+x}" ] || export SECTIGO_ENABLE_AUTOCOMPLETE=1
+[ -n "${SCM_ENABLE_AUTOCOMPLETE+x}" ] || export SCM_ENABLE_AUTOCOMPLETE=1
 
 # OAuth ClientID and ClientSecret
-[ -n "${SECTIGO_CLIENTID+x}" ] || export SECTIGO_CLIENTID=""
-[ -n "${SECTIGO_SECRET+x}" ] || export SECTIGO_SECRET=""
+[ -n "${SCM_CLIENTID+x}" ] || export SCM_CLIENTID=""
+[ -n "${SCM_SECRET+x}" ] || export SCM_SECRET=""

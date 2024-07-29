@@ -13,12 +13,12 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-[ -n "${SECTIGO_ENABLE_AUTOCOMPLETE+x}" ] || export SECTIGO_ENABLE_AUTOCOMPLETE=0
+[ -n "${SCM_ENABLE_AUTOCOMPLETE+x}" ] || export SCM_ENABLE_AUTOCOMPLETE=0
 
 if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
-    if [ "$SECTIGO_ENABLE_AUTOCOMPLETE" -eq 1 ] && [ -s "$RESTSH_PATH/autocomplete/sectigo/openapi_help.txt" ]
+    if [ "$SCM_ENABLE_AUTOCOMPLETE" -eq 1 ] && [ -s "$RESTSH_PATH/autocomplete/scm/openapi_help.txt" ]
     then
-        . "$RESTSH_PATH/autocomplete/sectigo/autocomplete.sh"
+        . "$RESTSH_PATH/autocomplete/scm/autocomplete.sh"
     fi
 fi

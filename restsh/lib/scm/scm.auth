@@ -6,7 +6,7 @@
 # Shortdesc: Gets the bearer token from Sectigo OAuth Authorization Server.
 # Desc:
 # Gets the bearer token from Sectigo OAuth Authorization Server.
-# Define SECTIGO_CLIENTID and SECTIGO_SECRET variables.
+# Define SCM_CLIENTID and SCM_SECRET variables.
 
 # Strict error handling
 set -uo pipefail
@@ -15,15 +15,15 @@ set -uo pipefail
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
 # Gets the bearer token from the Sectigo OAuth authorization server
-sectigo.auth.login() {
-    if [ -z "${SECTIGO_CLIENTID+x}" ] || [ -z "${SECTIGO_SECRET+x}" ]
+scm.auth.login() {
+    if [ -z "${SCM_CLIENTID+x}" ] || [ -z "${SCM_SECRET+x}" ]
     then
-        echo_err "You must define SECTIGO_CLIENTID and SECTIGO_SECRET"
+        echo_err "You must define SCM_CLIENTID and SCM_SECRET"
         return 1
     fi
     restsh.util.setcurloptions
     RESTSH_CURL_OPTS+=("-X" "POST" "-H" "Content-Type: application/x-www-form-urlencoded")
-    RESTSH_CURL_OPTS+=("-d" "client_id=$SECTIGO_CLIENTID" "-d" "client_secret=$SECTIGO_SECRET")
+    RESTSH_CURL_OPTS+=("-d" "client_id=$SCM_CLIENTID" "-d" "client_secret=$SCM_SECRET")
     RESTSH_CURL_OPTS+=("-d" "grant_type=client_credentials")
     local RESULT
     if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "https://auth.sso.sectigo.com/auth/realms/apiclients/protocol/openid-connect/token")
@@ -46,5 +46,5 @@ sectigo.auth.login() {
     return 1
 }
 
-export -f sectigo.auth.login
+export -f scm.auth.login
 

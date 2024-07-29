@@ -19,7 +19,7 @@ then
     exit 1
 fi
 
-OPENAPI_FILE="$RESTSH_PATH/autocomplete/sectigo/openapi.json"
+OPENAPI_FILE="$RESTSH_PATH/autocomplete/scm/openapi.json"
 
 # Fetch OpenAPI File
 OPENAPI_URI="https://admin.enterprise.sectigo.com/api/v3/api-docs"
@@ -47,8 +47,8 @@ METHODS=(DELETE GET PUT POST)
 # Remove old files
 for F in "${METHODS[@]}"
 do
-    rm -f "$RESTSH_PATH/autocomplete/sectigo/method_${F}"
-    rm -f "$RESTSH_PATH/autocomplete/sectigo/method_${F}.tmp"
+    rm -f "$RESTSH_PATH/autocomplete/scm/method_${F}"
+    rm -f "$RESTSH_PATH/autocomplete/scm/method_${F}.tmp"
 done
 
 echo "Generating completion files"
@@ -58,16 +58,16 @@ do
     do
         case "$METHOD" in
             delete)
-                echo "${URI}" >> "$RESTSH_PATH/autocomplete/sectigo/method_DELETE.tmp"
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_DELETE.tmp"
             ;;
             get)
-                echo "${URI}" >> "$RESTSH_PATH/autocomplete/sectigo/method_GET.tmp"
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_GET.tmp"
             ;;
             put)
-                echo "${URI}" >> "$RESTSH_PATH/autocomplete/sectigo/method_PUT.tmp"
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_PUT.tmp"
             ;;
             post)
-                echo "${URI}" >> "$RESTSH_PATH/autocomplete/sectigo/method_POST.tmp"
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_POST.tmp"
             ;;
         esac
     done < <($RESTSH_JQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
@@ -76,8 +76,8 @@ done < <($RESTSH_JQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
 echo "Sorting completion files"
 for F in "${METHODS[@]}"
 do
-    sort -u "$RESTSH_PATH/autocomplete/sectigo/method_${F}.tmp" > "$RESTSH_PATH/autocomplete/sectigo/method_${F}"
-    rm -f "$RESTSH_PATH/autocomplete/sectigo/method_${F}.tmp"
+    sort -u "$RESTSH_PATH/autocomplete/scm/method_${F}.tmp" > "$RESTSH_PATH/autocomplete/scm/method_${F}"
+    rm -f "$RESTSH_PATH/autocomplete/scm/method_${F}.tmp"
 done
 
 echo "Generating help file"
@@ -94,4 +94,4 @@ echo "Generating help file"
             esac
         done < <($RESTSH_JQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
     done < <($RESTSH_JQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
-} > "$RESTSH_PATH/autocomplete/sectigo/openapi_help.txt"
+} > "$RESTSH_PATH/autocomplete/scm/openapi_help.txt"
