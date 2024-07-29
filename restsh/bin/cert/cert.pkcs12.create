@@ -21,9 +21,10 @@ fi
 
 if [ $# -lt 3 ]
 then
+    exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <pkcs12 file> <cert> <key> [ca]"
-    exit 1
+    exit 2
 fi
 
 OPENSSL_OPTS=("pkcs12" "-export" "-out" "$1" "-in" "$2" "-inkey" "$3")
