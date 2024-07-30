@@ -22,3 +22,6 @@ then
         . "$RESTSH_PATH/autocomplete/gitlab/autocomplete.sh"
     fi
 fi
+
+# Prefix for the GitLab REST API
+export GITLAB_API_PREFIX="/api/v4"

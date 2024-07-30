@@ -24,3 +24,6 @@ then
         . "$RESTSH_PATH/autocomplete/f5/autocomplete.sh"
     fi
 fi
+
+# Prefix for the F5 REST API
+export F5_API_PREFIX="/mgmt"
