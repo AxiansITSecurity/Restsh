@@ -24,3 +24,6 @@ then
         . "$RESTSH_PATH/autocomplete/next/autocomplete.sh"
     fi
 fi
+
+# Prefix for the F5 Next REST API
+export NEXT_API_PREFIX="/api/v1"
