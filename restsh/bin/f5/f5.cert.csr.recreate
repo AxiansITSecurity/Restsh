@@ -3,9 +3,10 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-08-01
 
-# Shortdesc: Creates a CSR for a key pair.
+# Shortdesc: Re-creates a certificate signing request.
 # Desc:
-# Creates a CSR for a key pair.
+# Re-creates a certificate signing request.
+# https://community.f5.com/kb/codeshare/generate-private-key-w-csr-via-icontrol-rest/283528
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,10 +23,12 @@ fi
 usage() {
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") --cn=<common name> <key file> <csr file>"
+    echo "Usage: $(basename "$0") --key=<key> --cn=<common name>"
     echo "Options:"
     echo -e "\t-a <dns alternative name>"
     echo -e "\t-i <ip alternative name>"
+    echo -e "\t--partition=<f5 partition>, default: Common"
+    echo -e "\t--key=<key>"
     echo -e "\t--cn=<common name>"
     echo -e "\t--org=<organization>"
     echo -e "\t--ou=<organizational unit>"
@@ -36,6 +39,8 @@ usage() {
 }
 
 # Get options
+PARTITION="Common"
+KEY=""
 CN=""
 ORG=""
 OU=""
@@ -54,8 +59,10 @@ do
         OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
     fi
     case "$OPTION" in
-        a) ALT_NAMES+=("$OPTARG") ;;
-        i) ALT_IPS+=("$OPTARG") ;;
+        a) ALT_NAMES+=("DNS:$OPTARG") ;;
+        i) ALT_IPS+=("IP:$OPTARG") ;;
+        partition) PARTITION="$OPTARG" ;;
+        key) KEY="$OPTARG" ;;
         cn) CN="$OPTARG" ;;
         org) ORG="$OPTARG" ;;
         ou) OU="$OPTARG" ;;
@@ -67,53 +74,37 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${CN}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${CN}" ] || [ -z "${KEY}" ] || [ "$OPTION" == "invalid" ]
 then
     usage
 fi
 
-KEY_FILE=$1
-CSR_FILE=$2
-CSR_CONFIG="$RESTSH_TMP/csr.cnf"
+f5.cert.csr.delete "/$PARTITION/$KEY"
 
-cat > "$CSR_CONFIG" << EOL
-[req]
-distinguished_name = req_distinguished_name
-req_extensions = v3_req
-prompt = no
-[req_distinguished_name]
-CN = $CN
-EOL
+SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 
-[ -n "$ORG" ] && echo "O = $ORG" >> "$CSR_CONFIG"
-[ -n "$OU" ] && echo "OU = $OU" >> "$CSR_CONFIG"
-[ -n "$CITY" ] && echo "L = $CITY" >> "$CSR_CONFIG"
-[ -n "$STATE" ] && echo "ST = $STATE" >> "$CSR_CONFIG"
-[ -n "$COUNTRY" ] && echo "C = $COUNTRY" >> "$CSR_CONFIG"
-
-cat >> "$CSR_CONFIG" << EOL
-[v3_req]
-basicConstraints = CA:FALSE
-keyUsage = digitalSignature, keyEncipherment, dataEncipherment
-extendedKeyUsage = serverAuth
-subjectAltName = @alt_names
-[alt_names]
-EOL
-
-I=0
-for ALT_NAME in "${ALT_NAMES[@]}"
-do
-    echo "DNS.$I = $ALT_NAME" >> "$CSR_CONFIG"
-    I=$((I+1))
-done
-I=0
-for ALT_IP in "${ALT_IPS[@]}"
-do
-    echo "IP.$I = $ALT_IP" >> "$CSR_CONFIG"
-    I=$((I+1))
-done
-
-openssl req -new -key "$KEY_FILE" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE" -batch
-rm -f "$CSR_CONFIG"
-
-exit 0
+if JQ -n --arg cn "$CN" \
+    --arg name "$KEY" \
+    --arg key "/$PARTITION/$KEY" \
+    --arg org "$ORG" \
+    --arg ou "$OU" \
+    --arg city "$CITY" \
+    --arg state "$STATE" \
+    --arg country "$COUNTRY" \
+    --arg san "$SAN" \
+    '{
+        name: $name,
+        commonName: $cn,
+        key: $key,
+        organization: $org,
+        ou: $ou,
+        city: $city,
+        state: $state,
+        country: $country,
+        "subject-alternative-name": $san
+    }' | POST "/mgmt/tm/sys/crypto/csr"
+then
+    f5.cert.csr.get "${CN}.key"
+else
+    exit 1
+fi

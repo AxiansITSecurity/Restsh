@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-08-01
 
 # Shortdesc: Creates a key and a certificate signing request.
 # Desc:
@@ -20,18 +20,38 @@ then
     exit 1
 fi
 
-# Defaults
-FQDN=""
+usage() {
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") --cn=<common name>"
+    echo "Options:"
+    echo -e "\t-a <dns alternative name>"
+    echo -e "\t-i <ip alternative name>"
+    echo -e "\t--partition=<f5 partition>, default: Common"
+    echo -e "\t--keysize=<keysize>, default: 4096"
+    echo -e "\t--keytype=<f5 partition>, default: rsa-private"
+    echo -e "\t--cn=<common name>"
+    echo -e "\t--org=<organization>"
+    echo -e "\t--ou=<organizational unit>"
+    echo -e "\t--city=<city>"
+    echo -e "\t--state=<state>"
+    echo -e "\t--country=<country>"
+    exit 2
+}
+
+# Get options
 PARTITION="Common"
 KEYSIZE=4096
 KEYTYPE="rsa-private"
+CN=""
 ORG=""
 OU=""
 CITY=""
 STATE=""
 COUNTRY=""
-SAN=""
-while getopts ':-:' OPTION
+ALT_NAMES=()
+ALT_IPS=()
+while getopts ':-:a:i:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then
@@ -41,10 +61,12 @@ do
         OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
     fi
     case "$OPTION" in
-        fqdn) FQDN="$OPTARG" ;;
+        a) ALT_NAMES+=("DNS:$OPTARG") ;;
+        i) ALT_IPS+=("IP:$OPTARG") ;;
         partition) PARTITION="$OPTARG" ;;
         keysize) KEYSIZE="$OPTARG" ;;
         keytype) KEYTYPE="$OPTARG" ;;
+        cn) CN="$OPTARG" ;;
         org) ORG="$OPTARG" ;;
         ou) OU="$OPTARG" ;;
         city) CITY="$OPTARG" ;;
@@ -55,30 +77,15 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "$FQDN" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${CN}" ] || [ "$OPTION" == "invalid" ]
 then
-    restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") --fqdn <fqdn> [<options>]" 1>&2
-    echo "Options:" 1>&2
-    echo -e "\t--partition <partition>, default: Common" 1>&2
-    echo -e "\t--keysize <keysize>, default: 4096" 1>&2
-    echo -e "\t--keytype <keytype>, default: rsa-private" 1>&2
-    echo -e "\t--org <organization>" 1>&2
-    echo -e "\t--ou <organizational unit>" 1>&2
-    echo -e "\t--city <city>" 1>&2
-    echo -e "\t--state <state>" 1>&2
-    echo -e "\t--country <country>" 1>&2
-    echo -e "\t--san <subject alternative name>, default: DNS:<fqdn>" 1>&2
-    exit 1
+    usage
 fi
 
-if [ -z "$SAN" ]
-then
-    SAN="DNS:$FQDN"
-fi
+SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 
-if ! $RESTSH_JQ -n --arg name "${FQDN}.key" \
-    --arg fqdn "$FQDN" \
+if JQ -n --arg name "${CN}.key" \
+    --arg cn "$CN" \
     --arg partition "$PARTITION" \
     --argjson keysize "$KEYSIZE" \
     --arg keytype "$KEYTYPE" \
@@ -90,11 +97,11 @@ if ! $RESTSH_JQ -n --arg name "${FQDN}.key" \
     --arg san "$SAN" \
     '{
         "name": $name,
-        "commonName": $fqdn,
+        "commonName": $cn,
         "partition": $partition,
         "keySize": $keysize,
         "keyType": $keytype,
-        "options": [{"gen-csr": $fqdn}],
+        "options": [{"gen-csr": $cn}],
         "organization": $org,
         "ou": $ou,
         "city": $city,
@@ -103,7 +110,7 @@ if ! $RESTSH_JQ -n --arg name "${FQDN}.key" \
         "subject-alternative-name": $san
     }' | POST "/mgmt/tm/sys/crypto/key"
 then
+    f5.cert.csr.get "${CN}.key"
+else
     exit 1
 fi
-
-exit 0

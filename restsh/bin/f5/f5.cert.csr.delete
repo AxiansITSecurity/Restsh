@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-08-01
 
-# Shortdesc: Deletes traffic management certificates on the F5.
+# Shortdesc: Deletes a csr on the F5.
 # Desc:
-# Deletes traffic management certificates on the F5.
+# Deletes a csr on the F5.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -26,6 +26,6 @@ then
     exit 2
 fi
 
-F5_CERT_NAME=${1//\//\~}
+F5_CSR_NAME=${1//\//\~}
 
-DELETE "/mgmt/tm/sys/file/ssl-cert/$F5_CERT_NAME"
+DELETE "/mgmt/tm/sys/crypto/csr/$F5_CSR_NAME"
