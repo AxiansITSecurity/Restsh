@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-31
+
+# Shortdesc: Lists device groups.
+# Desc:
+# Lists device groups.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-r]"
+    echo -e "\tUse -r for raw output."
+    exit 1
+fi
+
+if [ "$RAW" -eq 1 ]
+then
+    GET -r /mgmt/tm/cm/device-group | JQ -r
+else
+    GET /mgmt/tm/cm/device-group | JQ -r ".items[] | [.name,.type,.networkFailover,.autoSync,.asmSync] | @tsv" \
+        | COLUMN -o "|" -N "Device Group,Type,Network Failover,Auto Sync,ASM Sync"
+fi
