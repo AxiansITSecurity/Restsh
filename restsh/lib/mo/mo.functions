@@ -98,7 +98,7 @@ MO_CSV_GET_FIRST() {
 # Usage: {{MO_CSV_GET_LAST {{.}}}}
 MO_CSV_GET_LAST() {
     local VALUE=${MO_FUNCTION_ARGS[0]}
-    printf "%s" "${VALUE#*,}"
+    printf "%s" "${VALUE##*,}"
 }
 
 # Returns an entry from a comma separated list
