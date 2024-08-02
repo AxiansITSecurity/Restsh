@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-08-01
+# Date: 2024-08-02
 
 # Shortdesc: Creates a CSR for a key pair.
 # Desc:
@@ -67,7 +67,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${CN}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${CN}" ] || [ "$OPTION" = "invalid" ]
 then
     usage
 fi
@@ -113,7 +113,14 @@ do
     I=$((I+1))
 done
 
-openssl req -new -key "$KEY_FILE" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE" -batch
-rm -f "$CSR_CONFIG"
+OPENSSL_OPTS=()
+[ -n "${KEY_PASS+x}" ] && OPENSSL_OPTS+=("-passin" "env:KEY_PASS")
 
-exit 0
+if openssl req -new -key "$KEY_FILE" "${OPENSSL_OPTS[@]}" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE"
+then
+    rm -f "$CSR_CONFIG"
+    exit 0
+else
+    rm -f "$CSR_CONFIG"
+    exit 1
+fi

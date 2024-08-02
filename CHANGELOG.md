@@ -4,6 +4,7 @@
 
 # tbd
 
+- Feat: Overhaul private key management
 - Feat: Overhaul CSR management
 
 ***

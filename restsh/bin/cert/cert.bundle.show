@@ -29,4 +29,3 @@ fi
 
 CHAIN_FILE=$1
 openssl crl2pkcs7 -nocrl -certfile "$CHAIN_FILE" | openssl pkcs7 -print_certs -noout
-exit 0

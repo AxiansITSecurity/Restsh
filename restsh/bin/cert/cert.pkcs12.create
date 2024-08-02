@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-08-02
 
-# Shortdesc: Creates a pkcs12 file with cert, key and optional chain.
+# Shortdesc: Creates a pkcs12 file with private key, certificate and optional chain.
 # Desc:
-# Creates a pkcs12 file with cert, key and optional chain.
+# Creates a pkcs12 file with private key, certificate and optional chain.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,7 +23,9 @@ if [ $# -lt 3 ]
 then
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <pkcs12 file> <cert> <key> [ca]"
+    echo "Usage: $(basename "$0") <pkcs12 file> <cert> <key> [chain]"
+    echo "Set environment KEY_PASS or this script asks for the passphrase."
+    echo "Set environment PKCS12_PASS or this script asks for the passphrase."
     exit 2
 fi
 
@@ -32,6 +34,8 @@ if [ -n "${4+x}" ]
 then
     OPENSSL_OPTS+=("-chain" "-CAfile" "$4")
 fi
-openssl "${OPENSSL_OPTS[@]}"
 
-exit 0
+[ -n "${KEY_PASS+x}" ] && OPENSSL_OPTS+=("-passin" "env:KEY_PASS")
+[ -n "${PKCS12_PASS+x}" ] && OPENSSL_OPTS+=("-passout" "env:PKCS12_PASS")
+
+openssl "${OPENSSL_OPTS[@]}"

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-08-02
 
-# Shortdesc: Extracts a pkcs12 file, key is encrypted with pkcs12 password
+# Shortdesc: Extracts the private key, certificate and chain from a pkcs12 file.
 # Desc:
-# Extracts a pkcs12 file, key is encrypted with pkcs12 password
+# Extracts the private key, certificate and chain from a pkcs12 file.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -18,30 +18,23 @@ then
     exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <pkcs12 file>"
+    echo "Set environment KEY_PASS or this script asks for the passphrase."
+    echo "Set environment PKCS12_PASS or this script asks for the passphrase."
     exit 2
 fi
 
 PKCS12_FILE=$1
-trap "rm -f .pkcs12_password .key_password" EXIT
-
-read -r -s -p "Password: " PKCS12_PASS
-printf "\n"
-
-touch .pkcs12_password
-chmod 600 .pkcs12_password
-printf "%s" "$PKCS12_PASS" > .pkcs12_password
-
-touch .key_password
-chmod 600 .key_password
-cat .pkcs12_password > .key_password
-
 FILENAME=$(basename "$PKCS12_FILE")
 FILENAME=${FILENAME%.*}
 
-openssl pkcs12 -in "$PKCS12_FILE" -passin file:.pkcs12_password -passout file:.key_password -nocerts \
-    | sed -ne '/-BEGIN ENCRYPTED PRIVATE KEY-/,/-END ENCRYPTED PRIVATE KEY-/p' > "$FILENAME.key.pem"
-openssl pkcs12 -in "$PKCS12_FILE" -passin file:.pkcs12_password -nokeys -clcerts \
+OPENSSL_OPTS=()
+[ -n "${PKCS12_PASS+x}" ] && OPENSSL_OPTS+=("-passin" "env:PKCS12_PASS")
+
+openssl pkcs12 "${OPENSSL_OPTS[@]}" -in "$PKCS12_FILE" -nokeys -clcerts \
     | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "$FILENAME.cert.pem"
-openssl pkcs12 -in "$PKCS12_FILE" -passin file:.pkcs12_password -nokeys -cacerts \
+openssl pkcs12 "${OPENSSL_OPTS[@]}" -in "$PKCS12_FILE" -nokeys -cacerts \
     | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "$FILENAME.chain.pem"
-exit 0
+
+[ -n "${KEY_PASS+x}" ] && OPENSSL_OPTS+=("-passout" "env:KEY_PASS")
+openssl pkcs12 "${OPENSSL_OPTS[@]}" -in "$PKCS12_FILE" -nocerts \
+    | sed -ne '/-BEGIN ENCRYPTED PRIVATE KEY-/,/-END ENCRYPTED PRIVATE KEY-/p' > "$FILENAME.key.pem"
