@@ -47,5 +47,5 @@ then
     exit 1
 fi
 
-# Download policy in chunks
+# Download file in chunks
 restsh.download "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" "$TOTAL_SIZE" "$FILENAME"
