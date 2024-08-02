@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-08-01
 
-# Shortdesc: Re-creates a certificate signing request.
+# Shortdesc: Creates a certificate signing request from existing key.
 # Desc:
-# Re-creates a certificate signing request.
+# Creates a certificate signing request from existing key.
 # https://community.f5.com/kb/codeshare/generate-private-key-w-csr-via-icontrol-rest/283528
 
 # Strict error handling
@@ -78,8 +78,6 @@ if [ -z "${CN}" ] || [ -z "${KEY}" ] || [ "$OPTION" == "invalid" ]
 then
     usage
 fi
-
-f5.cert.csr.delete "/$PARTITION/$KEY"
 
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 

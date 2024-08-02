@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-08-02
 
 # Shortdesc:Lists traffic management certificates on the F5.
 # Desc:
@@ -19,9 +19,26 @@ then
     exit 1
 fi
 
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
 if ! CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
 then
     exit 1
+fi
+
+if [ "$RAW" -eq 1 ]
+then
+    echo "$CERTLIST"
+    exit 0
 fi
 
 NEXTMONTH=$(date -d "next month" +%s)
@@ -43,5 +60,3 @@ NOW=$(date +%s)
         fi
     done
 } | COLUMN -o "|" -N "Certificate,State,Expiration"
-
-exit 0
