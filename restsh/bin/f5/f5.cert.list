@@ -30,10 +30,16 @@ do
 done
 shift "$((OPTIND -1))"
 
-if ! CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
+if [ "$OPTION" = "invalid" ]
 then
-    exit 1
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-r]"
+    echo -e "\tUse -r for raw output."
+    exit 2
 fi
+
+CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
 
 if [ "$RAW" -eq 1 ]
 then

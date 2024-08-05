@@ -6,6 +6,7 @@
 
 - Feat: Overhaul private key management
 - Feat: Overhaul CSR management
+- Feat: Add f5.cert.expire
 
 ***
 
