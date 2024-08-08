@@ -26,6 +26,7 @@ usage() {
     echo "Usage: $(basename "$0") --key=<key> --cn=<common name>"
     echo "Options:"
     echo -e "\t-a <dns alternative name>"
+    echo -e "\t-c <config file>"
     echo -e "\t-i <ip alternative name>"
     echo -e "\t--partition=<f5 partition>, default: Common"
     echo -e "\t--key=<key>"
@@ -49,7 +50,8 @@ STATE=""
 COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
-while getopts ':-:a:i:' OPTION
+CONFIG_FILE=""
+while getopts ':-:a:i:c:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then
@@ -61,6 +63,7 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
+        c) CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
         key) KEY="$OPTARG" ;;
         cn) CN="$OPTARG" ;;
@@ -78,6 +81,8 @@ if [ -z "${CN}" ] || [ -z "${KEY}" ] || [ "$OPTION" == "invalid" ]
 then
     usage
 fi
+
+[ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 
