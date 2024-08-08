@@ -69,6 +69,6 @@ $RESTSH_JQ -n --argjson org_id "$ORG_ID" \
         externalRequester: "",
         customFields: [],
         csr: $csr
-    }' | tee tmp/out.txt | POST "/api/ssl/v1/enroll"
+    }' | POST "/api/ssl/v1/enroll"
 
 exit 0
