@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-29
+# Date: 2024-08-02
 
 # Shortdesc: Creates a CSR for a key pair.
 # Desc:
@@ -22,41 +22,52 @@ fi
 usage() {
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <key file> <csr file>"
-    echo -e "\t-a\tDNS Alternative Name"
-    echo -e "\t-c\tCountry"
-    echo -e "\t-i\tIP Alternative Name"
-    echo -e "\t-l\tLocality or City"
-    echo -e "\t-n\tCommon Name"
-    echo -e "\t-o\tOrganization"
-    echo -e "\t-p\tProvince or State"
+    echo "Usage: $(basename "$0") --cn=<common name> <key file> <csr file>"
+    echo "Options:"
+    echo -e "\t-a <dns alternative name>"
+    echo -e "\t-i <ip alternative name>"
+    echo -e "\t--cn=<common name>"
+    echo -e "\t--org=<organization>"
+    echo -e "\t--ou=<organizational unit>"
+    echo -e "\t--city=<city>"
+    echo -e "\t--state=<state>"
+    echo -e "\t--country=<country>"
     exit 2
 }
 
 # Get options
-ORG=""
-COUNTRY=""
-CITY=""
-PROVINCE=""
 CN=""
+ORG=""
+OU=""
+CITY=""
+STATE=""
+COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
-while getopts ':a:c:i:l:n:o:p:' OPTION
+while getopts ':-:a:i:' OPTION
 do
+    if [ "$OPTION" = "-" ]
+    then
+        # long option: reformulate OPTION and OPTARG
+        OPTION="${OPTARG%%=*}"        # extract long option name
+        OPTARG="${OPTARG#"$OPTION"}"  # extract long option argument (may be empty)
+        OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
+    fi
     case "$OPTION" in
         a) ALT_NAMES+=("$OPTARG") ;;
-        c) COUNTRY=$OPTARG ;;
         i) ALT_IPS+=("$OPTARG") ;;
-        l) CITY=$OPTARG ;;
-        n) CN=$OPTARG ;;
-        o) ORG=$OPTARG ;;
-        p) PROVINCE=$OPTARG ;;
+        cn) CN="$OPTARG" ;;
+        org) ORG="$OPTARG" ;;
+        ou) OU="$OPTARG" ;;
+        city) CITY="$OPTARG" ;;
+        state) STATE="$OPTARG" ;;
+        country) COUNTRY="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${CN}" ] || [ "$OPTION" = "invalid" ]
 then
     usage
 fi
@@ -64,7 +75,6 @@ fi
 KEY_FILE=$1
 CSR_FILE=$2
 CSR_CONFIG="$RESTSH_TMP/csr.cnf"
-[ -z "$CN" ] && CN="${ALT_NAMES[0]}"
 
 cat > "$CSR_CONFIG" << EOL
 [req]
@@ -75,10 +85,11 @@ prompt = no
 CN = $CN
 EOL
 
-[ -n "$CITY" ] && echo "L = $CITY" >> "$CSR_CONFIG"
-[ -n "$COUNTRY" ] && echo "C = $COUNTRY" >> "$CSR_CONFIG"
 [ -n "$ORG" ] && echo "O = $ORG" >> "$CSR_CONFIG"
-[ -n "$PROVINCE" ] && echo "ST = $PROVINCE" >> "$CSR_CONFIG"
+[ -n "$OU" ] && echo "OU = $OU" >> "$CSR_CONFIG"
+[ -n "$CITY" ] && echo "L = $CITY" >> "$CSR_CONFIG"
+[ -n "$STATE" ] && echo "ST = $STATE" >> "$CSR_CONFIG"
+[ -n "$COUNTRY" ] && echo "C = $COUNTRY" >> "$CSR_CONFIG"
 
 cat >> "$CSR_CONFIG" << EOL
 [v3_req]
@@ -102,7 +113,14 @@ do
     I=$((I+1))
 done
 
-openssl req -new -key "$KEY_FILE" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE" -batch
-rm -f "$CSR_CONFIG"
+OPENSSL_OPTS=()
+[ -n "${KEY_PASS+x}" ] && OPENSSL_OPTS+=("-passin" "env:KEY_PASS")
 
-exit 0
+if openssl req -new -key "$KEY_FILE" "${OPENSSL_OPTS[@]}" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE"
+then
+    rm -f "$CSR_CONFIG"
+    exit 0
+else
+    rm -f "$CSR_CONFIG"
+    exit 1
+fi

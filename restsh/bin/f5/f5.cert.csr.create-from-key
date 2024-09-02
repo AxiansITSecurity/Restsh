@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-08-01
 
-# Shortdesc: Creates a key and a certificate signing request.
+# Shortdesc: Creates a certificate signing request from existing key.
 # Desc:
-# Creates a key and a certificate signing request.
+# Creates a certificate signing request from existing key.
 # https://community.f5.com/kb/codeshare/generate-private-key-w-csr-via-icontrol-rest/283528
 
 # Strict error handling
@@ -23,13 +23,13 @@ fi
 usage() {
     exec 1>&2
     restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") --cn=<common name>"
+    echo "Usage: $(basename "$0") --key=<key> --cn=<common name>"
     echo "Options:"
     echo -e "\t-a <dns alternative name>"
+    echo -e "\t-c <config file>"
     echo -e "\t-i <ip alternative name>"
     echo -e "\t--partition=<f5 partition>, default: Common"
-    echo -e "\t--keysize=<keysize>, default: 4096"
-    echo -e "\t--keytype=<f5 partition>, default: rsa-private"
+    echo -e "\t--key=<key>"
     echo -e "\t--cn=<common name>"
     echo -e "\t--org=<organization>"
     echo -e "\t--ou=<organizational unit>"
@@ -41,8 +41,7 @@ usage() {
 
 # Get options
 PARTITION="Common"
-KEYSIZE=4096
-KEYTYPE="rsa-private"
+KEY=""
 CN=""
 ORG=""
 OU=""
@@ -51,7 +50,8 @@ STATE=""
 COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
-while getopts ':-:a:i:' OPTION
+CONFIG_FILE=""
+while getopts ':-:a:i:c:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then
@@ -63,9 +63,9 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
+        c) CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
-        keysize) KEYSIZE="$OPTARG" ;;
-        keytype) KEYTYPE="$OPTARG" ;;
+        key) KEY="$OPTARG" ;;
         cn) CN="$OPTARG" ;;
         org) ORG="$OPTARG" ;;
         ou) OU="$OPTARG" ;;
@@ -77,18 +77,18 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${CN}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${CN}" ] || [ -z "${KEY}" ] || [ "$OPTION" == "invalid" ]
 then
     usage
 fi
 
+[ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
+
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 
-if JQ -n --arg name "${CN}.key" \
-    --arg cn "$CN" \
-    --arg partition "$PARTITION" \
-    --argjson keysize "$KEYSIZE" \
-    --arg keytype "$KEYTYPE" \
+if JQ -n --arg cn "$CN" \
+    --arg name "$KEY" \
+    --arg key "/$PARTITION/$KEY" \
     --arg org "$ORG" \
     --arg ou "$OU" \
     --arg city "$CITY" \
@@ -96,21 +96,18 @@ if JQ -n --arg name "${CN}.key" \
     --arg country "$COUNTRY" \
     --arg san "$SAN" \
     '{
-        "name": $name,
-        "commonName": $cn,
-        "partition": $partition,
-        "keySize": $keysize,
-        "keyType": $keytype,
-        "options": [{"gen-csr": $cn}],
-        "organization": $org,
-        "ou": $ou,
-        "city": $city,
-        "state": $state,
-        "country": $country,
+        name: $name,
+        commonName: $cn,
+        key: $key,
+        organization: $org,
+        ou: $ou,
+        city: $city,
+        state: $state,
+        country: $country,
         "subject-alternative-name": $san
-    }' | POST "/mgmt/tm/sys/crypto/key"
+    }' | POST "/mgmt/tm/sys/crypto/csr"
 then
-    f5.cert.csr.get "${CN}.key"
+    f5.cert.csr.get "${CN}"
 else
     exit 1
 fi

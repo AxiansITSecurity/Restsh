@@ -42,4 +42,3 @@ for CERT in "${TMP_DIR}"/cert*; do
     fi
 done
 echo "Saved certificates: $TMP_DIR"
-exit 0

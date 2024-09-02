@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-08-01
 
 # Shortdesc: Deletes traffic management certificates on the F5.
 # Desc:
@@ -23,16 +23,9 @@ then
     exec 1>&2
     restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <name>"
-    exit 1
+    exit 2
 fi
 
 F5_CERT_NAME=${1//\//\~}
 
-if ! OUTPUT=$(DELETE "/mgmt/tm/sys/file/ssl-cert/$F5_CERT_NAME")
-then
-    echo_err "Failed to delete certificate"
-    echo_err "$OUTPUT"
-    exit 1
-fi
-
-exit 0
+DELETE "/mgmt/tm/sys/file/ssl-cert/$F5_CERT_NAME"
