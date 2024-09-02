@@ -67,7 +67,7 @@ fi
 if [ -z "${RESTSH_MODULES+x}" ]
 then
     # Include all modules
-    RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "sectigo")
+    RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
 fi
 
 # Include enabled modules by setting path and including functions
