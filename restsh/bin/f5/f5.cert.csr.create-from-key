@@ -107,7 +107,7 @@ if JQ -n --arg cn "$CN" \
         "subject-alternative-name": $san
     }' | POST "/mgmt/tm/sys/crypto/csr"
 then
-    f5.cert.csr.get "${CN}.key"
+    f5.cert.csr.get "${CN}"
 else
     exit 1
 fi
