@@ -192,9 +192,9 @@
 /mgmt/tm/apm/swg-scheme
 /mgmt/tm/apm/url-filter
 /mgmt/tm/asm/
+/mgmt/tm/asm/advanced-settings
 /mgmt/tm/asm/attack-types
 /mgmt/tm/asm/events
-/mgmt/tm/asm/events/
 /mgmt/tm/asm/file-transfer/downloads
 /mgmt/tm/asm/file-transfer/uploads
 /mgmt/tm/asm/policies
