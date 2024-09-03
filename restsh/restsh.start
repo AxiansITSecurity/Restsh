@@ -40,7 +40,7 @@ else
             [ "$NAME" = ".restsh-config.dist.next" ] && continue
             [ "$NAME" = ".restsh-config.dist" ] && continue
             CONFIG_FILES+=("$NAME" "")
-        done < <(find ./ -maxdepth 1 -name .restsh-config\* -type f)
+        done < <(find ./ -maxdepth 1 -name .restsh-config\* -type f | sort)
         SELECT=$($WHIPTAIL --clear --backtitle "restsh" --noitem --menu "Choose configuration file" 0 80 0 -- "${CONFIG_FILES[@]}" 3>&1 1>&2 2>&3)
         export RESTSH_CONFIG="$SELECT"
     fi
