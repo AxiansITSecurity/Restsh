@@ -331,7 +331,7 @@ OPTIONS() {
         echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
-    ARGS+=("GET" "$1")
+    ARGS+=("OPTIONS" "$1")
     restsh.http "${ARGS[@]}"
 }
 
