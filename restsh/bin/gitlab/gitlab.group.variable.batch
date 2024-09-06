@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-09-06
+
+# Shortdesc: Creates GitLab CI/CD group variables from a csv.
+# Desc:
+# Creates GitLab CI/CD group variables from a csv.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ $# -ne 2 ]
+then
+  exec 1>&2
+  restsh.help.shortdesc.get "$0"
+  echo "Usage: $(basename "$0") <group id> <csv>"
+  exit 1
+fi
+
+GROUP=$1
+CSV=$2
+
+while IFS="," read -r KEY VALUE MASKED RAW DESC
+do
+    OPTS=()
+    [ "$MASKED" = "true" ] && OPTS+=("-m")
+    [ "$RAW" = "false" ] && OPTS+=("-e")
+    VALUE=${VALUE//__GROUP_NAME__/$GROUP_NAME}
+    VALUE=${VALUE//__GITLAB_HOST__/$RESTSH_HOST}
+    gitlab.group.variable.create "${OPTS[@]}" -- "$GROUP" "$KEY" "$VALUE" "$DESC"
+done < <(grep -v -P '^(#|\s*$)' "$CSV")
+
+exit 0
