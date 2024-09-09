@@ -69,9 +69,10 @@ See [USAGE.md](USAGE.md)
 | Prefix | Description |
 | ------ | ----------- |
 | cert | Certificate handling |
-| f5 | F5 BIG-IP Classic |
-| next | F5 BIG-IP Next |
-| gitlab | GitLab |
+| f5 | [F5 BIG-IP Classic](README.F5.md) |
+| gitlab | [GitLab](README.gitlab.md) |
+| next | [F5 BIG-IP Next](README.F5next.md) |
+| scm | [Sectigo Cert Manager](README.scm.md) |
 
 ## Dependencies
 
