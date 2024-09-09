@@ -94,7 +94,7 @@ SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 
 if [ "$KEYTYPE" = "rsa-private" ]
 then
-    JQ -n --arg name "${CN}.key" \
+    JQ -n --arg name "${CN}" \
         --arg cn "$CN" \
         --arg partition "$PARTITION" \
         --arg keysize "$KEYSIZE" \
@@ -120,7 +120,7 @@ then
             "subject-alternative-name": $san
         }' | POST "/mgmt/tm/sys/crypto/key"
 else
-    JQ -n --arg name "${CN}.key" \
+    JQ -n --arg name "${CN}" \
         --arg cn "$CN" \
         --arg partition "$PARTITION" \
         --arg keytype "$KEYTYPE" \
