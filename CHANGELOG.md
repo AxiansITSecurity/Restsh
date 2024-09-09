@@ -4,6 +4,7 @@
 
 # tbd
 
+- Feat: Add f5.asm.advanced-settings functions
 - Feat: Sectigo Cert Manager Integration
 - Feat: More complete F5 REST API autocompletion
 - Feat: Overhaul private key management
