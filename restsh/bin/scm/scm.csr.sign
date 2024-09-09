@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-29
+
+# Shortdesc: Requests a certificate from SCM.
+# Desc:
+# Requests a certificate from SCM.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+usage() {
+    exec 1>&2
+    restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <csr file>"
+    echo -e "\t-a\tDNS Alternative Name"
+    echo -e "\t-o\tOrganization ID: GET /api/organization/v1"
+    echo -e "\t-p\tCertificate Profile ID: GET /api/ssl/v1/types"
+    echo -e "\t-t\tTerm, default 30 days - must be configured in the certificate profile"
+    exit 2
+}
+
+# Get options
+ORG_ID=""
+CERT_PROFILE=""
+TERM=30
+ALT_NAMES=()
+while getopts ':a:o:p:t:' OPTION
+do
+    case "$OPTION" in
+        a) ALT_NAMES+=("$OPTARG") ;;
+        o) ORG_ID=$OPTARG ;;
+        p) CERT_PROFILE=$OPTARG ;;
+        t) TERM=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+then
+    usage
+fi
+
+CSR_FILE=$1
+ALT_NAME=$(IFS=,; printf '%s' "${ALT_NAMES[*]}")
+
+$RESTSH_JQ -n --argjson org_id "$ORG_ID" \
+    --arg alt_names "$ALT_NAME" \
+    --argjson cert_profile "$CERT_PROFILE" \
+    --argjson term "$TERM" \
+    --rawfile csr "$CSR_FILE" \
+    '{
+        orgId: $org_id,
+        subjAltNames: $alt_names,
+        certType: $cert_profile,
+        term: $term,
+        comments: "",
+        externalRequester: "",
+        customFields: [],
+        csr: $csr
+    }' | POST "/api/ssl/v1/enroll"
+
+exit 0

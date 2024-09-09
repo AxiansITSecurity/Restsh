@@ -38,6 +38,7 @@ else
             [ "$NAME" = ".restsh-config.dist.f5" ] && continue
             [ "$NAME" = ".restsh-config.dist.gitlab" ] && continue
             [ "$NAME" = ".restsh-config.dist.next" ] && continue
+            [ "$NAME" = ".restsh-config.dist.sectigo" ] && continue
             [ "$NAME" = ".restsh-config.dist" ] && continue
             CONFIG_FILES+=("$NAME" "")
         done < <(find ./ -maxdepth 1 -name .restsh-config\* -type f | sort)

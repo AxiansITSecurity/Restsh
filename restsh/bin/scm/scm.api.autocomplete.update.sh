@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-26
+
+# Shortdesc: Updates the autocompletion and help from the OpenAPI file.
+# Desc:
+# Updates the autocompletion and help from the OpenAPI file.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+OPENAPI_FILE="$RESTSH_PATH/autocomplete/scm/openapi.json"
+
+# Fetch OpenAPI File
+OPENAPI_URI="https://admin.enterprise.sectigo.com/api/v3/api-docs"
+if ! curl -f -s --show-error -o "$OPENAPI_FILE" "$OPENAPI_URI"
+then
+    exit 1
+fi
+
+if [ ! -s "$OPENAPI_FILE" ]
+then
+    echo_err "Empty OpenAPI file"
+    echo "Download: https://admin.enterprise.sectigo.com/api/v3/api-docs"
+    echo "Save it to: $OPENAPI_FILE"
+    exit 1
+fi
+
+if ! $RESTSH_JQ "." "$OPENAPI_FILE" > /dev/null 2>&1
+then
+    echo_err "Invalid OpenAPI file"
+    exit 1
+fi
+
+METHODS=(DELETE GET PUT POST)
+
+# Remove old files
+for F in "${METHODS[@]}"
+do
+    rm -f "$RESTSH_PATH/autocomplete/scm/method_${F}"
+    rm -f "$RESTSH_PATH/autocomplete/scm/method_${F}.tmp"
+done
+
+echo "Generating completion files"
+while read -r URI
+do
+    while read -r METHOD
+    do
+        case "$METHOD" in
+            delete)
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_DELETE.tmp"
+            ;;
+            get)
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_GET.tmp"
+            ;;
+            put)
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_PUT.tmp"
+            ;;
+            post)
+                echo "${URI}" >> "$RESTSH_PATH/autocomplete/scm/method_POST.tmp"
+            ;;
+        esac
+    done < <($RESTSH_JQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
+done < <($RESTSH_JQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
+
+echo "Sorting completion files"
+for F in "${METHODS[@]}"
+do
+    sort -u "$RESTSH_PATH/autocomplete/scm/method_${F}.tmp" > "$RESTSH_PATH/autocomplete/scm/method_${F}"
+    rm -f "$RESTSH_PATH/autocomplete/scm/method_${F}.tmp"
+done
+
+echo "Generating help file"
+{
+    while read -r URI
+    do
+        while read -r METHOD
+        do
+            case "$METHOD" in
+                delete|get|put|post)
+                    DESC=$($RESTSH_JQ -r ".paths.\"$URI\".$METHOD.description" < "$OPENAPI_FILE")
+                    printf "%s %s\n\t%s\n" "$METHOD" "$URI" "$DESC"
+                ;;
+            esac
+        done < <($RESTSH_JQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
+    done < <($RESTSH_JQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
+} > "$RESTSH_PATH/autocomplete/scm/openapi_help.txt"

@@ -86,7 +86,7 @@ fi
 
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 
-if JQ -n --arg cn "$CN" \
+JQ -n --arg cn "$CN" \
     --arg name "$KEY" \
     --arg key "/$PARTITION/$KEY" \
     --arg org "$ORG" \
@@ -106,8 +106,3 @@ if JQ -n --arg cn "$CN" \
         country: $country,
         "subject-alternative-name": $san
     }' | POST "/mgmt/tm/sys/crypto/csr"
-then
-    f5.cert.csr.get "${CN}"
-else
-    exit 1
-fi
