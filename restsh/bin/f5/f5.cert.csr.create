@@ -28,9 +28,9 @@ usage() {
     echo -e "\t-a <dns alternative name>"
     echo -e "\t-i <ip alternative name>"
     echo -e "\t--partition=<f5 partition>, default: Common"
-    echo -e "\t--keysize=<keysize>, default: 4096, valid (ec-private): 256, 384, 521"
-    echo -e "\t                                    valid (rsa-private): 2048, 4096"
     echo -e "\t--keytype=<key type>, default: rsa-private, valid: rsa-private, ec-private"
+    echo -e "\t--keysize=<keysize>, default: 4096, valid: 2048, 4096"
+    echo -e "\t--curvename=<curve name>, default: prime256v1, valid: prime256v1, secp384r1, secp521r1"
     echo -e "\t--cn=<common name>"
     echo -e "\t--org=<organization>"
     echo -e "\t--ou=<organizational unit>"
@@ -44,6 +44,7 @@ usage() {
 PARTITION="Common"
 KEYSIZE=4096
 KEYTYPE="rsa-private"
+CURVENAME="prime256v1"
 CN=""
 ORG=""
 OU=""
@@ -52,6 +53,7 @@ STATE=""
 COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
+CONFIG_FILE=""
 while getopts ':-:a:i:' OPTION
 do
     if [ "$OPTION" = "-" ]
@@ -64,9 +66,11 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
+        c) CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
-        keysize) KEYSIZE="$OPTARG" ;;
         keytype) KEYTYPE="$OPTARG" ;;
+        keysize) KEYSIZE="$OPTARG" ;;
+        curvename) CURVENAME="$OPTARG" ;;
         cn) CN="$OPTARG" ;;
         org) ORG="$OPTARG" ;;
         ou) OU="$OPTARG" ;;
@@ -83,35 +87,62 @@ then
     usage
 fi
 
-SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
+[ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 
-if JQ -n --arg name "${CN}.key" \
-    --arg cn "$CN" \
-    --arg partition "$PARTITION" \
-    --argjson keysize "$KEYSIZE" \
-    --arg keytype "$KEYTYPE" \
-    --arg org "$ORG" \
-    --arg ou "$OU" \
-    --arg city "$CITY" \
-    --arg state "$STATE" \
-    --arg country "$COUNTRY" \
-    --arg san "$SAN" \
-    '{
-        "name": $name,
-        "commonName": $cn,
-        "partition": $partition,
-        "keySize": $keysize,
-        "keyType": $keytype,
-        "options": [{"gen-csr": $cn}],
-        "organization": $org,
-        "ou": $ou,
-        "city": $city,
-        "state": $state,
-        "country": $country,
-        "subject-alternative-name": $san
-    }' | POST "/mgmt/tm/sys/crypto/key"
+SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
+[ "$SAN" = " " ] && SAN="DNS:$CN"
+
+if [ "$KEYTYPE" = "rsa-private" ]
 then
-    f5.cert.csr.get "${CN}.key"
+    JQ -n --arg name "${CN}.key" \
+        --arg cn "$CN" \
+        --arg partition "$PARTITION" \
+        --arg keysize "$KEYSIZE" \
+        --arg keytype "$KEYTYPE" \
+        --arg org "$ORG" \
+        --arg ou "$OU" \
+        --arg city "$CITY" \
+        --arg state "$STATE" \
+        --arg country "$COUNTRY" \
+        --arg san "$SAN" \
+        '{
+            "name": $name,
+            "commonName": $cn,
+            "partition": $partition,
+            "keyType": $keytype,
+            "keySize": $keysize,
+            "options": [{"gen-csr": $cn}],
+            "organization": $org,
+            "ou": $ou,
+            "city": $city,
+            "state": $state,
+            "country": $country,
+            "subject-alternative-name": $san
+        }' | POST "/mgmt/tm/sys/crypto/key"
 else
-    exit 1
+    JQ -n --arg name "${CN}.key" \
+        --arg cn "$CN" \
+        --arg partition "$PARTITION" \
+        --arg keytype "$KEYTYPE" \
+        --arg curvename "$CURVENAME" \
+        --arg org "$ORG" \
+        --arg ou "$OU" \
+        --arg city "$CITY" \
+        --arg state "$STATE" \
+        --arg country "$COUNTRY" \
+        --arg san "$SAN" \
+        '{
+            "name": $name,
+            "commonName": $cn,
+            "partition": $partition,
+            "keyType": $keytype,
+            "curveName": $curvename,
+            "options": [{"gen-csr": $cn}],
+            "organization": $org,
+            "ou": $ou,
+            "city": $city,
+            "state": $state,
+            "country": $country,
+            "subject-alternative-name": $san
+        }' | POST "/mgmt/tm/sys/crypto/key"
 fi

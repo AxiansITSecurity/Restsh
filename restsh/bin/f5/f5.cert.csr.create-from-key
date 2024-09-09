@@ -85,6 +85,7 @@ fi
 [ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
+[ "$SAN" = " " ] && SAN="DNS:$CN"
 
 JQ -n --arg cn "$CN" \
     --arg name "$KEY" \
