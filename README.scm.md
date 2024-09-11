@@ -2,7 +2,7 @@
 
 ## Authentication
 
-SCM users OAuth2 based authentication. You must create a client id and client secret in SCM.
+SCM uses OAuth2 based authentication. You must create a client id and client secret in SCM.
 
 ### .restsh-config for token based authentication
 
