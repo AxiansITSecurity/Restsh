@@ -1,8 +1,8 @@
 {
     "disallowFileUploadOfExecutables" : false,
-    "isAllowed" : false,
+    "isAllowed" : true,
     "mandatoryBody" : false,
-    "metacharsOnUrlCheck" : false,
+    "metacharsOnUrlCheck" : true,
     "method" : "*",
     "name" : "{{VAR_ALLOWED_URL}}",
     "protocol" : "http",

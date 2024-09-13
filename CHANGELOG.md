@@ -2,6 +2,12 @@
 
 ***
 
+# tbd
+
+- Fix: entity.urls-allowed.json
+
+***
+
 # 24.09.11
 
 - Feat: Add f5.asm.advanced-settings functions
