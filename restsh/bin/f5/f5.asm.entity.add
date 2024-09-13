@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-01
+# Date: 2024-09-13
 
 # Shortdesc: Adds an entity to a F5 ASM Policy.
 # Desc:
@@ -62,7 +62,15 @@ POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
 MO_OPTIONS=()
-[ -n "$DEFAULTS" ] && MO_OPTIONS+=("-s=""$DEFAULTS")
+if [ -n "$DEFAULTS" ]
+then
+    if [ ! -s "$DEFAULTS" ]
+    then
+        echo_err "Variables file not found."
+        exit 1
+    fi
+    MO_OPTIONS+=("-s=""$DEFAULTS")
+fi
 
 if ! $RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" | POST "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY"
 then

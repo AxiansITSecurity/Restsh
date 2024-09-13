@@ -1,0 +1,2 @@
+#VAR_ALLOWED_URL="/"
+[ -z "${VAR_URL_TYPE+x}" ] && VAR_URL_TYPE="wildcard"
