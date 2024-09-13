@@ -117,14 +117,14 @@ f5.asm.taskwait() {
     fi
     local TASK_ENTITY=$1
     local TASK_ID=$2
-    echo "Waiting for task id \"$TASK_ID\" to finish."
+    echo "Waiting for task id \"$TASK_ID\" to finish." 1>&2
     local COUNTER=0
     while :
     do
         sleep "$F5_TASK_CHECK_INTERVAL"
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
         then
-            echo_err "Timeout waiting for task."
+            echo_err "Timeout waiting for task." 1>&2
             return 1
         fi
         COUNTER=$((COUNTER+1))
