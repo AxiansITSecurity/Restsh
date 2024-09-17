@@ -283,8 +283,15 @@ DOWNLOAD() {
         echo -e "\tUse -c to define retries." 1>&2
         return 1
     fi
-    ARGS+=("-o" "$2" "GET" "$1")
-    restsh.http "${ARGS[@]}"
+    local URI=$1
+    local OUT="$2"
+    ARGS+=("-o" "$OUT" "GET" "$URI")
+    if restsh.http "${ARGS[@]}"
+    then
+        [ ! -s "$OUT" ] && return 1
+        return 0
+    fi
+    return 1
 }
 
 # Issues a GET request
