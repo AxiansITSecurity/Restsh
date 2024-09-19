@@ -348,9 +348,9 @@ restsh.util.json_validate() {
     return 0
 }
 
-# Returns 1 if string is empty or null
+# Returns 1 if string is undefined, length is zero, contains only whitespaces or is null
 restsh.util.check.notempty() {
-    if [ -z "${1}" ] || [ "${1}" = "null" ]
+    if [ -z "${1+x}" ] || [ -z "${1//[[:blank:]]/}" ] || [ "${1}" = "null" ]
     then
         return 1
     fi
