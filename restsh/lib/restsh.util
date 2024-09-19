@@ -350,7 +350,7 @@ restsh.util.json_validate() {
 
 # Returns 1 if string is empty or null
 restsh.util.check.notempty() {
-    if [ -z "${1+x}" ] || [ "${1+x}" = "null" ]
+    if [ -z "${1}" ] || [ "${1}" = "null" ]
     then
         return 1
     fi
