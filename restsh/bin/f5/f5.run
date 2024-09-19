@@ -37,7 +37,7 @@ then
     echo -e "\tUse -r for raw output."
     exit 1
 fi
-COMMAND=$1
+COMMAND=$(printf "%s" "$*")
 
 # Main
 if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' $COMMAND'\" }")
@@ -46,7 +46,11 @@ then
     then
         echo "$RESPONSE"
     else
-        $RESTSH_JQ -r ".commandResult" <<< "$RESPONSE"
+        RESULT=$(JQ -r ".commandResult" <<< "$RESPONSE")
+        if restsh.util.check.notempty "$RESULT"
+        then
+            echo "$RESULT"
+        fi
     fi
 else
     echo_err "Running command failed."
