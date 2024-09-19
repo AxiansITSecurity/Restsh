@@ -32,10 +32,11 @@ shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
+    exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
     echo "Usage: $(basename "$0") [-r] <shell command>"
     echo -e "\tUse -r for raw output."
-    exit 1
+    exit 2
 fi
 COMMAND=$(printf "%s" "$*")
 
