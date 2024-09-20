@@ -21,9 +21,10 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <filename> <policy name>"
-    exit 1
+    exit 2
 else
     FILENAME=$1
     POLICY=$2

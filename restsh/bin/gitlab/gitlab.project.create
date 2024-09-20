@@ -33,10 +33,10 @@ shift "$((OPTIND -1))"
 if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <namespace id> <name>"
     echo -e "\tUse -r for raw output."
-    exit 1
+    exit 2
 fi
 
 NAMESPACE_ID=$1
@@ -57,8 +57,8 @@ then
         echo_ok "Empty project created with id $ID"
     fi
     exit 0
-else
-    echo_err "Failure creating project."
-    echo_err "$RESULT"
-    exit 1
 fi
+
+echo_err "Failure creating project."
+echo_err "$RESULT"
+exit 1

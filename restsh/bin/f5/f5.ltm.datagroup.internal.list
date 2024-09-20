@@ -21,4 +21,3 @@ fi
 
 GET "/mgmt/tm/ltm/data-group/internal?\$select=fullPath" | JQ -r ".items[].fullPath"
 
-exit 0

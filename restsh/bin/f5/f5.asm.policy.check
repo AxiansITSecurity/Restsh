@@ -33,10 +33,11 @@ shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-u <directory>] <json policy file>"
     echo -e "\t-u <directory> custom rules directory"
-    exit 1
+    exit 2
 else
     POLICY_FILE=$1
 fi

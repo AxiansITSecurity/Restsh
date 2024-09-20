@@ -23,9 +23,9 @@ fi
 if [ -z "${1+x}" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <name>"
-    exit 1
+    exit 2
 fi
 
 QKVIEW_ENDPOINT="/mgmt/cm/autodeploy/qkview"
@@ -68,9 +68,8 @@ do
             echo "Unhandled task status: $STATUS"
             # Print task result message
             GET -r "$QKVIEW_ENDPOINT/$TASK_ID"
-            return 1
+            exit 1
     esac
 done
-
 
 exit 0

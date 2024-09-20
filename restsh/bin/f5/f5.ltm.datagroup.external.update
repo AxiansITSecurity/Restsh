@@ -22,9 +22,9 @@ fi
 if [ $# -lt 2 ]
 then
   exec 1>&2
-  restsh.help.shortdesc.get "$0"
+  _restsh.help.shortdesc.get "$0"
   echo "Usage: $(basename "$0") <fullPath> <filename>"
-  exit 1
+  exit 2
 fi
 
 FULLPATH=$1
@@ -34,5 +34,3 @@ JQ -n --arg name "$FILENAME" \
     '{
         "externalFileName": $filename
     }' | PATCH "/mgmt/tm/ltm/data-group/external/${FULLPATH//\//\~}"
-
-exit 0

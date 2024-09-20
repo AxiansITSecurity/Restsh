@@ -16,16 +16,16 @@ set -eEu -o pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 if [ -z "${1+x}" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <full path> <filename>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <full path> <filename>"
+    exit 2
 fi
 
 FULLPATH=$1

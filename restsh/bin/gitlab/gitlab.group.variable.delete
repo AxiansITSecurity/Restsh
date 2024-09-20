@@ -21,15 +21,13 @@ fi
 
 if [ $# -ne 2 ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") [-m] [-e] <group id> <key>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-m] [-e] <group id> <key>"
+    exit 2
 fi
 
 GROUP=$1
 KEY=$2
 
 DELETE "$GITLAB_API_PREFIX/groups/$GROUP/variables/$KEY"
-
-exit 0

@@ -61,10 +61,11 @@ assign_by_full_path() {
 
 if [ -z "${1+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <policy hash or fullPath>"
     echo "Pipe the list of virtual servers to STDIN, one vs per line"
-    exit 1
+    exit 2
 fi
 
 if [ "${1:0:1}" == "/" ]

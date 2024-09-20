@@ -36,12 +36,13 @@ shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] <ts declaration file>"
     echo -e "\t-d\tDefine a custom variable file. Default is <ts declaration file>.var."
     echo -e "\t-k\tKeeps the temporary files."
     echo -e "\t-t\tProcess the ts declaration file with mustache."
-    exit 1
+    exit 2
 fi
 TS_FILE=$1
 

@@ -21,10 +21,10 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <full path> <key>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <full path> <key>"
+    exit 2
 fi
 
 FULLPATH=$1
@@ -32,4 +32,3 @@ KEY=$2
 OPTIONS=$(restsh.util.urlencode "records delete { \"$KEY\" }")
 
 PATCH "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}?options=${OPTIONS}" <<< "{}"
-exit 0

@@ -21,13 +21,13 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <policy full path>"
-    exit 1
-else
-    POLICY=$1
+    exit 2
 fi
 
+POLICY=$1
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
 if ! DELETE "/mgmt/tm/asm/policies/$POLICY_HASH" > /dev/null

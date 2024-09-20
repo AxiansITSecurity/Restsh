@@ -15,9 +15,8 @@ set -eEu -o pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 GET "/mgmt/tm/sys/file/data-group?\$select=fullPath" | JQ -r ".items[].fullPath"
-exit 0

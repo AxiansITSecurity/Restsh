@@ -22,13 +22,11 @@ fi
 
 if [ -z "${1+x}" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <full path>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <full path>"
+    exit 2
 fi
 
 FULLPATH=$1
 GET "/mgmt/tm/ltm/ifile/${FULLPATH//\//\~}"
-
-exit 0

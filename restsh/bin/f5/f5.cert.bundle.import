@@ -21,9 +21,10 @@ fi
 
 if [ $# -lt 2 ]
 then
-    restsh.help.shortdesc.get "$0"
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <key> <cert> [<chain bundle>]" 1>&2
-    exit 1
+    exit 2
 fi
 
 FILE_KEY=$1

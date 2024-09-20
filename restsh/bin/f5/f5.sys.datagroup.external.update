@@ -20,18 +20,18 @@ set -eEu -o pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 if [ $# -lt 2 ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <fullPath> <filename>"
-  echo -e "\tFormat of external datagroup file:"
-  echo -e "\t\t\"name1\" := \"value1\","
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <fullPath> <filename>"
+    echo -e "\tFormat of external datagroup file:"
+    echo -e "\t\t\"name1\" := \"value1\","
+    exit 2
 fi
 
 FULLPATH=$1
@@ -51,5 +51,3 @@ JQ -n --arg filename "$FILENAME" \
         "separator": ":=",
         "sourcePath": $filename
     }' | PATCH "/mgmt/tm/sys/file/data-group/${FULLPATH//\//\~}"
-
-exit 0

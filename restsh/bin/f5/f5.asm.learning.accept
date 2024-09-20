@@ -21,10 +21,11 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    restsh.help.shortdesc.get "$0"
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage:"
     echo "$(basename "$0") <policy name or hash> <id>"
-    exit 1
+    exit 2
 fi
 
 POLICY=$1

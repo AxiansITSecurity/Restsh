@@ -16,16 +16,16 @@ set -eEu -o pipefail
 
 if [ -z "${RESTSH_PATH+x}" ]
 then
-  echo "Script must be run in the restsh environment."
-  exit 1
+    echo "Script must be run in the restsh environment."
+    exit 1
 fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <file> <full path>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <file> <full path>"
+    exit 2
 fi
 
 FILE=$1
@@ -39,5 +39,3 @@ f5.file.upload /mgmt/shared/file-transfer/uploads "$FILE" > /dev/null
 JQ -n --arg name "$NAME" --arg partition "$PARTITION" --arg filename "file:/var/config/rest/downloads/$FILENAME" \
     '{ name: $name, partition: $partition, "source-path": $filename }' \
     | PATCH "/mgmt/tm/sys/file/ifile/~$PARTITION~$NAME"
-
-exit 0

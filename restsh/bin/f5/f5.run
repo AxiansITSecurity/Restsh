@@ -58,4 +58,3 @@ else
     echo_err "$RESPONSE"
     exit 1
 fi
-exit 0

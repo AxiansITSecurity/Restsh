@@ -79,9 +79,9 @@ case "$ACTION" in
         ;;
     *)
         exec 1>&2
-        restsh.help.shortdesc.get "$0"
+        _restsh.help.shortdesc.get "$0"
         echo "Usage: $(basename "$0") <create|download|update> <directory>"
-        exit 1
+        exit 2
         ;;
 esac
 exit 0

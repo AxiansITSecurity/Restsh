@@ -33,10 +33,10 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-r] [<page>]"
     echo -e "\tUse -r for raw output."
-    exit 1
+    exit 2
 fi
 
 PAGE=0
@@ -54,8 +54,7 @@ then
         JQ -r '.[] | [.id, .path_with_namespace, .owner.username] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "id,path_with_namespace,owner"
     fi
-else
-    exit 1
+    exit 0
 fi
 
-exit 0
+exit 1

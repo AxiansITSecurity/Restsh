@@ -22,10 +22,10 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <file> <local file>"
-    exit 1
+    exit 2
 fi
 
 f5.file.download "/mgmt/shared/file-transfer/ucs-downloads" "$1" 0 "$2"
-
-exit 0

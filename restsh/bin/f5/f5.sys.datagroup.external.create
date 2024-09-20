@@ -27,12 +27,12 @@ fi
 if [ $# -lt 3 ]
 then
   exec 1>&2
-  restsh.help.shortdesc.get "$0"
+  _restsh.help.shortdesc.get "$0"
   echo "Usage: $(basename "$0") <fullPath> <type> <filename>"
   echo -e "\tValid types: string, integer, ip"
   echo -e "\tFormat of external datagroup file:"
   echo -e "\t\t\"name1\" := \"value1\","
-  exit 1
+  exit 2
 fi
 
 FULLPATH=$1

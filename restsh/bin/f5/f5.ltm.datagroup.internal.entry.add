@@ -21,10 +21,10 @@ fi
 
 if [ $# -lt 3 ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <full path> <key> <value>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <full path> <key> <value>"
+    exit 2
 fi
 
 FULLPATH=$1
@@ -33,4 +33,3 @@ VALUE=$3
 OPTIONS=$(restsh.util.urlencode "records add { \"$KEY\" { data \"$VALUE\" } }")
 
 PATCH "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}?options=${OPTIONS}" <<< "{}"
-exit 0

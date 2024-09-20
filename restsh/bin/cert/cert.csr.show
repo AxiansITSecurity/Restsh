@@ -21,7 +21,7 @@ fi
 
 usage() {
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <csr file>"
     exit 2
 }

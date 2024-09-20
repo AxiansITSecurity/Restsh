@@ -35,7 +35,7 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-r] [-p <parent group>] <name>"
     echo -e "\t-r Raw output."
     echo -e "\t-p Parent group name"

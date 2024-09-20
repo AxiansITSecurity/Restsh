@@ -21,12 +21,12 @@ fi
 
 if [ -z "${1+x}" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <fullPath> <type> <input file>"
-  echo -e "\tValid types: string, integer, ip"
-  echo -e "\rValid input file types: json, csv"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <fullPath> <type> <input file>"
+    echo -e "\tValid types: string, integer, ip"
+    echo -e "\rValid input file types: json, csv"
+    exit 2
 fi
 
 FULLPATH=$1
@@ -50,5 +50,3 @@ JQ -n --arg name "$NAME" \
         "type": $type,
         "records": $records
     }' | POST "/mgmt/tm/ltm/data-group/internal"
-
-exit 0

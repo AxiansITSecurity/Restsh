@@ -31,10 +31,11 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ]
 then
-    restsh.help.shortdesc.get "$0"
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-v] [<policy name>]"
     echo -e "\tUse -v for verbose output."
-    exit 1
+    exit 2
 fi
 
 if [ -z "${1+x}" ]

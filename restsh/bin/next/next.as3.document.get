@@ -26,7 +26,7 @@ next.auth.check
 if [ -z "${1+x}" ]
 then
     exec 1>&2
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <document id>"
     exit 2
 fi

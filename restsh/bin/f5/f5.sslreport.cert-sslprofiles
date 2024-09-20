@@ -33,10 +33,10 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-m]"
     echo -e "\tUse -m for markdown output."
-    exit 1
+    exit 2
 fi
 
 # Concats profiles for pretty printing

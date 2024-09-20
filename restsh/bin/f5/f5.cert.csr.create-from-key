@@ -22,7 +22,7 @@ fi
 
 usage() {
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") --key=<key> --cn=<common name>"
     echo "Options:"
     echo -e "\t-a <dns alternative name>"

@@ -22,9 +22,9 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <csr>" 1>&2
-    exit 1
+    exit 2
 fi
 
 CSR=$1

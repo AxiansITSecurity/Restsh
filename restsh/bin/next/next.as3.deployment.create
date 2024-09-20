@@ -47,7 +47,7 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-a <action>] [-r] [-u <updateMode>] [-v <validation>] <document id> <target>"
     echo -e "\t-a\tAction: dry-run, deploy (default)"
     echo -e "\t-r\tRaw output."

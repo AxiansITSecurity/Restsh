@@ -20,7 +20,7 @@ f5.file-transfer.upload() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: f5.file-transfer.upload <file>"
-        return 1
+        return 2
     fi
     FILENAME=$1
     if f5.file.upload "/mgmt/shared/file-transfer/uploads" "$FILENAME"
@@ -35,7 +35,7 @@ f5.file-transfer.remove() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: f5.file-transfer.remove <file>"
-        return 1
+        return 2
     fi
     FILENAME=$1
     if f5.file.remove "/var/config/rest/downloads/$FILENAME"
@@ -50,7 +50,7 @@ f5.file-transfer.list() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: f5.file-transfer.list <file>"
-        return 1
+        return 2
     fi
     FILENAME=$1
     if f5.file.list "/var/config/rest/downloads/$FILENAME"

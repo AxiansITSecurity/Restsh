@@ -22,9 +22,9 @@ fi
 if [ -z "${1+x}" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <output file>"
-    exit 1
+    exit 2
 fi
 
 OUTFILE=$1

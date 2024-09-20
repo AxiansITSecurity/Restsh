@@ -23,11 +23,9 @@ fi
 if [ $# -lt 2 ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <file> <output file>"
-    exit 1
+    exit 2
 fi
 
 f5.file.download "/mgmt/cm/autodeploy/qkview-downloads" "$2" 0 "$3"
-
-exit 0

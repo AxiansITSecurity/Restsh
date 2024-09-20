@@ -38,14 +38,15 @@ shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] [-sVAR=VALUE] <as3 declaration file>"
     echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
     echo -e "\t-k\tKeeps the temporary files."
     echo -e "\t-s\tDefine a custom variable."
     echo -e "\t-t\tProcess the as3 declaration file with mustache."
     echo -e "\t-v\tValidate the declaration by the dry-run action."
-    exit 1
+    exit 2
 fi
 AS3_FILE=$1
 AS3_FILE_PARSED="$RESTSH_TMP/$(basename "$AS3_FILE")"

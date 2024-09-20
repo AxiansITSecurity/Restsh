@@ -22,7 +22,7 @@ fi
 if [ $# -lt 3 ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <pkcs12 file> <cert> <key> [chain]"
     echo "Set environment KEY_PASS or this script asks for the passphrase."
     echo "Set environment PKCS12_PASS or this script asks for the passphrase."

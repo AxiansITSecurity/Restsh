@@ -36,7 +36,7 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-r]"
     echo -e "\tUse -r for raw output."
     exit 2
@@ -53,5 +53,3 @@ then
             COLUMN -o "|" -N "Name,Modified,Enforcement Mode,Id"
     fi
 fi
-
-exit 0

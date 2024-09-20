@@ -21,13 +21,12 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage: $(basename "$0") <full path> <filename>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <full path> <filename>"
+    exit 2
 fi
 
 FULLPATH=$1
 FILE=$2
 GET "/mgmt/tm/ltm/rule/${FULLPATH//\//\~}" | JQ -r ".apiAnonymous" > "$FILE"
-exit 0

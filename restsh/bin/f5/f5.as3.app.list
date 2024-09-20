@@ -32,10 +32,11 @@ shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-r] <tenant>"
     echo -e "\tUse -r for raw output."
-    exit 1
+    exit 2
 fi
 TENANT=$1
 

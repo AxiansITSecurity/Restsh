@@ -21,13 +21,14 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <template name> <filename>"
-    exit 1
-else
-    TEMPLATE=$1
-    FILENAME=$2
+    exit 2
 fi
+
+TEMPLATE=$1
+FILENAME=$2
 
 if ! TEMPLATEID=$(f5.asm.template.getid "$TEMPLATE")
 then

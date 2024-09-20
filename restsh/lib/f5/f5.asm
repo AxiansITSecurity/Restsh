@@ -27,7 +27,7 @@ f5.asm.policy.signature.getid() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
         echo "Usage: f5.asm.policy.signature.getid <policy hash> <signature id>" 1>&2
-        return 1
+        return 2
     fi
     local POLICY_HASH=$1
     local GETID=$2
@@ -50,7 +50,7 @@ f5.asm.signatureset.getid() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: f5.asm.signatureset.getid <name>" 1>&2
-        return 1
+        return 2
     fi
     local SIGNATURESETID
     if ! SIGNATURESETID=$(GET /mgmt/tm/asm/signature-sets?\$select=name,id | jq -r ".items[] | select(.name == \"$1\") | .id")
@@ -72,7 +72,7 @@ f5.asm.template.getid() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: f5.asm.template.getid <template name>" 1>&2
-        return 1
+        return 2
     fi
     local TEMPLATEID
     if ! TEMPLATEID=$(GET /mgmt/tm/asm/policy-templates | JQ -r '.items[] | select(.name == "'"$1"'") | .id')
@@ -94,7 +94,7 @@ f5.asm.policy.gethash() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: f5.asm.policy.gethash <policy fullPath>" 1>&2
-        return 1
+        return 2
     fi
     local POLICY=$1
     # Calculate hash
@@ -113,7 +113,7 @@ f5.asm.taskwait() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]
     then
         echo "Usage: f5.asm.taskwait <entity> <id>" 1>&2
-        return 1
+        return 2
     fi
     local TASK_ENTITY=$1
     local TASK_ID=$2

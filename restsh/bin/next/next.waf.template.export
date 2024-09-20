@@ -25,13 +25,13 @@ next.auth.check
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <template name> <filename>"
     exit 2
-else
-    TEMPLATE=$1
-    FILENAME=$2
 fi
+
+TEMPLATE=$1
+FILENAME=$2
 
 if ! TEMPLATEID=$(next.waf.template.getid "$TEMPLATE")
 then
@@ -42,7 +42,7 @@ if RESULT=$(GET "${NEXT_API_PREFIX}/security/waf/policy-templates/${TEMPLATEID}"
 then
     echo "$RESULT" > "$FILENAME"
     exit 0
-else
-    JQ "." <<< "$RESULT"
-    exit 1
 fi
+
+JQ "." <<< "$RESULT"
+exit 1

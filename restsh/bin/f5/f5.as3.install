@@ -25,7 +25,7 @@ then
     RPM=$1
 else
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <RPM>"
     echo "Download latest version from: https://github.com/F5Networks/f5-appsvcs-extension/releases"
     exit 2

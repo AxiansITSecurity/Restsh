@@ -25,10 +25,12 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    restsh.help.shortdesc.get "$0"
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <signature set name>"
     echo "Pipe the list of signature ids to STDIN, one signature per line."
     echo "Ignores lines starting with #."
+    exit 2
 fi
 
 export VAR_NAME=$1
@@ -45,5 +47,3 @@ export VAR_SIGNATURES
 # Create
 $RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/signatureset.json" \
     | POST /mgmt/tm/asm/signature-sets
-
-exit 0

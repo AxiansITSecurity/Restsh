@@ -46,7 +46,7 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-d <defaults file>] [-f <true|false>] [-k] [-r] [-sVAR=VALUE] [-t] <document id> <as3 declaration file>"
     echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
     echo -e "\t-f\tRetry failed deployments (default: true)"

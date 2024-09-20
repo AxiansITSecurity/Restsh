@@ -25,9 +25,11 @@ F5_DIR="/var/local/ucs"
 
 if [ -z "${1+x}" ]
 then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <output file>"
     echo "Archive is created in $F5_DIR"
-    exit 1
+    exit 2
 fi
 
 NAME=$1

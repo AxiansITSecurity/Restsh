@@ -19,6 +19,34 @@ then
     exit 1
 fi
 
-GET /mgmt/tm/asm/signature-sets?\$select=name,id,signatureCount,isUserDefined \
-    | JQ -r '.items[] | select(.isUserDefined == true) | [.name,.id,.signatureCount] | @tsv' \
-    | COLUMN -o "|" -N "Name,Id,Count"
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-r]"
+    echo -e "\tUse -r for raw output."
+    exit 2
+fi
+
+# Main
+if RESULT=$(GET "/mgmt/tm/asm/signature-sets?\$select=name,id,signatureCount,isUserDefined")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        echo "$RESULT"
+    else
+        JQ -r '.items[] | select(.isUserDefined == true) | [.name,.id,.signatureCount] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "Name,Id,Count"
+    fi
+fi

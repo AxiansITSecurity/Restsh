@@ -21,13 +21,14 @@ fi
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <filename> <template name>"
-    exit 1
-else
-    FILENAME=$1
-    NAME=$2
+    exit 2
 fi
+
+FILENAME=$1
+NAME=$2
 
 # Upload the policy file
 f5.file-transfer.upload "$FILENAME"

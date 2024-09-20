@@ -21,9 +21,10 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    restsh.help.shortdesc.get "$0"
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <signature set name>"
-    exit 1
+    exit 2
 fi
 
 if ID=$(f5.asm.signatureset.getid "$NAME")
@@ -33,5 +34,3 @@ then
 else
     exit 1
 fi
-
-exit 0

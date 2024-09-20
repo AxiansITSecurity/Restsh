@@ -23,7 +23,7 @@ f5.as3.taskwait() {
     if [ -z "${1+x}" ]
     then
         echo "Usage: $0 <id>" 1>&2
-        return 1
+        return 2
     fi
     local TASK_ID=$1
     echo "Waiting for task id \"$TASK_ID\" to finish."

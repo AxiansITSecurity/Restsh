@@ -33,12 +33,12 @@ shift "$((OPTIND -1))"
 
 if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" = "invalid" ]
 then
-  exec 1>&2
-  restsh.help.shortdesc.get "$0"
-  echo "Usage:"
-  echo -e "\t$(basename "$0") <full path> <sys iFile>"
-  echo -e "\t$(basename "$0") -u <full path> <local file>"
-  exit 1
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage:"
+    echo -e "\t$(basename "$0") <full path> <sys iFile>"
+    echo -e "\t$(basename "$0") -u <full path> <local file>"
+    exit 2
 fi
 
 FULLPATH=$1

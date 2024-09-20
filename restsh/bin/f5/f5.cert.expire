@@ -36,11 +36,11 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    restsh.help.shortdesc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [-d <date string>] [-r]"
     echo -e "\tUse -d to specify date string for expiration, default: \"next month\"."
     echo -e "\tUse -r for raw output."
-    exit 1
+    exit 2
 fi
 
 # Check if string is in array

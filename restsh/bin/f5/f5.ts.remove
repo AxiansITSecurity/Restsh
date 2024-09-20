@@ -20,4 +20,3 @@ then
 fi
 
 POST "/mgmt/shared/telemetry/declare" < "$RESTSH_PATH/templates/f5/ts/remove.json"
-exit 0

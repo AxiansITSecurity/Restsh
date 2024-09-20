@@ -21,12 +21,12 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <template name> "
-    exit 1
-else
-    TEMPLATE=$1
+    exit 2
 fi
+TEMPLATE=$1
 
 if ! TEMPLATEID=$(f5.asm.template.getid "$TEMPLATE")
 then
@@ -37,5 +37,3 @@ if ! DELETE "/mgmt/tm/asm/policy-templates/$TEMPLATEID" > /dev/null
 then
     exit 1
 fi
-
-exit 0

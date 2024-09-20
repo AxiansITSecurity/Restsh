@@ -25,4 +25,3 @@ then
 fi
 
 GET "/mgmt/tm/ltm/data-group/external?\$select=fullPath" | JQ -r ".items[].fullPath"
-exit 0

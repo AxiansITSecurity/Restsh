@@ -21,9 +21,10 @@ fi
 
 if [ -z "${1+x}" ]
 then
-    grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <id>"
-    exit 1
+    exit 2
 fi
 ID=$1
 
