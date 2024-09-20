@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-09-19
+
+# Shortdesc: Common F5 cluster functions.
+# Desc:
+# Common F5 cluster functions.
+
+# Strict error handling
+set -eu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Sets the RESTSH_HOST environment variable to the active member of the F5 cluster.
+f5.cluster.setactive() {
+    # Remember old value
+    local OLD_RESTSH_HOST=$RESTSH_HOST
+    local F5HOST
+    for F5HOST in ${RESTSH_HOST//,/$IFS}
+    do
+        echo "Try connection to: $F5HOST"
+        export RESTSH_HOST=$F5HOST
+        restsh.init.setresturl
+        if ACTIVE_F5=$(f5.cluster.getactive)
+        then
+            echo_ok "Active F5 device found: $ACTIVE_F5"
+            export RESTSH_HOST=$ACTIVE_F5
+            restsh.init.setresturl
+            export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "
+            break
+        fi
+        export RESTSH_HOST=""
+    done
+
+    if [ "$RESTSH_HOST" = "" ]
+    then
+        echo_err "Could not detect active F5 device."
+        export RESTSH_HOST=$OLD_RESTSH_HOST
+        restsh.init.setresturl
+        return 1
+    fi
+
+    if ! f5.cluster.getactive > /dev/null
+    then
+        echo_err "Connection to $RESTSH_HOST failed"
+        export RESTSH_HOST=$OLD_RESTSH_HOST
+        restsh.init.setresturl
+        return 1
+    fi
+
+    return 0
+}
+
+export -f f5.cluster.setactive

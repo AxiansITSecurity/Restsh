@@ -6,6 +6,7 @@
 
 - Feat: Add f5.cluster.standby
 - Fix: entity.urls-allowed.json
+- Fix: Migrate f5.cluster.setactive to lib
 
 ***
 

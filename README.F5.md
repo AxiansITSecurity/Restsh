@@ -23,6 +23,12 @@ restsh asks for username and password. If you want to integrate restsh in a pipe
 
 Call `f5.auth.token.get` to retrieve the token. It uses the provided username and password to retrieve the token and sets the `RESTSH_TOKEN_VALUE` environment variable.
 
+## Device Groups
+
+You can set RESTSH_HOST to a comma separated list of the F5 cluster members management addresses.
+
+Call `f5.cluster.setactive` before any other command to connect to the active F5 device.
+
 ## References
 
 - https://clouddocs.f5.com/api/icontrol-rest/
