@@ -15,7 +15,7 @@ restsh.help f5
 GET /api/version
 ```
 
-## Create a request with mustache and post it.
+## Create a request with mustache and post it
 
 ```sh
 . "$RESTSH_PATH/dist/mo/mo"

@@ -19,6 +19,22 @@ then
     exit 1
 fi
 
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&1
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0")"
+    exit 2
+fi
+
 OPENAPI_FILE="$RESTSH_PATH/autocomplete/next/openapi.json"
 
 # Fetch OpenAPI File
