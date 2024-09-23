@@ -20,16 +20,24 @@ then
     exit 1
 fi
 
-if [ -n "${1+x}" ]
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
-    RPM=$1
-else
-    exec 1>&2
+    exec 1>&1
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <RPM>"
+    echo "Usage: $(basename "$0")"
     echo "Download latest version from: https://github.com/F5Networks/f5-appsvcs-extension/releases"
     exit 2
 fi
+
+RPM=$1
 
 if ! f5.file-transfer.upload "$RPM"
 then

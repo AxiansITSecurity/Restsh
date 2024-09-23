@@ -19,16 +19,28 @@ then
   exit 1
 fi
 
-if [ -z "${1+x}" ]
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") <policy name or hash>"
+    echo "Usage: $(basename "$0") [-r]"
+    echo -e "\tUse -r for raw output."
     exit 2
 fi
 
 POLICY=$1
+
 if [ "${POLICY:0:1}" == "/" ]
 then
     POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
@@ -36,7 +48,12 @@ else
     POLICY_HASH=$POLICY
 fi
 
-GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
-    COLUMN -o "|" -N "id,action,entityName,score,occurrences"
+if [ "$RAW" -eq 0 ]
+then
+    GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | $RESTSH_JQ -r ".items[] | [.id, .description, .entityName, .score, .occurrences] | @tsv" |\
+        COLUMN -o "|" -N "id,action,entityName,score,occurrences"
+else
+    GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions"
+fi
 
 exit 0
