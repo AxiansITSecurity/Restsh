@@ -15,6 +15,12 @@ set -eu -o pipefail
 
 # Sets the RESTSH_HOST environment variable to the active member of the F5 cluster.
 f5.cluster.setactive() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Sets the RESTSH_HOST environment variable to the active member of the F5 cluster." 1>&2
+        echo "Usage: f5.cluster.setactive" 1>&2
+        return 2
+    fi
     # Remember old value
     local OLD_RESTSH_HOST=$RESTSH_HOST
     local F5HOST

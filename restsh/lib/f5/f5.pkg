@@ -15,8 +15,9 @@ set -uo pipefail
 
 # Waits for a package management task to be finished.
 f5.pkg.taskwait() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Waits for a package management task to be finished." 1>&2
         echo "Usage: $0 <id>" 1>&2
         return 2
     fi

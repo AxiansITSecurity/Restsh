@@ -27,8 +27,9 @@ set -uo pipefail
 
 # Uploads a file to the F5.
 f5.file.upload() {
-    if [ "$#" -ne 2 ]
+    if [ "$#" -ne 2 ] || [ "$1" = "-h" ]
     then
+        echo "Uploads a file to the F5." 1>&2
         echo "Usage: f5.file.upload <upload endpoint> <file>" 1>&2
         return 2
     fi
@@ -46,8 +47,9 @@ f5.file.upload() {
 
 # Downloads a file from the F5.
 f5.file.download() {
-    if [ "$#" -ne 4 ]
+    if [ "$#" -ne 4 ] || [ "$1" = "-h" ]
     then
+        echo "Downloads a file from the F5." 1>&2
         echo "Usage: f5.file.download <download endpoint> <file> <size> <local file>" 1>&2
         return 2
     fi
@@ -65,8 +67,9 @@ f5.file.download() {
 
 # Deletes a file from the F5.
 f5.file.remove() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Deletes a file from the F5." 1>&2
         echo "Usage: f5.file.remove <file path>" 1>&2
         return 2
     fi
@@ -88,8 +91,9 @@ f5.file.remove() {
 
 # Lists a file or directory on the F5.
 f5.file.list() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Lists a file or directory on the F5." 1>&2
         echo "Usage: f5.file.list <path>" 1>&2
         return 2
     fi
@@ -106,8 +110,9 @@ f5.file.list() {
 
 # Get the size of a file on the F5.
 f5.file.size() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Get the size of a file on the F5." 1>&2
         echo "Usage: f5.file.size <file>" 1>&2
         return 2
     fi

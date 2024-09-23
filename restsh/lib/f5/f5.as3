@@ -15,13 +15,20 @@ set -uo pipefail
 
 # Returns the installed AS3 version
 f5.as3.version() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Returns the installed AS3 version"
+        echo "Usage: $0" 1>&2
+        return 2
+    fi
     GET "/mgmt/shared/appsvcs/info"
 }
 
-# Waits for a task to be finished
+# Waits for an AS3 task to be finished
 f5.as3.taskwait() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Waits for an AS3 task to be finished"
         echo "Usage: $0 <id>" 1>&2
         return 2
     fi

@@ -24,8 +24,9 @@ export F5_ASM_SIGNATURE_FILTER_DISABLED="?\$filter=enabled+eq+false"
 
 # Gets the id of signature for a policy by global signatureId
 f5.asm.policy.signature.getid() {
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Gets the id of signature for a policy by global signatureId" 1>&2
         echo "Usage: f5.asm.policy.signature.getid <policy hash> <signature id>" 1>&2
         return 2
     fi
@@ -47,8 +48,9 @@ f5.asm.policy.signature.getid() {
 
 # Gets the signature set id
 f5.asm.signatureset.getid() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Gets the signature set id" 1>&2
         echo "Usage: f5.asm.signatureset.getid <name>" 1>&2
         return 2
     fi
@@ -69,8 +71,9 @@ f5.asm.signatureset.getid() {
 
 # Gets the id of an ASM policy template
 f5.asm.template.getid() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Gets the id of an ASM policy template" 1>&2
         echo "Usage: f5.asm.template.getid <template name>" 1>&2
         return 2
     fi
@@ -91,8 +94,9 @@ f5.asm.template.getid() {
 
 # Calculates the hash of a F5 ASM Policy fullPath.
 f5.asm.policy.gethash() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Calculates the hash of a F5 ASM Policy fullPath." 1>&2
         echo "Usage: f5.asm.policy.gethash <policy fullPath>" 1>&2
         return 2
     fi
@@ -110,8 +114,9 @@ f5.asm.policy.gethash() {
 
 # Waits for a ASM task to be finished.
 f5.asm.taskwait() {
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Waits for a ASM task to be finished." 1>&2
         echo "Usage: f5.asm.taskwait <entity> <id>" 1>&2
         return 2
     fi

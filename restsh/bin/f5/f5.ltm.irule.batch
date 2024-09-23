@@ -59,8 +59,16 @@ update_all() {
     done
 }
 
-# main
-if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+#main
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     ACTION="invalid"
 else

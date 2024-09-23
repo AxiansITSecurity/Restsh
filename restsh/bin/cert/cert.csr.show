@@ -19,16 +19,20 @@ then
     exit 1
 fi
 
-usage() {
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <csr file>"
     exit 2
-}
-
-if [ -z "${1+x}" ]
-then
-    usage
 fi
 
 CSR_FILE=$1

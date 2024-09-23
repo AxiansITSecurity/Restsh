@@ -19,7 +19,15 @@ then
   exit 1
 fi
 
-if [ $# -lt 3 ]
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -lt 3 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"

@@ -16,6 +16,12 @@ set -uo pipefail
 
 # Gets the authentication token from a f5 next and sets the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable.
 next.auth.login() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Gets the authentication token from a f5 next and sets the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable." 1>&2
+        echo "Usage: next.auth.login" 1>&2
+        return 2
+    fi
     # Ask for user/password if not set
     if [ -z "${RESTSH_USER+x}" ]
     then
@@ -71,6 +77,12 @@ next.auth.login() {
 
 # Changes the initial password
 next.auth.change-password() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Changes the initial password" 1>&2
+        echo "Usage: next.auth.change-password" 1>&2
+        return 2
+    fi
     if [ -z "${RESTSH_USER+x}" ]
     then
         read -r -p "User: " RESTSH_USER
@@ -111,8 +123,15 @@ next.auth.change-password() {
     return 0
 }
 
+# shellcheck disable=SC2120
 # Uses the refresh token to get a new access token. Can be used in sub-shells.
 next.auth.refresh() {
+    if [ $# -gt 0 ]
+    then
+        echo "Uses the refresh token to get a new access token. Can be used in sub-shells." 1>&2
+        echo "Usage: next.auth.refresh" 1>&2
+        return 2
+    fi
     if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
     then
         echo_err "No cached refresh token."
@@ -146,6 +165,12 @@ next.auth.refresh() {
 
 # Checks the lifetime of the auth token.
 next.auth.check() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Checks the lifetime of the auth token." 1>&2
+        echo "Usage: next.auth.check" 1>&2
+        return 2
+    fi
     if [ -z "${RESTSH_REFRESH_TOKEN+x}" ]
     then
         echo_err "No refresh token found, you must login with next.auth.login"
@@ -166,6 +191,12 @@ next.auth.check() {
 
 # Deletes the authentication token from a f5 and clears the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable.
 next.auth.logout() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Deletes the authentication token from a f5 and clears the RESTSH_TOKEN_VALUE and RESTSH_REFRESH_TOKEN environment variable." 1>&2
+        echo "Usage: next.auth.logout" 1>&2
+        return 2
+    fi
     local STATUS
     if RESULT=$(POST "/api/logout")
     then

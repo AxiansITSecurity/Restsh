@@ -16,6 +16,12 @@ set -uo pipefail
 
 # Gets the bearer token from the Sectigo OAuth authorization server
 scm.auth.login() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Gets the bearer token from the Sectigo OAuth authorization server" 1>&2
+        echo "Usage: scm.auth.login" 1>&2
+        return 2
+    fi
     if [ -z "${SCM_CLIENTID+x}" ] || [ -z "${SCM_SECRET+x}" ]
     then
         echo_err "You must define SCM_CLIENTID and SCM_SECRET"

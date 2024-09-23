@@ -19,11 +19,16 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
-if [ -z "${1+x}" ]
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
@@ -31,6 +36,9 @@ then
     exit 2
 fi
 DOCUMENT_ID=$1
+
+# Check for a valid auth token
+next.auth.check
 
 # Main
 GET "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$DOCUMENT_ID"

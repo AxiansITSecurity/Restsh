@@ -17,9 +17,10 @@ set -uo pipefail
 
 # Uploads a file to /var/config/rest/downloads
 f5.file-transfer.upload() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
-        echo "Usage: f5.file-transfer.upload <file>"
+        echo "Uploads a file to /var/config/rest/downloads" 1>&2
+        echo "Usage: f5.file-transfer.upload <file>" 1>&2
         return 2
     fi
     FILENAME=$1
@@ -32,9 +33,10 @@ f5.file-transfer.upload() {
 
 # Removes a file from /var/config/rest/downloads
 f5.file-transfer.remove() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
-        echo "Usage: f5.file-transfer.remove <file>"
+        echo "Removes a file from /var/config/rest/downloads" 1>&2
+        echo "Usage: f5.file-transfer.remove <file>" 1>&2
         return 2
     fi
     FILENAME=$1
@@ -47,9 +49,10 @@ f5.file-transfer.remove() {
 
 # Lists a file in /var/config/rest/downloads
 f5.file-transfer.list() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
-        echo "Usage: f5.file-transfer.list <file>"
+        echo "Lists a file in /var/config/rest/downloads" 1>&2
+        echo "Usage: f5.file-transfer.list <file>" 1>&2
         return 2
     fi
     FILENAME=$1

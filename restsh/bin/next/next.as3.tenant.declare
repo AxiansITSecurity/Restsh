@@ -20,9 +20,6 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
 DEPLOY_OPTIONS=()
 UPDATE_OPTIONS=()
@@ -75,6 +72,9 @@ get_deployment_status() {
     printf "0"
     return 1
 }
+
+# Check for a valid auth token
+next.auth.check
 
 # Main
 DOCUMENT_ID=$(get_document_id)

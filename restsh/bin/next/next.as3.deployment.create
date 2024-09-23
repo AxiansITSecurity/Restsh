@@ -22,9 +22,6 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
 ACTION="deploy"
 RAW=0
@@ -58,9 +55,11 @@ then
 fi
 DOCUMENT_ID=$1
 TARGET=$2
-
 QUERY="updateMode=$UPDATE_MODE&validation=$VALIDATION&show=$SHOW"
 [ "$ACTION" = "dry-run" ] && QUERY+="&action=dry-run"
+
+# Check for a valid auth token
+next.auth.check
 
 # Main
 if RESULT=$(POST -r "$NEXT_API_PREFIX/spaces/default/appsvcs/documents/${DOCUMENT_ID}/deployments?$QUERY" <<< "{ \"target\": \"$TARGET\" }")

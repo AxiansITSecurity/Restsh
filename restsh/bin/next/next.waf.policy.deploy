@@ -19,10 +19,15 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ]
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
@@ -30,6 +35,9 @@ then
     exit 2
 fi
 POLICYNAME=$1
+
+# Check for a valid auth token
+next.auth.check
 
 if RESULT=$(POST -r "/api/waf/v1/tasks/deploy-policy" <<< "{ \"policy_name\": \"$POLICYNAME\" }")
 then

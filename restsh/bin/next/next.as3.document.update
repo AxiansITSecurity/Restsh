@@ -21,9 +21,6 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
 IS_TEMPLATE=0
 KEEP_TMP=0
@@ -56,6 +53,9 @@ fi
 AS3_FILE=$1
 DOCUMENT_ID=$2
 AS3_FILE_PARSED="$RESTSH_TMP/$(basename "AS3_FILE")"
+
+# Check for a valid auth token
+next.auth.check
 
 # Cleanup tmp files
 [ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE_PARSED"' EXIT

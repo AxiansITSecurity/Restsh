@@ -15,8 +15,9 @@ set -uo pipefail
 
 # Waits for the specified task state and return the id on success.
 next.task.waitfor() {
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$1" = "-h" ]
     then
+        echo "Waits for the specified task state and return the id on success." 1>&2
         echo "Usage: next.task.waitfor <task_path> <expected state>" 1>&2
         return 2
     fi

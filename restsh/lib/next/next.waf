@@ -15,6 +15,12 @@ set -uo pipefail
 
 # Retrieves the id for a waf template
 next.waf.template.getid() {
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
+    then
+        echo "Retrieves the id for a waf template" 1>&2
+        echo "Usage: next.waf.template.getid <name>" 1>&2
+        return 2
+    fi
     local FILTER
     FILTER=$(restsh.util.urlencode "name eq '$1'")
     RESULT=$(GET "${NEXT_API_PREFIX}/security/waf/policy-templates?filter=$FILTER&select=id")
@@ -28,6 +34,12 @@ next.waf.template.getid() {
 
 # Retrieves the id for a waf template
 next.waf.policy.getid() {
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
+    then
+        echo "Retrieves the id for a waf template" 1>&2
+        echo "Usage: next.waf.policy.getid <name>" 1>&2
+        return 2
+    fi
     local FILTER
     FILTER=$(restsh.util.urlencode "name eq '$1'")
     RESULT=$(GET "${NEXT_API_PREFIX}/spaces/default/security/waf-policies?filter=$FILTER&select=id")

@@ -19,9 +19,6 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
 RAW=0
 while getopts ':r' OPTION
@@ -42,6 +39,9 @@ then
     exit 2
 fi
 ID=$1
+
+# Check for a valid auth token
+next.auth.check
 
 # Main
 if RESULT=$(DELETE -r "${NEXT_API_PREFIX}/spaces/default/appsvcs/documents/$ID")

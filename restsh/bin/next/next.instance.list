@@ -19,9 +19,6 @@ then
     exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 RAW=0
 while getopts ':d:krs:t' OPTION
 do
@@ -40,6 +37,9 @@ then
     echo -e "\t-r\tRaw output."
     exit 2
 fi
+
+# Check for a valid auth token
+next.auth.check
 
 if RESULT=$(GET "/api/v1/spaces/default/instances")
 then

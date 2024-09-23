@@ -19,9 +19,6 @@ then
   exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
 RAW=0
 while getopts ':r' OPTION
@@ -41,6 +38,9 @@ then
     echo -e "\tUse -r for raw output."
     exit 2
 fi
+
+# Check for a valid auth token
+next.auth.check
 
 # Main
 if [ "$RAW" -eq 1 ]

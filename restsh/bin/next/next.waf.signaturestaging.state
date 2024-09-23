@@ -18,9 +18,6 @@ then
   exit 1
 fi
 
-# Check for a valid auth token
-next.auth.check
-
 # Get options
 VERBOSE=0
 while getopts ':v' OPTION
@@ -41,6 +38,9 @@ then
     exit 2
 fi
 POLICY=$1
+
+# Check for a valid auth token
+next.auth.check
 
 # main
 if ! POLICYID=$(next.waf.policy.getid "$POLICY")

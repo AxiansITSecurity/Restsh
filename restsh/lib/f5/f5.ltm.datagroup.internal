@@ -15,6 +15,12 @@ set -uo pipefail
 
 # Returns the formated internal datagroup records from a file
 f5.ltm.datagroup.internal.get_records_from_file() {
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
+    then
+        echo "Returns the formated internal datagroup records from a file" 1>&2
+        echo "Usage: f5.ltm.datagroup.internal.get_records_from_file <file>" 1>&2
+        return 2
+    fi
     local INFILE=$1
     if JQ -r ".records" < "$INFILE" 2> /dev/null
     then
