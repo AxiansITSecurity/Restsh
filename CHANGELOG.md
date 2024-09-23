@@ -4,6 +4,7 @@
 
 # tbd
 
+- Feat: Support "-h" help option for all functions
 - Feat: Add f5.cluster.standby
 - Fix: entity.urls-allowed.json
 - Fix: Migrate f5.cluster.setactive to lib

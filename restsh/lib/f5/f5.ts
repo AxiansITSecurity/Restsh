@@ -18,7 +18,7 @@ f5.ts.version() {
     if [ -n "${1+x}" ]
     then
         echo "Returns the installed TS version"
-        echo "Usage: $0" 1>&2
+        echo "Usage: f5.ts.version" 1>&2
         return 2
     fi
     GET "/mgmt/shared/telemetry/info"

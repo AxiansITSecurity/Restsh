@@ -32,7 +32,7 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&1
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0")"
+    echo "Usage: $(basename "$0") <rpm file>"
     echo "Download latest version from: https://github.com/F5Networks/f5-appsvcs-extension/releases"
     exit 2
 fi
