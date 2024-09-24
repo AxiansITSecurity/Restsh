@@ -4,8 +4,6 @@
 
 SCM uses OAuth2 based authentication. You must create a client id and client secret in SCM.
 
-### .restsh-config for token based authentication
-
 ```sh
 [ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="admin.enterprise.sectigo.com"
 [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
@@ -15,3 +13,7 @@ SCM uses OAuth2 based authentication. You must create a client id and client sec
 ```
 
 Type `scm.auth.login` to retrieve a bearer token.
+
+## References
+
+- [Sectigo Cert Manager API](https://www.sectigo.com/knowledge-base/detail/Sectigo-Certificate-Manager-SCM-REST-API/kA01N000000XDkE)

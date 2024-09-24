@@ -11,3 +11,7 @@ You can use a private token for authentication. Set `RESTSH_TOKEN_HEADER` to `PR
 [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="PRIVATE-TOKEN"
 [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"
 ```
+
+## References
+
+- [GitLab API](https://docs.gitlab.com/ee/api/rest/)

@@ -62,7 +62,8 @@ export RESTSH_PATH="/path/to/restsh"
 
 ## Usage
 
-See [USAGE.md](USAGE.md)
+- [Examples](EXAMPLES.md)
+- [Examples for F5](EXAMPLES.F5.md)
 
 ### Available modules
 
