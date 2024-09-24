@@ -72,10 +72,10 @@ done < <(f5.asm.policy.list -r | JQ -r ".items[].fullPath")
 ```sh
 # Read an array into VAR_DISALLOWED_FILETYPES
 # One filetype per line
-restsh.util.setvars ../ax-f5-waf-jump-start/awaftemplate/config/default-policy-v16/FILETYPES_DISALLOWED.array
+restsh.util.setvars ../ax-f5-automation-framework/waftemplates/config/default-policy-v16/FILETYPES_DISALLOWED.array
 
 # Iterate through the array and add one filetype at a time
-for FILETYPE in "${VAR_FILETYPES_DISALLOWED[@]}"
+for FILETYPE in "${ARRAY_FILETYPES_DISALLOWED[@]}"
 do
     f5.asm.entity.filetypes-disallowed.add /Common/policy "$FILETYPE"
 done
@@ -91,10 +91,10 @@ f5.asm.policy.apply /Common/policy
 ```sh
 # Read an array into VAR_DISALLOWED_FILETYPES
 # One url per line
-restsh.util.setvars ../ax-f5-waf-jump-start/awaftemplate/config/default-policy-v16/URLS_DISALLOWED.array
+restsh.util.setvars ../ax-f5-automation-framework/waftemplates/config/default-policy-v16/URLS_DISALLOWED.array
 
 # Iterate through the array and add one url at a time
-for URL in "${VAR_URLS_DISALLOWED[@]}"
+for URL in "${ARRAY_URLS_DISALLOWED[@]}"
 do
     f5.asm.entity.urls-disallowed.add /Common/policy "$URL"
 done

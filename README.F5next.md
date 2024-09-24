@@ -1,4 +1,4 @@
-# Use restsh with F5 next
+# Use restsh with F5 Next
 
 ## Authentication
 
