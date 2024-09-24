@@ -1,10 +1,10 @@
-# restsh
+# Use restsh
 
-restsh is a small framework to work with REST api's within the bash. It is designed to be used interactively, in scripts or in CI/CD pipelines. This framework is work-in-progress. I will add new commands on demand.
+restsh is a small framework to work with REST-API's within the bash. It is designed to be used interactively, in scripts or in CI/CD pipelines.
 
 This framework includes the [mustache template engine](https://github.com/tests-always-included/mo) written in bash.
 
-restsh is not a shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, jq and mustache to create your own REST shell.
+restsh is not a shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, jq and mustache to interact with REST-API's.
 
 ## Running interactively
 
@@ -80,8 +80,8 @@ restsh works only inside the bash shell and needs standard Linux utilities like 
 
 Further dependencies are:
 
-- `curl`: 
-- `jq`: to support json payload
+- curl
+- jq
 
 ## Customize
 
