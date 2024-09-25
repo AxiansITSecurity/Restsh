@@ -241,7 +241,7 @@ restsh.upload() {
     return 0
 }
 
-# Issues a DELETE request
+# Executes a HTTP DELETE request
 DELETE() {
     local ARGS=()
     local OPTION OPTIND
@@ -256,6 +256,7 @@ DELETE() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
+        echo "Executes a HTTP DELETE request" 1>&2
         echo "Usage: DELETE [-r] [-c] <uri>" 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
@@ -265,7 +266,7 @@ DELETE() {
     restsh.http "${ARGS[@]}"
 }
 
-# Downloads a file
+# Downloads a file with HTTP
 DOWNLOAD() {
     local ARGS=()
     local OPTION OPTIND
@@ -279,6 +280,7 @@ DOWNLOAD() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ -z "${2+x}" ]  || [ "$OPTION" == "invalid" ]
     then
+        echo "Downloads a file with HTTP"
         echo "Usage: DOWNLOAD [-r] [-c] <uri> <output filename>" 1>&2
         echo -e "\tUse -c to define retries." 1>&2
         return 1
@@ -294,7 +296,7 @@ DOWNLOAD() {
     return 1
 }
 
-# Issues a GET request
+# Executes a HTTP GET request
 GET() {
     local ARGS=()
     local OPTION OPTIND
@@ -309,6 +311,7 @@ GET() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
+        echo "Executes a HTTP GET request" 1>&2
         echo "Usage: GET [-r] [-c] <uri>" 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
@@ -318,7 +321,7 @@ GET() {
     restsh.http "${ARGS[@]}"
 }
 
-# Issues a GET request
+# Executes a HTTP OPTIONS request
 OPTIONS() {
     local ARGS=()
     local OPTION OPTIND
@@ -333,6 +336,7 @@ OPTIONS() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
+        echo "Executes a HTTP OPTIONS request" 1>&2
         echo "Usage: OPTIONS [-r] [-c] <uri>" 1>&2
         echo -e "\tUse -r for raw output." 1>&2
         echo -e "\tUse -c to define retries." 1>&2
@@ -342,7 +346,7 @@ OPTIONS() {
     restsh.http "${ARGS[@]}"
 }
 
-# Issues a PATCH request
+# Executes a HTTP PATCH request
 PATCH() {
     local ARGS=("-b")
     local OPTION OPTIND
@@ -357,6 +361,7 @@ PATCH() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
+        echo "Executes a HTTP PATCH request" 1>&2
         echo "Usage: PATCH [-r] [-c] <uri>" 1>&2
         echo -e "\tPipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
@@ -367,7 +372,7 @@ PATCH() {
     restsh.http "${ARGS[@]}"
 }
 
-# Issues a POST request
+# Executes a HTTP POST request
 POST() {
     local ARGS=("-b")
     local OPTION OPTIND
@@ -382,6 +387,7 @@ POST() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
+        echo "Executes a HTTP POST request" 1>&2
         echo "Usage: POST [-r] [-c] <uri>" 1>&2
         echo -e "\tPipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
@@ -392,7 +398,7 @@ POST() {
     restsh.http "${ARGS[@]}"
 }
 
-# Issues a PUT request
+# Executes a HTTP PUT request
 PUT() {
     local ARGS=("-b")
     local OPTION OPTIND
@@ -407,6 +413,7 @@ PUT() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
+        echo "Executes a HTTP PUT request" 1>&2
         echo "Usage: PUT [-r] [-c] <uri>" 1>&2
         echo -e "\tPipe the payload in the command." 1>&2
         echo -e "\tUse -r for raw output." 1>&2
