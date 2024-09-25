@@ -23,21 +23,18 @@ _indent() {
 
 # Parses the file for functions and its descriptions
 _restsh.help.parse.lib() {
-    local FILE=$1
-    local DESC=""
-    local LINE
+    local LAST_LINE=""
     while read -r LINE
     do
-        [ -z "$LINE" ] && continue
-        if [ -z "$DESC" ]
+        if [ "${LINE:0:1}" = "#" ]
         then
-            DESC=$LINE
-        else
-            CMDS[${LINE}]=$DESC
-            DESC=""
+            LAST_LINE="${LINE:2}"
+        elif [[ $LINE == *"() {" ]]
+        then
+            CMDS[${LINE%%\(*}]=$LAST_LINE
+            LAST_LINE=""
         fi
-    done < <(grep -B1 -- "() {" "$FILE" | grep -v -- "--" | sed -e 's/# //' -e 's/() {//')
-    return 0
+    done < "$1"
 }
 
 # Prints the CMDS array
@@ -48,7 +45,6 @@ _restsh.help.print() {
         echo -e "$K\t${CMDS["$K"]}"
     done | sort | COLUMN | _indent
     unset CMDS
-    return 0
 }
 
 # Show version info
@@ -58,7 +54,6 @@ restsh.help.version() {
 restsh $RESTSH_VERSION
 (c) 2023-2024 Juergen Mang <juergen.mang@axians.de>
 EOL
-    return 0
 }
 
 # Show environment
@@ -73,13 +68,12 @@ restsh.help.showenv() {
             -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
             -e "s/(RESTSH_REFRESH_TOKEN=).*/\1\"***\"/"| \
         sort | sed -e 's/=/\t/' | COLUMN)
-    return 0
 }
 
 # Prints additional modules
 restsh.help.modules() {
     # Print all custom modules
-    echo "Enabled modules":
+    echo "Enabled modules:"
     local MODULE
     {
         for MODULE in "${RESTSH_MODULES[@]}"
@@ -90,7 +84,6 @@ restsh.help.modules() {
             echo -e "$MODULE\t$DESC"
         done
     } | COLUMN | _indent
-    return 0
 }
 
 # Prints all commands from a module
@@ -110,8 +103,8 @@ _restsh.help.modules.cmds() {
     then
         while read -r FILE
         do
-            DESC=$(grep -m1 "# Shortdesc: " "$FILE" | sed 's/# Shortdesc: //')
-            FILE=$(basename "$FILE")
+            DESC=$(_restsh.help.shortdesc.get "$FILE")
+            FILE="${FILE##*/}"
             [ "$FILE" == ".shortdesc" ] && continue
             CMDS[$FILE]=$DESC
         done < <(find "$RESTSH_PATH/bin/$MODULE" -type f ! -name .\*)
@@ -160,17 +153,54 @@ restsh.help() {
         # Print commands from one module
         _restsh.help.modules.cmds "$MODULES"
     fi
-
-    return 0
 }
 
 # Prints the short description
 _restsh.help.shortdesc.get() {
-    grep "^# Shortdesc" "$1" | sed 's/^# Shortdesc: //'
+    while read -r LINE
+    do
+        if [ "${LINE:0:12}" = "# Shortdesc:" ]
+        then
+            echo "${LINE:13}"
+            break
+        fi
+    done < "$1"
+}
+
+# Prints the full description
+_restsh.help.desc.get() {
+    local LINE
+    local P=0
+    while read -r LINE
+    do
+        if [ "$LINE" = "# Desc:" ]
+        then
+            P=1
+        elif [ "$P" -eq 1 ]
+        then
+            [ "${LINE:0:1}" != "#" ] && break
+            echo "${LINE:2}"
+        fi
+    done < "$1"
+    echo ""
+}
+
+# Prints the reference description
+_restsh.help.reference.get() {
+    while read -r LINE
+    do
+        if [ "${LINE:0:12}" = "# Reference:" ]
+        then
+            echo "${LINE:13}"
+            break
+        fi
+    done < "$1"
 }
 
 export -f restsh.help
 export -f restsh.help.modules
 export -f _restsh.help.shortdesc.get
+export -f _restsh.help.desc.get
+export -f _restsh.help.reference.get
 export -f restsh.help.showenv
 export -f restsh.help.version
