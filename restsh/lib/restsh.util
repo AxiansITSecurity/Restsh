@@ -21,6 +21,13 @@ export COLOR_RESET="\033[0m"
 
 # Prints green ok messages to STDERR.
 echo_ok() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints green ok messages to STDERR." 1>&2
+        echo "" 1>&2
+        echo "Usage: echo_ok [echo options] <message>" 1>&2
+        return 2
+    fi
     echo -ne "$COLOR_GREEN"
     echo "$@"
     echo -ne "$COLOR_RESET"
@@ -28,6 +35,13 @@ echo_ok() {
 
 # Prints green ok message in JSON format to STDOUT.
 print_json_ok() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints green ok message in JSON format to STDOUT." 1>&2
+        echo "" 1>&2
+        echo "Usage: print_json_ok <message>" 1>&2
+        return 2
+    fi
     $RESTSH_JQ -n --arg message "$1" \
     '{
         ok: {
@@ -38,6 +52,13 @@ print_json_ok() {
 
 # Prints green ok message in JSON format to STDOUT for curl.
 print_json_ok_curl() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints green ok message in JSON format to STDOUT for curl." 1>&2
+        echo "" 1>&2
+        echo "Usage: print_json_ok_curl <message> <request>" 1>&2
+        return 2
+    fi
     $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
     '{
         ok: {
@@ -49,6 +70,13 @@ print_json_ok_curl() {
 
 # Prints red error messages to STDERR.
 echo_err() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints red error messages to STDERR." 1>&2
+        echo "" 1>&2
+        echo "Usage: echo_err [echo options] <message>" 1>&2
+        return 2
+    fi
     echo -ne "${COLOR_RED}ERROR: " 1>&2
     echo "$@" 1>&2
     echo -ne "$COLOR_RESET" 1>&2
@@ -56,6 +84,13 @@ echo_err() {
 
 # Prints red error message in JSON format to STDOUT.
 print_json_err() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints red error message in JSON format to STDOUT." 1>&2
+        echo "" 1>&2
+        echo "Usage: print_json_err <message>" 1>&2
+        return 2
+    fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
     $RESTSH_JQ -n --arg message "$1" \
     '{
@@ -68,6 +103,13 @@ print_json_err() {
 
 # Prints red error message in JSON format to STDOUT for curl.
 print_json_err_curl() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints red error message in JSON format to STDOUT for curl." 1>&2
+        echo "" 1>&2
+        echo "Usage: print_json_err_curl <message> <output> <request>" 1>&2
+        return 2
+    fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
     local MESSAGE=$1
     local OUTPUT=$2
@@ -90,6 +132,13 @@ print_json_err_curl() {
 
 # Prints yellow warning messages to STDERR.
 echo_warn() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints yellow warning messages to STDERR." 1>&2
+        echo "" 1>&2
+        echo "Usage: echo_warn [echo options] <message>" 1>&2
+        return 2
+    fi
     echo -ne "${COLOR_YELLOW}WARN: " 1>&2
     echo "$@" 1>&2
     echo -ne "$COLOR_RESET" 1>&2
@@ -97,6 +146,13 @@ echo_warn() {
 
 # Prints yellow warning message in JSON format to STDOUT.
 print_json_warn() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints yellow warning message in JSON format to STDOUT." 1>&2
+        echo "" 1>&2
+        echo "Usage: print_json_warn <message>" 1>&2
+        return 2
+    fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
     $RESTSH_JQ -n --arg message "$1" \
     '{
@@ -109,6 +165,13 @@ print_json_warn() {
 
 # Prints yellow warning message in JSON format to STDOUT for curl.
 print_json_warn_curl() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints yellow warning message in JSON format to STDOUT for curl." 1>&2
+        echo "" 1>&2
+        echo "Usage: print_json_warn_curl <message> <request>" 1>&2
+        return 2
+    fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
     $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
     '{
@@ -120,23 +183,51 @@ print_json_warn_curl() {
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
 }
 
-# Shortcut for $RESTSH_MO.
+# Shortcut to call the mustache template engine.
 MO() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Shortcut to call the mustache template engine." 1>&2
+        echo "" 1>&2
+        $RESTSH_MO -h 1>&2
+        return 2
+    fi
     $RESTSH_MO "$@"
 }
 
-# Shortcut for $RESTSH_JQ.
+# Shortcut to call jq.
 JQ() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Shortcut to call jq." 1>&2
+        echo "" 1>&2
+        jq -h 1>&2
+        return 2
+    fi
     $RESTSH_JQ "$@"
 }
 
 # Shortcut for xargs, running the command sequentially and only with one parameter.
 XARGS() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Shortcut for xargs, running the command sequentially and only with one parameter." 1>&2
+        echo "" 1>&2
+        xargs --help 1>&2
+        return 2
+    fi
     xargs -n1 -P1 "$@"
 }
 
-# Replacement for the column command, separator is tab
+# Replacement for the column command, separator is tab.
 COLUMN() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Replacement for the column command that reads input from stdin, separator is tab." 1>&2
+        echo "" 1>&2
+        echo "Usage: COLUMN [-N <comma separated column names>] [-o <output separator>]" 1>&2
+        return 2
+    fi
     local COLUMN_NAMES=""
     local OUTPUT_SEPARATOR=""
     local OPTION OPTIND
@@ -184,6 +275,13 @@ COLUMN() {
 
 # Sets the RESTSH_CURL_OPTIONS environment variable.
 restsh.util.setcurloptions() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Sets the RESTSH_CURL_OPTIONS environment variable." 1>&2
+        echo "" 1>&2
+        echo "Usage: restsh.util.setcurloptions" 1>&2
+        return 2
+    fi
     RESTSH_CURL_OPTS=("$RESTSH_CURL_OPT_FAIL" "--show-error")
 
     if [ "$RESTSH_CURL_INSECURE" -eq 1 ]
@@ -213,13 +311,14 @@ restsh.util.setcurloptions() {
     esac
 
     export RESTSH_CURL_OPTS
-    return 0
 }
 
 # Parses a command output according to the RESTSH_CONTENT environment variable.
 restsh.util.parseoutput() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
+        echo "Parses a command output according to the RESTSH_CONTENT environment variable." 1>&2
+        echo "" 1>&2
         echo "Usage: restsh.util.parseoutput <text>" 1>&2
         return 1
     fi
@@ -235,15 +334,17 @@ restsh.util.parseoutput() {
             echo "$OUT"
         ;;
     esac
-    return 0
 }
 
-# Reads variables from a directory. .txt extension for simple variables, .array for arrays.
+# Declares variables from a directory. .txt extension for simple variables, .array for arrays.
 restsh.util.setvars() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
+        echo "Declares variables from a directory. .txt extension for simple variables, .array for arrays." 1>&2
+        echo "See restsh.util.setvar -h for further details" 1>&2
+        echo "" 1>&2
         echo "Usage: restsh.util.setvars <directory>" 1>&2
-        return 1
+        return 2
     fi
     local DIR=$1
     echo "Reading configuration from \"$DIR\""
@@ -254,12 +355,17 @@ restsh.util.setvars() {
     done < <(find "$DIR" -maxdepth 1 -type f -name \*.txt -or -name \*.array)
 }
 
-# Reads a variable from a file. .txt extension for simple variable, .array for array.
+# Declares a variable from a file. .txt extension for simple variable, .array for array.
 restsh.util.setvar() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
+        echo "Declares a variable from a file. .txt extension for simple variable, .array for array." 1>&2
+        echo "  .txt files are treated as vairable and declared as VAR_<file basename>" 1>&2
+        echo "  .array files are treated as array and declared as ARRAY_<file basename>" 1>&2
+        echo "Blank lines and lines starting with # are ignored." 1>&2
+        echo "" 1>&2
         echo "Usage: restsh.util.setvar <file>" 1>&2
-        return 1
+        return 2
     fi
     local FILE=$1
     local EXT="${FILE##*.}"
@@ -300,16 +406,23 @@ restsh.util.setvar() {
 
 # URL encoding
 restsh.util.urlencode() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
+        echo "URL encoding" 1>&2
         echo "Usage: restsh.util.urlencode <string>" 1>&2
-        return 1
+        return 2
     fi
     $RESTSH_JQ -rn --arg x "$1" '$x | @uri' | tr -d "\n"
 }
 
 # JSON validation, pipe string to stdin
 restsh.util.json_validate() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "JSON validation, pipe string to stdin" 1>&2
+        echo "Usage: restsh.util.json_validate" 1>&2
+        return 2
+    fi
     local JSON
     JSON=$(cat)
     if ! ERROR=$(jq "." <<< "$JSON" 2>&1 >/dev/null)
@@ -345,20 +458,30 @@ restsh.util.json_validate() {
         echo "--"
         return 1
     fi
-    return 0
 }
 
 # Returns 1 if string is undefined, length is zero, contains only whitespaces or is null
 restsh.util.check.notempty() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null" 1>&2
+        echo "Usage: restsh.util.check.notempty <value>" 1>&2
+        return 2
+    fi
     if [ -z "${1+x}" ] || [ -z "${1//[[:blank:]]/}" ] || [ "${1}" = "null" ]
     then
         return 1
     fi
-    return 0
 }
 
 # Declares a variable KEY=VALUE
 restsh.util.declare.var() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Declares a variable KEY=VALUE" 1>&2
+        echo "Usage: restsh.util.declare.var KEY=VALUE" 1>&2
+        return 2
+    fi
     local DEF=$1
     local KEY=${DEF%%=*}
     local VALUE=${DEF##*=}
@@ -367,13 +490,13 @@ restsh.util.declare.var() {
         return 1
     fi
     export "$KEY"="$VALUE"
-    return 0
 }
 
 # Get file size
 restsh.util.filesize() {
-    if [ -z "${1+x}" ]
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
+        echo "Get file size" 1>&2
         echo "Usage: restsh.util.filesize <filename>" 1>&2
         return 2
     fi
@@ -385,8 +508,14 @@ restsh.util.filesize() {
     return 1
 }
 
-# Check if first argument is in array (other arguments)
+# Check if first argument is in array (following arguments)
 restsh.util.array.includes() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Check if first argument is in array (following arguments)" 1>&2
+        echo "Usage: restsh.util.array.includes <needle> <haystack>" 1>&2
+        return 2
+    fi
     local NEEDLE=$1
     shift
     local HAYSTACK

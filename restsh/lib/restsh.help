@@ -29,9 +29,10 @@ _restsh.help.parse.lib() {
         if [ "${LINE:0:1}" = "#" ]
         then
             LAST_LINE="${LINE:2}"
-        elif [[ $LINE == *"() {" ]]
+        elif [[ "$LINE" == *"() {" ]]
         then
-            CMDS[${LINE%%\(*}]=$LAST_LINE
+            LINE="${LINE%%\(*}"
+            CMDS["$LINE"]="$LAST_LINE"
             LAST_LINE=""
         fi
     done < "$1"
