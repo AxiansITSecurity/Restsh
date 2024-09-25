@@ -90,7 +90,7 @@ restsh.http() {
 restsh.download() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Download a file in chunks of ${CHUNK_SIZE} bytes." 1>&2
+        echo "Download a file in chunks of ${RESTSH_CHUNK_SIZE} bytes." 1>&2
         echo "Usage: restsh.download <uri> <size> <filename>" 1>&2
         echo "Use 0 for <size> to enable auto-detection of the size." 1>&2
         return 1
