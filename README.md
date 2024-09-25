@@ -70,10 +70,10 @@ export RESTSH_PATH="/path/to/restsh"
 | Prefix | Description |
 | ------ | ----------- |
 | cert | Certificate handling |
-| f5 | [F5 BIG-IP Classic](README.F5.md) |
-| gitlab | [GitLab](README.gitlab.md) |
-| next | [F5 BIG-IP Next](README.F5next.md) |
-| scm | [Sectigo Cert Manager](README.scm.md) |
+| f5 | F5 BIG-IP Classic |
+| gitlab | GitLab |
+| next | F5 BIG-IP Next |
+| scm | Sectigo Cert Manager |
 
 ## Dependencies
 
