@@ -2,7 +2,7 @@
 
 ***
 
-# tbd
+## tbd
 
 - Feat: Support "-h" help option for all functions
 - Feat: Add f5.cluster.standby
@@ -11,7 +11,7 @@
 
 ***
 
-# 24.09.11
+## 24.09.11
 
 - Feat: Add f5.asm.advanced-settings functions
 - Feat: Sectigo Cert Manager Integration
@@ -22,7 +22,7 @@
 
 ***
 
-# 24.08.01
+## 24.08.01
 
 - Feat: Add certificate csr and key functions
 - Feat: Add F5 cluster functions
