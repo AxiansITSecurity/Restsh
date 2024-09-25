@@ -23,7 +23,7 @@ fi
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <tenant> <app>"
     exit 2
 fi

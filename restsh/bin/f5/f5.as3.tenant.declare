@@ -39,7 +39,7 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] [-sVAR=VALUE] <as3 declaration file>"
     echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
     echo -e "\t-k\tKeeps the temporary files."

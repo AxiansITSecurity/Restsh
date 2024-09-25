@@ -34,7 +34,7 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <signature set name>"
     echo "Pipe the list of signature ids to STDIN, one signature per line."
     echo "Ignores lines starting with #."

@@ -35,7 +35,7 @@ shift "$((OPTIND -1))"
 if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-m] [-e] <group id> <key> <value>"
     echo -e "\t-e Expand variable"
     echo -e "\t-m Mask variable"

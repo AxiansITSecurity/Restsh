@@ -38,7 +38,7 @@ shift "$((OPTIND -1))"
 if [ $# -lt 1 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage:"
     echo "$(basename "$0") [-t <modify template>] [-d variables file] [-sVAR=VALUE] <policy full path>"
     echo ""

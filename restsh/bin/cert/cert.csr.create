@@ -21,7 +21,7 @@ fi
 
 usage() {
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") --cn=<common name> <key file> <csr file>"
     echo "Options:"
     echo -e "\t-a <dns alternative name>"

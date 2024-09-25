@@ -37,7 +37,7 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage:"
     echo "$(basename "$0") [-t <modify template>] [-d variables file] [-sVAR=VALUE] <policy full path> <filetype>"
     echo ""

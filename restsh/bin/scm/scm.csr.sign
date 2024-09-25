@@ -21,7 +21,7 @@ fi
 
 usage() {
     exec 1>&2
-    _restsh.help.shortdesc.get "$0"
+    _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <csr file>"
     echo -e "\t-a\tDNS Alternative Name"
     echo -e "\t-o\tOrganization ID: GET /api/organization/v1"
