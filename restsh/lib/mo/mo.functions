@@ -79,7 +79,7 @@ MO_VALUE_EXPAND_OR_DEFAULT() {
 MO_TRUE_IF_NOT_EMPTY() {
     local ARG=${MO_FUNCTION_ARGS[0]}
     local VALUE="${!ARG}"
-    if [ -n "$VALUE" ]
+    if [ -n "${VALUE+x}" ]
     then
         printf "true"
     else
@@ -148,6 +148,7 @@ MO_INCLUDE_JSON_ENCODE() {
 }
 
 # Parses the file with mustache before including it
+# Usage: {{MO_INCLUDE_PARSE '<filename>'}}
 MO_INCLUDE_PARSE() {
     $RESTSH_MO -- "${MO_FUNCTION_ARGS[0]}"
 }

@@ -21,29 +21,46 @@ _indent() {
     done
 }
 
-# Parses the file for functions and its descriptions
+# Parses the file for functions and its descriptions.
+# The description must be directly above the function definition.
 _restsh.help.parse.lib() {
-    local LAST_LINE=""
+    local LAST_LINES=()
     while read -r LINE
     do
         if [ "${LINE:0:1}" = "#" ]
         then
-            LAST_LINE="${LINE:2}"
+            LAST_LINES+=("${LINE:2}")
         elif [[ "$LINE" == *"() {" ]]
         then
             LINE="${LINE%%\(*}"
-            CMDS["$LINE"]="$LAST_LINE"
-            LAST_LINE=""
+            CMDS["$LINE"]=$(printf "\t%s\n" "${LAST_LINES[@]}")
+            LAST_LINES=()
+        else
+            LAST_LINES=()
         fi
     done < "$1"
 }
 
-# Prints the CMDS array
+# Prints the CMDS array with full description.
+_restsh.help.print.multiline() {
+    local K
+    for K in "${!CMDS[@]}"
+    do
+        echo -e "$K\n${CMDS["$K"]}"
+        echo ""
+    done
+    unset CMDS
+}
+
+# Prints the CMDS array and the first line of the description.
+# Output is in columns.
 _restsh.help.print() {
     local K
     for K in "${!CMDS[@]}"
     do
-        echo -e "$K\t${CMDS["$K"]}"
+        local DESC=${CMDS["$K"]}
+        DESC="${DESC%%$'\n'*}"
+        echo -e "$K$DESC"
     done | sort | COLUMN | _indent
     unset CMDS
 }
