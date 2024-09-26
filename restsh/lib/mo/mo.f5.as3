@@ -33,12 +33,13 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
             declare "$NAME"="$VALUE"
         fi
     done
-    echo "Including snippet: $JSON_FILE" 1>&2
+    echo "Including declaration: $JSON_FILE" 1>&2
     if ! $RESTSH_MO -- "$JSON_FILE" | \
         JQ -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
             sed -e 's/^{$//' -e 's/^}$//'
     then
         echo_err "JSON failure including $JSON_FILE"
+        $RESTSH_MO -- "$JSON_FILE" 2>/dev/null | restsh.util.json_validate 1>&2
         return 1
     fi
     return 0
