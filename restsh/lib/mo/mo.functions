@@ -154,6 +154,7 @@ MO_INCLUDE_PARSE() {
 }
 
 # Parses the variable with mustache before including it
+# Usage: {{MO_VAR_PARSE '<text>'}}
 MO_VAR_PARSE() {
     local ARG="${MO_FUNCTION_ARGS[0]}"
     local VALUE="${!ARG}"
