@@ -53,7 +53,7 @@ _restsh.help.print.multiline() {
 }
 
 # Prints the CMDS array and the first line of the description.
-# Output is in columns.
+# Output is formated in columns.
 _restsh.help.print() {
     local K
     for K in "${!CMDS[@]}"
@@ -70,7 +70,8 @@ restsh.help.version() {
     cat << EOL
 
 restsh $RESTSH_VERSION
-(c) 2023-2024 Juergen Mang <juergen.mang@axians.de>
+(c) Axians IT-Security GmbH
+Juergen Mang <juergen.mang@axians.de>
 EOL
 }
 
