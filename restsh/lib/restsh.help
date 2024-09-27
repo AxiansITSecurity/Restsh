@@ -33,7 +33,7 @@ _restsh.help.parse.lib() {
         elif [[ "$LINE" == *"() {" ]]
         then
             LINE="${LINE%%\(*}"
-            CMDS["$LINE"]=$(printf "\t%s\n" "${LAST_LINES[@]}")
+            CMDS["$LINE"]=$(printf "%s\n" "${LAST_LINES[@]}")
             LAST_LINES=()
         else
             LAST_LINES=()
@@ -60,7 +60,7 @@ _restsh.help.print() {
     do
         local DESC=${CMDS["$K"]}
         DESC="${DESC%%$'\n'*}"
-        echo -e "$K$DESC"
+        echo -e "$K\t$DESC"
     done | sort | COLUMN | _indent
     unset CMDS
 }
