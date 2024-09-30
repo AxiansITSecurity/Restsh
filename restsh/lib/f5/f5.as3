@@ -46,7 +46,7 @@ f5.as3.taskwait() {
         fi
         COUNTER=$((COUNTER+1))
         local STATUS
-        if ! STATUS=$(GET -r "$CHECK_TASK_URI" | \
+        if ! STATUS=$(GET -c 5 -r "$CHECK_TASK_URI" | \
             $RESTSH_JQ -r ".results[] | .code" | tr '\n' ' ')
         then
             echo_err "Could not get task status."

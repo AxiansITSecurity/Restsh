@@ -7,6 +7,7 @@
 - Feat: Support "-h" help option for all functions
 - Feat: Add f5.cluster.standby
 - Feat: Add f5.asm.policy.unused
+- Upd: Add retry to get task status from F5
 - Fix: entity.urls-allowed.json
 - Fix: Migrate f5.cluster.setactive to lib
 

@@ -35,7 +35,7 @@ f5.pkg.taskwait() {
         fi
         COUNTER=$((COUNTER+1))
         local STATUS
-        if ! STATUS=$(GET -r "$CHECK_TASK_URI" | \
+        if ! STATUS=$(GET -c 5 -r "$CHECK_TASK_URI" | \
             $RESTSH_JQ -r ".status")
         then
             echo_err "Could not get task status."

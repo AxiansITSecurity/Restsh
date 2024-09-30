@@ -134,7 +134,7 @@ f5.asm.taskwait() {
         fi
         COUNTER=$((COUNTER+1))
         local STATUS
-        if ! STATUS=$(GET -r "/mgmt/tm/asm/tasks/$TASK_ENTITY?\$select=id,status" | \
+        if ! STATUS=$(GET -c 5 -r "/mgmt/tm/asm/tasks/$TASK_ENTITY?\$select=id,status" | \
             $RESTSH_JQ -r ".items[] | select(.id == \"$TASK_ID\") | .status")
         then
             echo_err "Could not get task status."
