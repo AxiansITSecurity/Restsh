@@ -53,7 +53,7 @@ TASK_ID=$($RESTSH_JQ -n --arg name "$F5_DIR/$NAME" \
 if ! PUT -r "$UCS_TASK_ENDPOINT/$TASK_ID" <<< '{"_taskState":"VALIDATING"}' > /dev/null
 then
     echo_err "Could not start task with id \"$TASK_ID\""
-    return 1
+    exit 1
 fi
 
 # Wait for finish
@@ -66,13 +66,13 @@ do
     if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
     then
         echo "Timeout waiting for task."
-        return 1
+        exit 1
     fi
     COUNTER=$((COUNTER+1))
     if ! STATUS=$(GET -r -c 5 "$UCS_TASK_ENDPOINT/$TASK_ID" | \
         $RESTSH_JQ -r "._taskState")
     then
-        break
+        exit 1
     fi
     case "$STATUS" in
         STARTED|NEW|"")
@@ -86,7 +86,7 @@ do
             echo "Unhandled task status: $STATUS"
             # Print task result message
             GET -r "$UCS_TASK_ENDPOINT/$TASK_ID"
-            return 1
+            exit 1
     esac
 done
 
