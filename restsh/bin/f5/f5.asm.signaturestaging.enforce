@@ -4,7 +4,7 @@
 # Date: 2024-05-02
 # Shortdesc: Enforces all ready to be enforced signatures.
 # Desc:
-# Manages Enforces all ready to be enforced signatures.
+# Enforces all ready to be enforced signatures.
 
 # Strict error handling
 set -eEu -o pipefail
