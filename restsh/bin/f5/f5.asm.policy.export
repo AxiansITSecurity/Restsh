@@ -35,6 +35,7 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-f <json|xml|binary>] <policy fullPath> <filename>"
+    echo "Default format: json"
     exit 2
 fi
 
