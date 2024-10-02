@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-08
 
-# Shortdesc: Updates a group variable.
+# Shortdesc: Updates a group CI/CD variable.
 # Desc:
-# Updates a group variable.
+# Updates a group CI/CD variable.
 
 # Strict error handling
 set -eEu -o pipefail

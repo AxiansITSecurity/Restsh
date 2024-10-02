@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-08
 
-# Shortdesc: Deletes a group variable.
+# Shortdesc: Deletes a group CI/CD variable.
 # Desc:
-# Deletes a group variable.
+# Deletes a group CI/CD variable.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -31,7 +31,7 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m] [-e] <group id> <key>"
+    echo "Usage: $(basename "$0") <group id> <key>"
     exit 2
 fi
 

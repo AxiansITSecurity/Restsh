@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-08
 
-# Shortdesc: Lists all group variables.
+# Shortdesc: Lists all group CI/CD variables.
 # Desc:
-# Lists all group variables.
+# Lists all group CI/CD variables.
 
 # Strict error handling
 set -eEu -o pipefail

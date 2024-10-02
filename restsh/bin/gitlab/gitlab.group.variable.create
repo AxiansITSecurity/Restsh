@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-08
 
-# Shortdesc: Creates a group variable.
+# Shortdesc: Creates a group CI/CD variable.
 # Desc:
-# Creates a group variable.
+# Creates a group CI/CD variable.
 
 # Strict error handling
 set -eEu -o pipefail
