@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-10-01
+
+# Shortdesc: Creates GitLab CI/CD project variables from a csv.
+# Desc:
+# Creates GitLab CI/CD project variables from a csv.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+RESOLV_ENV=0
+while getopts ':he' OPTION
+do
+    case "$OPTION" in
+        e) RESOLV_ENV=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+then
+  exec 1>&2
+  _restsh.help.desc.get "$0"
+  echo "Usage: $(basename "$0") [-e] <project id> <csv>"
+  echo "  -e Resolve environment variables for value"
+  echo "CSV format: key,value,masked,raw,desc"
+  exit 2
+fi
+
+PROJECT=$1
+CSV=$2
+
+while IFS="," read -r KEY VALUE MASKED RAW DESC
+do
+    OPTS=()
+    [ "$MASKED" = "true" ] && OPTS+=("-m")
+    [ "$RAW" = "false" ] && OPTS+=("-e")
+    if [ "$RESOLV_ENV" -eq 1 ]
+    then
+        VALUE=$(envsubst <<< "$VALUE")
+    fi
+    gitlab.project.variable.create "${OPTS[@]}" -- "$PROJECT" "$KEY" "$VALUE" "$DESC"
+done < <(grep -v -P '^(#|\s*$)' "$CSV")
+
+exit 0

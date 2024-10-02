@@ -4,6 +4,8 @@
 
 ## tbd
 
+- Feat: Management for GitLab Project CI/CD Variables
+- Feat: Resolve variables in gitlab.group.variable.batch for value
 - Feat: Support "-h" help option for all functions
 - Feat: Add f5.cluster.standby
 - Feat: Add f5.asm.policy.unused
