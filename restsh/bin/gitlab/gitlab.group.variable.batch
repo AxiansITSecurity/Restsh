@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+RESOLV_ENV=0
+while getopts ':he' OPTION
 do
     case "$OPTION" in
+        e) RESOLV_ENV=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,7 +33,9 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
   exec 1>&2
   _restsh.help.desc.get "$0"
-  echo "Usage: $(basename "$0") <group id> <csv>"
+  echo "Usage: $(basename "$0") [-e] <group id> <csv>"
+  echo "  -e Resolve environment variables for value"
+  echo "CSV format: key,value,masked,raw,desc"
   exit 2
 fi
 
@@ -43,8 +47,10 @@ do
     OPTS=()
     [ "$MASKED" = "true" ] && OPTS+=("-m")
     [ "$RAW" = "false" ] && OPTS+=("-e")
-    VALUE=${VALUE//__GROUP_NAME__/$GROUP_NAME}
-    VALUE=${VALUE//__GITLAB_HOST__/$RESTSH_HOST}
+    if [ "$RESOLV_ENV" -eq 1 ]
+    then
+        VALUE=$(envsubst <<< "$VALUE")
+    fi
     gitlab.group.variable.create "${OPTS[@]}" -- "$GROUP" "$KEY" "$VALUE" "$DESC"
 done < <(grep -v -P '^(#|\s*$)' "$CSV")
 
