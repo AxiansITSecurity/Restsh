@@ -9,6 +9,7 @@
 
 # Recursively includes an json path from/in an AS3 declaration, removes .class, .template, .remark and .label keys.
 # Supports up to 10 KEY=VALUE pairs as arguments.
+# Arguments are accesibly with ARG_ prefix.
 # Usage: {{MO_F5_AS3_INCLUDE_DECLARATION '<json file>' '<json path>' 'VAR1=VALUE1'}}
 MO_F5_AS3_INCLUDE_DECLARATION() {
     local JSON_FILE=${MO_FUNCTION_ARGS[0]}
@@ -46,6 +47,7 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
 }
 
 # Includes all iRules from specified folder.
+# iRule Files must end with .irule.
 # Usage: {{MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER '<folder>'}}
 MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER() {
     [ -z "${MO_FUNCTION_ARGS[0]+x}" ] && return 1
@@ -74,6 +76,7 @@ EOL
 }
 
 # Includes all iFiles from specified folder.
+# All files but hidden are included.
 # Usage: {{MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER '<folder>'}}
 MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER() {
     [ -z "${MO_FUNCTION_ARGS[0]+x}" ] && return 1
