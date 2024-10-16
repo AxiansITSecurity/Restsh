@@ -474,6 +474,22 @@ restsh.util.check.notempty() {
     fi
 }
 
+# Returns 1 if value is not a number
+restsh.util.check.isnumber() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Returns 1 if value is not a number" 1>&2
+        echo "Usage: restsh.util.check.isnumber <value>" 1>&2
+        return 2
+    fi
+    local REGEX_NUM='^[0-9]+$'
+    if [[ "$1" =~ $REGEX_NUM ]]
+    then
+        return 0
+    fi
+    return 1
+}
+
 # Declares a variable KEY=VALUE
 restsh.util.declare.var() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
@@ -547,6 +563,7 @@ export -f restsh.util.setvar
 export -f restsh.util.urlencode
 export -f restsh.util.json_validate
 export -f restsh.util.check.notempty
+export -f restsh.util.check.isnumber
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
 export -f restsh.util.array.includes
