@@ -13,6 +13,7 @@
 - Upd: Add retry to get task status from F5
 - Fix: entity.urls-allowed.json
 - Fix: Migrate f5.cluster.setactive to lib
+- Fix: Use correct API endpoint for f5.as3.app.remove
 
 ***
 

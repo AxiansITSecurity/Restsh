@@ -32,7 +32,7 @@ TENANT=$1
 APP=$2
 
 # Main
-if ! TASK_ID=$(DELETE "/appsvcs/declare/${TENANT}/applications/${APP}?async=true" | \
+if ! TASK_ID=$(DELETE "/mgmt/shared/appsvcs/declare/${TENANT}/applications/${APP}?async=true" | \
         jq -r ".id")
 then
     echo_err "Posting the declaration failed."
