@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-06-13
 
-# Shortdesc: Exports a project.
+# Shortdesc: Exports a repository.
 # Desc:
-# Exports a project.
+# Exports a repository.
 
 # Strict error handling
 set -eEu -o pipefail
