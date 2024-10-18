@@ -36,7 +36,7 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
     done
     echo "Including declaration: $JSON_FILE" 1>&2
     if ! $RESTSH_MO -- "$JSON_FILE" | \
-        JQ -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
+        JQE -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
             sed -e 's/^{$//' -e 's/^}$//'
     then
         echo_err "JSON failure including $JSON_FILE"

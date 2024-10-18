@@ -12,6 +12,7 @@
 - Feat: Add restsh.util.check.isnumber
 - Feat: Add gitlab.group.delete
 - Feat: Add gitlab.project.delete
+- Feat: Add JQE - jq exits with 1 on null or false
 - Upd: Add retry to get task status from F5
 - Fix: entity.urls-allowed.json
 - Fix: Migrate f5.cluster.setactive to lib

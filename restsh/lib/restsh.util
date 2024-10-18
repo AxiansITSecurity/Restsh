@@ -207,6 +207,18 @@ JQ() {
     $RESTSH_JQ "$@"
 }
 
+# Shortcut to call jq, exits with 1 on null or false.
+JQE() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Shortcut to call jq." 1>&2
+        echo "" 1>&2
+        jq -h 1>&2
+        return 2
+    fi
+    $RESTSH_JQ -e "$@"
+}
+
 # Shortcut for xargs, running the command sequentially and only with one parameter.
 XARGS() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
@@ -555,6 +567,7 @@ export -f print_json_warn_curl
 export -f COLUMN
 export -f MO
 export -f JQ
+export -f JQE
 export -f XARGS
 export -f restsh.util.setcurloptions
 export -f restsh.util.parseoutput
