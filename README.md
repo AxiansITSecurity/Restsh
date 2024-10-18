@@ -41,6 +41,21 @@ You can use custom config files to work with several api endpoints. If not defin
 restsh/restsh.start custom-config1
 ```
 
+### Password encryption
+
+You can store the RESTSH_PASS AES256 encrypted in the configuration file.
+
+```sh
+openssl enc -aes-256-cbc -pbkdf2 -a -k "Secret" <<< "Password"
+```
+
+- Secret: Secret for encryption
+- Password: Password to encrypt
+- Define the RESTSH_PASS variable as `AES256:<output of above command>`.
+
+You can define the secret in `RESTSH_SECRET` environment variable before starting restsh.
+In interactive mode, restsh asks for the secret if it is not defined. In script mode it terminates with an error.
+
 ### Debug
 
 Print all executed commands and enables verbose mode of curl.
@@ -77,7 +92,7 @@ export RESTSH_PATH="/path/to/restsh"
 
 ## Dependencies
 
-restsh works only inside the bash shell and needs standard Linux utilities like sed, grep, etc.
+restsh works only inside the bash shell and requires standard Linux utilities like sed, grep, etc.
 
 Further dependencies are:
 

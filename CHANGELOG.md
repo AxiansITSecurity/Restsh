@@ -4,6 +4,7 @@
 
 ## tbd
 
+- Feat: Support of AES256 encrypted password
 - Feat: Management for GitLab Project CI/CD Variables
 - Feat: Resolve variables in gitlab.group.variable.batch for value
 - Feat: Support "-h" help option for all functions

@@ -115,6 +115,31 @@ fi
 RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
+# Decrypt password
+if [ "${RESTSH_PASS:0:7}" = "AES256:" ]
+then
+    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    then
+        if [ -n "${RESTSH_INTERACTIVE+x}" ]
+        then
+            echo "Password is encrypted."
+            if ! RESTSH_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${RESTSH_PASS:7}")
+            then
+                echo_err "Decryption of password failed."
+                exit 1
+            fi
+        else
+            echo_err "Password is encrypted, but secret for decryption is not set."
+            echo_err "Set it with: export RESTSH_SECRET=\"secret\"".
+            exit 1
+        fi
+    elif ! RESTSH_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_PASS:7}")
+    then
+        echo_err "Decryption of password failed."
+        exit 1
+    fi
+fi
+
 # Set restsh url
 restsh.init.setresturl
 
