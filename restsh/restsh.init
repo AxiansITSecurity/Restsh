@@ -116,7 +116,7 @@ RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Decrypt password
-if [ "${RESTSH_PASS:0:7}" = "AES256:" ]
+if [ -n "${RESTSH_PASS+x}" ] && [ "${RESTSH_PASS:0:7}" = "AES256:" ]
 then
     if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
     then
