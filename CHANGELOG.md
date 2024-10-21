@@ -4,7 +4,9 @@
 
 ## tbd
 
-- Feat: Support of AES256 encrypted password
+- Note: Not setting RESTSH_MODULES is now deprecated.
+- Feat: Support of AES256 encrypted RESTSH_PASS and SCM_SECRET
+- Feat: Add restsh.util.encrypt, restsh.util.decrypt
 - Feat: Management for GitLab Project CI/CD Variables
 - Feat: Resolve variables in gitlab.group.variable.batch for value
 - Feat: Support "-h" help option for all functions

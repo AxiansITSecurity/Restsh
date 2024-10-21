@@ -45,16 +45,15 @@ restsh/restsh.start custom-config1
 
 You can store the RESTSH_PASS AES256 encrypted in the configuration file.
 
-```sh
-openssl enc -aes-256-cbc -pbkdf2 -a -k "Secret" <<< "Password"
-```
+- Start restsh
+- Create the encrypted password string:
 
-- Secret: Secret for encryption
-- Password: Password to encrypt
-- Define the RESTSH_PASS variable as `AES256:<output of above command>`.
+    ```sh
+    restsh.util.encrypt
+    ```
 
-You can define the secret in `RESTSH_SECRET` environment variable before starting restsh.
-In interactive mode, restsh asks for the secret if it is not defined. In script mode it terminates with an error.
+- Exit restsh and define the RESTSH_PASS variable as `<output of above command>`, beginning with AES256:.
+- In interactive mode, restsh asks for the secret if it is not defined in RESTSH_SECRET. In script mode it terminates with an error.
 
 ### Debug
 
