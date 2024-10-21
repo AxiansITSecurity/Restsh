@@ -11,9 +11,10 @@
 # Check if we are in a valid GitLab CI/CD pipeline
 if [ -n "${CI_PROJECT_DIR+x}" ] && [ -d "${CI_PROJECT_DIR}/restsh/restsh" ]
 then
-    # In GitLab pipeline
-    # Use empty .restsh-config, settings must be set by CI/CD variables.
-    [ -f "$CI_PROJECT_DIR/.restsh-config" ] || echo "#" > "$CI_PROJECT_DIR/.restsh-config"
+    # In GitLab pipeline.
+    # If there is no .restsh-config create an empty one.
+    # Settings can be defined by CI/CD variables.
+    [ -s "$CI_PROJECT_DIR/.restsh-config" ] || echo "#" > "$CI_PROJECT_DIR/.restsh-config"
     export RESTSH_CONFIG="$CI_PROJECT_DIR/.restsh-config"
     export RESTSH_PATH="$CI_PROJECT_DIR/restsh/restsh"
 fi
