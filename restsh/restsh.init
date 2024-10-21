@@ -63,9 +63,16 @@ then
     set -x
 fi
 
+# Include general functions
+while read -r LINE
+do
+    . "$LINE"
+done < <(find "$RESTSH_PATH/lib" -maxdepth 1 -type f ! -name .\*)
+
 # Check for enabled modules, enable all if not defined
 if [ -z "${RESTSH_MODULES+x}" ]
 then
+    echo_warn "Not setting RESTSH_MODULES is deprecated."
     # Include all modules
     RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
 fi
@@ -83,12 +90,6 @@ do
     fi
 done
 export PATH
-
-# Include general functions
-while read -r LINE
-do
-    . "$LINE"
-done < <(find "$RESTSH_PATH/lib" -maxdepth 1 -type f ! -name .\*)
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"
