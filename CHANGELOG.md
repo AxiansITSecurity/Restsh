@@ -2,7 +2,7 @@
 
 ***
 
-## tbd
+## 24.10.21
 
 - Note: Not setting RESTSH_MODULES is now deprecated.
 - Feat: Support of AES256 encrypted RESTSH_PASS and SCM_SECRET
