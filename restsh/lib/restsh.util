@@ -554,6 +554,57 @@ restsh.util.array.includes() {
     return 1
 }
 
+# AES256 encryption of string. Prepends AES256:.
+# Uses RESTSH_SECRET if defined, else asks for secret.
+restsh.util.encrypt() {
+    if [ -n "${1+x}" ] && [ "$1" = "-h" ]
+    then
+        echo "AES256 encryption of string." 1>&2
+        echo "Usage: restsh.util.encrypt" 1>&2
+        echo "Uses RESTSH_SECRET if defined, else asks for secret." 1>&2
+        return 2
+    fi
+    local SECRET
+    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    then
+        read -s -r -p "Secret: " SECRET
+        echo ""
+    else
+        SECRET="$RESTSH_SECRET"
+    fi
+    local TOENCRYPT
+    read -s -r -p "String to encrypt: " TOENCRYPT
+    echo ""
+    local ENCRYPTED=$(openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a <<< "$TOENCRYPT")
+    echo "AES256:$ENCRYPTED"
+}
+
+# AES256 decryption of string. String to decrypt must start with AES256:.
+# Uses RESTSH_SECRET if defined, else asks for secret.
+restsh.util.decrypt() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "AES256 decryption of string." 1>&2
+        echo "Usage: restsh.util.decrypt <string>" 1>&2
+        echo "Uses RESTSH_SECRET if defined, else asks for secret." 1>&2
+        return 2
+    fi
+    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    then
+        read -s -r -p "Secret: " SECRET
+        echo ""
+    else
+        SECRET="$RESTSH_SECRET"
+    fi
+    TODECRYPT=$1
+    if [ "${TODECRYPT:0:7}" != "AES256:" ]
+    then
+        echo_err "String must start with \"AES256:\""
+        return 1
+    fi
+    openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a -d <<< "${TODECRYPT:7}"
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -580,3 +631,5 @@ export -f restsh.util.check.isnumber
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
 export -f restsh.util.array.includes
+export -f restsh.util.decrypt
+export -f restsh.util.encrypt
