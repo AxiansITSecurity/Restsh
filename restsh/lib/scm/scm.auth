@@ -22,11 +22,38 @@ scm.auth.login() {
         echo "Usage: scm.auth.login" 1>&2
         return 2
     fi
+
     if [ -z "${SCM_CLIENTID+x}" ] || [ -z "${SCM_SECRET+x}" ]
     then
-        echo_err "You must define SCM_CLIENTID and SCM_SECRET"
+        echo_err "You must define SCM_CLIENTID and SCM_SECRET."
         return 1
     fi
+
+    # Decrypt client secret
+    if [ "${SCM_SECRET:0:7}" = "AES256:" ]
+    then
+        if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+        then
+            if [ -n "${RESTSH_INTERACTIVE+x}" ]
+            then
+                echo "Client secret is encrypted."
+                if ! SCM_SECRET=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${SCM_SECRET:7}")
+                then
+                    echo_err "Decryption of client secret failed."
+                    return 1
+                fi
+            else
+                echo_err "Client secret is encrypted, but secret for decryption is not set."
+                echo_err "Set it with: export RESTSH_SECRET=\"secret\"".
+                return 1
+            fi
+        elif ! SCM_SECRET=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${SCM_SECRET:7}")
+        then
+            echo_err "Decryption of client secret failed."
+            return 1
+        fi
+    fi
+
     restsh.util.setcurloptions
     RESTSH_CURL_OPTS+=("-X" "POST" "-H" "Content-Type: application/x-www-form-urlencoded")
     RESTSH_CURL_OPTS+=("-d" "client_id=$SCM_CLIENTID" "-d" "client_secret=$SCM_SECRET")
