@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-10-30
 
 # Shortdesc: Creates a archive with all components.
 # Desc:
@@ -12,24 +12,5 @@ set -eEuo pipefail
 
 VERSION=$(<restsh/version)
 
-if [ -z "${1+x}" ]
-then
-    MODE="usage"
-else
-    MODE="$1"
-fi
-
-case "$MODE" in
-    minimal)
-        tar -czf "restsh_min_${VERSION}.tgz" -- \
-            restsh .restsh-config.dist
-        ;;
-    complete)
-        tar -czf "restsh_${VERSION}.tgz" -- \
-            restsh .restsh-config.dist *.md
-        ;;
-    *)
-        echo "Usage: $0 <complete|minimal>"
-        exit 1
-        ;;
-esac
+tar -czf "restsh_${VERSION}.tgz" -- \
+    restsh .restsh-config.dist* *.md
