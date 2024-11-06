@@ -2,6 +2,10 @@
 
 ***
 
+## tba
+
+- Fix: Add feature detection for curl option "--retry-all-errors" supported since curl version 7.71.0
+
 ## 24.10.21
 
 - Note: Not setting RESTSH_MODULES is now deprecated.

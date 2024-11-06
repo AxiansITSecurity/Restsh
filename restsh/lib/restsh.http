@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-27
+# Date: 2024-11-06
 
 # Shortdesc: Central http functions for all common REST methods.
 # Desc:
@@ -56,7 +56,7 @@ restsh.http() {
 
     if [ "$RETRIES" -gt 0 ]
     then
-        RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "--retry-all-errors" --retry-delay "10")
+        RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "$RESTSH_CURL_OPT_RETRY_ALL" "--retry-delay" "10")
     fi
 
     if [ -n "$OUTPUT_FILE" ]

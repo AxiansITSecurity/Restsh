@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-05
+# Date: 2024-11-06
 
 # Shortdesc: Some init helper functions.
 # Desc:
@@ -64,6 +64,14 @@ restsh.init.check.cmd() {
         export RESTSH_CURL_OPT_FAIL="--fail-with-body"
     else
         export RESTSH_CURL_OPT_FAIL="--fail"
+    fi
+
+    if curl --help all | grep -q -- "--retry-all-errors"
+    then
+        # Supported since 7.71.0
+        export RESTSH_CURL_OPT_RETRY_ALL="--retry-all-errors"
+    else
+        export RESTSH_CURL_OPT_RETRY_ALL=""
     fi
 
     if ! RESTSH_JQ=$(command -v jq)

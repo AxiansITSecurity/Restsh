@@ -91,11 +91,11 @@ export RESTSH_PATH="/path/to/restsh"
 
 ## Dependencies
 
-restsh works only inside the bash shell and requires standard Linux utilities like sed, grep, etc.
+restsh works only inside the bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
 
 Further dependencies are:
 
-- curl
+- curl (v7.76.0)
 - jq
 
 ## Customize
