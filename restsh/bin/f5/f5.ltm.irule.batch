@@ -89,6 +89,9 @@ case "$ACTION" in
         exec 1>&2
         _restsh.help.desc.get "$0"
         echo "Usage: $(basename "$0") <create|download|update> <directory>"
+        echo ""
+        echo "iRule filenames must end with .irule."
+        echo "Create has a fallback to update if the iRule already exists on the F5."
         exit 2
         ;;
 esac
