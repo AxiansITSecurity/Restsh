@@ -2,8 +2,9 @@
 
 ***
 
-## tba
+## 3.0.0 - not yet released
 
+- Fix: Install pandoc in Docker Image
 - Fix: Add feature detection for curl option "--retry-all-errors" supported since curl version 7.71.0
 
 ## 24.10.21
