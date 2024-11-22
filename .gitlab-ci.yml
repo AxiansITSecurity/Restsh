@@ -1,13 +1,12 @@
 default:
-  image: alpine:latest
+  image: ${F5_CI_IMAGE}
 
 stages:
   - lint
 
 before_script:
-  - apk update
-  - apk upgrade
-  - apk add bash shellcheck
+  - apt-get update
+  - apt-get install -y --no-install-recommends shellcheck
 
 lint:
   rules:
