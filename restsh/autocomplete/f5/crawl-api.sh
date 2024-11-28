@@ -67,4 +67,5 @@ get_links() {
         | sed -e 's|https://localhost||g' -e 's|\?ver=.*$||')
 }
 
+get_links "/mgmt/shared/"
 get_links "/mgmt/tm/"
