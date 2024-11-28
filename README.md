@@ -89,6 +89,12 @@ export RESTSH_PATH="/path/to/restsh"
 | next | F5 BIG-IP Next |
 | scm | Sectigo Cert Manager |
 
+Enable modules:
+
+```sh
+RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
+```
+
 ## Dependencies
 
 restsh works only inside the bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
