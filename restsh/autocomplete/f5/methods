@@ -1096,7 +1096,7 @@
 /mgmt/tm/ltm/pool
 /mgmt/tm/ltm/pool/{id}
 /mgmt/tm/ltm/profile
-/mgmt/tm/ltm/profile/$P
+/mgmt/tm/ltm/profile/{id}
 /mgmt/tm/ltm/profile/analytics
 /mgmt/tm/ltm/profile/certificate-authority
 /mgmt/tm/ltm/profile/classification
