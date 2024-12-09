@@ -73,7 +73,10 @@ done < <(find "$RESTSH_PATH/lib" -maxdepth 1 -type f ! -name .\*)
 # Check for enabled modules, enable all if not defined
 if [ -z "${RESTSH_MODULES+x}" ]
 then
-    echo_warn "Not setting RESTSH_MODULES is deprecated."
+    if [ -n "${RESTSH_INTERACTIVE+x}" ]
+    then
+        echo_warn "Not setting RESTSH_MODULES is deprecated."
+    fi
     # Include all modules
     RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
 fi
