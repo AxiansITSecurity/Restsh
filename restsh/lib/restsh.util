@@ -606,6 +606,30 @@ restsh.util.decrypt() {
     openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a -d <<< "${TODECRYPT:7}"
 }
 
+# Convert string to upper case.
+restsh.util.uc() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Convert string to upper case." 1>&2
+        echo "Usage: restsh.util.uc <string>" 1>&2
+        return 2
+    fi
+    local STR="$*"
+    printf '%s' "${STR^^}"
+}
+
+# Convert string to lower case.
+restsh.util.lc() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Convert string to lower case." 1>&2
+        echo "Usage: restsh.util.lc <string>" 1>&2
+        return 2
+    fi
+    local STR="$*"
+    printf '%s' "${STR,,}"
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -634,3 +658,5 @@ export -f restsh.util.filesize
 export -f restsh.util.array.includes
 export -f restsh.util.decrypt
 export -f restsh.util.encrypt
+export -f restsh.util.uc
+export -f restsh.util.lc
