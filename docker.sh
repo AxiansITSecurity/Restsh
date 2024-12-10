@@ -13,7 +13,7 @@ fi
 
 case "$ACTION" in
     "build")
-        docker build -t restsh .
+        docker build --no-cache -t restsh .
         ;;
     "run")
         docker run --rm -it -v "$(pwd):/restsh" --entrypoint restsh/restsh/restsh.start -e RESTSH_CONFIG="restsh/$CONFIG" restsh

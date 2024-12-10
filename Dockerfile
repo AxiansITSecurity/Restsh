@@ -1,4 +1,20 @@
 FROM debian:stable-slim
-RUN export DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get dist-upgrade -y
-RUN apt-get install -y --no-install-recommends openssh-client curl yq jq git libxml-xpath-perl libxml2-utils pandoc
+RUN export DEBIAN_FRONTEND=noninteractive \
+    && apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get install -y --no-install-recommends \
+        certbot \
+        curl \
+        gettext-base \
+        git \
+        gpp \
+        jq \
+        libxml2-utils \
+        libxml-xpath-perl \
+        openssh-client \
+        pandoc \
+        python3 \
+        python3-venv \
+        tcl \
+        yq \
+    && rm -rf /var/lib/apt/lists/*
