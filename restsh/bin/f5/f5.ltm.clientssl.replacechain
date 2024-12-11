@@ -51,5 +51,3 @@ JQ -n --arg cert "$CERT" \
         "chain": $chain
     }' | PATCH "/mgmt/tm/ltm/profile/client-ssl/$FULLPATH" \
     | JQ '.certKeyChain'
-
-exit 0

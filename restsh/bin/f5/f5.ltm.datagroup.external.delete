@@ -37,4 +37,3 @@ fi
 
 FULLPATH=$1
 DELETE "/mgmt/tm/ltm/data-group/external/${FULLPATH//\//\~}"
-exit 0

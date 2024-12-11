@@ -49,6 +49,7 @@ then
         $RESTSH_JQ -r '.items[] | [.id,.name,.value,.defaultValue] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "Id,Name,Value,DefaultValue"
     fi
+    exit 0
 fi
 
-exit 0
+exit 1

@@ -51,11 +51,4 @@ POLICY=$1
 URL=$2
 
 export VAR_DISALLOWED_URL=$URL
-if ! RESULT=$(f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "$POLICY" "$ENTITY")
-then
-    echo_err "Failed"
-    echo_err "$RESULT"
-    exit 1
-fi
-
-exit 0
+f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "$POLICY" "$ENTITY"

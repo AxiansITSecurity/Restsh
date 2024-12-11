@@ -8,6 +8,7 @@
 - Fix: Install pandoc in Docker Image
 - Fix: Add feature detection for curl option "--retry-all-errors" supported since curl version 7.71.0
 - Fix: `cert.key.create` for encrypted ec private keys
+- Fix: Return codes for some scripts
 
 ## 24.10.21
 

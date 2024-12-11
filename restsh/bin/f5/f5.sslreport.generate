@@ -66,5 +66,3 @@ fi
     f5.sslreport.cert-sslprofiles -m
     echo ""
 } | $PANDOC "${PANDOC_OPTS[@]}" > "$OUTFILE"
-
-exit 0

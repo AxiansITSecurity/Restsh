@@ -77,5 +77,3 @@ else
     echo ""
     server-ssl-profiles-cert | COLUMN -o "|" -N "ServerSSL,Certificate"
 fi
-
-exit 0

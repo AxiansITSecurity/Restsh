@@ -77,5 +77,3 @@ fi
 # Post the declaration
 echo "Posting declaration"
 POST "/mgmt/shared/telemetry/declare" < "$TS_FILE.parsed"
-
-exit 0

@@ -41,7 +41,4 @@ then
     exit 1
 fi
 
-if ! DELETE "/mgmt/tm/asm/policy-templates/$TEMPLATEID" > /dev/null
-then
-    exit 1
-fi
+DELETE "/mgmt/tm/asm/policy-templates/$TEMPLATEID" > /dev/null

@@ -39,11 +39,4 @@ fi
 POLICY=$1
 WHITELIST_IP=$3
 
-if ! RESULT=$(f5.asm.entity.remove "$POLICY" "whitelist-ips" ".items[] | select(.ipAddress==\"$WHITELIST_IP\") | .id")
-then
-    echo_err "Failed"
-    echo_err "$RESULT"
-    exit 1
-fi
-
-exit 0
+f5.asm.entity.remove "$POLICY" "whitelist-ips" ".items[] | select(.ipAddress==\"$WHITELIST_IP\") | .id"

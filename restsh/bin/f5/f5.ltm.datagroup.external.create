@@ -60,5 +60,3 @@ JQ -n --arg name "$NAME" \
         "partition": $partition,
         "externalFileName": $filename
     }' | POST "/mgmt/tm/ltm/data-group/external"
-
-exit 0

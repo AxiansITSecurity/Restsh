@@ -62,7 +62,7 @@ do
     if ! STATUS=$(GET -r -c 5 "$QKVIEW_ENDPOINT/$TASK_ID" | \
         $RESTSH_JQ -r ".status")
     then
-        break
+        exit 1
     fi
     case "$STATUS" in
         IN_PROGRESS|"")

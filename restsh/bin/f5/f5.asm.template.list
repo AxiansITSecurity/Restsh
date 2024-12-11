@@ -49,6 +49,7 @@ then
         $RESTSH_JQ -r '.items[] | [.title, .name, .id, .description] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "title,name,id,description"
     fi
+    exit 0
 fi
 
-exit 0
+exit 1

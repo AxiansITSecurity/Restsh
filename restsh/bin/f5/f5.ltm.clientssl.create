@@ -57,5 +57,3 @@ JQ -n --arg name "$NAME" \
             "chain": $chain
         }]
     }' | POST "/mgmt/tm/ltm/profile/client-ssl"
-
-exit 0

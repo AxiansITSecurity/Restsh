@@ -36,4 +36,3 @@ then
 fi
 
 f5.file.remove "/shared/images/$1"
-exit 0

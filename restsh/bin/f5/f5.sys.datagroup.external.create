@@ -68,5 +68,3 @@ JQ -n --arg name "$NAME" \
         "type": $type,
         "sourcePath": $filename
     }' | POST "/mgmt/tm/sys/file/data-group"
-
-exit 0

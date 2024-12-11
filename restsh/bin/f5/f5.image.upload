@@ -36,4 +36,3 @@ then
 fi
 
 f5.file.upload "/mgmt/cm/autodeploy/software-image-uploads" "$1"
-exit 0

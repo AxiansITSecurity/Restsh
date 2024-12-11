@@ -50,5 +50,3 @@ fi
 GET -r "/mgmt/tm/sys/ucs" \
     | $RESTSH_JQ -r ".items[] | .apiRawValues | [.filename,.file_created_date,.file_size] | @tsv" \
     | COLUMN -o "|" -N "File,Created,Size"
-
-exit 0

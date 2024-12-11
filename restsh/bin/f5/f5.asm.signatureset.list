@@ -49,4 +49,7 @@ then
         JQ -r '.items[] | select(.isUserDefined == true) | [.name,.id,.signatureCount] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "Name,Id,Count"
     fi
+    exit 0
 fi
+
+exit 1

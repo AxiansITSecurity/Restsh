@@ -55,5 +55,3 @@ then
 else
     GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions"
 fi
-
-exit 0

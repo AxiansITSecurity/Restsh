@@ -75,5 +75,3 @@ f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~${FILENAME}"
 
 # Apply policy
 f5.asm.policy.apply "$POLICY_HASH"
-
-exit 0

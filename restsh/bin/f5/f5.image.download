@@ -36,4 +36,3 @@ then
 fi
 
 f5.file.download "/mgmt/cm/autodeploy/software-image-downloads" "$1" 0 "$2"
-exit 0

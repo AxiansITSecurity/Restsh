@@ -53,8 +53,8 @@ then
             echo "$RESULT"
         fi
     fi
-else
-    echo_err "Running command failed."
-    echo_err "$RESPONSE"
-    exit 1
+    exit 0
 fi
+
+echo_err "Running command failed."
+exit 1

@@ -95,5 +95,3 @@ else
     cert-ssl-profiles | COLUMN -o "|" -N "Certificate,Common Name,ClientSSL,ServerSSL" \
         -W "Common Name,ClientSSL,ServerSSL"
 fi
-
-exit 0

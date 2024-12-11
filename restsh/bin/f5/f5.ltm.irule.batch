@@ -26,8 +26,12 @@ download_all() {
         local FILENAME=${LINE//\//\~}
         FILENAME=${FILENAME/~Common~/}
         echo "$FILENAME"
-        f5.ltm.irule.download "$LINE" "${IRULE_DIR}/${FILENAME}.irule"
+        if ! f5.ltm.irule.download "$LINE" "${IRULE_DIR}/${FILENAME}.irule"
+        then
+            return 1
+        fi
     done < <(f5.ltm.irule.list | grep -v _sys_)
+    return 0
 }
 
 create_all() {
@@ -40,11 +44,14 @@ create_all() {
             if f5.ltm.irule.update "$NAME" "$FILE"
             then
                 echo_ok "iRule $NAME updated"
+            else
+                return 1
             fi
         else
             echo_ok "iRule $NAME created"
         fi
     done
+    return 0
 }
 
 update_all() {
@@ -55,8 +62,11 @@ update_all() {
         if f5.ltm.irule.update "$NAME" "$FILE"
         then
             echo_ok "iRule $NAME updated"
+        else
+            return 1
         fi
     done
+    return 0
 }
 
 #main
@@ -95,4 +105,3 @@ case "$ACTION" in
         exit 2
         ;;
 esac
-exit 0

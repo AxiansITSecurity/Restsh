@@ -72,5 +72,3 @@ then
 else
     ssl-profiles-vs | COLUMN -o "|" -N "Profile,Virtual Server"
 fi
-
-exit 0

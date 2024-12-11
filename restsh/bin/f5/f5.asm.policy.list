@@ -49,6 +49,7 @@ then
         $RESTSH_JQ -r '.items[] | [.fullPath, .isModified, .enforcementMode, .id] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "fullPath,Modified,enforcementMode,id"
     fi
+    exit 0
 fi
 
-exit 0
+exit 1

@@ -74,9 +74,7 @@ fi
 
 if [ "${1:0:1}" == "/" ]
 then
-    apply_by_full_path "$1" && exit 0
+    apply_by_full_path "$1"
 else
-    apply_by_hash "$1" && exit 0
+    apply_by_hash "$1"
 fi
-
-exit 1

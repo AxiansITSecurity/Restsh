@@ -70,5 +70,3 @@ FILE_PATH=$2
 F5_FILE_PATH="/var/config/rest/downloads/$(basename "$FILE_PATH")"
 f5.file-transfer.upload "$FILE_PATH" && \
     add_cert "$NAME" "$F5_FILE_PATH"
-
-exit 0

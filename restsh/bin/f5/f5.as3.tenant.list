@@ -48,6 +48,7 @@ then
     else
         $RESTSH_JQ -r 'keys[]' <<< "$RESULT"
     fi
+    exit 0
 fi
 
-exit 0
+exit 1

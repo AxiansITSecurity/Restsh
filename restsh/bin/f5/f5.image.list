@@ -36,4 +36,3 @@ then
 fi
 
 f5.file.list "/shared/images/"
-exit 0

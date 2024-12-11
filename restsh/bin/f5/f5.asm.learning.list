@@ -46,5 +46,3 @@ else
 fi
 
 GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | $RESTSH_JQ ".items[]"
-
-exit 0

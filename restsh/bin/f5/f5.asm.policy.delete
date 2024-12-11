@@ -38,9 +38,4 @@ fi
 POLICY=$1
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
-if ! DELETE "/mgmt/tm/asm/policies/$POLICY_HASH" > /dev/null
-then
-    exit 1
-fi
-
-exit 0
+DELETE "/mgmt/tm/asm/policies/$POLICY_HASH" > /dev/null

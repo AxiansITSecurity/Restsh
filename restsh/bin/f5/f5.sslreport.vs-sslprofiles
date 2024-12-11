@@ -84,5 +84,3 @@ else
     vs-ssl-profiles | COLUMN -o "|" -N "Virtual Server,ClientSSL,ServerSSL" \
         -W "ClientSSL,ServerSSL"
 fi
-
-exit 0
