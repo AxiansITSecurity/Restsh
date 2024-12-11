@@ -60,5 +60,4 @@ then
 fi
 
 echo_err "Failure creating project."
-echo_err "$RESULT"
 exit 1

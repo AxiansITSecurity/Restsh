@@ -82,7 +82,7 @@ echo_err() {
     echo -ne "$COLOR_RESET" 1>&2
 }
 
-# Prints red error message in JSON format to STDOUT.
+# Prints red error message in JSON format to STDERR.
 print_json_err() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
@@ -101,7 +101,7 @@ print_json_err() {
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
 }
 
-# Prints red error message in JSON format to STDOUT for curl.
+# Prints red error message in JSON format to STDERR for curl.
 print_json_err_curl() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then

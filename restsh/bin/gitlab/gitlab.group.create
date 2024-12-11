@@ -84,6 +84,5 @@ then
     exit 0
 else
     echo_err "Failure creating group."
-    echo_err "$RESULT"
     exit 1
 fi
