@@ -46,11 +46,9 @@ else
         EVENT_TYPE=$(JQ -r '.[1]' <<< "$LINE")
         DESCRIPTION=$(JQ -r '.[2]' <<< "$LINE")
         ENTITY_NAME=$(JQ -r '.[3]' <<< "$LINE")
-        TS=$(( TS_US / 1000000 ))
+        TS=$(awk "BEGIN { print $TS_US / 1000000 }")
         TS=$(date -d@"$TS")
         printf "\nPolicy change info (%s):\nEntity: %s\nChange Detail: %s\nOn: %s\n" "$EVENT_TYPE" "$ENTITY_NAME" "$DESCRIPTION" "$TS"
      done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/audit-logs" \
         | JQ -c '.items[] | [.lastUpdateMicros, .eventType, .description, .entityName]')
 fi
-
-exit 1
