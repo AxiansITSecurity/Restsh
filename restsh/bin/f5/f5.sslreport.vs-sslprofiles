@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-12-12
 
 # Shortdesc: Lists all Virtual Servers with its associated ssl profiles.
 # Desc:
@@ -81,6 +81,5 @@ then
     echo "| -------------- | --------- | --------- |"
     vs-ssl-profiles
 else
-    vs-ssl-profiles | COLUMN -o "|" -N "Virtual Server,ClientSSL,ServerSSL" \
-        -W "ClientSSL,ServerSSL"
+    vs-ssl-profiles | COLUMN -o "|" -N "Virtual Server,ClientSSL,ServerSSL"
 fi

@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-23
+# Date: 2023-12-12
 
-# Shortdesc: Creates a certifacte and ssl profiles usage report in html or markdown format.
+# Shortdesc: Creates a certifcate and ssl profiles usage report in html or markdown format.
 # Desc:
-# Creates a certifacte and ssl profiles usage report in html or markdown format.
+# Creates a certifcate and ssl profiles usage report in html or markdown format.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -39,7 +39,7 @@ OUTFILE=$1
 TITLE="SSl Profiles And Certificate Report"
 if PANDOC=$(command -v pandoc)
 then
-    PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--self-contained" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
+    PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--embed-resources" "--standalone" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
 else
     echo_warn "pandoc not found, creating markdown report"
     OUTFILE=${OUTFILE/.html/.md}

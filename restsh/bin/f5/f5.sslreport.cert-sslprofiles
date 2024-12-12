@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# Date: 2024-12-12
 
 # Shortdesc: Gets ssl profiles for certificates.
 # Desc:
@@ -92,6 +92,5 @@ then
     echo "| ----------- | ----------- | --------- | --------- |"
     cert-ssl-profiles
 else
-    cert-ssl-profiles | COLUMN -o "|" -N "Certificate,Common Name,ClientSSL,ServerSSL" \
-        -W "Common Name,ClientSSL,ServerSSL"
+    cert-ssl-profiles | COLUMN -o "|" -N "Certificate,Common Name,ClientSSL,ServerSSL"
 fi
