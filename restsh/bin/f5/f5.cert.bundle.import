@@ -49,4 +49,7 @@ echo "Importing cert $CN"
 
 f5.cert.import "$CERT_NAME" "$FILE_CERT"
 f5.cert.key.import "$CERT_NAME" "$FILE_KEY"
-[ -n "$FILE_BUNDLE" ] && f5.cert.import "${CERT_NAME}_cabundle" "$FILE_BUNDLE"
+if [ -n "$FILE_BUNDLE" ]
+then
+    f5.cert.import "${CERT_NAME}_cabundle" "$FILE_BUNDLE"
+fi
