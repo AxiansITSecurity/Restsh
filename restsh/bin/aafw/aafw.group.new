@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-12-13
+
+# Shortdesc: Creates a GitLab structure for a new F5 environment.
+# Desc:
+# Creates a GitLab structure for a new F5 environment.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+TEMPLATE_DIR="$RESTSH_PATH/templates/aafw"
+while getopts ':ht:' OPTION
+do
+    case "$OPTION" in
+        t) TEMPLATE_DIR=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [-t <template folder>] <group path>"
+    echo -e "\t-t <template folder>, default: $RESTSH_PATH/templates/aafw"
+    exit 2
+fi
+
+GROUP_PATH=$1
+GROUP_NAME="${GROUP_PATH##*/}"
+PARENT_GROUP_NAME=${GROUP_PATH%/*}
+if [ "$PARENT_GROUP_NAME" = "$GROUP_PATH" ]
+then
+    PARENT_GROUP_NAME=""
+fi
+
+set_group_properties() {
+    local GROUP_ID=$1
+    echo "Setting group properties for $GROUP_ID"
+    if ! RESULT=$(PUT "$GITLAB_API_PREFIX/groups/$GROUP_ID" < "$RESTSH_PATH/templates/aafw/group_settings_default.json")
+    then
+        echo_err "Failure setting group properties for $GROUP_ID"
+        echo_err "$RESULT"
+        return 1
+    fi
+}
+
+echo "Group Path: $GROUP_PATH"
+echo "Group Name: $GROUP_NAME"
+echo "Parent Group: $PARENT_GROUP_NAME"
+echo ""
+
+if [ -z "$PARENT_GROUP_NAME" ]
+then
+    GROUP_ID=$(gitlab.group.create -r "$GROUP_NAME")
+else
+    GROUP_ID=$(gitlab.group.create -r -p "$PARENT_GROUP_NAME" "$GROUP_NAME")
+fi
+set_group_properties "$GROUP_ID"
+gitlab.group.variable.batch -e "$GROUP_ID" "$TEMPLATE_DIR/ci_variables_parent.csv" > /dev/null
+
+GROUP_ID_AS3=$(gitlab.group.create -r -p "$GROUP_PATH" "as3")
+set_group_properties "$GROUP_ID_AS3"
+gitlab.group.variable.batch -e "$GROUP_ID_AS3" "$TEMPLATE_DIR/ci_variables_as3.csv" > /dev/null
+
+GROUP_ID_CERT=$(gitlab.group.create -r -p "$GROUP_PATH" "cert")
+set_group_properties "$GROUP_ID_CERT"
+gitlab.group.variable.batch -e "$GROUP_ID_CERT" "$TEMPLATE_DIR/ci_variables_certificates.csv" > /dev/null
+
+GROUP_ID_TASKS=$(gitlab.group.create -r -p "$GROUP_PATH" "tasks")
+set_group_properties "$GROUP_ID_TASKS"
+
+GROUP_ID_WAF=$(gitlab.group.create -r -p "$GROUP_PATH" "waf")
+set_group_properties "$GROUP_ID_WAF"
+gitlab.group.variable.batch -e "$GROUP_ID_WAF" "$TEMPLATE_DIR/ci_variables_waf.csv" > /dev/null

@@ -1,0 +1,20 @@
+{
+    "issues_enabled": false,
+    "wiki_enabled": false,
+    "snippets_enabled": false,
+    "container_registry_enabled": false,
+    "service_desk_enabled": false,
+    "packages_enabled": false,
+    "lfs_enabled": false,
+    "auto_devops_enabled": false,
+    "remove_source_branch_after_merge": false,
+    "feature_flags_access_level": "disabled",
+    "analytics_access_level": "disabled",
+    "environments_access_level": "disabled",
+    "infrastructure_access_level": "disabled",
+    "monitor_access_level": "disabled",
+    "model_experiments_access_level": "disabled",
+    "model_registry_access_level": "disabled",
+    "releases_access_level": "disabled",
+    "security_and_compliance_access_level": "disabled"
+}

@@ -3,14 +3,14 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-08
 
-# Shortdesc: Custom configuration file for restsh.init.
+# Shortdesc: Custom configuration file for restsh.init, preconfigured for GitLab.
 # Desc:
-# Custom configuration file for restsh.init.
+# Custom configuration file for restsh.init, preconfigured for GitLab.
 # Set central environment variables if not already set.
 
 # Enabled modules
 # shellcheck disable=SC2034
-RESTSH_MODULES=("cert" "custom" "gitlab")
+RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 
 # Debugging
 # export RESTSH_DEBUG="true"

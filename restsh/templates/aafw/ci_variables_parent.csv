@@ -1,0 +1,21 @@
+# Fields: KEY VALUE MASKED RAW DESC
+
+F5_ENV,f5,false,true,F5 environment name.
+
+# Dev stage
+F5_ADDRESS_DEV,,false,true,Hostname or IP of the Dev-F5.
+F5_USER_DEV,,false,true,User for the Dev-F5.
+F5_PASS_DEV,password,true,true,Password for the Dev-F5.
+
+# Test stage
+F5_ADDRESS_TEST,,false,true,Hostname or IP of the Test-F5.
+F5_USER_TEST,,false,true,User for the Test-F5.
+F5_PASS_TEST,password,true,true,Password for the Test-F5.
+
+# Prod stage
+F5_ADDRESS_PROD,,false,true,Hostname or IP of the Prod-F5.
+F5_USER_PROD,,false,true,User for the Prod-F5.
+F5_PASS_PROD,password,true,true,Password for the Prod-F5.
+
+# Instance IP for deployment (F5 Next only)
+NEXT_INSTANCE_IP,,false,true,Instance IP for deployment (F5 Next only).

@@ -4,6 +4,7 @@
 
 ## 3.0.0 - not yet released
 
+- Feat: Add module for Axians Automation Framework: `aafw`
 - Feat: Add `restsh.util.uc` and `restsh.util.lc` helper
 - Feat: Manage GitLab Runners: `gitlab.runner.create`, `gitlab.runner.list`
 - Fix: Install pandoc in Docker Image

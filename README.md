@@ -83,6 +83,7 @@ export RESTSH_PATH="/path/to/restsh"
 
 | Prefix | Description |
 | ------ | ----------- |
+| aafw | Axians Automation Framework |
 | cert | Certificate handling |
 | f5 | F5 BIG-IP Classic |
 | gitlab | GitLab |
@@ -92,7 +93,7 @@ export RESTSH_PATH="/path/to/restsh"
 Enable modules:
 
 ```sh
-RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
+RESTSH_MODULES=("aafw" "cert" "custom" "f5" "gitlab" "next" "scm")
 ```
 
 ## Dependencies
