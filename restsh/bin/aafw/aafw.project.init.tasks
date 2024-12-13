@@ -42,7 +42,7 @@ cd "$DIR" || exit 1
 git switch -c master
 cat > .gitlab-ci.yml << EOL
 include:
-  - project: $PIPELINE_PROJECT_TASKS
+  - project: \$PIPELINE_PROJECT_TASKS
     file: 'tasks.yml'
 EOL
 git add .

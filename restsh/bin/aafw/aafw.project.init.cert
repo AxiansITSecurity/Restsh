@@ -42,7 +42,7 @@ cd "$DIR" || exit 1
 git switch -c master
 cat > .gitlab-ci.yml << EOL
 include:
-  - project: $PIPELINE_PROJECT_CERTIFICATES
+  - project: \$PIPELINE_PROJECT_CERTIFICATES
     file: 'certificates.yml'
 EOL
 for F in dev test prod
