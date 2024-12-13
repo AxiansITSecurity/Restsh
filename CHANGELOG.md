@@ -5,6 +5,7 @@
 ## 3.0.0 - not yet released
 
 - Feat: Add `restsh.util.uc` and `restsh.util.lc` helper
+- Feat: Manage GitLab Runners: `gitlab.runner.create`, `gitlab.runner.list`
 - Fix: Install pandoc in Docker Image
 - Fix: Add feature detection for curl option "--retry-all-errors" supported since curl version 7.71.0
 - Fix: `cert.key.create` for encrypted ec private keys
