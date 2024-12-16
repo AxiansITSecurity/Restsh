@@ -70,6 +70,8 @@ do
     . "$LINE"
 done < <(find "$RESTSH_PATH/lib" -maxdepth 1 -type f ! -name .\*)
 
+PATH="$PATH:$RESTSH_PATH/bin/restsh"
+
 # Check for enabled modules, enable all if not defined
 if [ -z "${RESTSH_MODULES+x}" ]
 then

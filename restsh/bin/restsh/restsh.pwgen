@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-12-13
+
+# Shortdesc: Generates a secure password.
+# Desc:
+# Generates a secure password.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+LENGTH=34
+DELIMITER=""
+CHUNKS=6
+while getopts ':hc:d:l:' OPTION
+do
+    case "$OPTION" in
+        c) CHUNKS="$OPTARG" ;;
+        d) DELIMITER="$OPTARG" ;;
+        l) LENGTH="$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&1
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [-c <chunks>] [-d <delimiter>] [-l <length>]"
+    echo -e "\t-c Insert delimiter each <chunks> character, default: 5"
+    echo -e "\t-d Delimiter for chunks, default: random"
+    echo -e "\t-l Length of password, default: 34"
+    exit 2
+fi
+
+if [ -z "$DELIMITER" ]
+then
+    DELIMITERS="-+:."
+    DELIMITERS_LEN=${#DELIMITERS}
+    DELIMITER=${DELIMITERS:$(shuf -i 0-$((DELIMITERS_LEN-1)) -n1):1}
+fi
+
+LINE="$(tr -dc 'A-HJ-NP-Za-km-z2-9' < /dev/urandom | head -c "$LENGTH" || true)"
+CHUNKS=$((CHUNKS + 1))
+for (( I=0; I<${#LINE}; I++ ))
+do
+    if [ "$(($((I + 1)) % CHUNKS))" -eq 0 ] 
+    then
+        printf '%s' "$DELIMITER"
+    else
+        printf '%s' "${LINE:$I:1}"
+    fi
+done
+echo ""

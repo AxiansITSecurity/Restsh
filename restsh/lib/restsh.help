@@ -154,6 +154,7 @@ restsh.help() {
     declare -A CMDS
     _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.util"
     _restsh.help.print
+    _restsh.help.modules.cmds "restsh"
 
     if [ "$MODULES" == "none" ]
     then
