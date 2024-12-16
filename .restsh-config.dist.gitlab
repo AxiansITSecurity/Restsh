@@ -46,3 +46,7 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 
 # GitLab specific settings
 [ -n "${GITLAB_ENABLE_AUTOCOMPLETE+x}" ] || export GITLAB_ENABLE_AUTOCOMPLETE=1
+
+# Axians Automation Framework settings
+[ -n "${RESTSH_AAFW_URI+x}" ] || export RESTSH_AAFW_URI="git@${RESTSH_HOST}:"
+[ -n "${RESTSH_AAFW_GROUP+x}" ] || export RESTSH_AAFW_GROUP="ax-f5-automation-framework"

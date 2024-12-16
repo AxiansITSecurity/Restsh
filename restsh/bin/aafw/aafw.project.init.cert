@@ -37,6 +37,7 @@ fi
 CLONE_URI="$1"
 DIR=$(basename "$CLONE_URI" .git)
 
+cd "$RESTSH_TMP" || exit 1
 git clone "$CLONE_URI"
 cd "$DIR" || exit 1
 git switch -c master
@@ -53,3 +54,5 @@ done
 git add .
 git commit -m "Init"
 git push -u origin master
+cd "$RESTSH_TMP" || exit 1
+rm -rf "$DIR"

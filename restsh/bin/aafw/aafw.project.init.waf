@@ -38,6 +38,7 @@ SKELETON_URI="$1"
 CLONE_URI="$2"
 DIR=$(basename "$CLONE_URI" .git)
 
+cd "$RESTSH_TMP" || exit 1
 git clone "$CLONE_URI"
 cd "$DIR" || exit 1
 git switch -c draft
@@ -45,3 +46,5 @@ git remote add wafskeleton "$SKELETON_URI"
 git fetch wafskeleton
 git merge wafskeleton/draft
 git push -u origin draft
+cd "$RESTSH_TMP" || exit 1
+rm -rf "$DIR"

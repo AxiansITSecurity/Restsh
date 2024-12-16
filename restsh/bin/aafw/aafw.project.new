@@ -20,9 +20,11 @@ then
 fi
 
 # Get options
-while getopts ':h' OPTION
+INIT_PROJECT=""
+while getopts ':hi:' OPTION
 do
     case "$OPTION" in
+        i) INIT_PROJECT=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -32,7 +34,7 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <project path>"
+    echo "Usage: $(basename "$0") [-i <as3,cert,tasks,waf] <project path>"
     exit 2
 fi
 
@@ -48,4 +50,33 @@ then
     echo_err "Failure setting project options for $C_PROJECT"
     echo_err "$RESULT"
     exit 1
+fi
+
+if [ -n "$INIT_PROJECT" ]
+then
+    if [ -z "${RESTSH_AAFW_URI+x}" ] || [ -z "${RESTSH_AAFW_GROUP+x}" ]
+    then
+        echo_err "You must export RESTSH_AAFW_URI and RESTSH_AAFW_GROUP"
+        exit 1
+    fi
+
+    CLONE_URI="${RESTSH_AAFW_URI}${PROJECT_PATH}.git"
+    case "$INIT_PROJECT" in
+        as3)
+            aafw.project.init.as3 "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/as3skeleton" "$CLONE_URI"
+            ;;
+        cert)
+            aafw.project.init.cert "$CLONE_URI"
+            ;;
+        tasks)
+            aafw.project.init.tasks "$CLONE_URI"
+            ;;
+        waf)
+            aafw.project.init.waf "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/wafskeleton" "$CLONE_URI"
+            ;;
+        *)
+            echo_err "Unknown project type"
+            exit 1
+            ;;
+    esac
 fi
