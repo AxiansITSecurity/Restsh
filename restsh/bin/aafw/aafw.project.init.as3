@@ -20,9 +20,11 @@ then
 fi
 
 # Get options
-while getopts ':h' OPTION
+DST=""
+while getopts ':d:h' OPTION
 do
     case "$OPTION" in
+        d) DST=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -30,15 +32,17 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    echo "Usage: $(basename "$1") <as3skeleton uri> <clone uri>"
+    echo "Usage: $(basename "$1") [-d <folder>] <as3skeleton uri> <clone uri>"
+    echo -e "\t-d <folder>  Parent folder for cloned repository."
     exit 1
 fi
 
 SKELETON_URI="$1"
 CLONE_URI="$2"
 DIR=$(basename "$CLONE_URI" .git)
+[ -n "$DST" ] || DST="$RESTSH_TMP"
 
-cd "$RESTSH_TMP" || exit 1
+cd "$DST" || exit 1
 git clone "$CLONE_URI"
 cd "$DIR" || exit 1
 git switch -c draft
@@ -46,5 +50,8 @@ git remote add as3skeleton "$SKELETON_URI"
 git fetch as3skeleton
 git merge as3skeleton/draft
 git push -u origin draft
-cd "$RESTSH_TMP" || exit 1
-rm -rf "$DIR"
+if [ "$DST" != "$RESTSH_TMP" ]
+then
+    cd "$RESTSH_TMP" || exit 1
+    rm -rf "$DIR"
+fi

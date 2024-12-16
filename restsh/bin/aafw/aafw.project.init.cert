@@ -20,9 +20,11 @@ then
 fi
 
 # Get options
-while getopts ':h' OPTION
+DST=""
+while getopts ':d:h' OPTION
 do
     case "$OPTION" in
+        d) DST=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -30,14 +32,16 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
-    echo "Usage: $(basename "$1") <clone uri>"
+    echo "Usage: $(basename "$1") [-d <folder>] <clone uri>"
+    echo -e "\t-d <folder>  Parent folder for cloned repository."
     exit 1
 fi
 
 CLONE_URI="$1"
 DIR=$(basename "$CLONE_URI" .git)
+[ -n "$DST" ] || DST="$RESTSH_TMP"
 
-cd "$RESTSH_TMP" || exit 1
+cd "$DST" || exit 1
 git clone "$CLONE_URI"
 cd "$DIR" || exit 1
 git switch -c master
@@ -54,5 +58,8 @@ done
 git add .
 git commit -m "Init"
 git push -u origin master
-cd "$RESTSH_TMP" || exit 1
-rm -rf "$DIR"
+if [ "$DST" != "$RESTSH_TMP" ]
+then
+    cd "$RESTSH_TMP" || exit 1
+    rm -rf "$DIR"
+fi

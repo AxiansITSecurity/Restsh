@@ -21,9 +21,11 @@ fi
 
 # Get options
 INIT_PROJECT=""
-while getopts ':hi:' OPTION
+INIT_OPTS=()
+while getopts ':d:hi:' OPTION
 do
     case "$OPTION" in
+        d) INIT_OPTS+=("-d" "$OPTARG") ;;
         i) INIT_PROJECT=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -34,7 +36,9 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [-i <as3,cert,tasks,waf] <project path>"
+    echo "Usage: $(basename "$0") [-d <folder>] [-i <as3,cert,tasks,waf] <project path>"
+    echo -e "\t-d <folder>  Parent folder for cloned repository."
+    echo -e "\t-i <type>    Initialize repository for as3, cert, tasks or waf."
     exit 2
 fi
 
@@ -63,16 +67,16 @@ then
     CLONE_URI="${RESTSH_AAFW_URI}${PROJECT_PATH}.git"
     case "$INIT_PROJECT" in
         as3)
-            aafw.project.init.as3 "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/as3skeleton" "$CLONE_URI"
+            aafw.project.init.as3 "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/as3skeleton" "$CLONE_URI"
             ;;
         cert)
-            aafw.project.init.cert "$CLONE_URI"
+            aafw.project.init.cert "${INIT_OPTS[@]}" "$CLONE_URI"
             ;;
         tasks)
-            aafw.project.init.tasks "$CLONE_URI"
+            aafw.project.init.tasks "${INIT_OPTS[@]}" "$CLONE_URI"
             ;;
         waf)
-            aafw.project.init.waf "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/wafskeleton" "$CLONE_URI"
+            aafw.project.init.waf "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/wafskeleton" "$CLONE_URI"
             ;;
         *)
             echo_err "Unknown project type"
