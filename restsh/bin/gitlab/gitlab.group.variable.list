@@ -30,7 +30,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 1 ] ||[ "$OPTION" == "invalid" ]
+if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
