@@ -4,6 +4,7 @@
 
 ## 3.0.0 - not yet released
 
+- Feat: Add `gitlab.group.projects`
 - Feat: Add `gitlab.group.variable.copy` and `gitlab.project.variable.copy`
 - Feat: Add `restsh.pwgen`
 - Feat: Add module for Axians Automation Framework: `aafw`

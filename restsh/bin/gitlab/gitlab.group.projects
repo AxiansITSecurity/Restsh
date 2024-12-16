@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-12-16
+
+# Shortdesc: Lists all projects from a group.
+# Desc:
+# Lists all projects from a group.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [-r] <group id or path>"
+    echo -e "\tUse -r for raw output."
+    exit 2
+fi
+
+GROUP_ID=$1
+
+if ! restsh.util.check.isnumber "$GROUP_ID"
+then
+    GROUP_ID=$(restsh.util.urlencode "$GROUP_ID")
+fi
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP_ID/projects")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        echo "$RESULT"
+    else
+        JQ -r '.[] | [.id, .name] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "id,name"
+    fi
+else
+    exit 1
+fi
+
+exit 0
