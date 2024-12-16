@@ -32,7 +32,7 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
-    echo "Usage: $(basename "$1") [-d <folder>] <wafskeleton uri> <clone uri>"
+    echo "Usage: $(basename "$0") [-d <folder>] <wafskeleton uri> <clone uri>"
     echo -e "\t-d <folder>  Parent folder for cloned repository."
     exit 1
 fi
