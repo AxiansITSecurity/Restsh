@@ -80,9 +80,6 @@ GROUP_ID_CERT=$(gitlab.group.create -r -p "$GROUP_PATH" "cert")
 set_group_properties "$GROUP_ID_CERT"
 gitlab.group.variable.batch -e "$GROUP_ID_CERT" "$TEMPLATE_DIR/ci_variables_certificates.csv" > /dev/null
 
-GROUP_ID_TASKS=$(gitlab.group.create -r -p "$GROUP_PATH" "tasks")
-set_group_properties "$GROUP_ID_TASKS"
-
 GROUP_ID_WAF=$(gitlab.group.create -r -p "$GROUP_PATH" "waf")
 set_group_properties "$GROUP_ID_WAF"
 gitlab.group.variable.batch -e "$GROUP_ID_WAF" "$TEMPLATE_DIR/ci_variables_waf.csv" > /dev/null
