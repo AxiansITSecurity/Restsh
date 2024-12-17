@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-27
+# Date: 2024-12-17
 
 # Shortdesc: Some utility functions.
 # Desc:
@@ -325,27 +325,47 @@ restsh.util.setcurloptions() {
     export RESTSH_CURL_OPTS
 }
 
-# Parses a command output according to the RESTSH_CONTENT environment variable.
+# Parses a command output.
 restsh.util.parseoutput() {
-    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    local OPTION OPTIND
+    local FILTER=""
+    local RAW=0
+    while getopts ':f:r' OPTION
+    do
+        case "$OPTION" in
+            f) FILTER="$OPTARG" ;;
+            r) RAW=1 ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Parses a command output according to the RESTSH_CONTENT environment variable." 1>&2
-        echo "" 1>&2
-        echo "Usage: restsh.util.parseoutput <text>" 1>&2
-        return 1
+        {
+            echo "Parses a command output."
+            echo ""
+            echo "Usage: restsh.util.parseoutput [-r] [-f <filter>] <output>"
+            echo -e "\tUse -r for raw output."
+            echo -e "\tUse -f to apply an jq filter to output"
+        } 1>&2
+        return 2
     fi
-    local OUT=$1
-    case "$RESTSH_CONTENT" in
-        "application/json")
-            if ! $RESTSH_JQ "." <<< "$OUT" 2>/dev/null
-            then
-                echo "$OUT"
-            fi
-            ;;
-        *)
-            echo "$OUT"
-        ;;
-    esac
+    if [ "$RAW" -eq 1 ]
+    then
+        if [ -z "$FILTER" ]
+        then
+            printf "%s\n" "$OUTPUT"
+        else
+            JQ -r "$FILTER" <<< "$OUTPUT"
+        fi
+    else
+        if [ -z "$FILTER" ]
+        then
+            JQ "." <<< "$OUTPUT"
+        else
+            JQ "$FILTER" <<< "$OUTPUT"
+        fi
+    fi
 }
 
 # Declares variables from a directory. .txt extension for simple variables, .array for arrays.

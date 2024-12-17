@@ -47,7 +47,7 @@ f5.asm.policy.apply "$HASH"
 ## Apply all policies that are modified
 
 ```sh
-f5.asm.policy.list -r | JQ -r ".items[] | select(.isModified == true) | .fullPath" | XARGS f5.asm.policy.apply
+f5.asm.policy.list -r -f ".items[] | select(.isModified == true) | .fullPath" | XARGS f5.asm.policy.apply
 ```
 
 ## Apply ready signatures for all policies
@@ -59,7 +59,7 @@ f5.asm.signaturestaging.enforce
 ## Export all policies as json
 
 ```sh
-f5.asm.policy.list -r | JQ -r ".items[].fullPath" | XARGS f5.asm.policy.export
+f5.asm.policy.list -r -f ".items[].fullPath" | XARGS f5.asm.policy.export
 ```
 
 ## Add disallowed filetypes

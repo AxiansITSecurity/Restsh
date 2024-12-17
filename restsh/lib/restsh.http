@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-11-06
+# Date: 2024-12-17
 
 # Shortdesc: Central http functions for all common REST methods.
 # Desc:
@@ -16,29 +16,33 @@ set -uo pipefail
 # Generic http request function
 restsh.http() {
     local BODY=0
-    local RAW=0
     local RETRIES=0
+    local PARSE_OPT=()
     local OUTPUT_FILE=""
     local OPTION OPTIND
-    while getopts ':brc:o:' OPTION
+    while getopts ':bc:f:o:r' OPTION
     do
         case "$OPTION" in
             b) BODY=1 ;;
-            r) RAW=1 ;;
             c) RETRIES="$OPTARG" ;;
+            f) PARSE_OPT+=("-f" "$OPTARG") ;;
             o) OUTPUT_FILE="$OPTARG" ;;
+            r) PARSE_OPT+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Usage: restsh.http [-b] [-r] <method> <uri>" 1>&2
-        echo -e "\tUse -b for a body and pipe the payload in the command." 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries" 1>&2
-        echo -e "\tUse -o to define an output file" 1>&2
-        return 1
+        {
+            echo "Usage: restsh.http [-b] [-c <retries>] [-f <filter>] [-o <file>] [-r] <method> <uri>"
+            echo -e "\tUse -b for a body and pipe the payload in the command."
+            echo -e "\tUse -c to define retries"
+            echo -e "\tUse -f to apply an jq filter to output"
+            echo -e "\tUse -o to define an output file"
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     local METHOD=$1
     local URI=$2
@@ -77,12 +81,7 @@ restsh.http() {
     fi
     rm -f "$ERROR_TMP"
     unset RESTSH_CURL_OPTS
-    if [ "$RAW" -eq 1 ]
-    then
-        echo "$OUTPUT"
-    else
-        restsh.util.parseoutput "$OUTPUT"
-    fi
+    restsh.util.parseoutput "${PARSE_OPT[@]}" "$OUTPUT"
     return 0
 }
 
@@ -90,10 +89,12 @@ restsh.http() {
 restsh.download() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${3+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Download a file in chunks of ${RESTSH_CHUNK_SIZE} bytes." 1>&2
-        echo "Usage: restsh.download <uri> <size> <filename>" 1>&2
-        echo "Use 0 for <size> to enable auto-detection of the size." 1>&2
-        return 1
+        {
+            echo "Download a file in chunks of ${RESTSH_CHUNK_SIZE} bytes."
+            echo "Usage: restsh.download <uri> <size> <filename>"
+            echo "Use 0 for <size> to enable auto-detection of the size."
+        } 1>&2
+        return 2
     fi
     local URI=$1
     local TOTAL_SIZE=$2
@@ -177,9 +178,11 @@ restsh.download() {
 restsh.upload() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Upload a file in chunks of ${RESTSH_CHUNK_SIZE} bytes." 1>&2
-        echo "Usage: restsh.upload <uri> <filename>" 1>&2
-        return 1
+        {
+            echo "Upload a file in chunks of ${RESTSH_CHUNK_SIZE} bytes."
+            echo "Usage: restsh.upload <uri> <filename>"
+        } 1>&2
+        return 2
     fi
     local URI=$1
     local FILENAME=$2
@@ -245,22 +248,26 @@ restsh.upload() {
 DELETE() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':rc:' OPTION
+    while getopts ':c:f:r' OPTION
     do
         case "$OPTION" in
-            r) ARGS+=("-r") ;;
             c) ARGS+=("-c" "$OPTARG") ;;
+            f) ARGS+=("-f" "$OPTARG") ;;
+            r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Executes a HTTP DELETE request" 1>&2
-        echo "Usage: DELETE [-r] [-c] <uri>" 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Executes a HTTP DELETE request"
+            echo "Usage: DELETE [-c <retries>] [-f <filter>] [-r] <uri>"
+            echo -e "\tUse -c to define retries."
+            echo -e "\tUse -f to apply an jq filter to output"
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     ARGS+=("DELETE" "$1")
     restsh.http "${ARGS[@]}"
@@ -278,12 +285,14 @@ DOWNLOAD() {
         esac
     done
     shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ]  || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ] || [ -z "${2+x}" ]  || [ "$OPTION" = "invalid" ]
     then
-        echo "Downloads a file with HTTP"
-        echo "Usage: DOWNLOAD [-r] [-c] <uri> <output filename>" 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Downloads a file with HTTP"
+            echo "Usage: DOWNLOAD [-c <retries>] <uri> <output filename>"
+            echo -e "\tUse -c to define retries."
+        } 1>&2
+        return 2
     fi
     local URI=$1
     local OUT="$2"
@@ -300,22 +309,26 @@ DOWNLOAD() {
 GET() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':rc:' OPTION
+    while getopts ':c:f:r' OPTION
     do
         case "$OPTION" in
-            r) ARGS+=("-r") ;;
             c) ARGS+=("-c" "$OPTARG") ;;
+            f) ARGS+=("-f" "$OPTARG") ;;
+            r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Executes a HTTP GET request" 1>&2
-        echo "Usage: GET [-r] [-c] <uri>" 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Executes a HTTP GET request"
+            echo "Usage: GET [-c <retries>] [-f <filter>] [-r] <uri>"
+            echo -e "\tUse -c to define retries."
+            echo -e "\tUse -f to apply an jq filter to output."
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     ARGS+=("GET" "$1")
     restsh.http "${ARGS[@]}"
@@ -325,22 +338,26 @@ GET() {
 OPTIONS() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':rc:' OPTION
+    while getopts ':c:f:r' OPTION
     do
         case "$OPTION" in
-            r) ARGS+=("-r") ;;
             c) ARGS+=("-c" "$OPTARG") ;;
+            f) ARGS+=("-f" "$OPTARG") ;;
+            r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Executes a HTTP OPTIONS request" 1>&2
-        echo "Usage: OPTIONS [-r] [-c] <uri>" 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Executes a HTTP OPTIONS request"
+            echo "Usage: OPTIONS [-c <retries>] [-f <filter>] [-r] <uri>"
+            echo -e "\tUse -c to define retries."
+            echo -e "\tUse -f to apply an jq filter to output."
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     ARGS+=("OPTIONS" "$1")
     restsh.http "${ARGS[@]}"
@@ -350,23 +367,27 @@ OPTIONS() {
 PATCH() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':rc:' OPTION
+    while getopts ':c:f:r' OPTION
     do
         case "$OPTION" in
-            r) ARGS+=("-r") ;;
             c) ARGS+=("-c" "$OPTARG") ;;
+            f) ARGS+=("-f" "$OPTARG") ;;
+            r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Executes a HTTP PATCH request" 1>&2
-        echo "Usage: PATCH [-r] [-c] <uri>" 1>&2
-        echo -e "\tPipe the payload in the command." 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Executes a HTTP PATCH request"
+            echo "Usage: PATCH [-r] [-c] <uri>"
+            echo -e "\tPipe the payload in the command."
+            echo -e "\tUse -c to define retries."
+            echo -e "\tUse -f to apply an jq filter to output."
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     ARGS+=("PATCH" "$1")
     restsh.http "${ARGS[@]}"
@@ -376,23 +397,27 @@ PATCH() {
 POST() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':rc:' OPTION
+    while getopts ':c:f:r' OPTION
     do
         case "$OPTION" in
-            r) ARGS+=("-r") ;;
             c) ARGS+=("-c" "$OPTARG") ;;
+            f) ARGS+=("-f" "$OPTARG") ;;
+            r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
     then
-        echo "Executes a HTTP POST request" 1>&2
-        echo "Usage: POST [-r] [-c] <uri>" 1>&2
-        echo -e "\tPipe the payload in the command." 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Executes a HTTP POST request"
+            echo "Usage: POST [-r] [-c] <uri>"
+            echo -e "\tPipe the payload in the command."
+            echo -e "\tUse -c to define retries."
+            echo -e "\tUse -f to apply an jq filter to output."
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     ARGS+=("POST" "$1")
     restsh.http "${ARGS[@]}"
@@ -402,23 +427,27 @@ POST() {
 PUT() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':rc:' OPTION
+    while getopts ':c:f:r' OPTION
     do
         case "$OPTION" in
-            r) ARGS+=("-r") ;;
             c) ARGS+=("-c" "$OPTARG") ;;
+            f) ARGS+=("-f" "$OPTARG") ;;
+            r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
     shift "$((OPTIND -1))"
-    if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Executes a HTTP PUT request" 1>&2
-        echo "Usage: PUT [-r] [-c] <uri>" 1>&2
-        echo -e "\tPipe the payload in the command." 1>&2
-        echo -e "\tUse -r for raw output." 1>&2
-        echo -e "\tUse -c to define retries." 1>&2
-        return 1
+        {
+            echo "Executes a HTTP PUT request"
+            echo "Usage: PUT [-c <retries>] [-f <filter>] [-r] <uri>"
+            echo -e "\tPipe the payload in the command."
+            echo -e "\tUse -c to define retries."
+            echo -e "\tUse -f to apply an jq filter to output."
+            echo -e "\tUse -r for raw output."
+        } 1>&2
+        return 2
     fi
     ARGS+=("PUT" "$1")
     restsh.http "${ARGS[@]}"

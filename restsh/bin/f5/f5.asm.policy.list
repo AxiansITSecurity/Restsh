@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2024-12-17
 
 # Shortdesc: Lists all F5 ASM Policies.
 # Desc:
@@ -21,9 +21,11 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+GET_OPTS=("-r")
+while getopts ':f:r' OPTION
 do
     case "$OPTION" in
+        f) GET_OPTS+=("-f" "$OPTARG") ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -40,7 +42,7 @@ then
 fi
 
 # Main
-if RESULT=$(GET "/mgmt/tm/asm/policies?\$select=fullPath,isModified,parentPolicyName,id,enforcementMode,description")
+if RESULT=$(GET "${GET_OPTS[@]}" "/mgmt/tm/asm/policies?\$select=fullPath,isModified,parentPolicyName,id,enforcementMode,description")
 then
     if [ "$RAW" -eq 1 ]
     then

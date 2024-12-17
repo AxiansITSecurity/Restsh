@@ -4,6 +4,7 @@
 
 ## 3.0.0 - not yet released
 
+- Feat: Add `-f <filter>` argument to HTTP methods to filter output with jq
 - Feat: Add `gitlab.group.projects`
 - Feat: Add `gitlab.group.variable.copy` and `gitlab.project.variable.copy`
 - Feat: Add `restsh.pwgen`
