@@ -59,10 +59,7 @@ f5.asm.signaturestaging.enforce
 ## Export all policies as json
 
 ```sh
-while read -r POLICY
-do
-    f5.asm.policy.export "$POLICY" "/tmp/${POLICY//\//_}.json"
-done < <(f5.asm.policy.list -r | JQ -r ".items[].fullPath")
+f5.asm.policy.list -r | JQ -r ".items[].fullPath" | XARGS f5.asm.policy.export
 ```
 
 ## Add disallowed filetypes

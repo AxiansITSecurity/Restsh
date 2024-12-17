@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-23
+# Date: 2022-12-17
 
 # Shortdesc: Exports a F5 ASM Policy.
 # Desc:
@@ -30,17 +30,22 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-f <json|xml|binary>] <policy fullPath> <filename>"
+    echo "Usage: $(basename "$0") [-f <json|xml|binary>] <policy fullPath> [<filename>]"
     echo "Default format: json"
     exit 2
 fi
 
 POLICY=$1
-FILENAME=$2
+if [ -n "${2+x}" ]
+then
+    FILENAME=$2
+else
+    FILENAME="${POLICY//\//\~}"
+fi
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
 if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$POLICY_HASH.$FORMAT" \
