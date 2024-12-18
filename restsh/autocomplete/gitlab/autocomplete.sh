@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-04
+# Date: 2024-12-17
 
 # Shortdesc: Bash autocompletion for GitLab API.
 # Desc:
@@ -14,12 +14,19 @@ _method() {
     local opts=""
     case "$prev" in
         DELETE|GET|PATCH|POST|PUT)
-            local escaped
-            escaped=$(sed -E 's/\{([^}]+)\}/\\\{\1\\\}/g' <<< "$cur")
-            opts=$(sed -E "s|(${escaped}[^/]+/).*|\1|" "$RESTSH_PATH/autocomplete/gitlab/method_$prev" | sort -u)
+            opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/autocomplete/gitlab/method_$prev" | sort -u)
+            if [ -z "$opts" ] && [ "${cur:0-1}" != "/" ]
+            then
+                cur="$cur/"
+                opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/autocomplete/gitlab/method_$prev" | sort -u)
+            fi
+            if [ -z "$opts" ]
+            then
+                opts=$(grep -E "^${cur}[^/]+/[^/]+/?$" "$RESTSH_PATH/autocomplete/gitlab/method_$prev" | sort -u)
+            fi
             ;;
     esac
-    mapfile -t COMPREPLY < <(compgen -W "${opts}" -- "${cur}")
+    mapfile -t COMPREPLY <<< "$opts"
 }
 
 complete -o nospace -F _method DELETE
