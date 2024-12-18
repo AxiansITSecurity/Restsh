@@ -368,6 +368,45 @@ restsh.util.parseoutput() {
     fi
 }
 
+# Declares a variable KEY=VALUE
+restsh.util.declare.var() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Declares a variable KEY=VALUE" 1>&2
+        echo "Usage: restsh.util.declare.var KEY=VALUE" 1>&2
+        return 2
+    fi
+    local DEF=$1
+    local KEY=${DEF%%=*}
+    local VALUE=${DEF##*=}
+    if [ -z "$KEY" ] || [ -z "$VALUE" ]
+    then
+        return 1
+    fi
+    export "$KEY"="$VALUE"
+}
+
+# Tries to resolve the staging variable.
+restsh.util.eval_stage_var() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        {
+            echo "Tries to resolve the staging variable."
+            echo "Usage: restsh.util.eval_stage_var <variable name> <stage>"
+            echo ""
+            echo "restsh.util.eval_stage_var \"EXAMPLE\" \"DEV\" sets the value of the variable EXAMPLE to"
+            echo "the value of EXAMPLE_DEV if EXAMPLE_DEV can be resolved and is not empty."
+        } 1>&2
+        return 2
+    fi
+    local VAR_NAME="${1}"
+    local VAR_NAME_STAGE="${VAR_NAME}_${2}"
+    set +u
+    local VAR_VALUE=${!VAR_NAME_STAGE}
+    [ -z "$VAR_VALUE" ] || declare -g "$VAR_NAME"="$VAR_VALUE"
+    set -u
+}
+
 # Declares variables from a directory. .txt extension for simple variables, .array for arrays.
 restsh.util.setvars() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
@@ -520,24 +559,6 @@ restsh.util.check.isnumber() {
         return 0
     fi
     return 1
-}
-
-# Declares a variable KEY=VALUE
-restsh.util.declare.var() {
-    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
-    then
-        echo "Declares a variable KEY=VALUE" 1>&2
-        echo "Usage: restsh.util.declare.var KEY=VALUE" 1>&2
-        return 2
-    fi
-    local DEF=$1
-    local KEY=${DEF%%=*}
-    local VALUE=${DEF##*=}
-    if [ -z "$KEY" ] || [ -z "$VALUE" ]
-    then
-        return 1
-    fi
-    export "$KEY"="$VALUE"
 }
 
 # Get file size

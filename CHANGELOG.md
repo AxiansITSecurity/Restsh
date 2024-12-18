@@ -4,6 +4,7 @@
 
 ## 3.0.0 - not yet released
 
+- Feat: Add `restsh.util.eval_stage_var`
 - Feat: Add `f5.sys.db.get`, `f5.sys.db.list` and `f5.sys.db.modify`
 - Feat: Add `f5.sys.service.get`, `f5.sys.service.list` and `f5.sys.service.restart`
 - Feat: Add `f5.asm.advanced-settings.getid`
