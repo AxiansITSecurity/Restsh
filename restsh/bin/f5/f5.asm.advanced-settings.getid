@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-09-03
+# Date: 2024-12-18
 
-# Shortdesc: Modifies a F5 ASM Advanced Setting (System Variable).
+# Shortdesc: Get's the ID for a F5 ASM Advanced Setting by name.
 # Desc:
-# Modifies a F5 ASM Advanced Setting (System Variable).
+# Get's the ID for a F5 ASM Advanced Setting by name.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -19,7 +19,8 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+# Get options
+while getopts ':' OPTION
 do
     case "$OPTION" in
         *) OPTION="invalid"; break ;;
@@ -27,19 +28,15 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ "$OPTION" == "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") -- <id> <value>"
+    echo "Usage: $(basename "$0") <name>"
     exit 2
 fi
-ID=$1
-VALUE=$2
+NAME=$1
 
 # Main
-
-$RESTSH_JQ -n --arg value "$VALUE" \
-    '{
-        value: $value
-    }' | PATCH "/mgmt/tm/asm/advanced-settings/$ID"
+GET "/mgmt/tm/asm/advanced-settings?\$select=id,name" \
+    | JQE -r --arg name "$NAME" '.items[] | select(.name == $name) | .id'
