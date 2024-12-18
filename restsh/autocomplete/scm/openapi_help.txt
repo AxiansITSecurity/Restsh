@@ -107,11 +107,29 @@ get /api/agent/v1/network/{id}
 put /api/agent/v1/network/{id}
 	Update Network Agent details.
 get /api/azure/v1/accounts
-	null
+	Get list of Azure accounts with basic details
+post /api/azure/v1/accounts
+	Create Azure account with given parameters
 get /api/azure/v1/accounts/{accountId}/resource-groups
-	null
+	Get list of resource groups for Azure account
 get /api/azure/v1/accounts/{accountId}/subscriptions/{subscriptionId}/resource-groups/{resourceGroup}/vaults
-	null
+	Get list of Key Vaults for Azure account
+delete /api/azure/v1/accounts/{id}
+	Delete Azure account by given ID
+get /api/azure/v1/accounts/{id}
+	Get Azure account detailed info
+put /api/azure/v1/accounts/{id}
+	Update Azure account with given parameters
+get /api/azure/v1/accounts/{id}/check
+	Check Azure account for potential configuration or connectivity issues
+put /api/azure/v1/accounts/{id}/delegations
+	Delegates organizations to existing certificate bucket
+get /api/connector/v1/dns
+	List all DNS connectors that match the requested filter.
+get /api/connector/v1/dns/{uuid}
+	Get Connector details.
+get /api/connector/v1/dns/{uuid}/provider
+	List all DNS Provides available for the connector
 get /api/customField/v2
 	List all custom fields according to filter. Includes complete details.
 post /api/customField/v2
@@ -136,8 +154,12 @@ post /api/dcv/v2/validation/start/domain/http
 	Start Domain Control Validation using HTTP method. Required details for HTTP DCV are provided in the response. After you prepare txt validation file on the HTTP server, you should proceed with the "Submit HTTP Validation" method.
 post /api/dcv/v2/validation/start/domain/https
 	Start Domain Control Validation using HTTPS method. Required details for HTTPS DCV are provided in the response. After you prepare txt validation file on the HTTPS server, you should proceed with the "Submit HTTPS validation" method.
+post /api/dcv/v2/validation/start/domain/txt
+	DNS TXT domain validation method does not require start operation. All details required for validation are provided on submit operation.
 post /api/dcv/v2/validation/status
 	Get domain validation details
+post /api/dcv/v2/validation/submit-bulk/domain/email
+	Submit a request for Domain Control Validation using Email method. The email message will be sent to the email address specified in the request. Note: The list of email addresses that can be used for Email DCV is available via "Start validation via Email" method.
 post /api/dcv/v2/validation/submit/domain/cname
 	Submit a request for Domain Control Validation using CName method. Required details dor CNAME DNS record should be taken via "Start CName validation" method
 post /api/dcv/v2/validation/submit/domain/email
@@ -146,6 +168,8 @@ post /api/dcv/v2/validation/submit/domain/http
 	Submit a validation request for Domain Control Validation using HTTP method. This method validates that the txt validation file on the HTTP server matches the validation details provided by the "Start validation HTTP" method.
 post /api/dcv/v2/validation/submit/domain/https
 	Submit a validation request for Domain Control Validation using HTTPS method. This method validates that the txt validation file on the HTTPS server matches the validation details provided by the "Start validation HTTPS" method.
+post /api/dcv/v2/validation/submit/domain/txt
+	Submit a request for Domain Control Validation using TXT method. The TXT record should be created on the DNS server with the provided details.
 post /api/dcv/v2/validation/sync
 	Synchronize domain validation details with backend
 get /api/device/v1
@@ -169,12 +193,24 @@ post /api/device/v1/replace/order/{deviceCertId}
 The initial certificate is defined by its Id.
 post /api/device/v1/revoke/order/{deviceCertId}
 	Sending a request to CA to add the Device certificate under the particular Id to certificate revocation list.
-post /api/device/v1/revoke/serial/{sn}
+post /api/device/v1/revoke/serial/{serialNumber}
 	Sending a request to CA to add the Device certificate under the particular serial number to certificate revocation list.
 get /api/device/v1/types
 	List device certificate profiles, previously known as a certificate type. An enrollment request will require the certificate profile be specified.
 delete /api/device/v1/{certId}
 	Submission of a request for deleting Device certificate for a given Id.
+put /api/device/v1/{certId}
+	Update Device certificate.
+get /api/device/v1/{certId}/location
+	Returns a list of Device certificate locations.
+post /api/device/v1/{certId}/location
+	Creates a new custom location for the Device certificate.
+delete /api/device/v1/{certId}/location/{locationId}
+	Deletes custom certificate location.
+get /api/device/v1/{certId}/location/{locationId}
+	Returns Device certificate location details.
+put /api/device/v1/{certId}/location/{locationId}
+	Updates custom certificate location with the new details.
 get /api/device/v1/{deviceCertId}
 	Get device certificate details.
 get /api/discovery/v1/assignmentrule
@@ -189,6 +225,18 @@ delete /api/discovery/v1/assignmentrule/{ruleId}
 	Enables the administrator to delete a particular assignment rule that is applicable to the organization or department delegated to them
 get /api/discovery/v1/assignmentrule/{ruleId}
 	Enables the administrator to find the assignment rule by its ID
+get /api/discovery/v1/azure_task
+	Enables the administrator to get the list of existing tasks of scanning which he/she is authorized to view and manage
+post /api/discovery/v1/azure_task
+	Enables administrators to create a scan task in search of SSL certificates
+put /api/discovery/v1/azure_task/{id}
+	Enables administrators to edit Azure Key Vault scan task
+delete /api/discovery/v1/azure_task/{taskId}
+	Enables administrators to delete specific Azure Key Vault scanning task
+get /api/discovery/v1/azure_task/{taskId}
+	Enables the administrator to get the parameters of a particular task which he/she is authorized to view and manage
+post /api/discovery/v1/azure_task/{taskId}/start
+	Enables administrators to start Azure Key Vault scan for a specific task
 get /api/discovery/v1/bucket
 	Query certificate buckets available according to filtering parameters supplied
 post /api/discovery/v1/bucket
@@ -257,14 +305,40 @@ post /api/domain/v1/{id}/delegation/approve
 	Approve requested domain delegation to organization / department.
 post /api/domain/v1/{id}/delegation/reject
 	Reject requested domain delegation to organization / department.
+put /api/domain/v1/{id}/monitoring
+	Change domain's CT Log Monitoring.
 put /api/domain/v1/{id}/suspend
 	Suspended domain. Operation is allowed only for admins with role MRAO.
+get /api/endpoint/v1
+	Get list of endpoints according to the specified filter and pagination.
+post /api/endpoint/v1
+	Creates new endpoint according to the provided request.
+get /api/endpoint/v1/{eeId}/account
+	Get list of endpoint accounts according to the specified filter and pagination.
+post /api/endpoint/v1/{eeId}/account
+	Creates new account according to the provided request.
+delete /api/endpoint/v1/{eeId}/account/{id}
+	Deletes enrollment account.
+get /api/endpoint/v1/{eeId}/account/{id}
+	Get detailed information about endpoint account.
+put /api/endpoint/v1/{eeId}/account/{id}
+	Updates endpoint account according to the provided request.
+delete /api/endpoint/v1/{id}
+	Deletes enrollment endpoint.
+get /api/endpoint/v1/{id}
+	Get detailed information about endpoint.
+put /api/endpoint/v1/{id}
+	Updates endpoint according to the provided request.
+delete /api/endpoint/v1/{id}/delegations
+	Remove all endpoint delegations from organization / department. The endpoint will be switched to global delegation mode.
+put /api/endpoint/v1/{id}/delegations
+	Create/Update endpoint delegations to organization / department. If endpoint was in global delegation mode, it will be switched to custom mode.
 get /api/notification/v1
 	Get notifications according to applied filter
 post /api/notification/v1
 	Create notification
 get /api/notification/v1/types
-	Get permitted notification types for logged in client admin
+	Get the notification types that are available for the current administrator.
 delete /api/notification/v1/{notificationId}
 	Delete notification
 put /api/notification/v1/{notificationId}
@@ -283,6 +357,18 @@ get /api/organization/v1/{id}
 	Returns organization detailed info
 put /api/organization/v1/{id}
 	Updates organization with given parameters
+get /api/organization/v1/{orgId}/validations
+	Get list of organization validations.
+post /api/organization/v1/{orgId}/validations
+	Submit organization validation.
+put /api/organization/v1/{orgId}/validations/{validationId}
+	Updates organization validation according to the provided request.
+put /api/organization/v1/{orgId}/validations/{validationId}/admin
+	Updates organization validation admin according to the provided request.
+post /api/organization/v1/{orgId}/validations/{validationId}/reset
+	Resets organization validation.
+post /api/organization/v1/{orgId}/validations/{validationId}/sync
+	Synchronize organization validation.
 get /api/person/v2
 	List of person info objects according to applied filters.
 post /api/person/v2
@@ -319,26 +405,42 @@ get /api/smime/v2/byPersonEmail/{email}
 	List all Client Certificates for a person with given email.
 get /api/smime/v2/byPersonId/{pid}
 	List all Client Certificates for a person with given ID.
-get /api/smime/v2/collect/{orderNum}
+get /api/smime/v2/collect/{backendCertId}
 	Delivering the newly issued Client certificate from CA to the administrator for download.
 get /api/smime/v2/customFields
 	List Client Certificate custom fields. An enrollment requires all mandatory custom fields to be specified.
 post /api/smime/v2/enroll
 	Creation and submission of a request for a new Client Certificate.
-post /api/smime/v2/renew/order/{orderNum}
-	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its order number.
-post /api/smime/v2/renew/serial/{serial}
+post /api/smime/v2/keystore/{certId}
+	Download Client Certificate in P12 format.
+post /api/smime/v2/renew/order/{backendCertId}
+	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its backend certificate ID.
+post /api/smime/v2/renew/serial/{serialNumber}
 	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its serial number.
 post /api/smime/v2/revoke
 	Sending a request to CA to add all Client certificates issued for the person with the particular email address in certificate revocation list.
-post /api/smime/v2/revoke/order/{orderNum}
+post /api/smime/v2/revoke/order/{backendCertId}
 	Sending a request to CA to add the particular Client certificate in certificate revocation list.
-post /api/smime/v2/revoke/serial/{serial}
+post /api/smime/v2/revoke/serial/{serialNumber}
 	Sending a request to CA to add the Client certificate under the particular serial number in certificate revocation list.
 get /api/smime/v2/types
 	List Client Certificate profiles, previously known as a certificate type. An enrollment request will require the Certificate Profile be specified.
 delete /api/smime/v2/{certId}
 	Submission of a request for deleting Client certificate for a given Id.
+get /api/smime/v2/{certId}
+	Get Client certificate details.
+put /api/smime/v2/{certId}
+	Update Client certificate.
+get /api/smime/v2/{certId}/location
+	Returns a list of Client certificate locations.
+post /api/smime/v2/{certId}/location
+	Creates a new custom location for the Client certificate.
+delete /api/smime/v2/{certId}/location/{locationId}
+	Deletes custom certificate location.
+get /api/smime/v2/{certId}/location/{locationId}
+	Returns Client certificate location details.
+put /api/smime/v2/{certId}/location/{locationId}
+	Updates custom certificate location with the new details.
 get /api/ssl/v1
 	List all SSL certificates that match the requested filter.
 put /api/ssl/v1
@@ -359,6 +461,8 @@ post /api/ssl/v1/import
 	Import certificates to SCM.
 get /api/ssl/v1/keystore/{sslId}/{formatType}
 	Generation of a link to download private key from Private Key Agent.
+post /api/ssl/v1/renew/manual/{id}
+	null
 post /api/ssl/v1/renew/{renewId}
 	Submission of a request for a new SSL certificate using the CSR and parameters of the initial certificate. The initial certificate is the one that is selected by the administrator for renewal in this case.
 post /api/ssl/v1/renewById/{sslId}
@@ -375,3 +479,13 @@ delete /api/ssl/v1/{sslId}
 	Submission of a request for deleting SSL certificate for a given SSL Id.
 get /api/ssl/v1/{sslId}
 	Get SSL certificate details.
+get /api/ssl/v1/{sslId}/location
+	List SSL certificate locations.
+post /api/ssl/v1/{sslId}/location
+	Creates a new custom location for the SSL certificate.
+delete /api/ssl/v1/{sslId}/location/{locationId}
+	Deletes custom certificate location.
+get /api/ssl/v1/{sslId}/location/{locationId}
+	Returns SSL certificate location details.
+put /api/ssl/v1/{sslId}/location/{locationId}
+	Updates custom certificate location with the new details.

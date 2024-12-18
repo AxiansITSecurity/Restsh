@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-10
+# Date: 2024-12-18
 
 # Shortdesc: Updates the autocompletion and help from the OpenAPI file.
 # Desc:
@@ -98,7 +98,19 @@ done < <($RESTSH_YQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
 echo "Sorting completion files"
 for F in "${METHODS[@]}"
 do
-    sort -u "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp" > "$RESTSH_PATH/autocomplete/gitlab/method_${F}"
+    while read -r LINE
+    do
+        mapfile -d/ TOKEN <<< "$LINE"
+        P=""
+        for T in "${TOKEN[@]}"
+        do
+            P="$P$T"
+            printf "%s\n" "$P" >> "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp2"
+        done
+    done < "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
+    cat "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp2" >> "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
+    rm -f "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp2"
+    sort -u "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp" | sed '/^[[:space:]]*$/d' > "$RESTSH_PATH/autocomplete/gitlab/method_${F}"
     rm -f "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
 done
 
