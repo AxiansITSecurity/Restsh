@@ -1,0 +1,2 @@
+GET /api/v4/groups/{id}/subgroups
+GET /api/v4/groups/{id}/projects

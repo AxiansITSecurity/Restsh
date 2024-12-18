@@ -40,6 +40,8 @@
 /api/v4/groups/{id}/badges/
 /api/v4/groups/{id}/badges/{badge_id}
 /api/v4/groups/{id}/badges/render
+/api/v4/groups/{id}/projects
+/api/v4/groups/{id}/subgroups
 /api/v4/metadata
 /api/v4/projects/
 /api/v4/projects/{id}/

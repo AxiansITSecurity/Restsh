@@ -95,6 +95,15 @@ do
     done < <($RESTSH_YQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
 done < <($RESTSH_YQ -r '.paths | keys | .[]' < "$OPENAPI_FILE")
 
+if [ -s "$RESTSH_PATH/autocomplete/gitlab/manual_uris.txt" ]
+then
+    echo "Adding additional URL's"
+    while read -r METHOD URI
+    do
+        printf "%s\n" "$URI" >> "$RESTSH_PATH/autocomplete/gitlab/method_${METHOD}.tmp"
+    done < "$RESTSH_PATH/autocomplete/gitlab/manual_uris.txt"
+fi
+
 echo "Sorting completion files"
 for F in "${METHODS[@]}"
 do
