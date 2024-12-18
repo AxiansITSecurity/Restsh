@@ -15,3 +15,7 @@ SCM_TERM_TEST,,false,true,SCM Certificate Lifetime in days
 
 SCM_PROFILE_PROD,,false,true,SCM Certificate Profile ID
 SCM_TERM_PROD,,false,true,SCM Certificate Lifetime in days
+
+CERTBOT_SERVER,,false,true,Certbot Server, leave empty for Let's Encrypt.
+CERTBOT_EAB_KID,,false,true,Key Identifier for External Account Binding.
+CERTBOT_EAB_HMAC,,true,true,HMAC key for External Account Binding.
