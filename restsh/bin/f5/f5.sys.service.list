@@ -35,6 +35,5 @@ then
     exit 2
 fi
 
-
 GET /mgmt/tm/sys/service/stats \
     | JQ -r '.apiRawValues.apiAnonymous'
