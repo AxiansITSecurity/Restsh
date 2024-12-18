@@ -271,7 +271,7 @@ COLUMN() {
         NR == FNR {
             for (i = 1; i <= NF; i++) {
             l = length($i)
-            if (w[i] < l)
+            if (w[i] < l && l < 200)
                 w[i] = l
             }
             next
