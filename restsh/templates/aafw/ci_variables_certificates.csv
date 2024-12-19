@@ -1,7 +1,6 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
 CERT_CI_STAGE,dev,false,true,The pipeline stage.
-CERT_EMAIL,,false,true,E-Mail for Certbot.
 CERT_EXPIRATION_STRING,1 week,false,true,Date string to detect soon expiring certificates.
 SCM_CLIENTID,,false,true,SCM OAuth ClientID
 SCM_ORG_ID_DEFAULT,,false,true,SCM Organization ID
@@ -16,6 +15,7 @@ SCM_TERM_TEST,,false,true,SCM Certificate Lifetime in days
 SCM_PROFILE_PROD,,false,true,SCM Certificate Profile ID
 SCM_TERM_PROD,,false,true,SCM Certificate Lifetime in days
 
+CERTBOT_EMAIL,,false,true,E-Mail for Certbot.
 CERTBOT_SERVER,,false,true,Certbot Server - leave empty for Let's Encrypt.
 CERTBOT_EAB_KID,,false,true,Key Identifier for External Account Binding.
 CERTBOT_EAB_HMAC,hmackey-for-eab,true,true,HMAC key for External Account Binding.
