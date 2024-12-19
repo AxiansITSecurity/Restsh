@@ -52,8 +52,8 @@ include:
 EOL
 for F in dev test prod
 do
-    mkdir "$F"
-    touch "$F/.gitkeep"
+    mkdir -p "config/$F"
+    touch "config/$F/.gitkeep"
 done
 git add .
 git commit -m "Init"
