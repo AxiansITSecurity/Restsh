@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-08-02
+# Date: 2024-12-20
 
 # Shortdesc: Creates a pkcs12 file with private key, certificate and optional chain.
 # Desc:
@@ -40,7 +40,7 @@ fi
 OPENSSL_OPTS=("pkcs12" "-export" "-out" "$1" "-in" "$2" "-inkey" "$3")
 if [ -n "${4+x}" ]
 then
-    OPENSSL_OPTS+=("-chain" "-CAfile" "$4")
+    OPENSSL_OPTS+=("-certfile" "$4")
 fi
 
 [ -n "${KEY_PASS+x}" ] && OPENSSL_OPTS+=("-passin" "env:KEY_PASS")
