@@ -4,6 +4,7 @@
 
 ## 3.0.0 - not yet released
 
+- Feat: Support of AES256 encrypted `RESTSH_TOKEN_VALUE`
 - Feat: Add `restsh.util.eval_stage_var`
 - Feat: Add `f5.sys.db.get`, `f5.sys.db.list` and `f5.sys.db.modify`
 - Feat: Add `f5.sys.service.get`, `f5.sys.service.list` and `f5.sys.service.restart`
@@ -13,6 +14,8 @@
 - Feat: Add `gitlab.group.variable.copy` and `gitlab.project.variable.copy`
 - Feat: Add `restsh.pwgen`
 - Feat: Add module for Axians Automation Framework: `aafw`
+    - Groups: `aafw.group.clone`, `aafw.group.new`
+    - Projects: `aafw.project.init.as3`, `aafw.project.init.cert`, `aafw.project.init.tasks`, `aafw.project.init.waf`, `aafw.project.new`
 - Feat: Add `restsh.util.uc` and `restsh.util.lc` helper
 - Feat: Manage GitLab Runners: `gitlab.runner.create`, `gitlab.runner.list`
 - Upd: Improve autocompletion
@@ -25,8 +28,8 @@
 
 ## 24.10.21
 
-- Note: Not setting RESTSH_MODULES is now deprecated.
-- Feat: Support of AES256 encrypted RESTSH_PASS and SCM_SECRET
+- Note: Not setting `RESTSH_MODULES` is now deprecated.
+- Feat: Support of AES256 encrypted `RESTSH_PASS` and `SCM_SECRET`
 - Feat: Add `restsh.util.encrypt`, `restsh.util.decrypt`
 - Feat: Management for GitLab Project CI/CD Variables
 - Feat: Resolve variables in `gitlab.group.variable.batch` for value
