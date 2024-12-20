@@ -2,7 +2,7 @@
 
 ***
 
-## 3.0.0 - not yet released
+## v3.0.0 - not yet released
 
 - Feat: Support of AES256 encrypted `RESTSH_TOKEN_VALUE`
 - Feat: Add `restsh.util.eval_stage_var`
