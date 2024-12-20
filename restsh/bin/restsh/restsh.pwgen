@@ -55,7 +55,7 @@ LINE="$(tr -dc 'A-HJ-NP-Za-km-z2-9' < /dev/urandom | head -c "$LENGTH" || true)"
 CHUNKS=$((CHUNKS + 1))
 for (( I=0; I<${#LINE}; I++ ))
 do
-    if [ "$(($((I + 1)) % CHUNKS))" -eq 0 ] 
+    if [ "$(($((I + 1)) % CHUNKS))" -eq 0 ] && [ "$CHUNKS" -gt 1 ]
     then
         printf '%s' "$DELIMITER"
     else
