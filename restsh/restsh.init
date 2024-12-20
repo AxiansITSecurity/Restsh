@@ -129,7 +129,7 @@ then
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
-            echo "Password is encrypted."
+            echo -n "Password is encrypted, "
             if ! RESTSH_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${RESTSH_PASS:7}")
             then
                 echo_err "Decryption of password failed."
@@ -154,7 +154,7 @@ then
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
-            echo "Token is encrypted."
+            echo -n "Token is encrypted, "
             if ! RESTSH_TOKEN_VALUE=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${RESTSH_TOKEN_VALUE:7}")
             then
                 echo_err "Decryption of password failed."
