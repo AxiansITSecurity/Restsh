@@ -617,7 +617,7 @@ restsh.util.encrypt() {
     read -s -r -p "String to encrypt: " TOENCRYPT
     echo ""
     local ENCRYPTED
-    ENCRYPTED=$(openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a <<< "$TOENCRYPT")
+    ENCRYPTED=$(openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a <<< "$TOENCRYPT" | tr -d '\n')
     echo "AES256:$ENCRYPTED"
 }
 
