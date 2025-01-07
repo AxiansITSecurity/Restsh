@@ -26,6 +26,8 @@
 - Fix: `f5.asm.policy.audit` support scientific notation for timestamps
 - Fix: `f5.sslreport.generate` use correct options for column and pandoc
 
+***
+
 ## 24.10.21
 
 - Note: Not setting `RESTSH_MODULES` is now deprecated.
