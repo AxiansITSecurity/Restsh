@@ -75,11 +75,11 @@ MO_VALUE_EXPAND_OR_DEFAULT() {
 }
 
 # Prints true if variable is not empty, else false.
-# Usage: {{MO_TRUE_IF_NOT_EMPTY 'VAR_ALLOWED_HOSTNAMES'}}
+# Usage: {{MO_TRUE_IF_NOT_EMPTY 'VAR_HOSTNAMES'}}
 MO_TRUE_IF_NOT_EMPTY() {
     local ARG=${MO_FUNCTION_ARGS[0]}
     local VALUE="${!ARG}"
-    if [ -n "${VALUE+x}" ]
+    if [ -n "${VALUE}" ]
     then
         printf "true"
     else
