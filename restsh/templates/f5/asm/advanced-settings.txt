@@ -6,3 +6,4 @@ guarantee_remote_logging 0
 relax_unicode_in_json 1
 relax_unicode_in_xml 1
 max_json_policy_size 100000
+ecard_max_http_req_uri_len 4096
