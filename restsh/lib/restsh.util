@@ -431,7 +431,7 @@ restsh.util.setvar() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
         echo "Declares a variable from a file. .txt extension for simple variable, .array for array." 1>&2
-        echo "  .txt files are treated as vairable and declared as VAR_<file basename>" 1>&2
+        echo "  .txt files are treated as variable and declared as VAR_<file basename>" 1>&2
         echo "  .array files are treated as array and declared as ARRAY_<file basename>" 1>&2
         echo "Blank lines and lines starting with # are ignored." 1>&2
         echo "" 1>&2
@@ -465,8 +465,8 @@ restsh.util.setvar() {
             mapfile -t "$VAR2" <<< "$LINES"
         else
             #shellcheck disable=SC2140
-            declare -g "$VAR1"=""
-            declare -g "$VAR2"=""
+            declare -g -a "$VAR1=()"
+            declare -g -a "$VAR2=()"
         fi
         echo "Declaring array: $VAR1, $VAR2"
     else

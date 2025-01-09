@@ -26,6 +26,7 @@
 - Fix: Return codes for some scripts
 - Fix: `f5.asm.policy.audit` support scientific notation for timestamps
 - Fix: `f5.sslreport.generate` use correct options for column and pandoc
+- Fix: `restsh.util.setvar` declare empty arrays
 
 ***
 
