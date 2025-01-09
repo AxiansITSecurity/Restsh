@@ -5,6 +5,7 @@
 ## v3.0.0 - not yet released
 
 - Feat: Support of AES256 encrypted `RESTSH_TOKEN_VALUE`
+- Feat: Add `f5.asm.signatureset.get`
 - Feat: Add `restsh.util.eval_stage_var`
 - Feat: Add `f5.sys.db.get`, `f5.sys.db.list` and `f5.sys.db.modify`
 - Feat: Add `f5.sys.service.get`, `f5.sys.service.list` and `f5.sys.service.restart`
