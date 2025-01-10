@@ -13,6 +13,7 @@
 - Feat: Add `-f <filter>` argument to HTTP methods to filter output with jq
 - Feat: Add `gitlab.group.projects`
 - Feat: Add `gitlab.group.variable.copy` and `gitlab.project.variable.copy`
+- Feat: Add `gitlab.group.variable.delete.all`
 - Feat: Add `restsh.pwgen`
 - Feat: Add module for Axians Automation Framework: `aafw`
     - Groups: `aafw.group.clone`, `aafw.group.new`
