@@ -36,12 +36,10 @@ then
     exit 2
 fi
 
-WAF_POLICY_IDS=$(GET /mgmt/tm/asm/policies?\$select=name,id | JQ -r '.items[].id')
-
-for POLICY_ID in $WAF_POLICY_IDS
+while read -r POLICY_ID
 do
     POLICY_DATA=$(GET "/mgmt/tm/asm/policies/$POLICY_ID?\$select=fullPath,virtualServers,manualVirtualServers")
     POLICY_NAME=$(JQ -r ".fullPath" <<< "$POLICY_DATA")
     VIRTUAL_SERVERS=$(JQ -r '[.virtualServers.[]?,.manualVirtualServers.[]?] | length' <<< "$POLICY_DATA")
     [ "$VIRTUAL_SERVERS" -eq 0 ] && echo "$POLICY_NAME"
-done
+done < <(GET "/mgmt/tm/asm/policies?\$select=name,id" | JQ -r '.items[].id')
