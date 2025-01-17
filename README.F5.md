@@ -23,7 +23,7 @@ Call `f5.auth.token.get` to retrieve the token. It uses the provided username an
 
 ## Device Groups
 
-You can set RESTSH_HOST to a comma separated list of the F5 cluster members management addresses.
+You can set RESTSH_HOST to a comma separated list of the F5 device group members management addresses.
 
 Call `f5.cluster.setactive` before any other command to connect to the active F5 device.
 
@@ -31,3 +31,4 @@ Call `f5.cluster.setactive` before any other command to connect to the active F5
 
 - [iControl Rest Home](https://clouddocs.f5.com/api/icontrol-rest/)
 - [F5 REST API Authentication](https://clouddocs.f5.com/api/icontrol-soap/Authentication_with_the_F5_REST_API.html)
+- [K45508216: Displaying the iControl REST table of contents](https://my.f5.com/manage/s/article/K45508216)
