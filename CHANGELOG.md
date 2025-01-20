@@ -2,7 +2,7 @@
 
 ***
 
-## v3.0.0 - not yet released
+## v3.0.0 - 2025-01-20
 
 - Feat: Support of AES256 encrypted `RESTSH_TOKEN_VALUE`
 - Feat: Add `f5.asm.signatureset.get`
