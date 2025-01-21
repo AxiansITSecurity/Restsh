@@ -45,9 +45,10 @@ then
     exit 2
 fi
 TS_FILE=$1
+TS_FILE_PARSED="$RESTSH_TMP/$(basename "$TS_FILE")"
 
 # Cleanup tmp files
-[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$RESTSH_TMP/$TS_FILE".parsed' EXIT
+[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$TS_FILE_PARSED"' EXIT
 
 # Main
 
@@ -65,15 +66,15 @@ then
     [ -s "$DEFAULTS" ] && . "$DEFAULTS"
 
     # Process template
-    if ! $RESTSH_MO -- "$TS_FILE" > "$RESTSH_TMP/$TS_FILE.parsed"
+    if ! $RESTSH_MO -- "$TS_FILE" > "$TS_FILE_PARSED"
     then
         echo_err "Processing the template failed."
         exit 1
     fi
 else
-    cp "$TS_FILE" "$RESTSH_TMP/$TS_FILE.parsed"
+    cp "$TS_FILE" "$TS_FILE_PARSED"
 fi
 
 # Post the declaration
 echo "Posting declaration"
-POST "/mgmt/shared/telemetry/declare" < "$RESTSH_TMP/$TS_FILE.parsed"
+POST "/mgmt/shared/telemetry/declare" < "$TS_FILE_PARSED"
