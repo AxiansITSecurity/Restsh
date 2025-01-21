@@ -29,10 +29,12 @@
 /mgmt/net/vlan-group
 /mgmt/shared/analytics/avr-proxy-tasks
 /mgmt/shared/analytics/event-analysis-tasks
+/mgmt/shared/
 /mgmt/shared/api
 /mgmt/shared/appsvcs/declare/
 /mgmt/shared/appsvcs/declare/{id}
 /mgmt/shared/appsvcs/declare/{id}/applications
+/mgmt/shared/appsvcs/task/{id}
 /mgmt/shared/authn/providers
 /mgmt/shared/authn/providers/local/groups
 /mgmt/shared/authn/providers/remote
@@ -46,6 +48,7 @@
 /mgmt/shared/authz/users/{id}
 /mgmt/shared/cache
 /mgmt/shared/certificate-whitelist
+/mgmt/shared/declarative-onboarding/
 /mgmt/shared/device-availability
 /mgmt/shared/device-certificate
 /mgmt/shared/device-certificates
