@@ -98,7 +98,7 @@ then
 fi
 
 # Wait for completed task
-if f5.as3.taskwait "$TASK_ID"
+if f5.appsvc.taskwait "$TASK_ID"
 then
     echo_ok "AS3 Application declared successfully."
     exit 0

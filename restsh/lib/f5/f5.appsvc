@@ -25,11 +25,11 @@ f5.as3.version() {
 }
 
 # Waits for an AS3 task to be finished
-f5.as3.taskwait() {
+f5.appsvc.taskwait() {
     if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
         echo "Waits for an AS3 task to be finished"
-        echo "Usage: f5.as3.taskwait <id>" 1>&2
+        echo "Usage: f5.appsvc.taskwait <id>" 1>&2
         return 2
     fi
     local TASK_ID=$1
@@ -65,7 +65,7 @@ f5.as3.taskwait() {
                     RC=$CODE
                     ;;
                 *)
-                    echo_err "AS3 declaration failed: $CODE"
+                    echo_err "appsvc task failed: $CODE"
                     # Print result message from f5
                     GET -r "$CHECK_TASK_URI" | $RESTSH_JQ -r ".results"
                     return 1
@@ -78,4 +78,4 @@ f5.as3.taskwait() {
 }
 
 export -f f5.as3.version
-export -f f5.as3.taskwait
+export -f f5.appsvc.taskwait

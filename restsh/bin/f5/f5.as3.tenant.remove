@@ -53,7 +53,7 @@ then
 fi
 
 # Wait for completed task
-if f5.as3.taskwait "$TASK_ID"
+if f5.appsvc.taskwait "$TASK_ID"
 then
     echo "AS3 Tenant removed successfully."
     exit 0
