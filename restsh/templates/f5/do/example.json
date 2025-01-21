@@ -1,0 +1,299 @@
+{
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-declarative-onboarding/refs/heads/main/src/schema/latest/base.schema.json",
+    "schemaVersion": "1.46.0",
+    "class": "Device",
+    "async": true,
+    "Common": {
+        "class": "Tenant",
+        "mySystem": {
+            "class": "System",
+            "hostname": "{{VAR_HOSTNAME}}",
+            "cliInactivityTimeout": 1200,
+            "consoleInactivityTimeout": 1200,
+            "autoPhonehome": false,
+            "autoCheck": false,
+            "mcpAuditLog": "enable",
+            "guiAuditLog": true,
+            "tmshAuditLog": true,
+            "mgmtDhcpEnabled": false
+        },
+        "myProvisioning": {
+            "class": "Provision",
+            "ltm": "nominal",
+            "apm": "nominal",
+            "asm": "nominal",
+            "gtm": "none",
+            "afm": "none",
+            "avr": "none"
+        },
+        "myAuth": {
+            "class": "Authentication",
+            "enabledSourceType": "ldap",
+            "fallback": true,
+            "remoteUsersDefaults": {
+                "partitionAccess": "all",
+                "terminalAccess": "disabled",
+                "role": "no-access"
+            },
+            "ldap": {
+                "bindDn": "{{VAR_LDAP_BIND_DN}}",
+                "bindTimeout": 40,
+                "checkRemoteRole": false,
+                "idleTimeout": 20,
+                "ignoreAuthInfoUnavailable": true,
+                "ignoreUnknownUser": true,
+                "loginAttribute": "sAMAccountName",
+                "port": 389,
+                "searchScope": "sub",
+                "searchBaseDn": "{{VAR_LDAP_SEARCH_BASE}}",
+                "searchTimeout": 687,
+                "servers": [
+                    {{#VAR_LDAP_SERVERS}}
+                        {{MO_COMMA_IF_NOT_FIRST}}
+                        "{{.}}"
+                    {{/VAR_LDAP_SERVERS}}
+                ],
+                "ssl": "start-tls",
+                "sslCheckPeer": false,
+                "userTemplate": "",
+                "version": 2,
+                "sslCiphers": []
+            }
+        },
+        "f5-admins": {
+            "class": "RemoteAuthRole",
+            "attribute": "{{VAR_LDAP_GROUP}}",
+            "console": "tmsh",
+            "lineOrder": 1,
+            "role": "admin",
+            "remoteAccess": true,
+            "userPartition": "all"
+        },
+        "myDns": {
+            "class": "DNS",
+            "nameServers": [
+                {{#VAR_NAMESERVER}}
+                    {{MO_COMMA_IF_NOT_FIRST}}
+                    "{{.}}"
+                {{/VAR_NAMESERVER}}
+            ],
+            "search": [
+                "localhost"
+            ]
+        },
+        "myDNSResolver": {
+            "class": "DNS_Resolver",
+            "forwardZones": [
+                {
+                    "name": ".",
+                    "nameservers": [
+                        {{#VAR_NAMESERVER}}
+                            {{MO_COMMA_IF_NOT_FIRST}}
+                            "{{.}}"
+                        {{/VAR_NAMESERVER}}
+                    ]
+                }
+            ]
+        },
+        "myNtp": {
+            "class": "NTP",
+            "servers": [
+                {{#VAR_NTP_SERVER}}
+                    {{MO_COMMA_IF_NOT_FIRST}}
+                    "{{.}}"
+                {{/VAR_NTP_SERVER}}
+            ],
+            "timezone": "Europe/Berlin"
+        },
+        "vlan-sync": {
+            "class": "VLAN",
+            "interfaces": [
+                {
+                    "name": "1.1",
+                    "tagged": false
+                }
+            ],
+            "failsafeEnabled": false
+        },
+        "vlan-internal": {
+            "class": "VLAN",
+            "interfaces": [
+                {
+                    "name": "1.2",
+                    "tagged": false
+                }
+            ],
+            "failsafeEnabled": false
+        },
+        "vlan-external": {
+            "class": "VLAN",
+            "interfaces": [
+                {
+                    "name": "1.3",
+                    "tagged": false
+                }
+            ],
+            "failsafeEnabled": false
+        },
+        "selfip-sync": {
+            "class": "SelfIp",
+            "address": "{{VAR_SELFIP_SYNC}}/{{VAR_SELFIP_SYNC_NETMASK}}",
+            "vlan": "vlan-sync",
+            "allowService": "default",
+            "trafficGroup": "traffic-group-local-only"
+        },
+        "selfip-internal": {
+            "class": "SelfIp",
+            "address": "{{VAR_SELFIP_INTERNAL}}/{{VAR_SELFIP_INTERNAL_NETMASK}}",
+            "vlan": "vlan-internal",
+            "allowService": "none",
+            "trafficGroup": "traffic-group-local-only"
+        },
+        "selfip-external": {
+            "class": "SelfIp",
+            "address": "{{VAR_SELFIP_EXTERNAL}}/{{VAR_SELFIP_EXTERNAL_NETMASK}}",
+            "vlan": "vlan-external",
+            "allowService": "none",
+            "trafficGroup": "traffic-group-local-only"
+        },
+        "route-default": {
+            "class": "Route",
+            "gw": "{{VAR_ROUTE_DEFAULT_GW}}",
+            "network": "default",
+            "mtu": 1500
+        },
+        "route-internal": {
+            "class": "Route",
+            "gw": "{{VAR_ROUTE_INTERNAL_GW}}",
+            "network": "{{VAR_ROUTE_INTERNAL_NET}}"
+        },
+        "dbvars": {
+            "class": "DbVariables",
+            "icrd.timeout": "240",
+            "restjavad.timeout": "240",
+            "restnoded.timeout": "240",
+            "iapplxrpm.timeout": "240",
+            "provision.tomcat.extramb": "256",
+            "provision.restjavad.extramb": "784",
+            "provision.extramb": "1024"
+        },
+        "mySyslog": {
+            "class":"SyslogRemoteServer",
+            "host": "{{VAR_SYSLOG_SERVER}}",
+            "remotePort": 514
+        },
+        "myConfigSync": {
+            "class": "ConfigSync",
+            "configsyncIp": "{{VAR_SELFIP_SYNC}}"
+        },
+        "myNetworkFailover1": {
+            "class": "FailoverUnicast",
+            "addressPorts": [
+                {
+                    "address": "{{VAR_SELFIP_SYNC}}",
+                    "port": 1026
+                },
+                {
+                    "address": "{{VAR_MGMT_IP}}",
+                    "port": 1026
+                }
+            ]
+        },
+        "ha": {
+            "class": "DeviceGroup",
+            "type": "sync-failover",
+            "owner": "",
+            "autoSync": false,
+            "networkFailover": true,
+            "members": [
+                {{#VAR_DEVICE_GROUP_MEMBERS}}
+                    {{MO_COMMA_IF_NOT_FIRST}}
+                    "{{.}}"
+                {{/VAR_DEVICE_GROUP_MEMBERS}}
+            ]
+        },
+        "asm-sync": {
+            "class": "DeviceGroup",
+            "type": "sync-only",
+            "owner": "",
+            "asmSync": true,
+            "autoSync": true,
+            "members": [
+                {{#VAR_DEVICE_GROUP_MEMBERS}}
+                    {{MO_COMMA_IF_NOT_FIRST}}
+                    "{{.}}"
+                {{/VAR_DEVICE_GROUP_MEMBERS}}
+            ]
+        },
+        "mySNMPAgent": {
+            "class": "SnmpAgent",
+            "snmpV1": false,
+            "snmpV2c": false,
+            "allowList": [
+                {{#VAR_MONITORING_SERVER}}
+                    {{MO_COMMA_IF_NOT_FIRST}}
+                    "{{.}}"
+                {{/VAR_MONITORING_SERVER}}
+            ]
+        },
+        "snmpUser1": {
+            "class": "SnmpUser",
+            "authentication": {
+                "protocol": "sha256",
+                "password": "{{VAR_SNMP_PASSWORD}}"
+            },
+            "privacy": {
+                "protocol": "aes256",
+                "password": "{{VAR_SNMP_PASSWORD}}"
+            },
+            "oid": ".1",
+            "access": "ro"
+        },
+        "addressListMgmtAllowed": {
+            "class": "FirewallAddressList",
+            "addresses": [
+                {{#VAR_MGMT_ALLOWED}}
+                    {{MO_COMMA_IF_NOT_FIRST}}
+                    "{{.}}"
+                {{/VAR_MGMT_ALLOWED}}
+            ]
+        },
+        "myManagementFW": {
+            "class": "ManagementIpFirewall",
+            "rules": [
+                {
+                    "name": "allow-intern",
+                    "action": "accept",
+                    "source": {
+                        "addressLists": [
+                            "addressListMgmtAllowed"
+                        ]
+                    }
+                },
+                {
+                    "name": "default-drop",
+                    "action": "reject",
+                    "loggingEnabled": true
+                }
+            ]
+        },
+        "myHTTP": {
+            "class": "HTTPD",
+            "sslProtocol": "all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1",
+            "sslCiphersuite": [
+                "ECDHE-RSA-AES128-GCM-SHA256",
+                "ECDHE-RSA-AES256-GCM-SHA384",
+                "ECDHE-RSA-AES128-SHA256",
+                "ECDHE-RSA-AES256-SHA384",
+                "ECDHE-ECDSA-AES128-GCM-SHA256",
+                "ECDHE-ECDSA-AES256-GCM-SHA384",
+                "ECDHE-ECDSA-AES128-SHA256",
+                "ECDHE-ECDSA-AES256-SHA384",
+                "AES128-GCM-SHA256",
+                "AES256-GCM-SHA384",
+                "AES128-SHA256",
+                "AES256-SHA256"
+            ]
+        }
+    }
+}

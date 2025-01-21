@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-01-21
+
+# Shortdesc: Posts a Declarative Onboarding declaration, optionally runs mustache before.
+# Desc:
+# Posts a Declarative declaration, optionally runs mustache before.
+# https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+IS_TEMPLATE=0
+KEEP_TMP=0
+while getopts ':d:kt' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        k) KEEP_TMP=1 ;;
+        t) IS_TEMPLATE=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] <do declaration file>"
+    echo -e "\t-d\tDefine a custom variable file. Default is <do declaration file>.var."
+    echo -e "\t-k\tKeeps the temporary files."
+    echo -e "\t-t\tProcess the do declaration file with mustache."
+    exit 2
+fi
+DO_FILE=$1
+DO_FILE_PARSED="$RESTSH_TMP/$(basename "$DO_FILE")"
+
+# Cleanup tmp files
+[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$DO_FILE_PARSED"' EXIT
+
+# Main
+
+# Run mustache
+if [ "$IS_TEMPLATE" -eq 1 ]
+then
+    echo "Processing template"
+    # Include mustache
+    . "${RESTSH_PATH}/dist/mo/mo"
+    . "${RESTSH_PATH}/lib/mo/mo.functions"
+
+    # Load variables file
+    [ -z "${DEFAULTS+x}" ] && DEFAULTS="${DO_FILE}.var"
+    [ -s "$DEFAULTS" ] && . "$DEFAULTS"
+
+    # Process template
+    if ! $RESTSH_MO -- "$DO_FILE" > "$DO_FILE_PARSED"
+    then
+        echo_err "Processing the template failed."
+        exit 1
+    fi
+else
+    cp "$DO_FILE" "$DO_FILE_PARSED"
+fi
+
+# Post the declaration
+echo "Posting declaration"
+if ! TASK_ID=$(POST -r "/mgmt/shared/declarative-onboarding/" < "$DO_FILE_PARSED" | \
+        JQE -r ".id")
+then
+    echo_err "Posting the declaration failed."
+    exit 1
+fi
+
+# Wait for completed task
+if f5.appsvc.taskwait "$TASK_ID"
+then
+    echo_ok "Declarative Onboarding successful."
+    exit 0
+fi
+
+exit 1
