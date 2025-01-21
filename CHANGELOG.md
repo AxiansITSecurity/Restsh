@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 
 ## v3.0.0 - 2025-01-20
 
