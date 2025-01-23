@@ -11,6 +11,8 @@ before_script:
 lint:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'push'
+  tags:
+    - ${F5_ENV}_lint
   stage: lint
   script:
     - ./lint.sh
