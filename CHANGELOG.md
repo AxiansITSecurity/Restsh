@@ -5,8 +5,8 @@
 ## v4.0.0 - not yet released
 
 - Feat: Add support for Declarative Onboarding: `f5.do.install` and `f5.do.declare`
-- Breaking: Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
-- Breaking: Rename `f5.as3.taskwait` to `f5.appsvc.taskwait`
+- Upd: Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
+- Upd: Rename `f5.as3.taskwait` to `f5.appsvc.taskwait`
 
 ## v3.0.0 - 2025-01-20
 
