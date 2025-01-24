@@ -6,6 +6,7 @@
 # Shortdesc: General functions for the F5 Declarative Onboarding module.
 # Desc:
 # General functions for the F5 Declarative Onboarding module.
+# https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/apidocs.html
 
 # Strict error handling
 set -uo pipefail
