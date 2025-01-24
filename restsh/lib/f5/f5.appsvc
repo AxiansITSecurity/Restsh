@@ -54,6 +54,7 @@ f5.appsvc.taskwait() {
             return 1
         fi
         local RC=0
+        local CODE
         for CODE in $STATUS
         do
             case "$CODE" in
