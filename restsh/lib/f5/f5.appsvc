@@ -38,17 +38,18 @@ f5.appsvc.taskwait() {
     local CHECK_TASK_URI="/mgmt/shared/appsvcs/task/$TASK_ID"
     while :
     do
-        sleep "$F5_TASK_CHECK_INTERVAL"
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
         then
             echo_err "Timeout waiting for task."
             return 1
         fi
+        sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local STATUS
         if ! STATUS=$(GET -c 5 -r "$CHECK_TASK_URI" | \
             $RESTSH_JQ -r ".results[] | .code" | tr '\n' ' ')
         then
+            GET "$CHECK_TASK_URI"
             echo_err "Could not get task status."
             return 1
         fi
@@ -67,7 +68,7 @@ f5.appsvc.taskwait() {
                 *)
                     echo_err "appsvc task failed: $CODE"
                     # Print result message from f5
-                    GET -r "$CHECK_TASK_URI" | $RESTSH_JQ -r ".results"
+                    GET "$CHECK_TASK_URI"
                     return 1
                     ;;
             esac
