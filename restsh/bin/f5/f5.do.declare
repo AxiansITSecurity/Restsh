@@ -84,7 +84,7 @@ then
 fi
 
 # Wait for completed task
-if f5.appsvc.taskwait "$TASK_ID"
+if f5.do.taskwait "$TASK_ID"
 then
     echo_ok "Declarative Onboarding successful."
     exit 0
