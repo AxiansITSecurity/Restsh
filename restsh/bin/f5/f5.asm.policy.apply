@@ -40,7 +40,7 @@ apply_by_hash() {
     # Wait for completed task
     if f5.asm.taskwait apply-policy "$TASK_ID"
     then
-        echo "Policy applied successfully."
+        echo_ok "Policy applied successfully."
         return 0
     fi
     return 1
