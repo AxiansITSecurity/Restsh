@@ -126,12 +126,12 @@ f5.asm.taskwait() {
     local COUNTER=0
     while :
     do
-        sleep "$F5_TASK_CHECK_INTERVAL"
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
         then
             echo_err "Timeout waiting for task." 1>&2
             return 1
         fi
+        sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local STATUS
         if ! STATUS=$(GET -c 5 -r "/mgmt/tm/asm/tasks/$TASK_ENTITY?\$select=id,status" | \
@@ -151,7 +151,7 @@ f5.asm.taskwait() {
                 echo_err "Unhandled task status: $STATUS"
                 # Print task result message
                 GET -r "/mgmt/tm/asm/tasks/$TASK_ENTITY" | \
-                    $RESTSH_JQ -r ".items | .[] | select(.id==\"$TASK_ID\") | .result.message"
+                    $RESTSH_JQ -r ".items | .[] | select(.id == \"$TASK_ID\")"
                 return 1
             ;;
         esac
