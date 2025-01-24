@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-12
+# Date: 2025-01-24
 
-# Shortdesc: Imports a F5 ASM Policy in binary or xml format.
+# Shortdesc: Imports a F5 ASM Policy in json, binary or xml format.
 # Desc:
-# Imports a F5 ASM Policy in binary or xml format.
+# Imports a F5 ASM Policy in json, binary or xml format.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+OPENAPI_FILE=""
+while getopts ':ho:' OPTION
 do
     case "$OPTION" in
+        o) OPENAPI_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,7 +33,7 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <filename> <policy name>"
+    echo "Usage: $(basename "$0") [-o <openapi file>] <filename> <policy full path>"
     exit 2
 fi
 
@@ -39,10 +41,27 @@ FILENAME=$1
 NAME=$2
 
 # Upload the policy file
-f5.file-transfer.upload "$FILENAME"
+if f5.file-transfer.upload "$FILENAME" > /dev/null
+then
+    FILENAME=$(basename "$FILENAME")
+    f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$FILENAME"
+    echo_ok "Uploaded $FILENAME to /ts/var/rest/"
+else
+    echo_err "Failure uploading $FILENAME"
+fi
 
-FILENAME=$(basename "$FILENAME")
-f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$FILENAME"
+# Optionally upload the openapi file
+if [ -n "$OPENAPI_FILE" ]
+then
+    if f5.file-transfer.upload "$OPENAPI_FILE" > /dev/null
+    then
+        OPENAPI_FILE=$(basename "$OPENAPI_FILE")
+        f5.run "mv /var/config/rest/downloads/$OPENAPI_FILE /ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE"
+        echo_ok "Uploaded $OPENAPI_FILE to /ts/var/rest/"
+    else
+        echo_err "Failure uploading $FILENAME"
+    fi
+fi
 
 # Start import task
 TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
@@ -50,8 +69,8 @@ TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
     '{
         "name": $name,
         "filename": $filename
-    }' | POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" | \
-        $RESTSH_JQ -r ".id")
+    }' | POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" \
+       | JQE -r ".id")
 
 if [ -z "${TASK_ID}" ]
 then
@@ -65,3 +84,11 @@ then
     echo_err "Import of policy failed."
     exit 1
 fi
+echo_ok "Import of policy was successful"
+
+# Cleanup
+f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
+[ -n "$OPENAPI_FILE" ] && f5.file.remove "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE" > /dev/null
+
+# Apply the policy
+f5.asm.policy.apply "$NAME"
