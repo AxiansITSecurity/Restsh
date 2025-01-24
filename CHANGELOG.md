@@ -7,6 +7,7 @@
 - Feat: Add support for Declarative Onboarding: `f5.do.install` and `f5.do.declare`
 - Upd: Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 - Upd: Rename `f5.as3.taskwait` to `f5.appsvc.taskwait`
+- Fix: Do not overwrite global FILENAME variable in `f5.file-transfer` functions
 
 ## v3.0.0 - 2025-01-20
 
