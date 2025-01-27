@@ -7,7 +7,6 @@
 - Feat: Add support for OpenAPI-File to `f5.asm.policy.import`
 - Feat: Add support for Declarative Onboarding: `f5.do.install` and `f5.do.declare`
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
-- **Breaking:** Rename `f5.as3.taskwait` to `f5.appsvc.taskwait`
 - Fix: Do not overwrite global FILENAME variable in `f5.file-transfer` functions
 
 ## v3.0.0 - 2025-01-20
