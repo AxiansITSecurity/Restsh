@@ -41,7 +41,6 @@ fi
 
 PROJECT=$1
 CSV=$2
-restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 while IFS="," read -r KEY VALUE MASKED RAW DESC
 do

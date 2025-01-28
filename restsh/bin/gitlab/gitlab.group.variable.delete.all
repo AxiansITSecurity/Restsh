@@ -36,7 +36,6 @@ then
 fi
 
 GROUP=$1
-restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
 I=0
 while read -r KEY
