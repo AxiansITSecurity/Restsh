@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-01-28
+
+# Shortdesc: Starts an AS3 pipeline.
+# Desc:
+# Starts an AS3 pipeline.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+if [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <project path> <branch>"
+    exit 2
+fi
+
+PROJECT_PATH=$1
+BRANCH=$2
+PROJECT_ID=$(restsh.util.urlencode "$PROJECT_PATH")
+
+$RESTSH_JQ -n --arg branch "$BRANCH" \
+    '{
+        ref: $branch,
+        variables: [
+            {
+                key: "CI_PIPELINE_SOURCE",
+                value: "push"
+            }
+        ]
+    }' | POST "/api/v4/projects/${PROJECT_ID}/pipeline"

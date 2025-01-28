@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-01-28
+
+# Shortdesc: Starts a task pipeline.
+# Desc:
+# Starts a task pipeline.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+if [ $# -ne 3 ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <project path> <branch> <task>"
+    echo "Available tasks:"
+    echo "    - signature_staging"
+    echo "    - backup"
+    exit 2
+fi
+
+PROJECT_PATH=$1
+BRANCH=$(restsh.util.lc "$2")
+TASK=$3
+PROJECT_ID=$(restsh.util.urlencode "$PROJECT_PATH")
+
+JQ -n --arg branch "$BRANCH" \
+    --arg task "$TASK" \
+    '{
+        ref: "master",
+        variables: [
+            {
+                key: "CI_PIPELINE_SOURCE",
+                value: "trigger"
+            },
+            {
+                key: "TASK_STAGE",
+                value: $branch
+            },
+            {
+                key: "TASK",
+                value: $task
+            }
+        ]
+    }' | POST "/api/v4/projects/${PROJECT_ID}/pipeline"
