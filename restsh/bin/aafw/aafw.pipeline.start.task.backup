@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-01-28
 
-# Shortdesc: Starts a task pipeline.
+# Shortdesc: Starts the backup task.
 # Desc:
-# Starts a task pipeline.
+# Starts the backup task.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -24,20 +24,17 @@ if [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <project path> <branch> <task>"
-    echo "Available tasks:"
-    echo "    - signature_staging"
-    echo "    - backup"
+    echo "Usage: $(basename "$0") <project path> <branch> <f5 management ip>"
     exit 2
 fi
 
-PROJECT_PATH=$1
+PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
-TASK=$3
-PROJECT_ID=$(restsh.util.urlencode "$PROJECT_PATH")
+TASK_HOST=$3
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 JQ -n --arg branch "$BRANCH" \
-    --arg task "$TASK" \
+    --arg task_host "$TASK_HOST" \
     '{
         ref: "master",
         variables: [
@@ -51,7 +48,11 @@ JQ -n --arg branch "$BRANCH" \
             },
             {
                 key: "TASK",
-                value: $task
+                value: "backup"
+            },
+            {
+                key: "TASK_HOST",
+                value: $task_host
             }
         ]
-    }' | POST "/api/v4/projects/${PROJECT_ID}/pipeline"
+    }' | POST "/api/v4/projects/${PROJECT}/pipeline"
