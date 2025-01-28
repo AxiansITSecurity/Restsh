@@ -67,8 +67,10 @@ fi
 TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
     --arg filename "$FILENAME" \
     '{
-        "name": $name,
-        "filename": $filename
+        "filename": $filename,
+        "policy":{
+            "fullPath": $name
+        }
     }' | POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" \
        | JQE -r ".id")
 
