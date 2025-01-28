@@ -5,7 +5,7 @@
 ## v4.0.0 - not yet released
 
 - Feat: Support path as alternative for id for GitLab groups and projects
-- Feat: Add `gitlab.project.pipeline.list`
+- Feat: Add `gitlab.project.pipeline.list`, `gitlab.project.variable.delete.all`
 - Feat: Add `aafw.pipeline.start.as3`, `aafw.pipeline.start.cert`, `aafw.pipeline.start.task`, `aafw.pipeline.start.waf`
 - Feat: Add support for OpenAPI-File to `f5.asm.policy.import`
 - Feat: Add support for Declarative Onboarding: `f5.do.declare` and `f5.do.status`
