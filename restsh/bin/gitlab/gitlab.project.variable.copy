@@ -32,12 +32,15 @@ if [ $# -ne 2 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <src project id> <dst project id>"
+    echo "Usage: $(basename "$0") <src project> <dst project>"
     exit 2
 fi
 
 SRC=$1
 DST=$2
+
+restsh.util.check.isnumber "$SRC" || SRC=$(restsh.util.urlencode "$SRC")
+restsh.util.check.isnumber "$DST" || DST=$(restsh.util.urlencode "$DST")
 
 while read -r LINE
 do

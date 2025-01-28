@@ -20,7 +20,7 @@ then
 fi
 
 # Get options
-GROUP_ID=""
+PROJECT=""
 while getopts ':' OPTION
 do
     case "$OPTION" in
@@ -33,10 +33,11 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project id>"
+    echo "Usage: $(basename "$0") <project>"
     exit 2
 fi
 
-GROUP_ID=$1
+PROJECT=$1
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-DELETE "$GITLAB_API_PREFIX/projects/${GROUP_ID}"
+DELETE "$GITLAB_API_PREFIX/projects/${PROJECT}"

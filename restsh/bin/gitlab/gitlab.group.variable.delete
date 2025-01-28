@@ -31,11 +31,12 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <group id> <key>"
+    echo "Usage: $(basename "$0") <group> <key>"
     exit 2
 fi
 
 GROUP=$1
 KEY=$2
+restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
 DELETE "$GITLAB_API_PREFIX/groups/$GROUP/variables/$KEY"

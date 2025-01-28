@@ -36,7 +36,7 @@ if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m] [-e] <group id> <key> <value>"
+    echo "Usage: $(basename "$0") [-m] [-e] <group> <key> <value>"
     echo -e "\t-e Expand variable"
     echo -e "\t-m Mask variable"
     exit 2
@@ -45,6 +45,7 @@ fi
 GROUP=$1
 KEY=$2
 VALUE=$3
+restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
 case $MASK in
     0) MASK=false ;;

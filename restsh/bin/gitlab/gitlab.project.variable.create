@@ -36,7 +36,7 @@ if [ $# -ne 4 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m] [-e] <project id> <key> <value> <description>"
+    echo "Usage: $(basename "$0") [-m] [-e] <project> <key> <value> <description>"
     echo -e "\t-e Expand variable"
     echo -e "\t-m Mask variable"
     exit 2
@@ -46,6 +46,7 @@ PROJECT=$1
 KEY=$2
 VALUE=$3
 DESC=$4
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 case $MASK in
     0) MASK=false ;;

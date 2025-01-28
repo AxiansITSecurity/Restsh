@@ -31,15 +31,16 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <projectname> <output filename>"
+    echo "Usage: $(basename "$0") [-r] <project> <output filename>"
     echo -e "\tUse -r for raw output."
     exit 2
 fi
 
-PROJECT_ID=$(restsh.util.urlencode "$1")
+PROJECT=$1
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 OUT_FILE="$2"
 
-POST "$GITLAB_API_PREFIX/projects/$PROJECT_ID/export" <<< ""
+POST "$GITLAB_API_PREFIX/projects/$PROJECT/export" <<< ""
 
 echo "Waiting for export to finish."
 COUNTER=0
@@ -52,7 +53,7 @@ do
         return 1
     fi
     COUNTER=$((COUNTER+1))
-    if ! STATUS=$(GET -r "$GITLAB_API_PREFIX/projects/$PROJECT_ID/export" | \
+    if ! STATUS=$(GET -r "$GITLAB_API_PREFIX/projects/$PROJECT/export" | \
         JQ -r ".export_status")
     then
         echo_err "Could not get export status."
@@ -72,4 +73,4 @@ do
     esac
 done
 
-DOWNLOAD "$GITLAB_API_PREFIX/projects/$PROJECT_ID/export/download" "$OUT_FILE"
+DOWNLOAD "$GITLAB_API_PREFIX/projects/$PROJECT/export/download" "$OUT_FILE"

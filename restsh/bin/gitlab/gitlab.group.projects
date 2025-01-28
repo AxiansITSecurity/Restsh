@@ -34,19 +34,15 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <group id or path>"
+    echo "Usage: $(basename "$0") [-r] <group>"
     echo -e "\tUse -r for raw output."
     exit 2
 fi
 
-GROUP_ID=$1
+GROUP=$1
+restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-if ! restsh.util.check.isnumber "$GROUP_ID"
-then
-    GROUP_ID=$(restsh.util.urlencode "$GROUP_ID")
-fi
-
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP_ID/projects")
+if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/projects")
 then
     if [ "$RAW" -eq 1 ]
     then

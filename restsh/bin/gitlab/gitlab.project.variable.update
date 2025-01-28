@@ -36,13 +36,14 @@ if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m] [-e] <project id> <key> <value>"
+    echo "Usage: $(basename "$0") [-m] [-e] <project> <key> <value>"
     echo -e "\t-e Expand variable"
     echo -e "\t-m Mask variable"
     exit 2
 fi
 
 PROJECT=$1
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 KEY=$2
 VALUE=$3
 

@@ -31,11 +31,12 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project id> <key>"
+    echo "Usage: $(basename "$0") <project> <key>"
     exit 2
 fi
 
 PROJECT=$1
 KEY=$2
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 DELETE "$GITLAB_API_PREFIX/projects/$PROJECT/variables/$KEY"

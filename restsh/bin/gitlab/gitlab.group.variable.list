@@ -34,12 +34,13 @@ if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <group id>"
+    echo "Usage: $(basename "$0") [-r] <group>"
     echo -e "\tUse -r for raw output."
     exit 2
 fi
 
 GROUP=$1
+restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
 if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/variables")
 then
