@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2025-01-29
 
 # Shortdesc: Imports a declarative waf policy.
 # Desc:
@@ -68,8 +68,9 @@ fi
 
 if [ "$ENFORCE_SIGNATURES" -eq 1 ]
 then
+    # Enforce signatures and apply the policy
     f5.asm.signaturestaging.enforce -a "$WAF_POLICY_FULL_PATH"
+else
+    # Apply the policy
+    f5.asm.policy.apply "$WAF_POLICY_FULL_PATH"
 fi
-
-# Apply the policy
-f5.asm.policy.apply "$WAF_POLICY_FULL_PATH"
