@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-23
+# Date: 2025-01-29
 
 # Shortdesc: F5 AS3 helper functions for mustache.
 # Desc:
@@ -60,7 +60,11 @@ MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER() {
     do
         NAME=$(basename "$IRULE" .irule)
         echo "Including iRule: $NAME" 1>&2
-        CONTENT=$(base64 < "$IRULE" | tr -d '\n')
+        if ! CONTENT=$(base64 < "$IRULE" | tr -d '\n')
+        then
+            echo_err "Failure encoding $IRULE"
+            return 1
+        fi
         [ "$I" -ne 0 ] && printf ","
         cat << EOL
 "$NAME": {
@@ -89,7 +93,11 @@ MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER() {
     do
         NAME=$(basename "$IFILE")
         echo "Including iFile: $NAME" 1>&2
-        CONTENT=$(base64 < "$IFILE" | tr -d '\n')
+        if ! CONTENT=$(base64 < "$IFILE" | tr -d '\n')
+        then
+            echo_err "Failure encoding $IFILE"
+            return 1
+        fi
         [ "$I" -ne 0 ] && printf ","
         cat << EOL
 "$NAME": {
