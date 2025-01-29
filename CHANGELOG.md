@@ -9,6 +9,7 @@
 - Feat: Add `aafw.pipeline.start.as3`, `aafw.pipeline.start.cert`, `aafw.pipeline.start.task`, `aafw.pipeline.start.waf`
 - Feat: Add support for OpenAPI-File to `f5.asm.policy.import`
 - Feat: Add support for Declarative Onboarding: `f5.do.declare` and `f5.do.status`
+- Feat: Add option to enforce signatures to `f5.asm.policy.declare` and `f5.asm.policy.import`
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 - Fix: Do not overwrite global FILENAME variable in `f5.file-transfer` functions
 - Fix: `f5.asm.policy.import` overwrites the policy with same name

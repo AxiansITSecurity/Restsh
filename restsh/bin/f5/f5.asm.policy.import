@@ -20,9 +20,11 @@ then
 fi
 
 OPENAPI_FILE=""
-while getopts ':ho:' OPTION
+ENFORCE_SIGNATURES=0
+while getopts ':ho:e' OPTION
 do
     case "$OPTION" in
+        e) ENFORCE_SIGNATURES=1; break ;;
         o) OPENAPI_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -33,7 +35,9 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-o <openapi file>] <filename> <policy full path>"
+    echo "Usage: $(basename "$0") [-e] [-o <openapi file>] <filename> <policy full path>"
+    echo "    -e Enforce all signatures"
+    echo "    -o Specify OpenApi File"
     exit 2
 fi
 
@@ -74,7 +78,7 @@ TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
     }' | POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" \
        | JQE -r ".id")
 
-if [ -z "${TASK_ID}" ]
+if ! restsh.util.check.notempty "${TASK_ID}"
 then
     echo_err "Import of policy \"$NAME\" failed."
     exit 1
@@ -91,6 +95,11 @@ echo_ok "Import of policy was successful"
 # Cleanup
 f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
 [ -n "$OPENAPI_FILE" ] && f5.file.remove "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE" > /dev/null
+
+if [ "$ENFORCE_SIGNATURES" -eq 1 ]
+then
+    f5.asm.signaturestaging.enforce -a "$WAF_POLICY_FULL_PATH"
+fi
 
 # Apply the policy
 f5.asm.policy.apply "$NAME"

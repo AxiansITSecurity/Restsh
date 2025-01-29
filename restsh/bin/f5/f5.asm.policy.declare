@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+ENFORCE_SIGNATURES=0
+while getopts ':he' OPTION
 do
     case "$OPTION" in
+        e) ENFORCE_SIGNATURES=1; break ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,7 +33,8 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <import uri> <policy fullPath>"
+    echo "Usage: $(basename "$0") [-e] <import uri> <policy fullPath>"
+    echo "    -e Enforce all signatures"
     exit 2
 fi
 WAF_POLICY_IMPORT_URI=$1
@@ -50,7 +53,7 @@ TASK_ID=$($RESTSH_JQ -n --arg waf_policy_import_uri "$WAF_POLICY_IMPORT_URI" \
 }' | POST -r "/mgmt/tm/asm/tasks/import-policy?\$select=id" | \
         $RESTSH_JQ -r ".id")
 
-if [ -z "${TASK_ID}" ]
+if ! restsh.util.check.notempty "${TASK_ID}"
 then
     echo_err "Import of policy \"$WAF_POLICY_FULL_PATH\" failed."
     exit 1
@@ -61,6 +64,11 @@ if ! f5.asm.taskwait import-policy "$TASK_ID"
 then
     echo_err "Import of policy failed."
     exit 1
+fi
+
+if [ "$ENFORCE_SIGNATURES" -eq 1 ]
+then
+    f5.asm.signaturestaging.enforce -a "$WAF_POLICY_FULL_PATH"
 fi
 
 # Apply the policy
