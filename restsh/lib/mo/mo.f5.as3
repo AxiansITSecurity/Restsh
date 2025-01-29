@@ -9,7 +9,7 @@
 
 # Recursively includes an json path from/in an AS3 declaration, removes .class, .template, .remark and .label keys.
 # Supports up to 10 KEY=VALUE pairs as arguments.
-# Arguments are accesibly with ARG_ prefix.
+# Arguments are accessible with ARG_ prefix.
 # Usage: {{MO_F5_AS3_INCLUDE_DECLARATION '<json file>' '<json path>' 'VAR1=VALUE1'}}
 MO_F5_AS3_INCLUDE_DECLARATION() {
     local JSON_FILE=${MO_FUNCTION_ARGS[0]}
