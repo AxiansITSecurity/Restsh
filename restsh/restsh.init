@@ -123,7 +123,7 @@ RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Try to get RESTSH_SECRET from file
-if [ -n "${RESTSH_SECRET_FILE+x}" ] && [ -s "${RESTSH_SECRET_FILE+x}" ]
+if [ -n "${RESTSH_SECRET_FILE+x}" ] && [ -s "${RESTSH_SECRET_FILE}" ]
 then
     RESTSH_SECRET=$(<"$RESTSH_SECRET_FILE")
 fi
