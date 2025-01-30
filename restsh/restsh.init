@@ -122,6 +122,12 @@ fi
 RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
+# Try to get RESTSH_SECRET from file
+if [ -n "${RESTSH_SECRET_FILE+x}" ] && [ -s "${RESTSH_SECRET_FILE+x}" ]
+then
+    RESTSH_SECRET=$(<"$RESTSH_SECRET_FILE")
+fi
+
 # Decrypt password
 if [ -n "${RESTSH_PASS+x}" ] && [ "${RESTSH_PASS:0:7}" = "AES256:" ]
 then
