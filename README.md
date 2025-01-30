@@ -52,8 +52,9 @@ You can store the RESTSH_PASS AES256 encrypted in the configuration file.
     restsh.util.encrypt
     ```
 
-- Exit restsh and define the RESTSH_PASS variable as `<output of above command>`, beginning with AES256:.
-- In interactive mode, restsh asks for the secret if it is not defined in RESTSH_SECRET. In script mode it terminates with an error.
+- Exit restsh and define the `RESTSH_PASS` variable as `<output of above command>`, beginning with AES256:.
+- In interactive mode, restsh asks for the secret if it is not defined in `RESTSH_SECRET`. In script mode it terminates with an error.
+- As an alternative you can set `RESTSH_SECRET_FILE` to a file to read the `RESTSH_SECRET` from.
 
 ### Debug
 

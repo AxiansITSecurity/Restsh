@@ -123,9 +123,15 @@ RESTSH_VERSION=$(<"$RESTSH_PATH/version")
 export RESTSH_VERSION
 
 # Try to get RESTSH_SECRET from file
-if [ -n "${RESTSH_SECRET_FILE+x}" ] && [ -s "${RESTSH_SECRET_FILE}" ]
+if [ -n "${RESTSH_SECRET_FILE+x}" ] && [ -n "${RESTSH_SECRET_FILE}" ]
 then
-    RESTSH_SECRET=$(<"$RESTSH_SECRET_FILE")
+    if [ -s "${RESTSH_SECRET_FILE}" ]
+    then
+        echo "Reading secret from: ${RESTSH_SECRET_FILE}"
+        RESTSH_SECRET=$(<"$RESTSH_SECRET_FILE")
+    else
+        echo_err "Secret file not found: ${RESTSH_SECRET_FILE}"
+    fi
 fi
 
 # Decrypt password
