@@ -1,6 +1,11 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
+# Runner tag
 F5_ENV,f5,false,true,F5 environment name.
+
+# Branches
+DEPLOY_BRANCHES,/^(dev|test|prod)$/,false,true,Deployment branches.
+DRAFT_BRANCHES,/^(draft)$/,false,true,Draft branches.
 
 # Dev stage
 F5_ADDRESS_DEV,,false,true,Hostname or IP of the Dev-F5.

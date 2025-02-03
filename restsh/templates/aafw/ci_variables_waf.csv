@@ -1,8 +1,12 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
+# WAF policy defaults
 WAF_POLICY_PARTITION,Common,false,true,F5 Partition for the WAF-Policies.
 WAF_POLICY_DEFAULT_DIR,default-policy-v17,false,true,Default configuration directory.
 WAF_POLICY_ENFORCE_SIGNATURES,0,false,true,1=Enforce all signatures,0=Do not enforce signatures
+
+# Where to copy the compiled WAF policy
+POLICY_WEB_HOST_LOCAL,2,false,true,0 = Use ssh to copy files, 1 = Use local Webserver for policy serving, 2 = Upload files to F5.
 
 # Variables for the server hosting the compiled policy files
 POLICY_WEB_HOST,,false,true,Server that hosts the compiled policy.
@@ -12,4 +16,3 @@ POLICY_WEB_HOST_SSH_USER,gitlab-ci,false,true,User for the web host.
 POLICY_WEB_HOST_SSH_PRIV_KEY,,false,true,Private key for the web host user.
 POLICY_WEB_HOST_BASEPATH,/srv/webserver/www/waf,false,true,Document root for the policy files.
 POLICY_WEB_HOST_BASEURI,waf/,false,true,Relative uri for the policy files (empty or must end with /).
-POLICY_WEB_HOST_LOCAL,2,false,true,0 = Use ssh to copy files, 1 = Use local Webserver for policy serving, 2 = Upload files to F5.
