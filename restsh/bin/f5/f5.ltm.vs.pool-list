@@ -58,7 +58,7 @@ else
         echo "Pool name: $POOL"
         POOL=${POOL//\//\~}
         GET "/mgmt/tm/ltm/pool/${POOL}/members" \
-            | JQ -r '.items[] | [.name,.address,.state] | @tsv' \
-            | COLUMN -o "|" -N "member:port,ip,state"
+            | JQ -r '.items[] | [.name,.address,.state,.monitor] | @tsv' \
+            | COLUMN -o "|" -N "member:port,ip,state,monitor"
     fi
 fi
