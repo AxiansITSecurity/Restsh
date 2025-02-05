@@ -19,11 +19,23 @@ then
   exit 1
 fi
 
-if [ -z "${1+x}" ]
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     _restsh.help.shortdesc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") <vs full path>"
+    echo "$(basename "$0") [-r] <vs full path>"
+    echo -e "\tUse -r for raw output."
     exit 1
 fi
 
@@ -31,11 +43,22 @@ VIRTUAL_SERVER=$1
 
 if ! POOL=$(f5.ltm.vs.get "$VIRTUAL_SERVER" | JQE -r '.pool')
 then
-    echo "No associated pool found."
+    if [ "$RAW" -eq 1 ]
+    then
+        print_json_err "No associated pool found."
+    else
+        echo_err "No associated pool found."
+    fi
 else
-    echo "Pool name: $POOL"
-    POOL=${POOL//\//\~}
-    GET "/mgmt/tm/ltm/pool/${POOL}/members" \
-        | JQ -r '.items[] | [.name,.address,.state] | @tsv' \
-        | COLUMN -o "|" -N "member:port,ip,state"
+    if [ "$RAW" -eq 1 ]
+    then
+        POOL=${POOL//\//\~}
+        GET "/mgmt/tm/ltm/pool/${POOL}/members"
+    else
+        echo "Pool name: $POOL"
+        POOL=${POOL//\//\~}
+        GET "/mgmt/tm/ltm/pool/${POOL}/members" \
+            | JQ -r '.items[] | [.name,.address,.state] | @tsv' \
+            | COLUMN -o "|" -N "member:port,ip,state"
+    fi
 fi
