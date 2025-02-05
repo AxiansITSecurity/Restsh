@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-02-05
+
+# Shortdesc: Lists a pool and its members that is linked to a virtual server.
+# Desc:
+# Lists a pool and its members that is linked to a virtual server.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+if [ -z "${1+x}" ]
+then
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage:"
+    echo "$(basename "$0") <vs full path>"
+    exit 1
+fi
+
+VIRTUAL_SERVER=$1
+
+if ! POOL=$(f5.ltm.vs.get "$VIRTUAL_SERVER" | JQE -r '.pool')
+then
+    echo "No associated pool found."
+else
+    echo "Pool name: $POOL"
+    POOL=${POOL//\//\~}
+    GET "/mgmt/tm/ltm/pool/${POOL}/members" \
+        | JQ -r '.items[] | [.name,.address,.state] | @tsv' \
+        | COLUMN -o "|" -N "member:port,ip,state"
+fi
