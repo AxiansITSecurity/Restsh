@@ -14,5 +14,6 @@ POLICY_WEB_HOST_HTTPS_PORT,4430,false,true,HTTPS port for the webserver.
 POLICY_WEB_HOST_SSH_PORT,2222,false,true,SSH port for the webserver host.
 POLICY_WEB_HOST_SSH_USER,gitlab-ci,false,true,User for the web host.
 POLICY_WEB_HOST_SSH_PRIV_KEY,,false,true,Private key for the web host user.
-POLICY_WEB_HOST_BASEPATH,/srv/webserver/www/waf,false,true,Document root for the policy files.
+POLICY_WEB_HOST_SSH_PRIV_KEY_PASSPHRASE_FILE,,false,true,File with the passphrase for the private key.
+POLICY_WEB_HOST_BASEPATH,/srv/www/waf,false,true,Document root for the policy files.
 POLICY_WEB_HOST_BASEURI,waf/,false,true,Relative uri for the policy files (empty or must end with /).
