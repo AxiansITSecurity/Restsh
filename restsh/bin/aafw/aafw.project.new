@@ -60,7 +60,7 @@ PROJECT_ID=$(gitlab.project.create -r "$GROUP_ID" "$PROJECT_NAME")
 
 if ! RESULT=$(PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID" < "$RESTSH_PATH/templates/aafw/project_settings_default.json")
 then
-    echo_err "Failure setting project options for $C_PROJECT"
+    echo_err "Failure setting project options for $PROJECT_ID"
     echo_err "$RESULT"
     exit 1
 fi
