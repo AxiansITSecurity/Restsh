@@ -141,8 +141,10 @@ then
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
-            echo -n "Password is encrypted, "
-            if ! RESTSH_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${RESTSH_PASS:7}")
+            echo "Password is encrypted."
+            RESTSH_SECRET=$(restsh.util.askpass Secret)
+            echo ""
+            if ! RESTSH_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_PASS:7}")
             then
                 echo_err "Decryption of password failed."
                 exit 1
@@ -166,10 +168,12 @@ then
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
-            echo -n "Token is encrypted, "
-            if ! RESTSH_TOKEN_VALUE=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${RESTSH_TOKEN_VALUE:7}")
+            echo -n "Token is encrypted."
+            RESTSH_SECRET=$(restsh.util.askpass Secret)
+            echo ""
+            if ! RESTSH_TOKEN_VALUE=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_TOKEN_VALUE:7}")
             then
-                echo_err "Decryption of password failed."
+                echo_err "Decryption of token failed."
                 exit 1
             fi
         else
@@ -179,7 +183,7 @@ then
         fi
     elif ! RESTSH_TOKEN_VALUE=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_TOKEN_VALUE:7}")
     then
-        echo_err "Decryption of password failed."
+        echo_err "Decryption of token failed."
         exit 1
     fi
 fi

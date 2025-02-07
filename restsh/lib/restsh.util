@@ -623,6 +623,45 @@ restsh.util.lc() {
     printf '%s' "${STR,,}"
 }
 
+# Asks for a secret string.
+restsh.util.askpass() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Asks for a secret string." 1>&2
+        echo "Usage: restsh.util.askpass <prompt>" 1>&2
+        return 2
+    fi
+    local PROMPT="$1: "
+    local CHARCOUNT=0
+    local CHAR
+    local PASSWORD=""
+    while IFS= read -p "$PROMPT" -r -s -n 1 CHAR
+    do
+        # Enter - accept password
+        if [[ $CHAR == $'\0' ]]
+        then
+            break
+        fi
+        # Backspace
+        if [[ $CHAR == $'\177' ]]
+        then
+            if [ $CHARCOUNT -gt 0 ]
+            then
+                CHARCOUNT=$((CHARCOUNT-1))
+                PROMPT=$'\b \b'
+                PASSWORD="${PASSWORD%?}"
+            else
+                PROMPT=''
+            fi
+        else
+            CHARCOUNT=$((CHARCOUNT+1))
+            PROMPT='*'
+            PASSWORD+="$CHAR"
+        fi
+    done
+    printf "%s" "$PASSWORD"
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -651,3 +690,4 @@ export -f restsh.util.filesize
 export -f restsh.util.array.includes
 export -f restsh.util.uc
 export -f restsh.util.lc
+export -f restsh.util.askpass

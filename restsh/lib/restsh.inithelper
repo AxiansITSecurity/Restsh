@@ -35,7 +35,7 @@ restsh.init.check.env() {
 
         if [ -z "${RESTSH_PASS+x}" ]
         then
-            read -r -s -p "Password: " RESTSH_PASS
+            RESTSH_PASS=$(restsh.util.askpass Password)
             export RESTSH_PASS
             printf "\n"
         fi

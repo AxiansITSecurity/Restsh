@@ -29,7 +29,7 @@ next.auth.login() {
     fi
     if [ -z "${RESTSH_PASS+x}" ]
     then
-        read -r -s -p "Password: " RESTSH_PASS
+        RESTSH_PASS=$(restsh.util.askpass Password)
         echo ""
     fi
 
@@ -94,9 +94,9 @@ next.auth.change-password() {
     fi
     local PASS_NEW1
     local PASS_NEW2
-    read -r -s -p "New Password: " PASS_NEW1
+    PASS_NEW1=$(restsh.util.askpass "New Password")
     echo ""
-    read -r -s -p "New Password (again): " PASS_NEW2
+    PASS_NEW2=$(restsh.util.askpass "New Password (again)")
     echo ""
     if [ "$PASS_NEW1" != "$PASS_NEW2" ]
     then
