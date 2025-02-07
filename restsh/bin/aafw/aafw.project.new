@@ -25,7 +25,16 @@ INIT_OPTS=()
 while getopts ':d:hi:' OPTION
 do
     case "$OPTION" in
-        d) INIT_OPTS+=("-d" "$OPTARG") ;;
+        d)
+            if [ ! -d "$OPTARG" ]
+            then
+                echo_err "Parent folder $OPTARG does not exist."
+                OPTION="invalid"
+                break
+            else
+                INIT_OPTS+=("-d" "$OPTARG")
+            fi
+            ;;
         i) INIT_PROJECT=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
