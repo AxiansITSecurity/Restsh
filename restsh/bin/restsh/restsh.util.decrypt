@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-12-13
+
+# Shortdesc: AES256 decryption of string.
+# Desc:
+# AES256 decryption of string.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: restsh.util.decrypt <string>"
+    echo "Uses RESTSH_SECRET if defined, else asks for secret."
+    exit 2
+fi
+
+TODECRYPT=$1
+
+if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+then
+    SECRET=$(restsh.util.askpass Secret)
+    echo ""
+else
+    SECRET="$RESTSH_SECRET"
+fi
+
+if [ "${TODECRYPT:0:7}" != "AES256:" ]
+then
+    echo_err "String must start with \"AES256:\""
+    exit 1
+fi
+openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a -d <<< "${TODECRYPT:7}"
