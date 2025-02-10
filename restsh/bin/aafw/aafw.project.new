@@ -76,7 +76,8 @@ then
     CLONE_URI="${RESTSH_AAFW_URI}${PROJECT_PATH}.git"
     case "$INIT_PROJECT" in
         as3)
-            aafw.project.init.as3 "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/as3skeleton" "$CLONE_URI"
+            [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
+            aafw.project.init.as3 "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_AS3SKELETON}" "$CLONE_URI"
             ;;
         cert)
             aafw.project.init.cert "${INIT_OPTS[@]}" "$CLONE_URI"
@@ -85,7 +86,8 @@ then
             aafw.project.init.tasks "${INIT_OPTS[@]}" "$CLONE_URI"
             ;;
         waf)
-            aafw.project.init.waf "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_GROUP}/wafskeleton" "$CLONE_URI"
+            [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
+            aafw.project.init.waf "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_WAFSKELETON}" "$CLONE_URI"
             ;;
         *)
             echo_err "Unknown project type"
