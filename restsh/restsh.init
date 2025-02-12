@@ -168,7 +168,7 @@ then
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
-            echo -n "Token is encrypted."
+            echo "Token is encrypted."
             RESTSH_SECRET=$(restsh.util.askpass Secret)
             echo ""
             if ! RESTSH_TOKEN_VALUE=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_TOKEN_VALUE:7}")
