@@ -23,7 +23,7 @@ fi
 INIT_PROJECT=""
 INIT_OPTS=()
 PROTECTED_BRANCHES=()
-ACCESS_LEVEL=40
+ACCESS_LEVEL=(0 40)
 while getopts ':d:hi:l:p:' OPTION
 do
     case "$OPTION" in
@@ -38,7 +38,7 @@ do
             fi
             ;;
         i) INIT_PROJECT=$OPTARG ;;
-        l) ACCESS_LEVEL=$OPTARG ;;
+        l) mapfile -d, -t ACCESS_LEVEL <<< "$OPTARG" ;;
         p) mapfile -d, -t PROTECTED_BRANCHES <<< "$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -49,11 +49,11 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [-d <folder>] [-i <as3,cert,tasks,waf] [-p <branches>] <project path>"
+    echo "Usage: $(basename "$0") [options...] <project path>"
     echo "Options:"
     echo "    -d <folder>        Parent folder for cloned repository."
     echo "    -i <type>          Initialize repository for as3, cert, tasks or waf."
-    echo "    -l <access level>  Access level for protected branches, default Maintainer access."
+    echo "    -l <push,merge>  Access level for protected branches, default: Maintainer access for merge only."
     echo "    -p <branches>      Branch names to protect."
     echo "Access levels:"
     echo "    0  => No access"
@@ -74,7 +74,7 @@ if [ -n "${PROTECTED_BRANCHES[*]}" ]
 then
     for BRANCH in "${PROTECTED_BRANCHES[@]}"
     do
-        gitlab.branch.protect.set "$PROJECT_ID" "$BRANCH" "$ACCESS_LEVEL" "$ACCESS_LEVEL" false > /dev/null
+        gitlab.branch.protect.set "$PROJECT_ID" "$BRANCH" "${ACCESS_LEVEL[0]}" "${ACCESS_LEVEL[1]}" false > /dev/null
     done
 fi
 
