@@ -53,7 +53,7 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 # Clone with ssh
 [ -n "${RESTSH_AAFW_URI+x}" ] || export RESTSH_AAFW_URI="git@${RESTSH_HOST}:"
 # Axians Automation Framework Top Group
-[ -n "${RESTSH_AAFW_GROUP+x}" ] || export RESTSH_AAFW_GROUP="ax-f5-automation-framework"
+[ -n "${RESTSH_AAFW_GROUP+x}" ] || export RESTSH_AAFW_GROUP="aafw"
 # Axians Automation Framework Skeleton Projects
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || export RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
