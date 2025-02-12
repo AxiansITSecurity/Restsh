@@ -20,10 +20,12 @@ then
 fi
 
 ENFORCE_SIGNATURES=0
-while getopts ':he' OPTION
+APPLY_POLICY=1
+while getopts ':hne' OPTION
 do
     case "$OPTION" in
         e) ENFORCE_SIGNATURES=1; break ;;
+        n) APPLY_POLICY=0 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,6 +37,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-e] <import uri> <policy fullPath>"
     echo "    -e Enforce all signatures"
+    echo "    -n Do not apply policy after import"
     exit 2
 fi
 WAF_POLICY_IMPORT_URI=$1
@@ -69,8 +72,11 @@ fi
 if [ "$ENFORCE_SIGNATURES" -eq 1 ]
 then
     # Enforce signatures and apply the policy
-    f5.asm.signaturestaging.enforce -a "$WAF_POLICY_FULL_PATH"
-else
+    f5.asm.signaturestaging.enforce -n -a "$WAF_POLICY_FULL_PATH"
+fi
+
+if [ "$APPLY_POLICY" -eq 1 ]
+then
     # Apply the policy
     f5.asm.policy.apply "$WAF_POLICY_FULL_PATH"
 fi

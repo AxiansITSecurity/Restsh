@@ -20,10 +20,12 @@ fi
 
 # Get options
 ENFORCE_ALL=0
-while getopts ':a' OPTION
+APPLY_POLICY=1
+while getopts ':an' OPTION
 do
     case "$OPTION" in
         a) ENFORCE_ALL=1 ;;
+        n) APPLY_POLICY=0 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -34,7 +36,8 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-a] [<policy name>]"
-    echo -e "\tUse -a to enforce all staged signatures."
+    echo "    -a Enforce all staged signatures."
+    echo "    -n Do not apply policy after enforcement."
     exit 2
 fi
 
@@ -85,7 +88,10 @@ do
     COUNT=$((COUNT+1))
     if CHANGED=$(enforce_signatures "$HASH" "$FILTER")
     then
-        [ "$CHANGED" -gt 0 ] && f5.asm.policy.apply "$HASH"
+        if [ "$CHANGED" -gt 0 ] && [ "$APPLY_POLICY" -eq 1 ]
+        then
+            f5.asm.policy.apply "$HASH"
+        fi
     fi
 done < <(GET "/mgmt/tm/asm/policies/?\$select=fullPath,id" | \
     $RESTSH_JQ -r ".items[] $POLICY_FILTER | .id, .fullPath" | \

@@ -21,10 +21,12 @@ fi
 
 OPENAPI_FILE=""
 ENFORCE_SIGNATURES=0
-while getopts ':ho:e' OPTION
+APPLY_POLICY=1
+while getopts ':heno:' OPTION
 do
     case "$OPTION" in
-        e) ENFORCE_SIGNATURES=1; break ;;
+        e) ENFORCE_SIGNATURES=1 ;;
+        n) APPLY_POLICY=0 ;;
         o) OPENAPI_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -37,6 +39,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-e] [-o <openapi file>] <filename> <policy full path>"
     echo "    -e Enforce all signatures"
+    echo "    -n Do not apply policy after import"
     echo "    -o Specify OpenApi File"
     exit 2
 fi
@@ -99,8 +102,11 @@ f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
 if [ "$ENFORCE_SIGNATURES" -eq 1 ]
 then
     # Enforce signatures and apply the policy
-    f5.asm.signaturestaging.enforce -a "$WAF_POLICY_FULL_PATH"
-else
+    f5.asm.signaturestaging.enforce -n -a "$WAF_POLICY_FULL_PATH"
+fi
+
+if [ "$APPLY_POLICY" -eq 1 ]
+then
     # Apply the policy
     f5.asm.policy.apply "$NAME"
 fi

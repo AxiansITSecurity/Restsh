@@ -43,9 +43,11 @@ disable_suggestions() {
     return 1
 }
 
-while getopts ':h' OPTION
+APPLY_POLICY=1
+while getopts ':hn' OPTION
 do
     case "$OPTION" in
+        n) APPLY_POLICY=0 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -71,7 +73,10 @@ do
     COUNT=$((COUNT+1))
     if CHANGED=$(disable_suggestions "$HASH")
     then
-        [ "$CHANGED" -gt 0 ] && f5.asm.policy.apply "$HASH"
+        if [ "$CHANGED" -gt 0 ] && [ "$APPLY_POLICY" -eq 1 ]
+        then
+            f5.asm.policy.apply "$HASH"
+        fi
     fi
 done < <(GET "/mgmt/tm/asm/policies/?\$select=fullPath,id" | \
     $RESTSH_JQ -r ".items[] $POLICY_FILTER | .id, .fullPath" | \
