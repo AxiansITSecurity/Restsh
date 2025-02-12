@@ -2,6 +2,7 @@
 
 # Runner tag
 F5_ENV,f5,false,true,F5 environment name.
+F5_VERSION,17,false,true,F5 Version.
 
 # Branches
 DEPLOY_BRANCHES,/^(dev|test|prod)$/,false,true,Deployment branches.
