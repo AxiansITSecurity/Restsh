@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-02-12
+
+# Shortdesc: Creates a branch protection rule.
+# Desc:
+# Creates a branch protection rule.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 5 ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <project> <branch> <push> <merge> <force>"
+    echo "    <push>: Push access level"
+    echo "    <merge>: Merge access level"
+    echo "    <force>: Allow force push - false or true"
+    echo "Access levels:"
+    echo "    0  => No access"
+    echo "    30 => Developer access"
+    echo "    40 => Maintainer access"
+    echo "    60 => Admin access"
+    exit 2
+fi
+
+PROJECT=$1
+BRANCH=$2
+PUSH=$3
+MERGE=$4
+FORCE=$5
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+JQ -n --arg branch "$BRANCH" \
+    --argjson push "$PUSH" \
+    --argjson merge "$MERGE" \
+    --argjson force "$FORCE" \
+    '{
+        "name": $branch,
+        "push_access_level": $push,
+        "merge_access_level": $merge,
+        "allow_force_push": $force
+    }' | POST "$GITLAB_API_PREFIX/projects/$PROJECT/protected_branches"
