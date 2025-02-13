@@ -32,9 +32,10 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
+    exec 1>&2
     echo "Usage: $(basename "$0") [-d <folder>] <clone uri>"
     echo -e "\t-d <folder>  Parent folder for cloned repository."
-    exit 1
+    exit 2
 fi
 
 CLONE_URI="$1"
@@ -42,6 +43,10 @@ DIR=$(basename "$CLONE_URI" .git)
 [ -n "$DST" ] || DST="$RESTSH_TMP"
 
 cd "$DST" || exit 1
+if [ "$DST" = "$RESTSH_TMP" ]
+then
+    rm -rf "$DIR"
+fi
 git clone "$CLONE_URI"
 cd "$DIR" || exit 1
 git switch -c master
@@ -58,7 +63,7 @@ done
 git add .
 git commit -m "Init"
 git push -u origin master
-if [ "$DST" != "$RESTSH_TMP" ]
+if [ "$DST" = "$RESTSH_TMP" ]
 then
     cd "$RESTSH_TMP" || exit 1
     rm -rf "$DIR"
