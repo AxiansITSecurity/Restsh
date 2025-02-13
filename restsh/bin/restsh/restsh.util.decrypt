@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-13
+# Date: 2025-02-13
 
 # Shortdesc: AES256 decryption of string.
 # Desc:
@@ -24,23 +24,29 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: restsh.util.decrypt <string>"
-    echo "Uses RESTSH_SECRET if defined, else asks for secret."
+    echo "Uses RESTSH_SECRET if defined, else asks for secret in interactive mode."
     exit 2
 fi
 
 TODECRYPT=$1
+if ! restsh.util.isencrypted "$TODECRYPT"
+then
+    echo_err "String must start with \"AES256:\"."
+    exit 1
+fi
 
 if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
 then
-    SECRET=$(restsh.util.askpass Secret)
-    echo ""
+    if [ -n "${RESTSH_INTERACTIVE+x}" ]
+    then
+        SECRET=$(restsh.util.askpass Secret)
+        echo ""
+    else
+        echo_err "RESTSH_SECRET not set."
+        exit 1
+    fi
 else
     SECRET="$RESTSH_SECRET"
 fi
 
-if [ "${TODECRYPT:0:7}" != "AES256:" ]
-then
-    echo_err "String must start with \"AES256:\""
-    exit 1
-fi
 openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a -d <<< "${TODECRYPT:7}"
