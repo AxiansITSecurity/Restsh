@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-13
+# Date: 2025-02-13
 
 # Shortdesc: Creates a GitLab project for automation.
 # Desc:
@@ -24,7 +24,8 @@ INIT_PROJECT=""
 INIT_OPTS=()
 PROTECTED_BRANCHES=()
 ACCESS_LEVEL=(0 40)
-while getopts ':d:hi:l:p:' OPTION
+SKELETON_PATH=""
+while getopts ':d:hi:l:p:s:' OPTION
 do
     case "$OPTION" in
         d)
@@ -40,6 +41,7 @@ do
         i) INIT_PROJECT=$OPTARG ;;
         l) mapfile -d, -t ACCESS_LEVEL <<< "$OPTARG" ;;
         p) mapfile -d, -t PROTECTED_BRANCHES <<< "$OPTARG" ;;
+        s) SKELETON_PATH=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -51,10 +53,11 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path>"
     echo "Options:"
-    echo "    -d <folder>        Parent folder for cloned repository."
-    echo "    -i <type>          Initialize repository for as3, cert, tasks or waf."
-    echo "    -l <push,merge>  Access level for protected branches, default: Maintainer access for merge only."
-    echo "    -p <branches>      Branch names to protect."
+    echo "    -d <folder>         Parent folder for cloned repository."
+    echo "    -i <type>           Initialize repository for as3, cert, tasks or waf."
+    echo "    -l <push,merge>     Access level for protected branches, default: Maintainer access for merge only."
+    echo "    -s <skeleton path>  Skeleton path for initialization."
+    echo "    -p <branches>       Branch names to protect."
     echo "Access levels:"
     echo "    0  => No access"
     echo "    30 => Developer access"
@@ -96,8 +99,16 @@ then
     CLONE_URI="${RESTSH_AAFW_URI}${PROJECT_PATH}.git"
     case "$INIT_PROJECT" in
         as3)
-            [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
-            aafw.project.init.as3 "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_AS3SKELETON}" "$CLONE_URI"
+            if [ -z "$SKELETON_PATH" ]
+            then
+                if [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ]
+                then
+                    SKELETON_PATH="$RESTSH_AAFW_AS3SKELETON"
+                else
+                    SKELETON_PATH="${RESTSH_AAFW_GROUP}/as3skeleton"
+                fi
+            fi
+            aafw.project.init.as3 "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${SKELETON_PATH}" "$CLONE_URI"
             ;;
         cert)
             aafw.project.init.cert "${INIT_OPTS[@]}" "$CLONE_URI"
@@ -106,8 +117,16 @@ then
             aafw.project.init.tasks "${INIT_OPTS[@]}" "$CLONE_URI"
             ;;
         waf)
-            [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
-            aafw.project.init.waf "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${RESTSH_AAFW_WAFSKELETON}" "$CLONE_URI"
+            if [ -z "$SKELETON_PATH" ]
+            then
+                if [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ]
+                then
+                    SKELETON_PATH="$RESTSH_AAFW_WAFSKELETON"
+                else
+                    SKELETON_PATH="${RESTSH_AAFW_GROUP}/wafskeleton"
+                fi
+            fi
+            aafw.project.init.waf "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${SKELETON_PATH}" "$CLONE_URI"
             ;;
         *)
             echo_err "Unknown project type"
