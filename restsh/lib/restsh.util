@@ -662,6 +662,21 @@ restsh.util.askpass() {
     printf "%s" "$PASSWORD"
 }
 
+# Checks for AES256: prefix of provided string.
+restsh.util.isencrypted() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Checks for AES256: prefix of provided string." 1>&2
+        echo "Usage: restsh.util.isencrypted <string>" 1>&2
+        return 2
+    fi
+    if [ "${1:0:7}" = "AES256:" ]
+    then
+        return 0
+    fi
+    return 1
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -691,3 +706,4 @@ export -f restsh.util.array.includes
 export -f restsh.util.uc
 export -f restsh.util.lc
 export -f restsh.util.askpass
+export -f restsh.util.isencrypted

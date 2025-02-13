@@ -9,6 +9,7 @@
 - Feat: Add `gitlab.branch.protect.list`, `gitlab.branch.protect.set`, `gitlab.branch.protect.delete`
 - Feat: Add skeleton variables for `aafw.project.new`
 - Feat: Add `restsh.util.askpass`
+- Feat: Add `restsh.util.isencrypted`
 - Feat: Add `f5.ltm.vs.pool-list` to list pool members for a virtual server
 - Feat: Support path as alternative for id for GitLab groups and projects
 - Feat: Add `gitlab.project.pipeline.list`, `gitlab.project.variable.delete.all`
