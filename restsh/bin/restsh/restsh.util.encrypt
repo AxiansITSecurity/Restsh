@@ -36,7 +36,7 @@ else
     SECRET="$RESTSH_SECRET"
 fi
 
-read -s -r -p "String to encrypt: " TOENCRYPT
+TOENCRYPT=$(restsh.util.askpass "String to encrypt")
 echo ""
 
 ENCRYPTED=$(openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a <<< "$TOENCRYPT" | tr -d '\n')
