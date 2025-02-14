@@ -35,4 +35,5 @@ then
     exit 2
 fi
 
+FULLPATH=$1
 DELETE "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}"
