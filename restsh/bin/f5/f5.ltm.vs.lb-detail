@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-02-05
+# Date: 2025-02-14
 
 # Shortdesc: Lists a pool and its members that is linked to a virtual server.
 # Desc:
@@ -32,14 +32,20 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
+    exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") [-r] <vs full path>"
-    echo -e "\tUse -r for raw output."
-    exit 1
+    echo "Usage: $(basename "$0") <vs full path>"
+    exit 2
 fi
 
 VIRTUAL_SERVER=$1
+
+if ! VS_PERSIST_CHECK=$(f5.ltm.vs.get "$VIRTUAL_SERVER" | JQ -r '.persist[] | .name' 2>/dev/null)
+then
+    VS_PERSIST="No persistence configured"
+else
+    VS_PERSIST=$VS_PERSIST_CHECK
+fi
 
 if ! POOL=$(f5.ltm.vs.get "$VIRTUAL_SERVER" | JQE -r '.pool')
 then
@@ -50,13 +56,17 @@ then
         echo_err "No associated pool found."
     fi
 else
+    POOL=${POOL//\//\~}
     if [ "$RAW" -eq 1 ]
     then
-        POOL=${POOL//\//\~}
         GET "/mgmt/tm/ltm/pool/${POOL}/members"
     else
-        echo "Pool name: $POOL"
         POOL=${POOL//\//\~}
+        POOL_LB_METHOD=$(GET "/mgmt/tm/ltm/pool/${POOL}" | JQ -r '.loadBalancingMode')
+        echo "Persistence: $VS_PERSIST"
+        echo "Pool name: $POOL"
+        echo "Loadbalancing method: $POOL_LB_METHOD"
+        echo ""
         GET "/mgmt/tm/ltm/pool/${POOL}/members" \
             | JQ -r '.items[] | [.name,.address,.state,.monitor] | @tsv' \
             | COLUMN -o "|" -N "member:port,ip,state,monitor"
