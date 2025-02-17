@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-02-16
+
+# Shortdesc: Checks HTTP headers against defined policy.
+# Desc:
+# Checks HTTP headers against defined policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+POLICY_DIR="$RESTSH_PATH/templates/check/http-header"
+while getopts ':p:' OPTION
+do
+    case "$OPTION" in
+        p) POLICY_DIR=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <uri>"
+    echo "Options":
+    echo "    -p Policy folder, default: $POLICY_DIR"
+    exit 2
+fi
+
+URI=$1
+declare -A HEADERS
+# read and normalize http response headers
+while IFS=":" read -r HEADER VALUE
+do
+    # normalize
+    HEADER=$(restsh.util.trim "$HEADER" | tr -d '\r')
+    HEADER=$(restsh.util.lc "$HEADER")
+    VALUE=$(restsh.util.trim "$VALUE" | tr -d '\r')
+    VALUE=$(restsh.util.lc "$VALUE")
+    # ignore uninteresting headers
+    [ -z "$HEADER" ] && continue
+    # Set header array
+    HEADERS["$HEADER"]="$VALUE"
+done < <(curl -sI "$URI")
+
+RC=0
+for POLICY in "$POLICY_DIR"/*.sh
+do
+    HEADER=$(basename "$POLICY" ".sh")
+    if [ -z "${HEADERS["$HEADER"]+x}" ]
+    then
+        HEADERS["$HEADER"]="<NOTFOUND>"
+    fi
+    echo -n "Checking header \"$HEADER\": \"${HEADERS["$HEADER"]}\" - "
+    if RESULT=$("$POLICY" <<< "${HEADERS["$HEADER"]}")
+    then
+        echo_ok "OK: $RESULT"
+    else
+        echo_err "$RESULT"
+        RC=1
+    fi
+    unset HEADERS["$HEADER"]
+done
+
+for HEADER in ${!HEADERS[@]}
+do
+    [ -z "${HEADERS["$HEADER"]+x}" ] && continue
+    echo "Unchecked header \"$HEADER\": \"${HEADERS["$HEADER"]}\""
+done
+
+exit "$RC"

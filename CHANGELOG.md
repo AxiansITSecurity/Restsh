@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add `restsh.check.http-header`
 - Feat: Add `gitlab.branch.new`, `gitlab.branch.list`
 - Feat: Add branch protection options to `aafw.project.new`
 - Feat: Add `gitlab.branch.protect.list`, `gitlab.branch.protect.set`, `gitlab.branch.protect.delete`
