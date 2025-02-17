@@ -4,3 +4,4 @@
 AS3_DEFAULT_DIR,default-v17,false,true,Default configuration directory.
 AS3_SYNC,1,false,true,Sync cluster after deployment.
 IRULEFW_OPTIONS,-n,false,true,Do not create libraries
+AS3_LINT_SCRIPT,lint.sh,false,true,Lint script name in the as3snippets repo.

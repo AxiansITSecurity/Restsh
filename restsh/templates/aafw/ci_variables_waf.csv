@@ -4,6 +4,7 @@
 WAF_POLICY_PARTITION,Common,false,true,F5 Partition for the WAF-Policies.
 WAF_POLICY_DEFAULT_DIR,default-policy-v17,false,true,Default configuration directory.
 WAF_POLICY_ENFORCE_SIGNATURES,0,false,true,1=Enforce all signatures,0=Do not enforce signatures
+WAF_POLICY_LINT_SCRIPT,lint.sh,false,true,Lint script name in the wafcustom repo.
 
 # Where to copy the compiled WAF policy
 POLICY_WEB_HOST_LOCAL,2,false,true,0 = Use ssh to copy files, 1 = Use local Webserver for policy serving, 2 = Upload files to F5.
