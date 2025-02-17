@@ -677,6 +677,16 @@ restsh.util.isencrypted() {
     return 1
 }
 
+# Trim leading and trailing whitespaces
+restsh.util.trim() {
+    local STR="$*"
+    # remove leading whitespace characters
+    STR="${STR#"${STR%%[![:space:]]*}"}"
+    # remove trailing whitespace characters
+    STR="${STR%"${STR##*[![:space:]]}"}"
+    printf '%s' "$STR"
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -707,3 +717,4 @@ export -f restsh.util.uc
 export -f restsh.util.lc
 export -f restsh.util.askpass
 export -f restsh.util.isencrypted
+export -f restsh.util.trim

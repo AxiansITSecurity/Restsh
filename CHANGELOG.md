@@ -10,6 +10,7 @@
 - Feat: Add skeleton variables for `aafw.project.new`
 - Feat: Add `restsh.util.askpass`
 - Feat: Add `restsh.util.isencrypted`
+- Feat: Add `restsh.util.trim`
 - Feat: Add `f5.ltm.vs.lb-detail` to show loadbalancing details of a virtual server
 - Feat: Support path as alternative for id for GitLab groups and projects
 - Feat: Add `gitlab.project.pipeline.list`, `gitlab.project.variable.delete.all`
