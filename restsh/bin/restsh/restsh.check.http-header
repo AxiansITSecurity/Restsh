@@ -62,10 +62,10 @@ do
         echo_err "$RESULT"
         RC=1
     fi
-    unset HEADERS["$HEADER"]
+    unset "HEADERS[$HEADER]"
 done
 
-for HEADER in ${!HEADERS[@]}
+for HEADER in "${!HEADERS[@]}"
 do
     [ -z "${HEADERS["$HEADER"]+x}" ] && continue
     echo "Unchecked header \"$HEADER\": \"${HEADERS["$HEADER"]}\""
