@@ -2,6 +2,9 @@
 
 CERT_CI_STAGE,dev,false,true,The pipeline stage.
 CERT_EXPIRATION_STRING,1 week,false,true,Date string to detect soon expiring certificates.
+CERT_SYNC,1,false,true,Sync cluster after deployment of new certificates.
+
+# Sectico Cert Manager
 SCM_CLIENTID,,false,true,SCM OAuth ClientID
 SCM_ORG_ID_DEFAULT,,false,true,SCM Organization ID
 SCM_SECRET,scmsecret,true,true,SCM OAuth Secret
@@ -15,6 +18,7 @@ SCM_TERM_TEST,,false,true,SCM Certificate Lifetime in days
 SCM_PROFILE_PROD,,false,true,SCM Certificate Profile ID
 SCM_TERM_PROD,,false,true,SCM Certificate Lifetime in days
 
+# Certbot
 CERTBOT_EMAIL,,false,true,E-Mail for Certbot.
 CERTBOT_SERVER,,false,true,Certbot Server - leave empty for Let's Encrypt.
 CERTBOT_EAB_KID,,false,true,Key Identifier for External Account Binding.
