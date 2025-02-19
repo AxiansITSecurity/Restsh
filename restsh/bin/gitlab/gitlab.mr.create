@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-02-19
+
+# Shortdesc: Creates a merge request.
+# Desc:
+# Creates a merge request.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$#" -ne 4 ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [-r] <project> <source_branch> <target_branch> <title>"
+    echo -e "\t-r Raw output."
+    exit 2
+fi
+
+PROJECT=$1
+SRC=$2
+TARGET=$3
+TITLE=$4
+
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+RESULT=$(JQ -n --arg project "$PROJECT" \
+    --arg src "$SRC" \
+    --arg target "$TARGET" \
+    --arg title "$TITLE" \
+    '{
+        title: $title,
+        source_branch: $src,
+        target_branch: $target
+    }' | POST -r "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests")
+
+if [ "$RAW" -eq 1 ]
+then
+    JQ "." <<< "$RESULT"
+else
+    printf "Merge Request ID: "
+    JQ -r ".iid" <<< "$RESULT"
+    printf "View Merge Request: "
+    JQ -r ".web_url" <<< "$RESULT"
+fi
