@@ -7,6 +7,33 @@
 # Desc:
 # F5 AS3 helper functions for mustache.
 
+# Prints all IPs in a range
+MO_IP_RANGE() {
+    local START=${MO_FUNCTION_ARGS[0]}
+    local END=${MO_FUNCTION_ARGS[1]}
+    local OCTETS_START
+    local OCTETS_END
+    mapfile -t -d. OCTETS_START <<< "$START"
+    mapfile -t -d. OCTETS_END <<< "$END"
+    local FIRST SECOND THIRD LAST
+    local COMMA=""
+    for ((FIRST=OCTETS_START[0]; FIRST <= OCTETS_END[0]; FIRST++))
+    do
+        for ((SECOND=OCTETS_START[1]; SECOND <= OCTETS_END[1]; SECOND++))
+        do
+            for ((THIRD=OCTETS_START[2]; THIRD <= OCTETS_END[2]; THIRD++))
+            do
+                for ((LAST=OCTETS_START[3]; LAST <= OCTETS_END[3]; LAST++))
+                do
+                    echo "$COMMA\"$FIRST.$SECOND.$THIRD.$LAST\""
+                    COMMA=","
+                done
+            done
+        done
+    done
+    return 0
+}
+
 # Recursively includes an json path from/in an AS3 declaration, removes .class, .template, .remark and .label keys.
 # Supports up to 10 KEY=VALUE pairs as arguments.
 # Arguments are accessible with ARG_ prefix.

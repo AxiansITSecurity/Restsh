@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add Mustache function `MO_IP_RANGE()`
 - Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.merge`
 - Feat: Add `restsh.check.http-header`
 - Feat: Add `gitlab.branch.new`, `gitlab.branch.list`
