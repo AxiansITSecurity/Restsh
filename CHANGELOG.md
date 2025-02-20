@@ -4,7 +4,7 @@
 
 ## v4.0.0 - not yet released
 
-- Feat: Add `gitlab.mr.create`
+- Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.merge`
 - Feat: Add `restsh.check.http-header`
 - Feat: Add `gitlab.branch.new`, `gitlab.branch.list`
 - Feat: Add branch protection options to `aafw.project.new`

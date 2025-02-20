@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-02-19
 
-# Shortdesc: Creates a merge request.
+# Shortdesc: Lists all merge requests for a project.
 # Desc:
-# Creates a merge request.
+# Lists all merge requests for a project.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -30,38 +30,25 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$#" -ne 4 ] || [ "$OPTION" = "invalid" ]
+if [ "$#" -ne 1 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project> <source_branch> <target_branch> <title>"
+    echo "Usage: $(basename "$0") [-r] <project>"
     echo -e "\t-r Raw output."
     exit 2
 fi
 
 PROJECT=$1
-SRC=$2
-TARGET=$3
-TITLE=$4
 
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-RESULT=$(JQ -n \
-    --arg src "$SRC" \
-    --arg target "$TARGET" \
-    --arg title "$TITLE" \
-    '{
-        title: $title,
-        source_branch: $src,
-        target_branch: $target
-    }' | POST -r "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests")
+RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests?state=opened")
 
 if [ "$RAW" -eq 1 ]
 then
-    JQ "." <<< "$RESULT"
+    echo "$RESULT"
 else
-    printf "Merge Request ID: "
-    JQ -r ".iid" <<< "$RESULT"
-    printf "View Merge Request: "
-    JQ -r ".web_url" <<< "$RESULT"
+    JQ -r '.[] | [.iid, .merge_status, .source_branch, .target_branch, .author.name] | @tsv' <<< "$RESULT" | \
+        COLUMN -o "|" -N "id,merge status,source,target,author"
 fi
