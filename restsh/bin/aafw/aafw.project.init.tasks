@@ -55,6 +55,11 @@ include:
   - project: \$PIPELINE_PROJECT_TASKS
     file: 'tasks.yml'
 EOL
+for F in dev test prod
+do
+    mkdir -p "config/$F"
+    touch "config/$F/.gitkeep"
+done
 git add .
 git commit -m "Init"
 git push -u origin master

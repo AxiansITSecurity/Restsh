@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add `aafw.pipeline.start.task.backup`, `aafw.pipeline.start.task.pkg`, `aafw.pipeline.start.task.signaturestaging`
 - Feat: Add Mustache function `MO_IP_RANGE()`
 - Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.merge`
 - Feat: Add `restsh.check.http-header`
@@ -17,7 +18,7 @@
 - Feat: Add `f5.ltm.vs.lb-detail` to show loadbalancing details of a virtual server
 - Feat: Support path as alternative for id for GitLab groups and projects
 - Feat: Add `gitlab.project.pipeline.list`, `gitlab.project.variable.delete.all`
-- Feat: Add `aafw.pipeline.start.as3`, `aafw.pipeline.start.cert`, `aafw.pipeline.start.task`, `aafw.pipeline.start.waf`
+- Feat: Add `aafw.pipeline.start.as3`, `aafw.pipeline.start.cert`, `aafw.pipeline.start.waf`
 - Feat: Add support for OpenAPI-File to `f5.asm.policy.import`
 - Feat: Add support for Declarative Onboarding: `f5.do.declare` and `f5.do.status`
 - Feat: Add option to enforce signatures to `f5.asm.policy.declare` and `f5.asm.policy.import`
