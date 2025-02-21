@@ -57,5 +57,5 @@ then
     JQ "." <<< "$RESULT"
 else
     printf "New state: "
-    JQ -r ".state"
+    JQ -r ".state" <<< "$RESULT"
 fi
