@@ -26,9 +26,12 @@
 - Feat: Add option to enforce signatures to `f5.asm.policy.declare` and `f5.asm.policy.import`
 - Feat: Add option to not apply policy to: `f5.asm.policy.declare`, `f5.asm.policy.import`, `f5.asm.signaturestaging.disable`, `f5.asm.signaturestaging.enforce`
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
-- Fix: Do not overwrite global FILENAME variable in `f5.file-transfer` functions
-- Fix: `f5.asm.policy.import` overwrites the policy with same name
+- Feat: `f5.asm.policy.import` overwrites the policy with same name
+
+## v3.0.1 - 2025-02-14
+
 - Fix: `f5.ltm.datagroup.internal.delete`
+- Fix: Do not overwrite global FILENAME variable in `f5.file-transfer` functions
 
 ## v3.0.0 - 2025-01-20
 
