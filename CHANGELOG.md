@@ -2,6 +2,11 @@
 
 ***
 
+## v3.0.1 - 2025-02-14
+
+- Fix: `f5.ltm.datagroup.internal.delete`
+- Fix: Do not overwrite global FILENAME variable in `f5.file-transfer` functions
+
 ## v3.0.0 - 2025-01-20
 
 - Feat: Support of AES256 encrypted `RESTSH_TOKEN_VALUE`
