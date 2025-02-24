@@ -5,6 +5,8 @@
 ## v4.0.0 - not yet released
 
 - Feat: Add `aafw.pipeline.start.task.backup`, `aafw.pipeline.start.task.pkg`, `aafw.pipeline.start.task.signaturestaging`
+- Feat: Add `RESTSH_INIT_CMD` and defaults for F5 and GitLab
+- Feat: Add `f5.version`, `f5.status`, `gitlab.version`
 - Feat: Add Mustache function `MO_IP_RANGE()`
 - Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.merge`
 - Feat: Add `restsh.check.http-header`

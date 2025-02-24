@@ -200,6 +200,9 @@ trap "rm -rf ""$RESTSH_TMP" EXIT
 # OK
 echo_ok "restsh $RESTSH_VERSION initialized"
 
+# Set prompt command
+PROMPT_COMMAND=restsh.init.prompt_command
+
 # Interactive mode
 if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
@@ -216,7 +219,7 @@ then
             echo -e "\tUser:    from .netrc"
             ;;
         *)
-            echo -e "\tAuth:   anonymous"
+            echo -e "\tAuth:    anonymous"
             ;;
     esac
     echo -e "\tModules: ${RESTSH_MODULES[*]}"
@@ -226,15 +229,6 @@ then
     echo "Happy RESTing"
     echo ""
 
-    # Set prompt command
-    if [ "$RESTSH_AUTH" = "token" ]
-    then
-        PROMPT_COMMAND=restsh.init.prompt_command
-    fi
-
-    # Set prompt
-    export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "
-
     # Do not add commands to history that begin with space
     export HISTCONTROL=ignorespace
 
@@ -243,4 +237,10 @@ then
 
     # Do not exit on error after initialization
     set +eE
+
+    if [ -n "${RESTSH_INIT_CMD+x}" ] && [ -n "${RESTSH_INIT_CMD}" ]
+    then
+        ${RESTSH_INIT_CMD}
+        echo ""
+    fi
 fi

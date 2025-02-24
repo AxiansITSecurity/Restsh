@@ -105,6 +105,27 @@ restsh.init.setresturl() {
 
 # Sets a prompt command to get the refreshed credentials from subsession to initial restsh bash session.
 restsh.init.prompt_command() {
+    if [ "$?" -eq 0 ]
+    then
+        local COLOR="\033[01;32m"
+    else
+        local COLOR="\033[0;31m"
+    fi
+    if [ -n "${RESTSH_INTERACTIVE+x}" ]
+    then
+        case $TERM in
+            xterm*)
+                TITLEBAR='\[\033]0;restsh - ${RESTSH_URL}\007\]'
+                ;;
+            *)
+                TITLEBAR=""
+                ;;
+        esac
+        local GIT_BRANCH
+        GIT_BRANCH=$(git branch --show-current 2>/dev/null)
+        [ -n "$GIT_BRANCH" ] && GIT_BRANCH=" ($GIT_BRANCH)"
+        export PS1="$TITLEBAR\[$COLOR\]${RESTSH_URL}\[\033[00m\]${GIT_BRANCH}# "
+    fi
     if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME" ]
     then
         RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME")

@@ -57,3 +57,6 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 # Axians Automation Framework Skeleton Projects
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || export RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
+
+# Command that is executed after initialization in interactive mode
+export RESTSH_INIT_CMD="gitlab.version"

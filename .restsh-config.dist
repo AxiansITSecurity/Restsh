@@ -12,6 +12,9 @@
 # shellcheck disable=SC2034
 RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
 
+# Command that is executed after initialization in interactive mode
+[ -n "${RESTSH_INIT_CMD+x}" ] || RESTSH_INIT_CMD=""
+
 # Debugging
 # export RESTSH_DEBUG="true"
 
