@@ -36,8 +36,8 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch> <package>"
     echo "Options:"
-    echo "-t <f5 management ip>"
-    echo "Package: as3, do, ts or all"
+    echo "    -t <f5 management ip>"
+    echo "    Package: as3, do, ts or all"
     exit 2
 fi
 
