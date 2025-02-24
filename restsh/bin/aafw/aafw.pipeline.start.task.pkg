@@ -20,11 +20,23 @@ then
 fi
 
 # Get options
+TASK_HOST=""
+while getopts ':t:' OPTION
+do
+    case "$OPTION" in
+        t) TASK_HOST=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
 if [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <project path> <branch> <package>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch> <package>"
+    echo "Options:"
+    echo "-t <f5 management ip>"
     echo "Package: as3, do, ts or all"
     exit 2
 fi
@@ -36,6 +48,7 @@ restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJE
 
 JQ -n --arg branch "$BRANCH" \
     --arg pkg "$PKG" \
+    --arg task_host "$TASK_HOST" \
     '{
         ref: "master",
         variables: [
@@ -54,6 +67,10 @@ JQ -n --arg branch "$BRANCH" \
             {
                 key: "TASK_PKG",
                 value: $pkg
+            },
+            {
+                key: "TASK_HOST",
+                value: $task_host
             }
         ]
     }' | POST "/api/v4/projects/${PROJECT}/pipeline"

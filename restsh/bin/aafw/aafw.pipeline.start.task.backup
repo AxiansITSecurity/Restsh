@@ -20,17 +20,28 @@ then
 fi
 
 # Get options
-if [ $# -ne 3 ]
+TASK_HOST=""
+while getopts ':t:' OPTION
+do
+    case "$OPTION" in
+        t) TASK_HOST=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <project path> <branch> <f5 management ip>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch>"
+    echo "Options:"
+    echo "-t <f5 management ip>"
     exit 2
 fi
 
 PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
-TASK_HOST=$3
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 JQ -n --arg branch "$BRANCH" \

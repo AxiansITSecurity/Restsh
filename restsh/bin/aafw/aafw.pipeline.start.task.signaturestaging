@@ -20,11 +20,23 @@ then
 fi
 
 # Get options
+TASK_HOST=""
+while getopts ':t:' OPTION
+do
+    case "$OPTION" in
+        t) TASK_HOST=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
 if [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") <project path> <branch>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch>"
+    echo "Options:"
+    echo "-t <f5 management ip>"
     exit 2
 fi
 
@@ -33,6 +45,7 @@ BRANCH=$(restsh.util.lc "$2")
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 JQ -n --arg branch "$BRANCH" \
+    --arg task_host "$TASK_HOST" \
     '{
         ref: "master",
         variables: [
@@ -47,6 +60,10 @@ JQ -n --arg branch "$BRANCH" \
             {
                 key: "TASK",
                 value: "signature_staging"
+            },
+            {
+                key: "TASK_HOST",
+                value: $task_host
             }
         ]
     }' | POST "/api/v4/projects/${PROJECT}/pipeline"
