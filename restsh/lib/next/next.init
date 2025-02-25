@@ -27,3 +27,8 @@ fi
 
 # Prefix for the F5 Next REST API
 export NEXT_API_PREFIX="/api/v1"
+
+if [ -z "${RESTSH_INIT_CMD+x}" ]
+then
+    export RESTSH_INIT_CMD="next.auth.login"
+fi

@@ -59,4 +59,4 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
 
 # Command that is executed after initialization in interactive mode
-export RESTSH_INIT_CMD="gitlab.version"
+# export RESTSH_INIT_CMD=""

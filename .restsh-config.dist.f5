@@ -51,12 +51,4 @@ RESTSH_MODULES=("cert" "custom" "f5")
 [ -n "${F5_ENABLE_AUTOCOMPLETE+x}" ] || export F5_ENABLE_AUTOCOMPLETE=1
 
 # Command that is executed after initialization in interactive mode
-if [ "$RESTSH_AUTH" = "basic" ]
-then
-    export RESTSH_INIT_CMD="f5.status"
-elif [ "$RESTSH_AUTH" = "token" ]
-then
-    export RESTSH_INIT_CMD="f5.auth.token.get"
-else
-    export RESTSH_INIT_CMD=""
-fi
+# export RESTSH_INIT_CMD=""

@@ -54,3 +54,6 @@ RESTSH_MODULES=("cert" "custom" "next")
 #[ -n "${NEXT_TASK_CHECK_INTERVAL+x}" ] || export NEXT_TASK_CHECK_INTERVAL=2
 #[ -n "${NEXT_TASK_TIMEOUT+x}" ] || export NEXT_TASK_TIMEOUT=18
 [ -n "${NEXT_ENABLE_AUTOCOMPLETE+x}" ] || export NEXT_ENABLE_AUTOCOMPLETE=1
+
+# Command that is executed after initialization in interactive mode
+# export RESTSH_INIT_CMD=""

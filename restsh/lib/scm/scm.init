@@ -22,3 +22,8 @@ then
         . "$RESTSH_PATH/autocomplete/scm/autocomplete.sh"
     fi
 fi
+
+if [ -z "${RESTSH_INIT_CMD+x}" ]
+then
+    export RESTSH_INIT_CMD="scm.auth.login"
+fi

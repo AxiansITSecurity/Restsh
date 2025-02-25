@@ -49,3 +49,6 @@ RESTSH_MODULES=("cert" "custom" "scm")
 # OAuth ClientID and ClientSecret
 [ -n "${SCM_CLIENTID+x}" ] || export SCM_CLIENTID=""
 [ -n "${SCM_SECRET+x}" ] || export SCM_SECRET=""
+
+# Command that is executed after initialization in interactive mode
+# export RESTSH_INIT_CMD=""

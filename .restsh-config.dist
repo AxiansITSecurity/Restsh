@@ -46,3 +46,6 @@ RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
 
 # Chunk size in bytes for restsh.upload and restsh.download, default 512kB
 #[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
+
+# Command that is executed after initialization in interactive mode
+# export RESTSH_INIT_CMD=""
