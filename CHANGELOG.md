@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add `restsh.util.check.varnotempty`
 - Feat: Add `aafw.pipeline.start.task.backup`, `aafw.pipeline.start.task.pkg`, `aafw.pipeline.start.task.signaturestaging`
 - Feat: Add `RESTSH_INIT_CMD` and defaults for F5, Next, GitLab and SCM
 - Feat: Add `f5.version`, `f5.status`, `gitlab.version`

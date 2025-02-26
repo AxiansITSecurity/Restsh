@@ -535,7 +535,7 @@ restsh.util.json_validate() {
     fi
 }
 
-# Returns 1 if string is undefined, length is zero, contains only whitespaces or is null
+# Returns 1 if value is undefined, length is zero, contains only whitespaces or is null
 restsh.util.check.notempty() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
@@ -544,6 +544,24 @@ restsh.util.check.notempty() {
         return 2
     fi
     if [ -z "${1+x}" ] || [ -z "${1//[[:blank:]]/}" ] || [ "${1}" = "null" ]
+    then
+        return 1
+    fi
+}
+
+# Returns 1 if variable reference is undefined, length is zero, contains only whitespaces or is null
+restsh.util.check.varnotempty() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null" 1>&2
+        echo "Usage: restsh.util.check.notempty <variable>" 1>&2
+        return 2
+    fi
+    set +u # Do not fail if not defined
+    local VALUE="${!1}"
+    set -u
+
+    if [ -z "${VALUE//[[:blank:]]/}" ] || [ "$VALUE" = "null" ]
     then
         return 1
     fi
@@ -709,6 +727,7 @@ export -f restsh.util.setvar
 export -f restsh.util.urlencode
 export -f restsh.util.json_validate
 export -f restsh.util.check.notempty
+export -f restsh.util.check.varnotempty
 export -f restsh.util.check.isnumber
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
