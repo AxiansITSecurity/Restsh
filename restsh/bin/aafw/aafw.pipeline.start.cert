@@ -28,21 +28,8 @@ then
     exit 2
 fi
 
-PROJECT_PATH=$1
+PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
-PROJECT_ID=$(restsh.util.urlencode "$PROJECT_PATH")
 
-JQ -n --arg branch "$BRANCH" \
-    '{
-        ref: "master",
-        variables: [
-            {
-                key: "CI_PIPELINE_SOURCE",
-                value: "push"
-            },
-            {
-                key: "CERT_CI_STAGE",
-                value: $branch
-            }
-        ]
-    }' | POST "/api/v4/projects/${PROJECT_ID}/pipeline"
+gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=push" \
+    -s "CERT_CI_STAGE=$BRANCH" "$PROJECT" "master"

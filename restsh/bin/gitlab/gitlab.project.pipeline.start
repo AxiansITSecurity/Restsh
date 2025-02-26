@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-01-28
+# Date: 2025-02-26
 
-# Shortdesc: Starts the backup task.
+# Shortdesc: Starts the pipeline for a project.
 # Desc:
-# Starts the backup task.
+# Starts the pipeline for a project.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -20,11 +20,11 @@ then
 fi
 
 # Get options
-TASK_HOST=""
-while getopts ':t:' OPTION
+VARIABLES=()
+while getopts ':s:' OPTION
 do
     case "$OPTION" in
-        t) TASK_HOST=$OPTARG ;;
+        s) VARIABLES+=("$OPTARG") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,13 +36,18 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -t <f5 management ip>"
+    echo "    -s \"key=value\""
     exit 2
 fi
 
 PROJECT=$1
-BRANCH=$(restsh.util.lc "$2")
+BRANCH=$2
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK_STAGE=$BRANCH" -s "TASK=backup" -s "TASK_HOST=$TASK_HOST" \
-    "$PROJECT" "master"
+for VAR in "${VARIABLES[@]}"
+do
+    KEY=${VAR%%=*}
+    VALUE=${VAR#*=}
+    JQ -n --arg key "$KEY" --arg value "$VALUE" '{ key: $key, value: $value }'
+done | JQ -n -s --arg branch "$BRANCH" '{ ref: $branch, variables: inputs }' \
+     | POST "/api/v4/projects/${PROJECT}/pipeline"

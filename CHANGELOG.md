@@ -19,7 +19,8 @@
 - Feat: Add `restsh.util.trim`
 - Feat: Add `f5.ltm.vs.lb-detail` to show loadbalancing details of a virtual server
 - Feat: Support path as alternative for id for GitLab groups and projects
-- Feat: Add `gitlab.project.pipeline.list`, `gitlab.project.variable.delete.all`
+- Feat: Add `gitlab.project.pipeline.list`, `gitlab.project.pipeline.start`
+- Feat: Add `gitlab.project.variable.delete.all`
 - Feat: Add `aafw.pipeline.start.as3`, `aafw.pipeline.start.cert`, `aafw.pipeline.start.waf`
 - Feat: Add support for OpenAPI-File to `f5.asm.policy.import`
 - Feat: Add support for Declarative Onboarding: `f5.do.declare` and `f5.do.status`

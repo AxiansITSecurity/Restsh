@@ -30,7 +30,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 3 ]
+if [ $# -ne 3 ] || [ "$OPTION" = "invalid " ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
@@ -44,33 +44,7 @@ fi
 PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
 PKG=$3
-restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-JQ -n --arg branch "$BRANCH" \
-    --arg pkg "$PKG" \
-    --arg task_host "$TASK_HOST" \
-    '{
-        ref: "master",
-        variables: [
-            {
-                key: "CI_PIPELINE_SOURCE",
-                value: "trigger"
-            },
-            {
-                key: "TASK_STAGE",
-                value: $branch
-            },
-            {
-                key: "TASK",
-                value: "pkg_install"
-            },
-            {
-                key: "TASK_PKG",
-                value: $pkg
-            },
-            {
-                key: "TASK_HOST",
-                value: $task_host
-            }
-        ]
-    }' | POST "/api/v4/projects/${PROJECT}/pipeline"
+gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
+    -s "TASK_STAGE=$BRANCH" -s "TASK=pkg_install" -s "TASK_HOST=$TASK_HOST" \
+    -s "TASK_PKG=$PKG" "$PROJECT" "master"
