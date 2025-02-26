@@ -41,6 +41,7 @@ MO_IP_RANGE() {
 MO_F5_AS3_INCLUDE_DECLARATION() {
     local JSON_FILE=${MO_FUNCTION_ARGS[0]}
     local JSON_PATH=${MO_FUNCTION_ARGS[1]}
+    echo "Including declaration: $JSON_FILE" 1>&2
     # Set remaining arguments as variables for mustache
     local I
     for I in {2..11}
@@ -51,11 +52,11 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
         local NAME="ARG_${ARG%%=*}"
         if [ "${VALUE:0:4}" = "VAR_" ]
         then
-            echo "Resolving variable $VALUE" 1>&2
+            echo "    Resolving variable $VALUE" 1>&2
             declare "$NAME"="${!VALUE}"
         elif [ "${VALUE:0:6}" = "ARRAY_" ]
         then
-            echo "Resolving variable $VALUE" 1>&2
+            echo "    Resolving variable $VALUE" 1>&2
             local TMP=("${VALUE}[@]")
             local ARRAY="${!TMP}"
             declare -a "$NAME"="(${ARRAY[*]})"
@@ -63,7 +64,6 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
             declare "$NAME"="$VALUE"
         fi
     done
-    echo "Including declaration: $JSON_FILE" 1>&2
     if ! $RESTSH_MO -- "$JSON_FILE" | \
         JQE -r "$JSON_PATH | del(.class, .template, .remark, .label)" | \
             sed -e 's/^{$//' -e 's/^}$//'
