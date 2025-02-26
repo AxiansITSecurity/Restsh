@@ -21,10 +21,12 @@ fi
 
 # Get options
 VARIABLES=()
-while getopts ':s:' OPTION
+RAW=0
+while getopts ':rs:' OPTION
 do
     case "$OPTION" in
         s) VARIABLES+=("$OPTARG") ;;
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,7 +38,8 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -s \"key=value\""
+    echo "    -r                  Show raw result."
+    echo "    -s \"key=value\""   Set pipeline variable.
     exit 2
 fi
 
@@ -44,10 +47,25 @@ PROJECT=$1
 BRANCH=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-for VAR in "${VARIABLES[@]}"
-do
-    KEY=${VAR%%=*}
-    VALUE=${VAR#*=}
-    JQ -n --arg key "$KEY" --arg value "$VALUE" '{ key: $key, value: $value }'
-done | JQ -n -s --arg branch "$BRANCH" '{ ref: $branch, variables: inputs }' \
-     | POST "/api/v4/projects/${PROJECT}/pipeline"
+create_data() {
+    for VAR in "${VARIABLES[@]}"
+    do
+        KEY=${VAR%%=*}
+        VALUE=${VAR#*=}
+        JQ -n --arg key "$KEY" --arg value "$VALUE" '{ key: $key, value: $value }'
+    done | JQ -n -s --arg branch "$BRANCH" '{ ref: $branch, variables: inputs }'
+}
+
+if RESULT=$(create_data | POST "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipeline")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        JQ "." <<< "$RESULT"
+    else
+        echo_ok -n "Pipeline started: "
+        JQ -r ".web_url" <<< "$RESULT"
+    fi
+    exit 0
+fi
+
+exit 1
