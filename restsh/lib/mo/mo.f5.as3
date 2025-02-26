@@ -51,9 +51,11 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
         local NAME="ARG_${ARG%%=*}"
         if [ "${VALUE:0:4}" = "VAR_" ]
         then
+            echo "Resolving variable $VALUE" 1>&2
             declare "$NAME"="${!VALUE}"
         elif [ "${VALUE:0:6}" = "ARRAY_" ]
         then
+            echo "Resolving variable $VALUE" 1>&2
             local TMP=("${VALUE}[@]")
             local ARRAY="${!TMP}"
             declare -a "$NAME"="(${ARRAY[*]})"
