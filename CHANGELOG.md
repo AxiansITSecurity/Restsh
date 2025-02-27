@@ -4,11 +4,12 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add Mustache functions `MO_BASE64URL`, `MO_INCLUDE_BASE64URL`, `MO_IP_RANGE()`
+- Feat: Add `restsh.util.base64url`
 - Feat: Add `restsh.util.check.varnotempty`
 - Feat: Add `aafw.pipeline.start.task.backup`, `aafw.pipeline.start.task.pkg`, `aafw.pipeline.start.task.signaturestaging`
 - Feat: Add `RESTSH_INIT_CMD` and defaults for F5, Next, GitLab and SCM
 - Feat: Add `f5.version`, `f5.status`, `gitlab.version`
-- Feat: Add Mustache function `MO_IP_RANGE()`
 - Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.merge`
 - Feat: Add `restsh.check.http-header`
 - Feat: Add `gitlab.branch.new`, `gitlab.branch.list`

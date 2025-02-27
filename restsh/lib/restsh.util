@@ -695,14 +695,31 @@ restsh.util.isencrypted() {
     return 1
 }
 
-# Trim leading and trailing whitespaces
+# Trim leading and trailing whitespaces.
 restsh.util.trim() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Trim leading and trailing whitespaces." 1>&2
+        echo "Usage: restsh.util.trim <string>" 1>&2
+        return 2
+    fi
     local STR="$*"
     # remove leading whitespace characters
     STR="${STR#"${STR%%[![:space:]]*}"}"
     # remove trailing whitespace characters
     STR="${STR%"${STR##*[![:space:]]}"}"
     printf '%s' "$STR"
+}
+
+# Encodes string asb Base64URL.
+restsh.util.base64url() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Encodes string asb Base64URL." 1>&2
+        echo "Usage: restsh.util.base64url <string>" 1>&2
+        return 2
+    fi
+    echo -n "$1" | base64 -w0 | tr '+/' '-_' | tr -d '='
 }
 
 # Export all functions
@@ -737,3 +754,4 @@ export -f restsh.util.lc
 export -f restsh.util.askpass
 export -f restsh.util.isencrypted
 export -f restsh.util.trim
+export -f restsh.util.base64url

@@ -127,11 +127,25 @@ MO_CSV_GET_ENTRY_OR_DEFAULT() {
     fi
 }
 
+# Encodes the first argument as base64url
+# Returns an unquoted string.
+# Usage: {{MO_BASE64URL '<string>'}}
+MO_BASE64URL() {
+    echo -n "${MO_FUNCTION_ARGS[0]}" | base64 -w0 | tr '+/' '-_' | tr -d '='
+}
+
 # Includes a file base64 encoded.
 # Returns an unquoted string.
 # Usage: {{MO_INCLUDE_BASE64 '<filename>'}}
 MO_INCLUDE_BASE64() {
     base64 < "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
+}
+
+# Includes a file base64 encoded.
+# Returns an unquoted string.
+# Usage: {{MO_INCLUDE_BASE64 '<filename>'}}
+MO_INCLUDE_BASE64URL() {
+    base64 -w0 < "${MO_FUNCTION_ARGS[0]}" | tr -d '\n' | tr '+/' '-_' | tr -d '='
 }
 
 # Include an external template.
