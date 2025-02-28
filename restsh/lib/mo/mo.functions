@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-15
+# Date: 2025-02-28
 
 # Shortdesc: Some helper functions for mustache.
 # Desc:
@@ -137,34 +137,74 @@ MO_BASE64URL() {
 # Includes a file base64 encoded.
 # Returns an unquoted string.
 # Usage: {{MO_INCLUDE_BASE64 '<filename>'}}
+# Usage: {{MO_INCLUDE_BASE64 '<filename>' '<basedir>'}}
 MO_INCLUDE_BASE64() {
-    base64 < "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
+    local FILENAME
+    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    then
+        FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
+    else
+        FILENAME="${MO_FUNCTION_ARGS[0]}"
+    fi
+    base64 < "$FILENAME" | tr -d '\n'
 }
 
-# Includes a file base64 encoded.
+# Includes a file base64url encoded.
 # Returns an unquoted string.
-# Usage: {{MO_INCLUDE_BASE64 '<filename>'}}
+# Usage: {{MO_INCLUDE_BASE64URL '<filename>'}}
+# Usage: {{MO_INCLUDE_BASE64URL '<filename>' '<basedir>'}}
 MO_INCLUDE_BASE64URL() {
-    base64 -w0 < "${MO_FUNCTION_ARGS[0]}" | tr -d '\n' | tr '+/' '-_' | tr -d '='
+    local FILENAME
+    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    then
+        FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
+    else
+        FILENAME="${MO_FUNCTION_ARGS[0]}"
+    fi
+    base64 -w0 < "$FILENAME" | tr -d '\n' | tr '+/' '-_' | tr -d '='
 }
 
 # Include an external template.
 # Usage: {{MO_INCLUDE_PLAIN '<filename>'}}
+# Usage: {{MO_INCLUDE_PLAIN '<filename>' '<basedir>'}}
 MO_INCLUDE_PLAIN() {
-    cat "${MO_FUNCTION_ARGS[0]}"
+    local FILENAME
+    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    then
+        FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
+    else
+        FILENAME="${MO_FUNCTION_ARGS[0]}"
+    fi
+    cat "$FILENAME"
 }
 
 # Include a file json encoded.
 # Returns a quoted string.
 # Usage: {{MO_INCLUDE_JSON_ENCODE '<filename>'}}
+# Usage: {{MO_INCLUDE_JSON_ENCODE '<filename>' '<basedir>'}}
 MO_INCLUDE_JSON_ENCODE() {
-    jq "@json" "${MO_FUNCTION_ARGS[0]}" | tr -d '\n'
+    local FILENAME
+    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    then
+        FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
+    else
+        FILENAME="${MO_FUNCTION_ARGS[0]}"
+    fi
+    jq "@json" "$FILENAME" | tr -d '\n'
 }
 
 # Parses the file with mustache before including it
 # Usage: {{MO_INCLUDE_PARSE '<filename>'}}
+# Usage: {{MO_INCLUDE_PARSE '<filename>' '<basedir>'}}
 MO_INCLUDE_PARSE() {
-    $RESTSH_MO -- "${MO_FUNCTION_ARGS[0]}"
+    local FILENAME
+    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    then
+        FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
+    else
+        FILENAME="${MO_FUNCTION_ARGS[0]}"
+    fi
+    $RESTSH_MO -- "$FILENAME"
 }
 
 # Parses the variable with mustache before including it.
