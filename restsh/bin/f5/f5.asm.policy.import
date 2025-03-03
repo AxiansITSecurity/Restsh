@@ -22,7 +22,7 @@ fi
 OPENAPI_FILE=""
 ENFORCE_SIGNATURES=0
 APPLY_POLICY=1
-while getopts ':heno:' OPTION
+while getopts ':ehno:' OPTION
 do
     case "$OPTION" in
         e) ENFORCE_SIGNATURES=1 ;;
@@ -37,10 +37,10 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-e] [-o <openapi file>] <filename> <policy full path>"
-    echo "    -e Enforce all signatures"
-    echo "    -n Do not apply policy after import"
-    echo "    -o Specify OpenApi File"
+    echo "Usage: $(basename "$0") [options...] <filename> <policy full path>"
+    echo "    -e                 Enforce all signatures"
+    echo "    -n                 Do not apply policy after import"
+    echo "    -o <openapi file>  Specify OpenApi File"
     exit 2
 fi
 
