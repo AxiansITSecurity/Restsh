@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2025-03-03
 
-# Shortdesc: Returns the active device from a f5 cluster.
+# Shortdesc: Returns the standby device from a f5 cluster.
 # Desc:
-# Returns the active device from a f5 cluster.
+# Returns the standby device from a f5 cluster.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -40,7 +40,7 @@ then
 fi
 
 # Main
-if ACTIVE_BIGIP=$(GET "/mgmt/tm/cm/device?\$select=name,failoverState" | JQ -r ".items[] | select(.failoverState==\"active\")")
+if ACTIVE_BIGIP=$(GET "/mgmt/tm/cm/device?\$select=name,failoverState" | JQ -r ".items[] | select(.failoverState==\"standby\")")
 then
     if [ -n "${ACTIVE_BIGIP}" ]
     then

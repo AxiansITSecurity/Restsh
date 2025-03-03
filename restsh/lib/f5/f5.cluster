@@ -34,7 +34,6 @@ f5.cluster.setactive() {
             echo_ok "Active F5 device found: $ACTIVE_F5"
             export RESTSH_HOST=$ACTIVE_F5
             restsh.init.setresturl
-            export PS1="\[\033[01;32m\]${RESTSH_URL}\[\033[00m\]# "
             break
         fi
         export RESTSH_HOST=""
@@ -48,7 +47,52 @@ f5.cluster.setactive() {
         return 1
     fi
 
-    if ! f5.cluster.getactive > /dev/null
+    if ! f5.status
+    then
+        echo_err "Connection to $RESTSH_HOST failed"
+        export RESTSH_HOST=$OLD_RESTSH_HOST
+        restsh.init.setresturl
+        return 1
+    fi
+
+    return 0
+}
+
+# Sets the RESTSH_HOST environment variable to the standby member of the F5 cluster.
+f5.cluster.setstandby() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Sets the RESTSH_HOST environment variable to the standby member of the F5 cluster." 1>&2
+        echo "Usage: f5.cluster.setstandby" 1>&2
+        return 2
+    fi
+    # Remember old value
+    local OLD_RESTSH_HOST=$RESTSH_HOST
+    local F5HOST
+    for F5HOST in ${RESTSH_HOST//,/$IFS}
+    do
+        echo "Try connection to: $F5HOST"
+        export RESTSH_HOST=$F5HOST
+        restsh.init.setresturl
+        if ACTIVE_F5=$(f5.cluster.getstandby)
+        then
+            echo_ok "Standby F5 device found: $ACTIVE_F5"
+            export RESTSH_HOST=$ACTIVE_F5
+            restsh.init.setresturl
+            break
+        fi
+        export RESTSH_HOST=""
+    done
+
+    if [ "$RESTSH_HOST" = "" ]
+    then
+        echo_err "Could not detect standby F5 device."
+        export RESTSH_HOST=$OLD_RESTSH_HOST
+        restsh.init.setresturl
+        return 1
+    fi
+
+    if ! f5.status
     then
         echo_err "Connection to $RESTSH_HOST failed"
         export RESTSH_HOST=$OLD_RESTSH_HOST
@@ -60,3 +104,4 @@ f5.cluster.setactive() {
 }
 
 export -f f5.cluster.setactive
+export -f f5.cluster.setstandby
