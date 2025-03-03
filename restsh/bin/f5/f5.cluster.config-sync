@@ -19,11 +19,11 @@ then
     exit 1
 fi
 
-FORCE=0
+FORCE=""
 while getopts ':fh' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
+        f) FORCE="force-full-load-push " ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -39,21 +39,15 @@ then
     exit 2
 fi
 
-GROUP=$1
-OPTIONS=""
-if [ "$FORCE" -eq 1 ]
-then
-    OPTIONS="force-full-load-push "
-fi
-OPTIONS+="to-group"
+GROUP=$(echo -n "$1" | jq -R)
 
-JQ -n --arg group "$GROUP" \
-    --arg options "$OPTIONS" \
-    '{
-        command: "run",
-        options: [
-            { 
-                $options: $group
-            }
-        ]
-    }' | POST "/mgmt/tm/cm/config-sync"
+POST "/mgmt/tm/cm/config-sync" << EOL
+{
+    "command": "run",
+    "options": [
+        { 
+            "${FORCE}to-group": $GROUP
+        }
+    ]
+}
+EOL
