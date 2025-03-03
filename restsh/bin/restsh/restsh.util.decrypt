@@ -19,6 +19,24 @@ then
     exit 1
 fi
 
+# test suite
+run_test() {
+    local ENCRYPTED
+    local DECRYPTED
+    local STR=$(restsh.pwgen)
+    ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
+    restsh.util.isencrypted "$ENCRYPTED"
+    DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")
+    [ "$STR" = "$DECRYPTED" ]
+}
+
+if [ "${1:-}" = "test" ]
+then
+    run_test && exit 0
+    exit 1
+fi
+
+# Get options
 if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
 then
     exec 1>&2

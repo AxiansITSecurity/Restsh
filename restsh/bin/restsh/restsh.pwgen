@@ -19,6 +19,20 @@ then
     exit 1
 fi
 
+# test suite
+run_test() {
+    local RESULT
+    RESULT=$(restsh.pwgen -c 6 -d "-" -l 20)
+    [ "${#RESULT}" -eq 20 ]
+}
+
+if [ "${1:-}" = "test" ]
+then
+    run_test && exit 0
+    exit 1
+fi
+
+# Get options
 LENGTH=34
 DELIMITER=""
 CHUNKS=6

@@ -1,0 +1,236 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-03
+
+# Shortdesc: Test suite for restsh.util library.
+# Desc:
+# Test suite for restsh.util library.
+
+# Strict error handling
+set -eEuo pipefail
+
+test.restsh.util.echo_ok() {
+    echo_ok "test"
+}
+
+test.restsh.util.print_json_ok() {
+    print_json_ok "test" | JQE ".ok.message"
+}
+
+test.restsh.util.print_json_ok_curl() {
+    print_json_ok_curl "test" "GET /"  | JQE ".ok | [.request, .message]"
+}
+
+test.restsh.util.echo_err() {
+    echo_err "test"
+}
+
+test.restsh.util.print_json_err() {
+    print_json_err "test" 2>&1 | JQE ".error.message"
+}
+
+test.restsh.util.print_json_err_curl() {
+    print_json_err_curl "test" "GET /" "error output" 2>&1 | JQE ".error | [.request, .message, .output]"
+}
+
+test.restsh.util.echo_warn() {
+    echo_warn "test"
+}
+
+test.restsh.util.print_json_warn() {
+    print_json_warn "test" 2>&1 | JQE ".warn.message"
+}
+
+test.restsh.util.print_json_warn_curl() {
+    print_json_warn_curl "test" "GET /" 2>&1 | JQE ".warn | [.request, .message]"
+}
+
+test.restsh.util.MO() {
+    local OUTPUT
+    VAR_TEST="test"
+    OUTPUT=$(MO <<< '{{VAR_TEST}}')
+    [ "$OUTPUT" = "$VAR_TEST" ]
+}
+
+test.restsh.util.JQ() {
+    JQ "." <<< '{"test": "test"}'
+}
+
+test.restsh.util.JQE() {
+    JQE ".test" <<< '{"test": "test"}'
+    ! JQE ".test2" <<< '{"test": "test"}'
+}
+
+test.restsh.util.XARGS() {
+    echo "test1 test2" | XARGS "echo"
+}
+
+test.restsh.util.COLUMN() {
+    echo -e "v1\tv2\tv3\n" | COLUMN
+}
+
+test.restsh.util.setcurloptions() {
+    # no test suite
+    return 0
+}
+
+test.restsh.util.parseoutput() {
+    restsh.util.parseoutput -f ".test" -r '{"test":"test"}'
+}
+
+test.restsh.util.declare.var() {
+    restsh.util.declare.var "KEY1=wert"
+    [ "$KEY1" = "wert" ]
+}
+
+test.restsh.util.eval_stage_var() {
+    EXAMPLE_DEV="test"
+    restsh.util.eval_stage_var "EXAMPLE" "DEV"
+    [ "$EXAMPLE" = "$EXAMPLE_DEV" ]
+}
+
+test.restsh.util.setvars() {
+    mkdir "$RESTSH_TMP/vars"
+    echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
+    echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
+    restsh.util.setvars "$RESTSH_TMP/vars"
+    rm -r "$RESTSH_TMP/vars"
+    [ -n "$VAR_TEST_STR" ]
+    [ -n "$ARRAY_TEST_ARRAY" ]
+}
+
+test.restsh.util.setvar() {
+    mkdir "$RESTSH_TMP/vars"
+    echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
+    echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
+    restsh.util.setvar "$RESTSH_TMP/vars/TEST_STR.txt"
+    restsh.util.setvar "$RESTSH_TMP/vars/TEST_ARRAY.array"
+    rm -r "$RESTSH_TMP/vars"
+    [ -n "$VAR_TEST_STR" ]
+    [ -n "$ARRAY_TEST_ARRAY" ]
+}
+
+test.restsh.util.urlencode() {
+    local OUTPUT
+    OUTPUT=$(restsh.util.urlencode "test test")
+    [ "$OUTPUT" = "test%20test" ]
+}
+
+test.restsh.util.json_validate() {
+    restsh.util.json_validate <<< '{"test":"test"}'
+    ! restsh.util.json_validate <<< '{"test":"test"invalid}'
+}
+
+test.restsh.util.check.notempty() {
+    restsh.util.check.notempty "test"
+    ! restsh.util.check.notempty " "
+    ! restsh.util.check.notempty "null"
+}
+
+test.restsh.util.check.varnotempty() {
+    VAR1="test"
+    restsh.util.check.varnotempty "VAR1"
+    VAR1=""
+    ! restsh.util.check.varnotempty "VAR1"
+    VAR1=" "
+    ! restsh.util.check.varnotempty "VAR1"
+    VAR1="null"
+    ! restsh.util.check.varnotempty "VAR1"
+    # not defined variable
+    ! restsh.util.check.varnotempty "VAR2"
+}
+
+test.restsh.util.check.isnumber() {
+    restsh.util.check.isnumber "10"
+    ! restsh.util.check.isnumber " 10"
+    ! restsh.util.check.isnumber "test"
+}
+
+test.restsh.util.filesize() {
+    echo "test" > "$RESTSH_TMP/test"
+    local OUTPUT
+    OUTPUT=$(restsh.util.filesize "$RESTSH_TMP/test")
+    rm -f "$RESTSH_TMP/test"
+    [ "$OUTPUT" = "5" ]
+}
+
+test.restsh.util.array.includes() {
+    restsh.util.array.includes "test" "test" "foo" "bar"
+    ! restsh.util.array.includes "test" "test2" "foo" "bar"
+}
+
+test.restsh.util.uc() {
+    local OUTPUT
+    OUTPUT=$(restsh.util.uc "test")
+    [ "$OUTPUT" = "TEST" ]
+}
+
+test.restsh.util.lc() {
+    local OUTPUT
+    OUTPUT=$(restsh.util.lc "TEST")
+    [ "$OUTPUT" = "test" ]
+}
+
+# Asks for a secret string.
+test.restsh.util.askpass() {
+    local OUTPUT
+    OUTPUT=$(restsh.util.askpass "prompt" <<< "test")
+    [ "$OUTPUT" = "test" ]
+}
+
+# Checks for AES256: prefix of provided string.
+test.restsh.util.isencrypted() {
+    restsh.util.isencrypted "AES256:test"
+    ! restsh.util.isencrypted "test"
+}
+
+# Trim leading and trailing whitespaces.
+test.restsh.util.trim() {
+    local OUTPUT
+    OUTPUT=$(restsh.util.trim "  test ")
+    [ "$OUTPUT" = "test" ]
+}
+
+# Encodes string asb Base64URL.
+test.restsh.util.base64url() {
+    local OUTPUT
+    OUTPUT=$(restsh.util.base64url "test")
+    [ "$OUTPUT" = "dGVzdA" ]
+}
+
+# Run all tests
+TESTS_RESTSH_UTIL=(
+    test.restsh.util.echo_ok
+    test.restsh.util.print_json_ok
+    test.restsh.util.print_json_ok_curl
+    test.restsh.util.echo_err
+    test.restsh.util.print_json_err
+    test.restsh.util.print_json_err_curl
+    test.restsh.util.echo_warn
+    test.restsh.util.print_json_warn
+    test.restsh.util.print_json_warn_curl
+    test.restsh.util.COLUMN
+    test.restsh.util.MO
+    test.restsh.util.JQ
+    test.restsh.util.JQE
+    test.restsh.util.XARGS
+    test.restsh.util.setcurloptions
+    test.restsh.util.parseoutput
+    test.restsh.util.setvars
+    test.restsh.util.setvar
+    test.restsh.util.urlencode
+    test.restsh.util.json_validate
+    test.restsh.util.check.notempty
+    test.restsh.util.check.varnotempty
+    test.restsh.util.check.isnumber
+    test.restsh.util.declare.var
+    test.restsh.util.filesize
+    test.restsh.util.array.includes
+    test.restsh.util.uc
+    test.restsh.util.lc
+    test.restsh.util.askpass
+    test.restsh.util.isencrypted
+    test.restsh.util.trim
+    test.restsh.util.base64url
+)

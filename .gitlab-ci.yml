@@ -3,8 +3,9 @@ default:
 
 stages:
   - lint
+  - test_restsh
 
-lint:
+lint_job:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'push'
   tags:
@@ -12,3 +13,12 @@ lint:
   stage: lint
   script:
     - ./lint.sh
+
+test_restsh_job:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'push'
+  tags:
+    - ${F5_ENV}_lint
+  stage: test_restsh
+  script:
+    - ./test/test.sh -g restsh
