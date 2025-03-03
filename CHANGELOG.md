@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: `f5.cluster.config-sync` add force overwrite option
 - Feat: Add `f5.cluster.getstandby` and `f5.cluster.setstandby`
 - Feat: Add initial test suite
 - Feat: Add Mustache functions `MO_BASE64URL`, `MO_INCLUDE_BASE64URL`, `MO_IP_RANGE()`

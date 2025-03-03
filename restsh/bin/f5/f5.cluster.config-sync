@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+FORCE=0
+while getopts ':fh' OPTION
 do
     case "$OPTION" in
+        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,18 +33,27 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <ha group name>"
+    echo "Usage: $(basename "$0") [options...] <ha group name>"
+    echo "Options:"
+    echo "    -f Force overwrite"
     exit 2
 fi
 
 GROUP=$1
+OPTIONS=""
+if [ "$FORCE" -eq 1 ]
+then
+    OPTIONS="force-full-load-push "
+fi
+OPTIONS+="to-group"
 
-$RESTSH_JQ -n --arg group "$GROUP" \
+JQ -n --arg group "$GROUP" \
+    --arg options "$OPTIONS" \
     '{
         command: "run",
         options: [
             { 
-                "to-group": $group
+                $options: $group
             }
         ]
     }' | POST "/mgmt/tm/cm/config-sync"
