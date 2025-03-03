@@ -28,7 +28,7 @@
 - Feat: Add support for OpenAPI-File to `f5.asm.policy.import`
 - Feat: Add support for Declarative Onboarding: `f5.do.declare` and `f5.do.status`
 - Feat: Add option to enforce signatures to `f5.asm.policy.declare` and `f5.asm.policy.import`
-- Feat: Add option to not apply policy to: `f5.asm.policy.declare`, `f5.asm.policy.import`, `f5.asm.signaturestaging.disable`, `f5.asm.signaturestaging.enforce`
+- Feat: Add option to not apply policy to: `f5.asm.policy.declare`, `f5.asm.policy.import`, `f5.asm.signaturestaging.disable`, `f5.asm.signaturestaging.enforce`, `f5.asm.openapi.import`
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 - **Breaking:** `f5.asm.policy.import` overwrites the policy with same name
 

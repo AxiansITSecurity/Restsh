@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+APPLY_POLICY=1
+while getopts ':hn' OPTION
 do
     case "$OPTION" in
+        n) APPLY_POLICY=0 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,7 +33,9 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <filename> <policy name>"
+    echo "Usage: $(basename "$0") [options...] <filename> <policy name>"
+    echo "Options:"
+    echo "    -n  Do not apply policy after import"
     exit 2
 else
     FILENAME=$1
@@ -74,4 +78,7 @@ fi
 f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~${FILENAME}"
 
 # Apply policy
-f5.asm.policy.apply "$POLICY_HASH"
+if [ "$APPLY_POLICY" -eq 1 ]
+then
+    f5.asm.policy.apply "$POLICY_HASH"
+fi
