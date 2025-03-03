@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add initial test suite
 - Feat: Add Mustache functions `MO_BASE64URL`, `MO_INCLUDE_BASE64URL`, `MO_IP_RANGE()`
 - Feat: Add `restsh.util.base64url`
 - Feat: Add `restsh.util.check.varnotempty`
@@ -30,6 +31,11 @@
 - Feat: Add option to not apply policy to: `f5.asm.policy.declare`, `f5.asm.policy.import`, `f5.asm.signaturestaging.disable`, `f5.asm.signaturestaging.enforce`
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 - **Breaking:** `f5.asm.policy.import` overwrites the policy with same name
+
+## v3.0.2 - not yet released
+
+- Fix: `restsh.util.declare.var` use declare
+- Fix: `restsh.util.parseoutput` use argument
 
 ## v3.0.1 - 2025-02-14
 
