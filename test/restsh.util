@@ -59,7 +59,7 @@ test.restsh.util.JQ() {
 
 test.restsh.util.JQE() {
     JQE ".test" <<< '{"test": "test"}'
-    JQE ".test2" <<< '{"test": "test"}' || true
+    if ! JQE ".test2" <<< '{"test": "test"}'; then true; else false; fi
 }
 
 test.restsh.util.XARGS() {
@@ -119,33 +119,33 @@ test.restsh.util.urlencode() {
 
 test.restsh.util.json_validate() {
     restsh.util.json_validate <<< '{"test":"test"}'
-    restsh.util.json_validate <<< '{"test":"test"invalid}' || true
+    if ! restsh.util.json_validate <<< '{"test":"test"invalid}'; then true; else false; fi
 }
 
 test.restsh.util.check.notempty() {
     restsh.util.check.notempty "test"
-    restsh.util.check.notempty " " || true
-    restsh.util.check.notempty "null" || true
+    if ! restsh.util.check.notempty " "; then true; else false; fi
+    if ! restsh.util.check.notempty "null"; then true; else false; fi
 }
 
 test.restsh.util.check.varnotempty() {
     VAR1="test"
     restsh.util.check.varnotempty "VAR1"
     VAR1=""
-    restsh.util.check.varnotempty "VAR1" || true
+    if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
     VAR1=" "
-    restsh.util.check.varnotempty "VAR1" || true
+    if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
     # shellcheck disable=SC2034
     VAR1="null"
-    restsh.util.check.varnotempty "VAR1" || true
+    if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
     # not defined variable
-    restsh.util.check.varnotempty "VAR2" || true
+    if ! restsh.util.check.varnotempty "VAR2"; then true; else false; fi
 }
 
 test.restsh.util.check.isnumber() {
     restsh.util.check.isnumber "10"
-    restsh.util.check.isnumber " 10" || true
-    restsh.util.check.isnumber "test" || true
+    if ! restsh.util.check.isnumber " 10"; then true; else false; fi
+    if ! restsh.util.check.isnumber "test"; then true; else false; fi
 }
 
 test.restsh.util.filesize() {
@@ -158,7 +158,7 @@ test.restsh.util.filesize() {
 
 test.restsh.util.array.includes() {
     restsh.util.array.includes "test" "test" "foo" "bar"
-    restsh.util.array.includes "test" "test2" "foo" "bar" || true
+    if ! restsh.util.array.includes "test" "test2" "foo" "bar"; then true; else false; fi
 }
 
 test.restsh.util.uc() {
@@ -183,7 +183,7 @@ test.restsh.util.askpass() {
 # Checks for AES256: prefix of provided string.
 test.restsh.util.isencrypted() {
     restsh.util.isencrypted "AES256:test"
-    restsh.util.isencrypted "test" || true
+    if ! restsh.util.isencrypted "test"; then true; else false; fi
 }
 
 # Trim leading and trailing whitespaces.
