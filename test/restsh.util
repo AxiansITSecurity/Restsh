@@ -175,27 +175,23 @@ test.restsh.util.lc() {
     [ "$OUTPUT" = "test" ]
 }
 
-# Asks for a secret string.
 test.restsh.util.askpass() {
     local OUTPUT
     OUTPUT=$(restsh.util.askpass "prompt" <<< "test")
     [ "$OUTPUT" = "test" ]
 }
 
-# Checks for AES256: prefix of provided string.
 test.restsh.util.isencrypted() {
     restsh.util.isencrypted "AES256:test"
     if ! restsh.util.isencrypted "test"; then true; else false; fi
 }
 
-# Trim leading and trailing whitespaces.
 test.restsh.util.trim() {
     local OUTPUT
     OUTPUT=$(restsh.util.trim "  test ")
     [ "$OUTPUT" = "test" ]
 }
 
-# Encodes string asb Base64URL.
 test.restsh.util.base64url() {
     local OUTPUT
     OUTPUT=$(restsh.util.base64url "test")
