@@ -350,6 +350,7 @@ restsh.util.parseoutput() {
         } 1>&2
         return 2
     fi
+    local OUTPUT="$1"
     if [ "$RAW" -eq 1 ]
     then
         if [ -z "$FILTER" ]
@@ -383,7 +384,7 @@ restsh.util.declare.var() {
     then
         return 1
     fi
-    export "$KEY"="$VALUE"
+    declare -g "$KEY"="$VALUE"
 }
 
 # Tries to resolve the staging variable.

@@ -2,6 +2,13 @@
 
 ***
 
+## v3.0.2 - not yet released
+
+- Fix: `restsh.util.declare.var` use declare
+- Fix: `restsh.util.parseoutput` use argument
+
+***
+
 ## v3.0.1 - 2025-02-14
 
 - Fix: `f5.ltm.datagroup.internal.delete`
