@@ -50,6 +50,7 @@ else
 fi
 
 # Set defaults if not already set
+[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="anonymous"
 [ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
 [ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
 [ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
