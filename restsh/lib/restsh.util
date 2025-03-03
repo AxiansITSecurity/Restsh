@@ -354,6 +354,7 @@ restsh.util.parseoutput() {
         } 1>&2
         return 2
     fi
+    local OUTPUT="$1"
     if [ "$RAW" -eq 1 ]
     then
         if [ -z "$FILTER" ]
@@ -387,7 +388,7 @@ restsh.util.declare.var() {
     then
         return 1
     fi
-    export "$KEY"="$VALUE"
+    declare -g "$KEY"="$VALUE"
 }
 
 # Tries to resolve the staging variable.
@@ -554,7 +555,7 @@ restsh.util.check.varnotempty() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
         echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null" 1>&2
-        echo "Usage: restsh.util.check.notempty <variable>" 1>&2
+        echo "Usage: restsh.util.check.varnotempty <variable>" 1>&2
         return 2
     fi
     set +u # Do not fail if not defined
@@ -711,11 +712,11 @@ restsh.util.trim() {
     printf '%s' "$STR"
 }
 
-# Encodes string asb Base64URL.
+# Encodes string as Base64URL.
 restsh.util.base64url() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Encodes string asb Base64URL." 1>&2
+        echo "Encodes string as Base64URL." 1>&2
         echo "Usage: restsh.util.base64url <string>" 1>&2
         return 2
     fi
