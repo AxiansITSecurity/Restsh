@@ -7,13 +7,18 @@
 # Desc:
 # Test suite for restsh.
 
+# shellcheck disable=SC2034
+
 SCRIPTPATH=$(dirname "$0")
 
-export RESTSH_PATH="$(realpath restsh)"
+RESTSH_PATH="$(realpath restsh)"
+export RESTSH_PATH
+export RESTSH_HOST="localhost"
 . "$RESTSH_PATH/restsh.init"
 
 # Set a random secret for tests
-export RESTSH_SECRET=$(restsh.pwgen)
+RESTSH_SECRET=$(restsh.pwgen)
+export RESTSH_SECRET
 
 # Groups of tests
 declare -A ALL_GROUPS
@@ -80,7 +85,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options ...]"
     echo "Options"
-    echo "    -g <group>  Group of tests: ${!ALL_GROUPS[@]}"
+    echo "    -g <group>  Group of tests: ${!ALL_GROUPS[*]}"
     echo "    -t <test>   Test, the scriptname"
     exit 2
 fi

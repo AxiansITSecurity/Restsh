@@ -23,7 +23,8 @@ fi
 run_test() {
     local ENCRYPTED
     local DECRYPTED
-    local STR=$(restsh.pwgen)
+    local STR
+    STR=$(restsh.pwgen)
     ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
     restsh.util.isencrypted "$ENCRYPTED"
     DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")

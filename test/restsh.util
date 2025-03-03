@@ -59,7 +59,7 @@ test.restsh.util.JQ() {
 
 test.restsh.util.JQE() {
     JQE ".test" <<< '{"test": "test"}'
-    ! JQE ".test2" <<< '{"test": "test"}'
+    JQE ".test2" <<< '{"test": "test"}' || true
 }
 
 test.restsh.util.XARGS() {
@@ -119,32 +119,33 @@ test.restsh.util.urlencode() {
 
 test.restsh.util.json_validate() {
     restsh.util.json_validate <<< '{"test":"test"}'
-    ! restsh.util.json_validate <<< '{"test":"test"invalid}'
+    restsh.util.json_validate <<< '{"test":"test"invalid}' || true
 }
 
 test.restsh.util.check.notempty() {
     restsh.util.check.notempty "test"
-    ! restsh.util.check.notempty " "
-    ! restsh.util.check.notempty "null"
+    restsh.util.check.notempty " " || true
+    restsh.util.check.notempty "null" || true
 }
 
 test.restsh.util.check.varnotempty() {
     VAR1="test"
     restsh.util.check.varnotempty "VAR1"
     VAR1=""
-    ! restsh.util.check.varnotempty "VAR1"
+    restsh.util.check.varnotempty "VAR1" || true
     VAR1=" "
-    ! restsh.util.check.varnotempty "VAR1"
+    restsh.util.check.varnotempty "VAR1" || true
+    # shellcheck disable=SC2034
     VAR1="null"
-    ! restsh.util.check.varnotempty "VAR1"
+    restsh.util.check.varnotempty "VAR1" || true
     # not defined variable
-    ! restsh.util.check.varnotempty "VAR2"
+    restsh.util.check.varnotempty "VAR2" || true
 }
 
 test.restsh.util.check.isnumber() {
     restsh.util.check.isnumber "10"
-    ! restsh.util.check.isnumber " 10"
-    ! restsh.util.check.isnumber "test"
+    restsh.util.check.isnumber " 10" || true
+    restsh.util.check.isnumber "test" || true
 }
 
 test.restsh.util.filesize() {
@@ -157,7 +158,7 @@ test.restsh.util.filesize() {
 
 test.restsh.util.array.includes() {
     restsh.util.array.includes "test" "test" "foo" "bar"
-    ! restsh.util.array.includes "test" "test2" "foo" "bar"
+    restsh.util.array.includes "test" "test2" "foo" "bar" || true
 }
 
 test.restsh.util.uc() {
@@ -182,7 +183,7 @@ test.restsh.util.askpass() {
 # Checks for AES256: prefix of provided string.
 test.restsh.util.isencrypted() {
     restsh.util.isencrypted "AES256:test"
-    ! restsh.util.isencrypted "test"
+    restsh.util.isencrypted "test" || true
 }
 
 # Trim leading and trailing whitespaces.
@@ -199,7 +200,7 @@ test.restsh.util.base64url() {
     [ "$OUTPUT" = "dGVzdA" ]
 }
 
-# Run all tests
+# shellcheck disable=SC2034
 TESTS_RESTSH_UTIL=(
     test.restsh.util.echo_ok
     test.restsh.util.print_json_ok

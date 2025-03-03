@@ -18,6 +18,11 @@ do
     shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
 done
 
+for FILE in test/*
+do
+    shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
+done
+
 while read -r FILE
 do
     shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
