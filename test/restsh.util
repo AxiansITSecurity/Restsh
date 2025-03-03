@@ -158,6 +158,8 @@ test.restsh.util.filesize() {
 
 test.restsh.util.array.includes() {
     restsh.util.array.includes "test" "test" "foo" "bar"
+    restsh.util.array.includes "test" "foo" "test" "bar"
+    restsh.util.array.includes "test" "foo" "bar" "test"
     if ! restsh.util.array.includes "test" "test2" "foo" "bar"; then true; else false; fi
 }
 
