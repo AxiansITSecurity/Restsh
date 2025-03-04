@@ -4,6 +4,7 @@
 
 ## v3.0.2 - not yet released
 
+- Fix: max_json_policy_size is in KB
 - Fix: `restsh.util.declare.var` use declare
 - Fix: `restsh.util.parseoutput` use argument
 
