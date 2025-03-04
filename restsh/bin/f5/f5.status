@@ -23,6 +23,9 @@ fi
 mapfile -d $'\t' -t DEVICE_INFO < <(GET "/mgmt/tm/cm/device?\$select=selfDevice,failoverState,version" \
     | JQ -r '.items[] | select(.selfDevice=="true") | [.failoverState, .version] | @tsv' | tr -d '\n')
 
-echo "F5 Version:     ${DEVICE_INFO[1]}"
-echo "Failover State: ${DEVICE_INFO[0]}"
-echo "Sync Status:    $(f5.cluster.sync-status)"
+if restsh.util.check.varnotempty DEVICE_INFO
+then
+    echo "F5 Version:     ${DEVICE_INFO[1]}"
+    echo "Failover State: ${DEVICE_INFO[0]}"
+    echo "Sync Status:    $(f5.cluster.sync-status)"
+fi
