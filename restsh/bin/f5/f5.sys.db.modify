@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+RAW=0
+while getopts ':hr' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -37,7 +39,15 @@ fi
 NAME=$1
 VALUE=$2
 
-$RESTSH_JQ -n --arg value "$VALUE" \
+# Main
+RESULT=$(JQ -n --arg value "$VALUE" \
     '{
         value: $value
-    }' | PATCH "/mgmt/tm/sys/db/$NAME"
+    }' | PATCH "/mgmt/tm/sys/db/$NAME")
+
+if [ "$RAW" -eq 1 ]
+then
+    JQ "." <<< "$RESULT"
+else
+    JQE -r '[.name, .value] | @tsv' <<< "$RESULT" | KV
+fi

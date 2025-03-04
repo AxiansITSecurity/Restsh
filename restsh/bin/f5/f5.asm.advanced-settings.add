@@ -42,7 +42,6 @@ NAME=$1
 VALUE=$2
 
 # Main
-
 RESULT=$(JQ -n --arg name "$NAME" --arg value "$VALUE" \
     '{
         name: $name,
@@ -53,5 +52,5 @@ if [ "$RAW" -eq 1 ]
 then
     JQ "." <<< "$RESULT"
 else
-    JQE '[.name, .value] | @tsv' <<< "$RESULT"
+    JQE -r '[.name, .value] | @tsv' <<< "$RESULT" | KV
 fi
