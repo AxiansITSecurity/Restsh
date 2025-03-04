@@ -13,7 +13,7 @@
 - Feat: Add `aafw.pipeline.start.task.backup`, `aafw.pipeline.start.task.pkg`, `aafw.pipeline.start.task.signaturestaging`
 - Feat: Add `RESTSH_INIT_CMD` and defaults for F5, Next, GitLab and SCM
 - Feat: Add `f5.version`, `f5.status`, `gitlab.version`
-- Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.merge`
+- Feat: Add `gitlab.mr.close`, `gitlab.mr.create`, `gitlab.mr.list`, `gitlab.mr.automerge`, `gitlab.mr.merge`
 - Feat: Add `restsh.check.http-header`
 - Feat: Add `gitlab.branch.new`, `gitlab.branch.list`
 - Feat: Add branch protection options to `aafw.project.new`

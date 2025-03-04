@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-02-19
+# Date: 2025-03-04
 
-# Shortdesc: Merges a merge request.
+# Shortdesc: Merges a merge request when the pipeline succeeds.
 # Desc:
-# Merges a merge request.
+# Merges a merge request when the pipeline succeeds.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -48,7 +48,8 @@ restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJE
 RESULT=$(JQ -n \
     --arg msg "$MSG" \
     '{
-        merge_commit_message: $msg
+        merge_commit_message: $msg,
+        merge_when_pipeline_succeeds: true
     }' | PUT "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests/$IID/merge")
 
 if [ "$RAW" -eq 1 ]
