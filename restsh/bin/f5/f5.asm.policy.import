@@ -22,10 +22,12 @@ fi
 OPENAPI_FILE=""
 ENFORCE_SIGNATURES=0
 APPLY_POLICY=1
-while getopts ':ehno:' OPTION
+IMPORT=0
+while getopts ':ehino:' OPTION
 do
     case "$OPTION" in
         e) ENFORCE_SIGNATURES=1 ;;
+        i) IMPORT=1 ;;
         n) APPLY_POLICY=0 ;;
         o) OPENAPI_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
@@ -39,6 +41,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <filename> <policy full path>"
     echo "    -e                 Enforce all signatures"
+    echo "    -i                 Use import json payload"
     echo "    -n                 Do not apply policy after import"
     echo "    -o <openapi file>  Specify OpenApi File"
     exit 2
@@ -70,15 +73,27 @@ then
     fi
 fi
 
+if [ "$IMPORT" -eq 0 ]
+then
+    PAYLOAD=$($RESTSH_JQ -n --arg name "$NAME" \
+        --arg filename "$FILENAME" \
+        '{
+            "filename": $filename,
+            "policy":{
+                "fullPath": $name
+            }
+        }')
+else
+    PAYLOAD=$($RESTSH_JQ -n --arg name "$NAME" \
+        --arg filename "$FILENAME" \
+        '{
+            "name": $name,
+            "filename": $filename
+        }')
+fi
+
 # Start import task
-TASK_ID=$($RESTSH_JQ -n --arg name "$NAME" \
-    --arg filename "$FILENAME" \
-    '{
-        "filename": $filename,
-        "policy":{
-            "fullPath": $name
-        }
-    }' | POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" \
+TASK_ID=$(POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" <<< "$PAYLOAD" \
        | JQE -r ".id")
 
 if ! restsh.util.check.notempty "${TASK_ID}"
