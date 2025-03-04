@@ -21,10 +21,12 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+USER_DEFINED=0
+while getopts ':ru' OPTION
 do
     case "$OPTION" in
         r) RAW=1 ;;
+        u) USER_DEFINED=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -34,13 +36,18 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [-r] [-u]"
+    echo "Options:"
+    echo "    -r  Raw output."
+    echo "    -u  Show user defined templates only."
     exit 2
 fi
 
+FILTER=""
+[ "$USER_DEFINED" -eq 1 ] && FILTER="&\$filter=templateType%20eq%20user-defined"
+
 # Main
-if RESULT=$(GET "/mgmt/tm/asm/policy-templates?\$select=title,name,id,description")
+if RESULT=$(GET "/mgmt/tm/asm/policy-templates?\$select=title,name,id,description,user-defined${FILTER}")
 then
     if [ "$RAW" -eq 1 ]
     then
