@@ -70,6 +70,10 @@ test.restsh.util.COLUMN() {
     echo -e "v1\tv2\tv3\n" | COLUMN
 }
 
+test.restsh.util.KV() {
+    echo -e "k1\tv2\nk2\tv2" | KV
+}
+
 test.restsh.util.setcurloptions() {
     # no test suite
     return 0
@@ -210,6 +214,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.print_json_warn
     test.restsh.util.print_json_warn_curl
     test.restsh.util.COLUMN
+    test.restsh.util.KV
     test.restsh.util.MO
     test.restsh.util.JQ
     test.restsh.util.JQE

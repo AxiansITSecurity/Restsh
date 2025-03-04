@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add KV utility to display key/value pairs
 - Feat: Add `f5.asm.policy.new` to create a new policy from a template
 - Feat: `f5.cluster.config-sync` add force overwrite option
 - Feat: Add `f5.cluster.getstandby` and `f5.cluster.setstandby`

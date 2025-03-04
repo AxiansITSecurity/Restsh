@@ -235,6 +235,22 @@ XARGS() {
     xargs -n1 -P1 "$@"
 }
 
+#Print Key/Value pairs
+KV() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Print Key/Value pairs from STDIN separated by tab and newline" 1>&2
+        echo "" 1>&2
+        echo "Usage: KV" 1>&2
+        return 2
+    fi
+    while read -r KEY VALUE
+    do
+        [ -z "$KEY" ] && continue
+        echo "$KEY: $VALUE"
+    done
+}
+
 # Replacement for the column command, separator is tab.
 COLUMN() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
@@ -734,6 +750,7 @@ export -f echo_warn
 export -f print_json_warn
 export -f print_json_warn_curl
 export -f COLUMN
+export -f KV
 export -f MO
 export -f JQ
 export -f JQE
