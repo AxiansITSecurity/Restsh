@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-04
+
+# Shortdesc: Starts the ASM settings task.
+# Desc:
+# Starts the ASM settings task.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+TASK_HOST=""
+RESTART_ASM=1
+SYNC=1
+while getopts ':nst:' OPTION
+do
+    case "$OPTION" in
+        n) RESTART_ASM=0 ;;
+        s) SYNC=1 ;;
+        t) TASK_HOST=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 2 ] || [ "$OPTION" = "invalid " ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <project path> <stage>"
+    echo "Options:"
+    echo "    -n Do not restart ASM service"
+    echo "    -s Sync Cluster"
+    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
+    exit 2
+fi
+
+PROJECT=$1
+BRANCH=$(restsh.util.lc "$2")
+
+gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
+    -s "TASK_STAGE=$BRANCH" -s "TASK=asm_settings" -s "TASK_HOST=$TASK_HOST" \
+    -s "RESTART_ASM=$RESTART_ASM" -s "SYNC=$SYNC" "$PROJECT" "master"
