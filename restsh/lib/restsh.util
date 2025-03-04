@@ -215,7 +215,7 @@ JQ() {
 JQE() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Shortcut to call jq." 1>&2
+        echo "Shortcut to call jq, exits with 1 on null or false." 1>&2
         echo "" 1>&2
         jq -h 1>&2
         return 2
