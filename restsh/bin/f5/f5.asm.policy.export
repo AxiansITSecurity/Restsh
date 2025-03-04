@@ -44,7 +44,7 @@ if [ -n "${2+x}" ]
 then
     FILENAME=$2
 else
-    FILENAME="${POLICY//\//\~}"
+    FILENAME="${POLICY//\//_}"
 fi
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
