@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add `f5.asm.policy.signatureset.attach`, `f5.asm.policy.signatureset.list`
 - Feat: Add KV utility to display key/value pairs
 - Feat: Add `f5.asm.policy.new` to create a new policy from a template
 - Feat: `f5.cluster.config-sync` add force overwrite option
