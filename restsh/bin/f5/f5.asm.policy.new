@@ -19,12 +19,10 @@ then
     exit 1
 fi
 
-ENFORCE_SIGNATURES=0
 APPLY_POLICY=1
-while getopts ':ehno:' OPTION
+while getopts ':hn' OPTION
 do
     case "$OPTION" in
-        e) ENFORCE_SIGNATURES=1 ;;
         n) APPLY_POLICY=0 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -36,8 +34,8 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <waf template> <policy full path>"
-    echo "    -e                 Enforce all signatures"
-    echo "    -n                 Do not apply policy after creation"
+    echo "Options:"
+    echo "    -n  Do not apply policy after creation"
     exit 2
 fi
 
@@ -58,7 +56,6 @@ JQ -n --arg name "$NAME" \
     }' > "$FILENAME"
 
 OPTIONS=()
-[ "$ENFORCE_SIGNATURES" -eq 1 ] && OPTIONS+=("-e")
 [ "$APPLY_POLICY" -eq 0 ] && OPTIONS+=("-n")
 
 if f5.asm.policy.import "${OPTIONS[@]}" "$FILENAME" "$NAME"
