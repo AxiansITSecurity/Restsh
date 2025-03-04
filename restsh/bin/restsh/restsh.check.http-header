@@ -47,7 +47,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <uri>"
     echo "Options":
-    echo "    -p Policy folder, default: $POLICY_DIR"
+    echo "    -p Header Policy folder, default: $POLICY_DIR"
     exit 2
 fi
 
