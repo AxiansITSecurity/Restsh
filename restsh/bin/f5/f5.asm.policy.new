@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-04
+
+# Shortdesc: Creates a new F5 ASM Policy.
+# Desc:
+# Creates a new F5 ASM Policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+ENFORCE_SIGNATURES=0
+APPLY_POLICY=1
+while getopts ':ehno:' OPTION
+do
+    case "$OPTION" in
+        e) ENFORCE_SIGNATURES=1 ;;
+        n) APPLY_POLICY=0 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <waf template> <policy full path>"
+    echo "    -e                 Enforce all signatures"
+    echo "    -n                 Do not apply policy after creation"
+    exit 2
+fi
+
+TEMPLATE=$1
+NAME=$2
+FILENAME="$RESTSH_TMP/waf-policy-${NAME//\//}.json"
+
+JQ -n --arg name "$NAME" \
+    --arg template "$TEMPLATE" \
+    '{
+        "policy" : {
+            "type" : "security",
+            "name" : $name,
+            "template" : {
+                "name" : $template
+            }
+        }
+    }' > "$FILENAME"
+
+OPTIONS=()
+[ "$ENFORCE_SIGNATURES" -eq 1 ] && OPTIONS+=("-e")
+[ "$APPLY_POLICY" -eq 0 ] && OPTIONS+=("-n")
+
+if f5.asm.policy.import "${OPTIONS[@]}" "$FILENAME" "$NAME"
+then
+    rm -f "$FILENAME"
+else
+    rm -f "$FILENAME"
+    exit 1
+fi
