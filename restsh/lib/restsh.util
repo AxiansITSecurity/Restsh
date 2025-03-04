@@ -244,7 +244,7 @@ KV() {
         echo "Usage: KV" 1>&2
         return 2
     fi
-    while read -r KEY VALUE
+    while IFS=$'\t' read -r KEY VALUE
     do
         [ -z "$KEY" ] && continue
         echo "$KEY: \"$VALUE\""
