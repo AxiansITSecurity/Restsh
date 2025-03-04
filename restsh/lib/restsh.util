@@ -247,7 +247,7 @@ KV() {
     while read -r KEY VALUE
     do
         [ -z "$KEY" ] && continue
-        echo "$KEY: $VALUE"
+        echo "$KEY: \"$VALUE\""
     done
 }
 
