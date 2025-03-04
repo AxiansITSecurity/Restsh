@@ -35,10 +35,15 @@
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 - **Breaking:** `f5.asm.policy.import` overwrites the policy with same name
 
+***
+
 ## v3.0.2 - not yet released
 
+- Fix: max_json_policy_size is in KB
 - Fix: `restsh.util.declare.var` use declare
 - Fix: `restsh.util.parseoutput` use argument
+
+***
 
 ## v3.0.1 - 2025-02-14
 
