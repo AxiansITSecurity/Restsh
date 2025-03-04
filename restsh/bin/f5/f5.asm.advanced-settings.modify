@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+RAW=0
+while getopts ':hr' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,7 +33,9 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") -- <id> <value>"
+    echo "Usage: $(basename "$0") [options...] <name> <value>"
+    echo "Options:"
+    echo "-r  Raw output"
     exit 2
 fi
 ID=$1
@@ -39,7 +43,14 @@ VALUE=$2
 
 # Main
 
-$RESTSH_JQ -n --arg value "$VALUE" \
+RESULT=$(JQ -n --arg value "$VALUE" \
     '{
         value: $value
-    }' | PATCH "/mgmt/tm/asm/advanced-settings/$ID"
+    }' | PATCH "/mgmt/tm/asm/advanced-settings/$ID")
+
+if [ "$RAW" -eq 1 ]
+then
+    JQ "." <<< "$RESULT"
+else
+    JQE '[.name, .value] | @tsv' <<< "$RESULT"
+fi
