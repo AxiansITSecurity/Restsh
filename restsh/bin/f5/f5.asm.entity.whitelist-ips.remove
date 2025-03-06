@@ -37,6 +37,6 @@ then
 fi
 
 POLICY=$1
-WHITELIST_IP=$3
+WHITELIST_IP=$2
 
 f5.asm.entity.remove "$POLICY" "whitelist-ips" ".items[] | select(.ipAddress==\"$WHITELIST_IP\") | .id"
