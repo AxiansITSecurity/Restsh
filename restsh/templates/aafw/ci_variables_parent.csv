@@ -26,3 +26,7 @@ F5_PASS_PROD,password,true,true,Password for the Prod-F5.
 
 # Instance IP for deployment (F5 Next only)
 NEXT_INSTANCE_IP,,false,true,Instance IP for deployment (F5 Next only).
+
+# Default config directory for Declarative Onboarding
+DO_DEFAULT_DIR,default-v17,false,true,Default configuration directory.
+DO_LINT_SCRIPT,lint.sh,false,true,Lint script name in the docustom repo.

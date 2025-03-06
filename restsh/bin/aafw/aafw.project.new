@@ -54,7 +54,7 @@ then
     echo "Usage: $(basename "$0") [options...] <project path>"
     echo "Options:"
     echo "    -d <folder>         Parent folder for cloned repository."
-    echo "    -i <type>           Initialize repository for as3, cert, tasks or waf."
+    echo "    -i <type>           Initialize repository for as3, cert, do, tasks or waf."
     echo "    -l <push,merge>     Access level for protected branches, default: Maintainer access for merge only."
     echo "    -s <skeleton path>  Skeleton path for initialization."
     echo "    -p <branches>       Branch names to protect."
@@ -112,6 +112,18 @@ then
             ;;
         cert)
             aafw.project.init.cert "${INIT_OPTS[@]}" "$CLONE_URI"
+            ;;
+        do)
+            if [ -z "$SKELETON_PATH" ]
+            then
+                if [ -n "${RESTSH_AAFW_DOSKELETON+x}" ]
+                then
+                    SKELETON_PATH="$RESTSH_AAFW_DOSKELETON"
+                else
+                    SKELETON_PATH="${RESTSH_AAFW_GROUP}/doskeleton"
+                fi
+            fi
+            aafw.project.init.do "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${SKELETON_PATH}" "$CLONE_URI"
             ;;
         tasks)
             aafw.project.init.tasks "${INIT_OPTS[@]}" "$CLONE_URI"
