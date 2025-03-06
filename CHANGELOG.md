@@ -7,6 +7,8 @@
 - Fix: max_json_policy_size is in KB
 - Fix: `restsh.util.declare.var` use declare
 - Fix: `restsh.util.parseoutput` use argument
+- Fix: `f5.asm.entity.whitelist-ips.remove` use correct argument
+- Fix: `f5.ltm.datagroup.internal.delete` assign FULLPATH
 
 ***
 
