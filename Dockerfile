@@ -15,7 +15,9 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         pandoc \
         python3 \
         python3-venv \
+        rpm \
         rsync \
+        shellcheck \
         tcl \
         yq \
     && rm -rf /var/lib/apt/lists/*
