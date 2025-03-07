@@ -4,6 +4,7 @@
 
 ## v4.0.0 - not yet released
 
+- Feat: Add `f5.as3.info`, `f5.do.info`, `f5.ts.info`
 - Feat: Add support for Declarative Onboarding pipeline
 - Feat: Add `f5.asm.policy.signatureset.attach`, `f5.asm.policy.signatureset.list`
 - Feat: Add KV utility to display key/value pairs

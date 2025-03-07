@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-01-17
+
+# Shortdesc: Returns the installed TS version
+# Desc:
+# Returns the installed TS version
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0")"
+    exit 2
+fi
+
+GET "/mgmt/shared/telemetry/info"
