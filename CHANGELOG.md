@@ -2,7 +2,7 @@
 
 ***
 
-## v4.0.0 - not yet released
+## v4.0.0 - 2025-03-10
 
 - Feat: Add `f5.as3.info`, `f5.do.info`, `f5.ts.info`
 - Feat: Add support for Declarative Onboarding pipeline
