@@ -2,7 +2,7 @@
 
 ***
 
-## v3.0.2 - not yet released
+## v3.0.2 - 2025-03-10
 
 - Fix: max_json_policy_size is in KB
 - Fix: `restsh.util.declare.var` use declare
