@@ -56,7 +56,6 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 [ -n "${RESTSH_AAFW_GROUP+x}" ] || export RESTSH_AAFW_GROUP="aafw"
 # Axians Automation Framework Skeleton Projects
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || export RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
-[ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || export RESTSH_AAFW_DOSKELETON="${RESTSH_AAFW_GROUP}/doskeleton"
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
 
 # Command that is executed after initialization in interactive mode
