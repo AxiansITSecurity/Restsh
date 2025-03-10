@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-06
+
+# Shortdesc: Clones an empty repository and initializes it for DO.
+# Desc:
+# Clones an empty repository and initializes it for DO.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+DST=""
+while getopts ':d:h' OPTION
+do
+    case "$OPTION" in
+        d) DST=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    exec 1>&2
+    echo "Usage: $(basename "$0") [-d <folder>] <doskeleton uri> <clone uri>"
+    echo -e "\t-d <folder>  Parent folder for cloned repository."
+    exit 2
+fi
+
+SKELETON_URI="$1"
+CLONE_URI="$2"
+DIR=$(basename "$CLONE_URI" .git)
+[ -n "$DST" ] || DST="$RESTSH_TMP"
+
+cd "$DST" || exit 1
+if [ "$DST" = "$RESTSH_TMP" ]
+then
+    rm -rf "$DIR"
+fi
+git clone "$CLONE_URI"
+cd "$DIR" || exit 1
+git switch -c draft
+git remote add doskeleton "$SKELETON_URI"
+git fetch doskeleton
+git merge doskeleton/draft
+git push -u origin draft
+if [ "$DST" = "$RESTSH_TMP" ]
+then
+    cd "$RESTSH_TMP" || exit 1
+    rm -rf "$DIR"
+fi
