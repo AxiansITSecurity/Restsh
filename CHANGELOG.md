@@ -10,8 +10,6 @@
 
 ## v4.0.1 - not yet released
 
-- Fix: Option parsing in `gitlab.group.variable.update` and `gitlab.project.variable.update`
-
 ***
 
 ## v4.0.0 - 2025-03-10
@@ -50,6 +48,12 @@
 - Feat: Add option to not apply policy to: `f5.asm.policy.declare`, `f5.asm.policy.import`, `f5.asm.signaturestaging.disable`, `f5.asm.signaturestaging.enforce`, `f5.asm.openapi.import`
 - **Breaking:** Rename `f5.as3.install` to `f5.pkg.install` and add support for DO and TS
 - **Breaking:** `f5.asm.policy.import` overwrites the policy with same name
+
+***
+
+## v3.0.3 - not yet released
+
+- Fix: Option parsing in `gitlab.group.variable.update` and `gitlab.project.variable.update`
 
 ***
 
