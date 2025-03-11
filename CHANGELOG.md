@@ -2,6 +2,10 @@
 
 ***
 
+## v3.0.3 - not yet released
+
+- Fix: Option parsing in `gitlab.group.variable.update` and `gitlab.project.variable.update`
+
 ## v3.0.2 - 2025-03-10
 
 - Fix: max_json_policy_size is in KB
