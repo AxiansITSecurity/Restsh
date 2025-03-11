@@ -4,6 +4,8 @@
 
 ## v5.0.0 - not yet released
 
+- Upd: Add `Accept` Header to HTTP-Requests.
+
 ***
 
 ## v4.0.1 - not yet released

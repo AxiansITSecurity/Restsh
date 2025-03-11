@@ -58,6 +58,8 @@ restsh.http() {
         RESTSH_CURL_OPTS+=("-H" "Content-Type: $RESTSH_CONTENT")
     fi
 
+    RESTSH_CURL_OPTS+=("-H" "Accept: $RESTSH_CONTENT, */*")
+
     if [ "$RETRIES" -gt 0 ]
     then
         RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "$RESTSH_CURL_OPT_RETRY_ALL" "--retry-delay" "10")
