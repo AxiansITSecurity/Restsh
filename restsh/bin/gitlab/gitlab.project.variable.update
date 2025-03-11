@@ -22,7 +22,7 @@ fi
 # Get options
 MASK=0
 EXPAND=0
-while getopts ':r' OPTION
+while getopts ':me' OPTION
 do
     case "$OPTION" in
         m) MASK=1 ;;
