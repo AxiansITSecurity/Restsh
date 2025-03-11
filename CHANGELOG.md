@@ -6,6 +6,12 @@
 
 ***
 
+## v4.0.1 - not yet released
+
+- Fix: Option parsing in `gitlab.group.variable.update` and `gitlab.project.variable.update`
+
+***
+
 ## v4.0.0 - 2025-03-10
 
 - Feat: Add `f5.as3.info`, `f5.do.info`, `f5.ts.info`
