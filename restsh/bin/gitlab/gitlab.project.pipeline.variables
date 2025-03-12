@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-12
+
+# Shortdesc: Lists all variables for a project pipeline.
+# Desc:
+# Lists all variables for a project pipeline.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [-r] <project> <pipeline id>"
+    echo -e "\tUse -r for raw output."
+    exit 2
+fi
+
+PROJECT=$1
+PIPELINE=$2
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$PIPELINE/variables")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        JQ "." <<< "$RESULT"
+    else
+        JQ -r '.[] | select(.variable_type == "env_var") | [.key, .value] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "key,value"
+    fi
+    exit 0
+fi
+
+exit 1
