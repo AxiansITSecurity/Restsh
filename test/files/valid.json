@@ -1,0 +1,48 @@
+{
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-appsvcs-extension/main/schema/latest/as3-schema.json",
+    "class": "AS3",
+    "declaration": {
+        "class": "ADC",
+        "schemaVersion": "3.51.0",
+        "tenant": {
+            "class": "Tenant",
+            "application": {
+                "class": "Application",
+                "template": "generic",
+                "cert": {
+                    "class": "Certificate",
+                    "privateKey": {
+                        "bigip": "{{ARG_PRIVATE_KEY}}"
+                    },
+                    "certificate": {
+                        "bigip": "{{ARG_CERTIFICATE}}"
+                    },
+                    "chainCA": {
+                        "bigip": "{{ARG_CHAIN}}"
+                    }
+                },
+                "clientssl": {
+                    "class": "TLS_Server",
+                    "certificates": [
+                        {
+                            "certificate": "cert-{{ARG_NAME}}"
+                        }
+                    ],
+                    "cipherGroup": {
+                        "use": "{{ARG_CIPHER_GROUP}}"
+                    },
+                    "singleUseDhEnabled": true,
+                    "sslEnabled": false,
+                    "tls1_3Enabled": true,
+                    "tls1_0Enabled": false,
+                    "tls1_1Enabled": false,
+                    "dtlsEnabled": false,
+                    "dtls1_2Enabled": false,
+                    "renegotiationEnabled": false,
+                    "insertEmptyFragmentsEnabled": false,
+                    "sslSignHash": "sha384"
+                }
+            }
+        }
+    }
+}
