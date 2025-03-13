@@ -4,6 +4,8 @@
 
 ## v4.0.1 - not yet released
 
+- Fix: restsh.util.json_validate mark correct line
+
 ***
 
 ## v4.0.0 - 2025-03-10
