@@ -4,6 +4,7 @@
 
 ## v5.0.0 - not yet released
 
+- Feat: Add `gitlab.project.clone`
 - Feat: Add `gitlab.project.pipeline.variables`
 - Upd: Add `Accept` Header to HTTP-Requests.
 
