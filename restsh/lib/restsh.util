@@ -534,11 +534,12 @@ restsh.util.json_validate() {
         I=0
         while IFS= read -r LINE
         do
-            [ "$I" -eq 4 ] && echo -ne "${COLOR_RED}"
+            [ "$I" -eq 5 ] && echo -ne "${COLOR_RED}"
             echo "$LINE"
-            if [ "$I" -eq 4 ]
+            if [ "$I" -eq 5 ]
             then
-                for ((J=0; J<COL; J++)); do
+                for ((J=0; J<COL; J++))
+                do
                     printf "-"
                 done
                 # Mark the column

@@ -122,8 +122,8 @@ test.restsh.util.urlencode() {
 }
 
 test.restsh.util.json_validate() {
-    restsh.util.json_validate <<< '{"test":"test"}'
-    if ! restsh.util.json_validate <<< '{"test":"test"invalid}'; then true; else false; fi
+    restsh.util.json_validate < test/files/valid.json
+    if ! restsh.util.json_validate < test/files/invalid.json; then true; else false; fi
 }
 
 test.restsh.util.check.notempty() {
