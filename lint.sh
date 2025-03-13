@@ -20,7 +20,10 @@ done
 
 for FILE in test/*
 do
-    shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
+    if [ -f "$FILE" ]
+    then
+        shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
+    fi
 done
 
 while read -r FILE
