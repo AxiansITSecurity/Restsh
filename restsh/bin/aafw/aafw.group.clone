@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-16
+# Date: 2025-03-13
 
-# Shortdesc: Clones a GitLab group recursively.
+# Shortdesc: Clones or pulls a GitLab group recursively.
 # Desc:
-# Clones a GitLab group recursively.
+# Clones or pulls a GitLab group recursively.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -46,7 +46,17 @@ clone_group() {
     local PROJECT
     while read -r PROJECT
     do
-        git clone "${RESTSH_AAFW_URI}/${PROJECT}.git" "${PROJECT}"
+        if [ -d "${PROJECT}" ]
+        then
+            echo "Updating $PROJECT"
+            local BASE_PATH
+            BASE_PATH="$(pwd)"
+            cd "${PROJECT}" || exit 1
+            git pull
+            cd "$BASE_PATH" || exit 1
+        else
+            git clone "${RESTSH_AAFW_URI}/${PROJECT}.git" "${PROJECT}"
+        fi
     done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/projects" | JQ -r '.[].path_with_namespace')
     local GROUP
     while read -r GROUP

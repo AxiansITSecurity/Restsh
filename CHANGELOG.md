@@ -7,6 +7,7 @@
 - Feat: Add `gitlab.project.clone`
 - Feat: Add `gitlab.project.pipeline.variables`
 - Upd: Add `Accept` Header to HTTP-Requests.
+- Upd: `aafw.group.clone` supports pull for existing repositories
 
 ***
 
