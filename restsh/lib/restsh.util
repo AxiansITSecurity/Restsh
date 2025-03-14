@@ -534,18 +534,7 @@ restsh.util.json_validate() {
         I=0
         while IFS= read -r LINE
         do
-            [ "$I" -eq 5 ] && echo -ne "${COLOR_RED}"
-            echo "$LINE"
-            if [ "$I" -eq 5 ]
-            then
-                for ((J=0; J<COL; J++))
-                do
-                    printf "-"
-                done
-                # Mark the column
-                echo "^"
-                echo -ne "${COLOR_RESET}"
-            fi
+            echo "$I: $LINE"
             I=$((I+1))
         done < <(head "-$LINE" <<< "$JSON" | tail -10)
         echo "--"
