@@ -1,7 +1,7 @@
-icrd.timeout 480
-restjavad.timeout 480
-restnoded.timeout 480
-iapplxrpm.timeout 480
+icrd.timeout 600
+restjavad.timeout 600
+restnoded.timeout 600
+iapplxrpm.timeout 600
 provision.tomcat.extramb 256
 provision.restjavad.extramb 784
-provision.extramb 1024
+provision.extramb 2048
