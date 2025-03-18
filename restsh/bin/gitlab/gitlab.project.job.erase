@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-03-18
 
-# Shortdesc: Gets a job log.
+# Shortdesc: Erases a job, its log and artifact.
 # Desc:
-# Gets a job log.
+# Erases a job, its log and artifact.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -20,9 +20,11 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+RAW=0
+while getopts ':r' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -32,7 +34,8 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project> <job id>"
+    echo "Usage: $(basename "$0") [options...] <project> <job id>"
+    echo "    -r  Raw output."
     exit 2
 fi
 
@@ -40,5 +43,9 @@ PROJECT=$1
 ID=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-echo "--"
-GET -r "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/trace" && echo "--"
+if [ "$RAW" -eq 1 ]
+then
+    POST "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/erase" <<< ""
+else
+    POST -r -f ".status" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/erase" <<< ""
+fi
