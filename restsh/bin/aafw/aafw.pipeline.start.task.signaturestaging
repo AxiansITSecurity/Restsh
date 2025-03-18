@@ -22,11 +22,13 @@ fi
 # Get options
 TASK_HOST=""
 ENFORCE_ALL=0
-while getopts ':at:' OPTION
+PIPELINE_OPTS=()
+while getopts ':at:w' OPTION
 do
     case "$OPTION" in
         a) ENFORCE_ALL=1 ;;
         t) TASK_HOST=$OPTARG ;;
+        w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -40,6 +42,7 @@ then
     echo "Options:"
     echo "    -a Enforce all signatures"
     echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w  Wait for finished pipeline."
     exit 2
 fi
 
@@ -48,4 +51,5 @@ BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
     -s "TASK_STAGE=$BRANCH" -s "TASK=signature_staging" -s "TASK_HOST=$TASK_HOST" \
-    -s "ENFORCE_ALL=$ENFORCE_ALL" "$PROJECT" "master"
+    -s "ENFORCE_ALL=$ENFORCE_ALL" "${PIPELINE_OPTS[@]}" \
+    "$PROJECT" "master"

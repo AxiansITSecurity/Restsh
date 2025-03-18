@@ -23,12 +23,14 @@ fi
 TASK_HOST=""
 RESTART_ASM=1
 SYNC=1
-while getopts ':nst:' OPTION
+PIPELINE_OPTS=()
+while getopts ':nst:w' OPTION
 do
     case "$OPTION" in
         n) RESTART_ASM=0 ;;
         s) SYNC=1 ;;
         t) TASK_HOST=$OPTARG ;;
+        w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -43,6 +45,7 @@ then
     echo "    -n Do not restart ASM service"
     echo "    -s Sync Cluster"
     echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w  Wait for finished pipeline."
     exit 2
 fi
 
@@ -51,4 +54,5 @@ BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
     -s "TASK_STAGE=$BRANCH" -s "TASK=asm_settings" -s "TASK_HOST=$TASK_HOST" \
-    -s "RESTART_ASM=$RESTART_ASM" -s "SYNC=$SYNC" "$PROJECT" "master"
+    -s "RESTART_ASM=$RESTART_ASM" -s "SYNC=$SYNC" \
+    "${PIPELINE_OPTS[@]}" "$PROJECT" "master"

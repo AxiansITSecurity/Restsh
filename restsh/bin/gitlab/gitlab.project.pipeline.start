@@ -22,11 +22,13 @@ fi
 # Get options
 VARIABLES=()
 RAW=0
-while getopts ':rs:' OPTION
+WAIT=0
+while getopts ':rs:w' OPTION
 do
     case "$OPTION" in
         s) VARIABLES+=("$OPTARG") ;;
         r) RAW=1 ;;
+        w) WAIT=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -39,7 +41,8 @@ then
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
     echo "    -r                  Show raw result."
-    echo "    -s \"key=value\""   Set pipeline variable.
+    echo "    -s \"key=value\"    Set pipeline variable."
+    echo "    -w                  Wait for finished pipeline."
     exit 2
 fi
 
@@ -58,7 +61,34 @@ create_data() {
 
 if RESULT=$(create_data | POST "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipeline")
 then
-    if [ "$RAW" -eq 1 ]
+    if [ "$WAIT" -eq 1 ]
+    then
+        echo_ok -n "Pipeline started: "
+        JQ -r ".web_url" <<< "$RESULT"
+
+        ID=$(JQE ".id" <<< "$RESULT")
+        echo "Waiting for pipeline $ID to finish"
+        while :
+        do
+            STATUS=$(GET -r -f ".status" "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipelines/$ID")
+            case "$STATUS" in
+                failed)
+                    echo ""
+                    echo_err "Pipeline $ID failed"
+                    exit 1
+                    ;;
+                success)
+                    echo ""
+                    echo_ok "Pipeline succeeded"
+                    exit 0
+                    ;;
+                *)
+                    printf "\33[2K\r%s" "Status: $STATUS"
+                    ;;
+            esac
+            sleep 5
+        done
+    elif [ "$RAW" -eq 1 ]
     then
         JQ "." <<< "$RESULT"
     else

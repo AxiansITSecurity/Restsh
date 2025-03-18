@@ -21,10 +21,12 @@ fi
 
 # Get options
 TASK_HOST=""
-while getopts ':t:' OPTION
+PIPELINE_OPTS=()
+while getopts ':t:w' OPTION
 do
     case "$OPTION" in
         t) TASK_HOST=$OPTARG ;;
+        w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -37,6 +39,7 @@ then
     echo "Usage: $(basename "$0") [options...] <project path> <stage>"
     echo "Options:"
     echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w  Wait for finished pipeline."
     exit 2
 fi
 
@@ -45,4 +48,4 @@ BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
     -s "TASK_STAGE=$BRANCH" -s "TASK=backup" -s "TASK_HOST=$TASK_HOST" \
-    "$PROJECT" "master"
+    "${PIPELINE_OPTS[@]}" "$PROJECT" "master"
