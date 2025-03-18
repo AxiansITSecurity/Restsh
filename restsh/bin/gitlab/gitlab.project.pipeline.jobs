@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-01-28
 
-# Shortdesc: Lists all pipelines for a projects.
+# Shortdesc: Lists all jobs for a pipeline for a projects.
 # Desc:
-# Lists all pipelines for a projects.
+# Lists all jobs for a pipeline for a projects.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -34,23 +34,23 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project> <branch>"
+    echo "Usage: $(basename "$0") [-r] <project> <pipeline id>"
     echo -e "\tUse -r for raw output."
     exit 2
 fi
 
 PROJECT=$1
-BRANCH=$2
+ID=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/?ref=$BRANCH")
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/jobs")
 then
     if [ "$RAW" -eq 1 ]
     then
         echo "$RESULT"
     else
-        JQ -r '.[] | [.id, .created_at, .status] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,created,status"
+        JQ -r '.[] | [.id, .created_at, .finished_at, .web_url] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "id,created,finished,url"
     fi
     exit 0
 fi

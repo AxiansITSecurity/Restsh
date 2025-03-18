@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-01-28
+# Date: 2025-03-18
 
-# Shortdesc: Lists all pipelines for a projects.
+# Shortdesc: Gets a job log.
 # Desc:
-# Lists all pipelines for a projects.
+# Gets a job log.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -20,11 +20,9 @@ then
 fi
 
 # Get options
-RAW=0
-while getopts ':r' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -34,25 +32,13 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project> <branch>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [-r] <project> <job id>"
     exit 2
 fi
 
 PROJECT=$1
-BRANCH=$2
+ID=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/?ref=$BRANCH")
-then
-    if [ "$RAW" -eq 1 ]
-    then
-        echo "$RESULT"
-    else
-        JQ -r '.[] | [.id, .created_at, .status] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,created,status"
-    fi
-    exit 0
-fi
-
-exit 1
+echo "--"
+GET -r "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/trace" && echo "--"

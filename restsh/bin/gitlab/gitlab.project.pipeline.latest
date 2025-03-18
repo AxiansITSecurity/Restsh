@@ -30,19 +30,20 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project>"
+    echo "Usage: $(basename "$0") [-r] <project> <branch>"
     echo -e "\tUse -r for raw output."
     exit 2
 fi
 
 PROJECT=$1
+BRANCH=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/latest")
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/latest?ref=$BRANCH")
 then
     if [ "$RAW" -eq 1 ]
     then
