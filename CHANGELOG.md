@@ -6,7 +6,7 @@
 
 - Feat: Allow encrypted variables in `restsh.util.setvar` for simple variables
 - Feat: Add `gitlab.project.clone`
-- Feat: Add `gitlab.project.pipeline.variables`
+- Feat: Add `gitlab.project.pipeline.variables`, `gitlab.project.pipeline.latest`
 - Upd: Add `Accept` Header to HTTP-Requests.
 - Upd: `aafw.group.clone` supports pull for existing repositories
 
