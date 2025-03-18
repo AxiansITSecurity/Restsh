@@ -2,7 +2,7 @@
 
 ***
 
-## v5.0.0 - not yet released
+## v4.1.0 - not yet released
 
 - Feat: Add `gitlab.project.clone`
 - Feat: Add `gitlab.project.pipeline.variables`
