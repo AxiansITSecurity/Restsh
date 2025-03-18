@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-06
+# Date: 2025-03-18
 
-# Shortdesc: Starts an Declarative Onboarding pipeline.
+# Shortdesc: Starts a Declarative Onboarding pipeline and prints the created manual jobs.
 # Desc:
-# Starts an Declarative Onboarding pipeline.
+# Starts a Declarative Onboarding pipeline and prints the created manual jobs.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -21,12 +21,10 @@ fi
 
 # Get options
 TASK_HOST=""
-PIPELINE_OPTS=()
-while getopts ':t:w' OPTION
+while getopts ':t:' OPTION
 do
     case "$OPTION" in
         t) TASK_HOST=$OPTARG ;;
-        w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -38,14 +36,32 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
-    echo "    -w  Wait for finished pipeline."
+    echo "    -t <f5 management ip> or \"active\", \"standby\","
+    echo "       default is on job for each management ip."
     exit 2
 fi
 
 PROJECT=$1
 BRANCH=$2
 
-gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=push" \
+if [ -n "$TASK_HOST" ]
+then
+    NUM_JOBS=1
+else
+    NUM_JOBS=2
+fi
+
+gitlab.project.pipeline.start -w -s "CI_PIPELINE_SOURCE=push" \
     -s "TASK_HOST=$TASK_HOST" "${PIPELINE_OPTS[@]}" \
     "$PROJECT" "$BRANCH"
+
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+echo "Created manual jobs for Declarative Onboarding."
+echo "You can use \"gitlab.project.job.start\" to start it."
+while read -r ID
+do
+    TASK_HOST=$(GET -r -f ".[] | select(.key == \"TASK_HOST\") | .value" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/variables")
+    JOB_ID=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .id" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
+    echo "Job $JOB_ID: $TASK_HOST"
+done < <(GET -r -f ".[].id" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/?ref=$BRANCH&status=manual&per_page=$NUM_JOBS")
