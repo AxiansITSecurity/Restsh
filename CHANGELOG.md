@@ -4,6 +4,7 @@
 
 ## v4.1.0 - not yet released
 
+- Feat: Allow encrypted variables in `restsh.util.setvar` for simple variables
 - Feat: Add `gitlab.project.clone`
 - Feat: Add `gitlab.project.pipeline.variables`
 - Upd: Add `Accept` Header to HTTP-Requests.

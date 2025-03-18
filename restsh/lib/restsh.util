@@ -468,7 +468,14 @@ restsh.util.setvar() {
         local VAR
         VAR="VAR_$(basename "$FILE" .txt)"
         # set variable from config file
-        declare -g "$VAR"="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n')"
+        local VALUE
+        VALUE="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n')"
+        if restsh.util.isencrypted "$VALUE"
+        then
+            echo "Decrypting $VAR"
+            VALUE=$(restsh.util.decrypt "$VALUE")
+        fi
+        declare -g "$VAR"="$VALUE"
         echo "Declaring variable: $VAR"
     elif [ "$EXT" == "array" ]
     then
