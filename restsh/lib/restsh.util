@@ -469,8 +469,8 @@ restsh.util.setvar() {
         VAR="VAR_$(basename "$FILE" .txt)"
         # set variable from config file
         local VALUE
-        VALUE="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n')"
-        if [ -n "$VALUE" ] && restsh.util.isencrypted "$VALUE"
+        VALUE="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n' || true)"
+        if restsh.util.isencrypted "$VALUE"
         then
             echo "Decrypting $VAR"
             VALUE=$(restsh.util.decrypt "$VALUE")
