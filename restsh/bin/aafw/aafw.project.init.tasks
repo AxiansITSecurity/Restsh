@@ -55,11 +55,19 @@ include:
   - project: \$PIPELINE_PROJECT_TASKS
     file: 'tasks.yml'
 EOL
+
+# Create directory structure
 for F in dev test prod
 do
     mkdir -p "config/$F"
     touch "config/$F/.gitkeep"
 done
+for F in internal-cas waftemplates
+do
+    mkdir -p "$F"
+    touch "$F/.gitkeep"
+done
+
 git add .
 git commit -m "Init"
 git push -u origin master
