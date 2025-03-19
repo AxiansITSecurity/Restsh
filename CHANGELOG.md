@@ -4,6 +4,7 @@
 
 ## v4.1.0 - not yet released
 
+- Feat: Add `aafw.pipeline.start.task.axscripts`
 - Feat: Allow encrypted variables in `restsh.util.setvar` for simple variables
 - Feat: Add `gitlab.project.clone`
 - Feat: Add `gitlab.project.pipeline.variables`, `gitlab.project.pipeline.latest`

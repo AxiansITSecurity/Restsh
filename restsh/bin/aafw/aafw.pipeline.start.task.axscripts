@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-19
+
+# Shortdesc: Starts the Axians Scripts task.
+# Desc:
+# Starts the Axians Scripts task.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+TASK_HOST=""
+PIPELINE_OPTS=()
+while getopts ':t:w' OPTION
+do
+    case "$OPTION" in
+        t) TASK_HOST=$OPTARG ;;
+        w) PIPELINE_OPTS+=("-w") ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 2 ] || [ "$OPTION" = "invalid " ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <project path> <stage>"
+    echo "Options:"
+    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w  Wait for finished pipeline."
+    exit 2
+fi
+
+PROJECT=$1
+BRANCH=$(restsh.util.lc "$2")
+
+gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
+    -s "TASK_STAGE=$BRANCH" -s "TASK=axscripts" -s "TASK_HOST=$TASK_HOST" \
+    "${PIPELINE_OPTS[@]}" "$PROJECT" "master"
