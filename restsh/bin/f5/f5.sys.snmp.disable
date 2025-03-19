@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-19
+
+# Shortdesc: Disables snmpv1 and v2c.
+# Desc:
+# Disables snmpv1 and v2c.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+echo "Disabling snmpv1 and snmpv2c"
+PATCH /mgmt/tm/sys/snmp <<< '{"snmpv1": "disable", "snmpv2c": "disable"}' > /dev/null
+
+while read -r COMMUNITY
+do
+    echo "Deleting community $COMMUNITY"
+    DELETE "/mgmt/tm/sys/snmp/communities/${COMMUNITY//\//\~}"
+done < <(GET -r -f ".items[].fullPath" "/mgmt/tm/sys/snmp/communities")

@@ -4,6 +4,7 @@
 
 ## v4.1.0 - not yet released
 
+- Feat: Add `f5.sys.snmp.disable`
 - Feat: Add `aafw.pipeline.start.task.axscripts`
 - Feat: Allow encrypted variables in `restsh.util.setvar` for simple variables
 - Feat: Add `gitlab.project.clone`
