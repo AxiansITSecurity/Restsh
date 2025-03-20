@@ -15,6 +15,7 @@
 - Upd: Add branch option to `gitlab.project.pipeline.list`
 - Upd: Add `Accept` Header to HTTP-Requests.
 - Upd: `aafw.group.clone` supports pull for existing repositories
+- Upd: Add automerge option to `gitlab.mr.create`
 
 ***
 

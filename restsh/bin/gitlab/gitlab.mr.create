@@ -20,10 +20,12 @@ then
 fi
 
 # Get options
+AUTOMERGE=0
 RAW=0
-while getopts ':r' OPTION
+while getopts ':mr' OPTION
 do
     case "$OPTION" in
+        m) AUTOMERGE=1 ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -34,8 +36,10 @@ if [ "$#" -ne 4 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project> <source_branch> <target_branch> <title>"
-    echo -e "\t-r Raw output."
+    echo "Usage: $(basename "$0") [options...] <project> <source_branch> <target_branch> <title>"
+    echo "Options:"
+    echo "    -m Set automerge"
+    echo "    -r Raw output"
     exit 2
 fi
 
@@ -44,6 +48,7 @@ SRC=$2
 TARGET=$3
 TITLE=$4
 
+ORG_PROJECT=$PROJECT
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 RESULT=$(JQ -n \
@@ -64,4 +69,21 @@ else
     JQ -r ".iid" <<< "$RESULT"
     printf "View Merge Request: "
     JQ -r ".web_url" <<< "$RESULT"
+fi
+
+if [ "$AUTOMERGE" -eq 1 ]
+then
+    MRID=$(JQ -r ".iid" <<< "$RESULT")
+    I=1
+    sleep "$I"
+    while ! gitlab.mr.automerge "$ORG_PROJECT" "$MRID" "$TITLE" 2>/dev/null
+    do
+        I=$((I+1))
+        if [ "$I" -eq 5 ]
+        then
+            echo_err "Timeout waiting for merge request $MRID to appear"
+            break
+        fi
+        sleep "$I"
+    done
 fi
