@@ -4,7 +4,8 @@
 
 ## v4.0.1 - not yet released
 
-- Fix: restsh.util.json_validate mark correct line
+- Fix: `restsh.util.json_validate` mark correct line
+- Fix: `scm.csr.sign` enforce required arguments
 
 ***
 
