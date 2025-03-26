@@ -93,6 +93,7 @@ prompt = no
 CN = $CN
 EOL
 
+[ -z "${ALT_NAMES[*]}" ] && ALT_NAMES=("$CN")
 [ -n "$ORG" ] && echo "O = $ORG" >> "$CSR_CONFIG"
 [ -n "$OU" ] && echo "OU = $OU" >> "$CSR_CONFIG"
 [ -n "$CITY" ] && echo "L = $CITY" >> "$CSR_CONFIG"
