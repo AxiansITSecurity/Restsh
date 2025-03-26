@@ -123,13 +123,17 @@ done
 
 KEY_FILE="/config/httpd/conf/ssl.key/$NAME.key"
 CSR_FILE="/shared/images/$NAME.csr"
-{
-    f5.file-transfer.upload "$CSR_CONFIG"
-    f5.run "RANDFILE=/tmp/.random openssl req -new -nodes -newkey rsa:$KEYSIZE -extensions v3_req -config /var/config/rest/downloads/csr.conf -keyout $KEY_FILE -out $CSR_FILE"
-    f5.file.remove "/var/config/rest/downloads/csr.conf"
-    f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$NAME.csr" 0 "$RESTSH_TMP/csr.pem"
-    f5.file.remove "$CSR_FILE"
-} > /dev/null
+
+echo "Uploading CSR configuration"
+f5.file-transfer.upload "$CSR_CONFIG"
+
+echo "Creating CSR"
+f5.run "RANDFILE=/tmp/.random openssl req -new -nodes -newkey rsa:$KEYSIZE -extensions v3_req -config /var/config/rest/downloads/csr.conf -keyout $KEY_FILE -out $CSR_FILE"
+f5.file.remove "/var/config/rest/downloads/csr.conf"
+
+echo "Downloading CSR"
+f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$NAME.csr" 0 "$RESTSH_TMP/csr.pem"
+f5.file.remove "$CSR_FILE"
 
 if ! openssl req -verify -in "$RESTSH_TMP/csr.pem" -noout > /dev/null
 then
