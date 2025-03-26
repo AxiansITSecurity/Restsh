@@ -569,7 +569,7 @@ restsh.util.check.notempty() {
 restsh.util.check.varnotempty() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null" 1>&2
+        echo "Returns 1 if variable reference is undefined, length is zero, contains only whitespaces or is null" 1>&2
         echo "Usage: restsh.util.check.varnotempty <variable>" 1>&2
         return 2
     fi
