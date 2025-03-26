@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-25
+
+# Shortdesc: Installs a device certificate, restarts httpd.
+# Desc:
+# Installs a device certificate, restarts httpd.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <name> <certificate file>"
+    exit 2
+fi
+
+NAME=$1
+CERT_FILE_LOCAL=$2
+
+KEY_FILE="/config/httpd/conf/ssl.key/$NAME.key"
+if ! f5.file.size "$KEY_FILE" > /dev/null
+then
+    echo_err "Key not found, create it with f5.device.cert.csr.create"
+    exit 1
+fi
+
+CERT_FILE="/config/httpd/conf/ssl.crt/$NAME.crt"
+
+f5.file-transfer.upload "$CERT_FILE_LOCAL"
+CERT_FILE_REMOTE=$(basename "$CERT_FILE_LOCAL")
+f5.run "mv /var/config/rest/downloads/$CERT_FILE_REMOTE $CERT_FILE"
+f5.run "chmod 755 $CERT_FILE"
+f5.run "chown root:root $CERT_FILE"
+f5.run "restorecon -RvF $CERT_FILE"
+
+if ! f5.file.size "$CERT_FILE" > /dev/null
+then
+    echo_err "Certificate not found."
+    exit 1
+fi
+
+JQ -n --arg cert "$CERT_FILE" --arg key "$KEY_FILE" \
+    '{
+        "sslCertfile": $cert,
+        "sslCertkeyfile": $key
+    }' | PUT /mgmt/tm/sys/httpd
+
+f5.sys.service.restart httpd

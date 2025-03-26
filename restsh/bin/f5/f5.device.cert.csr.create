@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-25
+
+# Shortdesc: Installs a device certificate.
+# Desc:
+# Installs a device certificate.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+usage() {
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] --cn=<common name>"
+    echo "Options:"
+    echo -e "\t-a <dns alternative name>"
+    echo -e "\t-i <ip alternative name>"
+    echo -e "\t-c <config file>"
+    echo -e "\t--keysize=<keysize>, default: 4096, valid: 2048, 4096"
+    echo -e "\t--cn=<common name>"
+    echo -e "\t--org=<organization>"
+    echo -e "\t--ou=<organizational unit>"
+    echo -e "\t--city=<city>"
+    echo -e "\t--state=<state>"
+    echo -e "\t--country=<country>"
+    exit 2
+}
+
+# Get options
+NAME="newcert"
+KEYSIZE=4096
+CN=""
+ORG=""
+OU=""
+CITY=""
+STATE=""
+COUNTRY=""
+ALT_NAMES=()
+ALT_IPS=()
+CONFIG_FILE=""
+while getopts ':-:a:c:i:n:' OPTION
+do
+    if [ "$OPTION" = "-" ]
+    then
+        # long option: reformulate OPTION and OPTARG
+        OPTION="${OPTARG%%=*}"        # extract long option name
+        OPTARG="${OPTARG#"$OPTION"}"  # extract long option argument (may be empty)
+        OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
+    fi
+    case "$OPTION" in
+        a) ALT_NAMES+=("$OPTARG") ;;
+        c) CONFIG_FILE=$OPTARG ;;
+        i) ALT_IPS+=("$OPTARG") ;;
+        n) NAME="$OPTARG" ;;
+        keysize) KEYSIZE="$OPTARG" ;;
+        cn) CN="$OPTARG" ;;
+        org) ORG="$OPTARG" ;;
+        ou) OU="$OPTARG" ;;
+        city) CITY="$OPTARG" ;;
+        state) STATE="$OPTARG" ;;
+        country) COUNTRY="$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${CN}" ] || [ "$OPTION" == "invalid" ]
+then
+    usage
+fi
+
+[ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
+
+CSR_CONFIG="$RESTSH_TMP/csr.conf"
+
+cat > "$CSR_CONFIG" << EOL
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+CN = $CN
+EOL
+
+[ -n "$ORG" ] && echo "O = $ORG" >> "$CSR_CONFIG"
+[ -n "$OU" ] && echo "OU = $OU" >> "$CSR_CONFIG"
+[ -n "$CITY" ] && echo "L = $CITY" >> "$CSR_CONFIG"
+[ -n "$STATE" ] && echo "ST = $STATE" >> "$CSR_CONFIG"
+[ -n "$COUNTRY" ] && echo "C = $COUNTRY" >> "$CSR_CONFIG"
+
+cat >> "$CSR_CONFIG" << EOL
+[v3_req]
+basicConstraints = CA:FALSE
+keyUsage = digitalSignature, keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+[alt_names]
+EOL
+
+I=0
+for ALT_NAME in "${ALT_NAMES[@]}"
+do
+    echo "DNS.$I = $ALT_NAME" >> "$CSR_CONFIG"
+    I=$((I+1))
+done
+I=0
+for ALT_IP in "${ALT_IPS[@]}"
+do
+    echo "IP.$I = $ALT_IP" >> "$CSR_CONFIG"
+    I=$((I+1))
+done
+
+KEY_FILE="/config/httpd/conf/ssl.key/$NAME.key"
+CSR_FILE="/shared/images/$NAME.csr"
+{
+    f5.file-transfer.upload "$CSR_CONFIG"
+    f5.run "RANDFILE=/tmp/.random openssl req -new -nodes -newkey rsa:$KEYSIZE -extensions v3_req -config /var/config/rest/downloads/csr.conf -keyout $KEY_FILE -out $CSR_FILE"
+    f5.file.remove "/var/config/rest/downloads/csr.conf"
+    f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$NAME.csr" 0 "$RESTSH_TMP/csr.pem"
+    f5.file.remove "$CSR_FILE"
+} > /dev/null
+
+if ! openssl req -verify -in "$RESTSH_TMP/csr.pem" -noout > /dev/null
+then
+    echo_err "CSR validation failed: $RESTSH_TMP/csr.pem"
+    exit 1
+fi
+
+echo "$RESTSH_TMP/csr.pem"

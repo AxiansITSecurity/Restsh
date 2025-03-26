@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-03-25
+
+# Shortdesc: Checks for a valid device certificate.
+# Desc:
+# Checks for a valid device certificate.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <fqdn> <expiration string>"
+    exit 2
+fi
+FQDN=$1
+EXPIRATION=$2
+
+CERT=$(GET -rf ".sslCertfile" /mgmt/tm/sys/httpd)
+EXPIRATION=$(date +%s -d"now + $EXPIRATION")
+CERT_EXPIRATION=$(f5.run "openssl x509 -in $CERT -noout -enddate" | cut -d= -f2)
+CERT_EXPIRATION=$(date +%s -d"$CERT_EXPIRATION")
+
+if [ "$CERT_EXPIRATION" -lt "$EXPIRATION" ]
+then
+    echo_err "$FQDN certificate is expired"
+    exit 1
+fi
+
+if ! f5.run "openssl x509 -in $CERT -noout -text" | grep -q "DNS:$FQDN"
+then
+    echo_err "$FQDN certificate SAN is invalid"
+    exit 1
+fi
+
+echo_ok "Certificate is valid."
+exit 0
