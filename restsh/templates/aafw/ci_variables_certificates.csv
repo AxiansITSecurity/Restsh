@@ -1,6 +1,5 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
-CERT_CI_STAGE,dev,false,true,The pipeline stage.
 CERT_EXPIRATION_STRING,1 week,false,true,Date string to detect soon expiring certificates.
 CERT_SYNC,1,false,true,Sync cluster after deployment of new certificates.
 
