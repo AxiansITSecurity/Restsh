@@ -61,16 +61,18 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
             declare "$NAME"="${!VALUE}"
         elif [ "${VALUE:0:6}" = "ARRAY_" ]
         then
-            echo "    Resolving variable $VALUE" 1>&2
-            if [[ ! -v "$VALUE" ]]
+            echo "    Resolving array $VALUE" 1>&2
+            if declare -p "$VALUE" >/dev/null 2>&1
             then
-                echo_err "Variable $VALUE not defined"
-                return 1
+                TMP=("${VALUE}[@]")
+                ARRAY="${!TMP}"
+                declare -a "$NAME"="(${ARRAY[*]})"
+            else
+                echo "Array $VALUE not defined"
+                exit 1
             fi
-            local TMP=("${VALUE}[@]")
-            local ARRAY="${!TMP}"
-            declare -a "$NAME"="(${ARRAY[*]})"
         else
+            # Fixed value
             declare "$NAME"="$VALUE"
         fi
     done
