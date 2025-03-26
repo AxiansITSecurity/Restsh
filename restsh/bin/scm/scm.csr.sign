@@ -22,7 +22,7 @@ fi
 usage() {
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <csr file>"
+    echo "Usage: $(basename "$0") -o <id> -p <id> [options...] <csr file>"
     echo -e "\t-a\tDNS Alternative Name"
     echo -e "\t-o\tOrganization ID: GET /api/organization/v1"
     echo -e "\t-p\tCertificate Profile ID: GET /api/ssl/v1/types"
@@ -47,7 +47,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
+if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ] || [ -z "$ORG_ID" ] || [ -z "$CERT_PROFILE" ]
 then
     usage
 fi
