@@ -27,6 +27,7 @@ f5.do.taskwait() {
     local COUNTER=0
     local CHECK_TASK_URI="/mgmt/shared/declarative-onboarding/task/$TASK_ID"
     local F5_TASK_TIMEOUT=60
+    local F5_TASK_CHECK_INTERVAL=20
     while :
     do
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
@@ -37,7 +38,7 @@ f5.do.taskwait() {
         sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local CODE
-        if ! CODE=$(GET -c 5 -r "$CHECK_TASK_URI" | \
+        if ! CODE=$(GET -c 20 -r "$CHECK_TASK_URI" | \
             $RESTSH_JQ -r ".result.code")
         then
             GET "$CHECK_TASK_URI"
