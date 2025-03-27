@@ -20,22 +20,21 @@ then
 fi
 
 # Get options
-FORCE=0
 while getopts ':f' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ] || [ "$FORCE" -eq 0 ]
+if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") -f"
+    echo "Usage: $(basename "$0") <id>"
     exit 2
 fi
+ID=$1
 
-DELETE "/mgmt/shared/declarative-onboarding/config"
+DELETE "/mgmt/shared/declarative-onboarding/config/$ID"
