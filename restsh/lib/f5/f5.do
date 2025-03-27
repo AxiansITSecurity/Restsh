@@ -26,6 +26,7 @@ f5.do.taskwait() {
     echo "Waiting for task id \"$TASK_ID\" to finish."
     local COUNTER=0
     local CHECK_TASK_URI="/mgmt/shared/declarative-onboarding/task/$TASK_ID"
+    local F5_TASK_TIMEOUT=60
     while :
     do
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
