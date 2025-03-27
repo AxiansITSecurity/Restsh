@@ -27,13 +27,13 @@ restsh.init.check.env() {
         return 1
     elif [ "$RESTSH_AUTH" == "basic" ]
     then
-        if [ -z "${RESTSH_USER+x}" ]
+        if [ -z "${RESTSH_USER+x}" ] || [ -z "${RESTSH_USER}" ]
         then
             read -r -p "User: " RESTSH_USER
             export RESTSH_USER
         fi
 
-        if [ -z "${RESTSH_PASS+x}" ]
+        if [ -z "${RESTSH_PASS+x}" ] || [ -z "${RESTSH_PASS}" ]
         then
             RESTSH_PASS=$(restsh.util.askpass Password)
             export RESTSH_PASS
