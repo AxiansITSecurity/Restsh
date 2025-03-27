@@ -25,9 +25,7 @@ f5.do.taskwait() {
     local TASK_ID=$1
     echo "Waiting for task id \"$TASK_ID\" to finish."
     local COUNTER=0
-    local CHECK_TASK_URI="/mgmt/shared/declarative-onboarding/task/$TASK_ID"
-    local F5_TASK_TIMEOUT=60
-    local F5_TASK_CHECK_INTERVAL=20
+    local CHECK_TASK_URI="/mgmt/shared/declarative-onboarding/task"
     while :
     do
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
@@ -38,11 +36,10 @@ f5.do.taskwait() {
         sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local CODE
-        if ! CODE=$(GET -c 20 -r "$CHECK_TASK_URI" | \
-            $RESTSH_JQ -r ".result.code" 2>/dev/null)
+        if ! CODE=$(GET -c 5 -r -f ".[] | select(.id == \"$TASK_ID\") | .result.code" "$CHECK_TASK_URI")
         then
-            GET "$CHECK_TASK_URI"
-            echo_err "Could not get task status."
+            echo_err "Can not get task status."
+            GET "$CHECK_TASK_URI/$TASK_ID"
             return 1
         fi
         local RC=0
@@ -56,9 +53,9 @@ f5.do.taskwait() {
                 RC=$CODE
                 ;;
             *)
-                echo_err "declarative onboarding task failed: $CODE"
+                echo_err "Declarative onboarding task failed: $CODE"
                 # Print result message from f5
-                GET "$CHECK_TASK_URI"
+                GET "$CHECK_TASK_URI/$TASK_ID"
                 return 1
                 ;;
         esac
