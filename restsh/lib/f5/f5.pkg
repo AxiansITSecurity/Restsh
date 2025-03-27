@@ -49,9 +49,14 @@ f5.pkg.taskwait() {
                 break
                 ;;
             *)
+                local ERR_MSG
+                ERR_MSG=$(GET "$CHECK_TASK_URI" | JQ -r ".errorMessage")
+                if [[ "$ERR_MSG" =~ "already installed" ]]
+                then
+                    return 0
+                fi
                 echo_err "Unhandled task status: $STATUS"
-                # Print task result message
-                GET "$CHECK_TASK_URI" | JQ -r ".errorMessage"
+                echo_err "$ERR_MSG"
                 return 1
             ;;
         esac
