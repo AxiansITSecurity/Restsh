@@ -53,7 +53,7 @@ fi
 # Strip path
 RPM=$(basename "$RPM")
 
-if ! TASK_ID=$($RESTSH_JQ -n --arg rpm "/var/config/rest/downloads/$RPM" \
+if ! TASK_ID=$(JQ -n --arg rpm "/var/config/rest/downloads/$RPM" \
     '{
         "operation": "INSTALL",
         "packageFilePath": $rpm
