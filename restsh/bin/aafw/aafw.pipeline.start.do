@@ -37,7 +37,7 @@ then
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
     echo "    -t <f5 management ip> or \"active\", \"standby\","
-    echo "       default is on job for each management ip."
+    echo "       default is to create one manual job for each management ip."
     exit 2
 fi
 
