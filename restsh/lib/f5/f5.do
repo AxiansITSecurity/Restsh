@@ -26,6 +26,7 @@ f5.do.taskwait() {
     echo "Waiting for task id \"$TASK_ID\" to finish."
     local COUNTER=0
     local CHECK_TASK_URI="/mgmt/shared/declarative-onboarding/task"
+    local F5_TASK_TIMEOUT=180
     while :
     do
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
@@ -36,7 +37,7 @@ f5.do.taskwait() {
         sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local CODE
-        if ! CODE=$(GET -c 5 -r -f ".[] | select(.id == \"$TASK_ID\") | .result.code" "$CHECK_TASK_URI")
+        if ! CODE=$(GET -c 180 -r -f ".[] | select(.id == \"$TASK_ID\") | .result.code" "$CHECK_TASK_URI")
         then
             echo_err "Can not get task status."
             GET "$CHECK_TASK_URI/$TASK_ID"
