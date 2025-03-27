@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2025-03-27
 
-# Shortdesc: Returns the installed Declarative Onboarding version.
+# Shortdesc: Retrieves the Declarative Onboarding configuration.
 # Desc:
-# Returns the installed Declarative Onboarding version.
+# Retrieves the Declarative Onboarding configuration.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -36,4 +36,4 @@ then
     exit 2
 fi
 
-GET "/mgmt/shared/declarative-onboarding/info"
+GET "/mgmt/shared/declarative-onboarding/config"

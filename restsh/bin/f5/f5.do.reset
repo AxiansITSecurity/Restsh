@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# Date: 2025-03-27
 
-# Shortdesc: Returns the installed Declarative Onboarding version.
+# Shortdesc: Resets the Declarative Onboarding configuration.
 # Desc:
-# Returns the installed Declarative Onboarding version.
+# Resets the Declarative Onboarding configuration.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -20,20 +20,22 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+FORCE=0
+while getopts ':f' OPTION
 do
     case "$OPTION" in
+        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ "$OPTION" == "invalid" ] || [ "$FORCE" -eq 0 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0")"
+    echo "Usage: $(basename "$0") -f"
     exit 2
 fi
 
-GET "/mgmt/shared/declarative-onboarding/info"
+DELETE "/mgmt/shared/declarative-onboarding/config"
