@@ -38,12 +38,11 @@ f5.do.taskwait() {
         sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local CODE
-        if ! CODE=$(GET -c 20 -r "$CHECK_TASK_URI" | \
-            $RESTSH_JQ -r ".result.code")
+        if ! CODE=$(GET -c 5 -r "$CHECK_TASK_URI" | \
+            $RESTSH_JQ -r ".result.code" 2>/dev/null)
         then
-            GET "$CHECK_TASK_URI"
-            echo_err "Could not get task status."
-            return 1
+            # Do not fail on http errors
+            continue
         fi
         local RC=0
         case "$CODE" in
