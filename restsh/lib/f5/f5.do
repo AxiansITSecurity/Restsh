@@ -43,6 +43,11 @@ f5.do.taskwait() {
             GET "$CHECK_TASK_URI/$TASK_ID"
             return 1
         fi
+        if ! restsh.util.check.isnumber "$CODE"
+        then
+            echo_warn "Invalid return code, retrying"
+            continue
+        fi
         local RC=0
         case "$CODE" in
             0|202)
