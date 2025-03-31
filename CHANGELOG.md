@@ -27,6 +27,7 @@
 
 - Fix: `restsh.util.json_validate` mark correct line
 - Fix: `scm.csr.sign` enforce required arguments
+- Fix: Do not add default CERT_CI_STAGE
 
 ***
 
