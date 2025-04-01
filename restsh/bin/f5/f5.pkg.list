@@ -58,6 +58,6 @@ if [ "$RAW" -eq 1 ]
 then
     JQ "." <<< "$RESULT"
 else
-    JQ -r '.queryResponse[] | select(.tags[] == "PLUGIN") | [.packageName] | @tsv' <<< "$RESULT" \
-        | COLUMN -o "|" -N "packageName"
+    JQ -r '.queryResponse[] | [.packageName,.tags[0]] | @tsv' <<< "$RESULT" \
+        | COLUMN -o "|" -N "packageName,Tags"
 fi
