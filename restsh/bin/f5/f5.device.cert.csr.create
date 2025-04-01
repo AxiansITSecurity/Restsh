@@ -129,7 +129,12 @@ echo "Uploading CSR configuration"
 f5.file-transfer.upload "$CSR_CONFIG"
 
 echo "Creating CSR"
-f5.run "RANDFILE=/tmp/.random openssl req -new -nodes -newkey rsa:$KEYSIZE -extensions v3_req -config /var/config/rest/downloads/csr.conf -keyout $KEY_FILE -out $CSR_FILE"
+if f5.file.size "$KEY_FILE"
+then
+    f5.run "openssl req -new -key $KEY_FILE -extensions v3_req -config /var/config/rest/downloads/csr.conf -out $CSR_FILE"
+else
+    f5.run "RANDFILE=/tmp/.random openssl req -new -nodes -newkey rsa:$KEYSIZE -extensions v3_req -config /var/config/rest/downloads/csr.conf -keyout $KEY_FILE -out $CSR_FILE"
+fi
 f5.file.remove "/var/config/rest/downloads/csr.conf"
 
 echo "Downloading CSR"
