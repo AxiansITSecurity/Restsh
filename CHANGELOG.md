@@ -71,11 +71,9 @@
 
 ***
 
-## v3.0.3 - not yet released
+## v3.0.3 - 2025-04-03
 
 - Fix: Option parsing in `gitlab.group.variable.update` and `gitlab.project.variable.update`
-
-***
 
 ## v3.0.2 - 2025-03-10
 
