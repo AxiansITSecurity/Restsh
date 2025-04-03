@@ -2,7 +2,7 @@
 
 ***
 
-## v4.0.1 - 2025.04.03
+## v4.0.1 - 2025-04-03
 
 - Fix: `restsh.util.json_validate` mark correct line
 - Fix: `scm.csr.sign` enforce required arguments
