@@ -430,12 +430,24 @@ restsh.util.eval_stage_var() {
 
 # Declares variables from a directory. .txt extension for simple variables, .array for arrays.
 restsh.util.setvars() {
-    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    local OPTION OPTIND
+    local FIND_OPTS=("-maxdepth" "1")
+    while getopts ':r' OPTION
+    do
+        case "$OPTION" in
+            r) FIND_OPTS=() ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
         echo "Declares variables from a directory. .txt extension for simple variables, .array for arrays." 1>&2
         echo "See restsh.util.setvar -h for further details" 1>&2
         echo "" 1>&2
-        echo "Usage: restsh.util.setvars <directory>" 1>&2
+        echo "Usage: restsh.util.setvars [options...] <directory>" 1>&2
+        echo "Options:" 1>&2
+        echo "    -r Recurse into directories" 1>&2
         return 2
     fi
     local DIR=$1
@@ -444,7 +456,7 @@ restsh.util.setvars() {
     while read -r DEF
     do
         restsh.util.setvar "$DEF"
-    done < <(find "$DIR" -maxdepth 1 -type f -name \*.txt -or -name \*.array)
+    done < <(find "$DIR" "${FIND_OPTS[@]}" -type f -name \*.txt -or -name \*.array)
 }
 
 # Declares a variable from a file. .txt extension for simple variable, .array for array.

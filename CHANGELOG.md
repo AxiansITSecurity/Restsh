@@ -4,6 +4,7 @@
 
 ## v4.1.0 - not yet released
 
+- Feat: Add recursive option to `restsh.util.setvars`
 - Feat: Add `f5.device.disable-setup`, `f5.device.dns.set`
 - Feat: Add `f5.pkg.list`, `f5.pkg.uninstall`
 - Feat: Add `f5.password.change.admin`, `f5.password.change.root`

@@ -98,10 +98,31 @@ test.restsh.util.setvars() {
     mkdir "$RESTSH_TMP/vars"
     echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
     echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
+    mkdir "$RESTSH_TMP/vars/sub"
+    echo "string" > "$RESTSH_TMP/vars/sub/TEST_STR2.txt"
+    echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/sub/TEST_ARRAY2.array"
     restsh.util.setvars "$RESTSH_TMP/vars"
     rm -r "$RESTSH_TMP/vars"
     [ -n "$VAR_TEST_STR" ]
     [ -n "$ARRAY_TEST_ARRAY" ]
+    [ -z "${VAR_TEST_STR2+x}" ]
+    [ -z "${ARRAY_TEST_ARRAY2+x}" ]
+}
+
+test.restsh.util.setvars.recursive() {
+    mkdir "$RESTSH_TMP/vars"
+    echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
+    echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
+    mkdir "$RESTSH_TMP/vars/sub"
+    echo "string" > "$RESTSH_TMP/vars/sub/TEST_STR2.txt"
+    echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/sub/TEST_ARRAY2.array"
+
+    restsh.util.setvars -r "$RESTSH_TMP/vars"
+    rm -r "$RESTSH_TMP/vars"
+    [ -n "$VAR_TEST_STR" ]
+    [ -n "$ARRAY_TEST_ARRAY" ]
+    [ -n "$VAR_TEST_STR2" ]
+    [ -n "$ARRAY_TEST_ARRAY2" ]
 }
 
 test.restsh.util.setvar() {
@@ -222,6 +243,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.setcurloptions
     test.restsh.util.parseoutput
     test.restsh.util.setvars
+    test.restsh.util.setvars.recursive
     test.restsh.util.setvar
     test.restsh.util.urlencode
     test.restsh.util.json_validate
