@@ -19,11 +19,11 @@ export COLOR_RESET="\033[0m"
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Prints green ok messages to STDERR.
+# Prints green ok messages to STDOUT.
 echo_ok() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints green ok messages to STDERR." 1>&2
+        echo "Prints green ok messages to STDOUT." 1>&2
         echo "" 1>&2
         echo "Usage: echo_ok [echo options] <message>" 1>&2
         return 2
