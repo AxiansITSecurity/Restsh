@@ -1,0 +1,31 @@
+{
+    "name": "{{VAR_NAME}}",
+    "activeBonus": {{VAR_ACTIVE_BONUS}},
+    "enabled": true,
+    "pools": [
+        {{#ARRAY_POOLS}}
+            {{MO_COMMA_IF_NOT_FIRST}}
+            {
+                "name": "{{.}}",
+                "attribute": "percent-up-members",
+                "minimumThreshold": 1,
+                "percentUp": 100,
+                "sufficientThreshold": "1",
+                "weight": 10
+            }
+        {{#ARRAY_POOLS}}
+    ],
+    "trunks": [
+        {{#ARRAY_TRUNKS}}
+            {{MO_COMMA_IF_NOT_FIRST}}
+            {
+                "name": "{{.}}",
+                "attribute": "percent-up-members",
+                "minimumThreshold": 1,
+                "percentUp": 100,
+                "sufficientThreshold": "all",
+                "weight": 10
+            }
+        {{/ARRAY_TRUNKS}}
+    ]
+}

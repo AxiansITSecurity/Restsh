@@ -1,2 +1,2 @@
 #VAR_DISALLOWED_URL="/"
-[ -z "${VAR_URL_TYPE+x}" ] && VAR_URL_TYPE="wildcard"
+[ -n "${VAR_URL_TYPE+x}" ] || VAR_URL_TYPE="wildcard"

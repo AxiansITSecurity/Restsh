@@ -1,4 +1,4 @@
-[ -z "${VAR_BLOCK_REQUESTS+x}" ] && VAR_BLOCK_REQUESTS="never" # Allowed values: policy-default, never, always
-[ -z "${VAR_DESCRIPTION+x}" ] && VAR_DESCRIPTION=""
-[ -z "${VAR_IPADDRESS+x}" ] && VAR_IPADDRESS="1.1.1.1"
-[ -z "${VAR_IPMASK+x}" ] && VAR_IPMASK="255.255.255.255"
+[ -n "${VAR_BLOCK_REQUESTS+x}" ] || VAR_BLOCK_REQUESTS="never" # Allowed values: policy-default, never, always
+[ -n "${VAR_DESCRIPTION+x}" ] || VAR_DESCRIPTION=""
+[ -n "${VAR_IPADDRESS+x}" ] || VAR_IPADDRESS="1.1.1.1"
+[ -n "${VAR_IPMASK+x}" ] || VAR_IPMASK="255.255.255.255"

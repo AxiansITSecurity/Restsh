@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2034
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-04-04
+
+# Shortdesc: Creates a ha-group.
+# Desc:
+# Creates a ha-group.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+TEMPLATE="$RESTSH_PATH/templates/f5/sys/ha-group.json"
+DEFAULTS="$RESTSH_PATH/templates/f5/sys/ha-group.var"
+
+ARRAY_POOLS=()
+ARRAY_TRUNKS=()
+VAR_ACTIVE_BONUS=20
+while getopts ':b:d:p:s:t:u:' OPTION
+do
+    case "$OPTION" in
+        b) VAR_ACTIVE_BONUS=$OPTARG ;;
+        d) DEFAULTS=$OPTARG ;;
+        p) ARRAY_POOLS+=("$OPTARG") ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        t) TEMPLATE=$OPTARG ;;
+        u) ARRAY_TRUNKS+=("$OPTARG") ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage:"
+    echo "$(basename "$0") [options...] <ha-group name>"
+    echo "Options:"
+    echo "    -b <active bonus>    Active Bonus"
+    echo "    -d <variables file>  Path to file with env variables to use"
+    echo "    -p <pool name>       Pool name"
+    echo "    -s <VAR=VALUE>       Define simple variable"
+    echo "    -t <template>        Path to template"
+    echo "    -u <trunk name>      Trunk name"
+    echo "Template is: $TEMPLATE"
+    echo "Defaults are:"
+    sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
+    exit 2
+fi
+VAR_NAME=$1
+
+if [ ! -f "$TEMPLATE" ]
+then
+    if [ -f "${RESTSH_PATH}/templates/f5/sys/$TEMPLATE" ]
+    then
+        TEMPLATE="${RESTSH_PATH}/templates/f5/sys/$TEMPLATE"
+    else
+        echo_err "Template not found"
+        exit 1
+    fi
+fi
+
+# Include mustache
+. "${RESTSH_PATH}/dist/mo/mo"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
+
+MO_OPTIONS=()
+if [ -n "$DEFAULTS" ]
+then
+    if [ ! -s "$DEFAULTS" ]
+    then
+        echo_err "Variables file not found."
+        exit 1
+    fi
+    MO_OPTIONS+=("-s=""$DEFAULTS")
+fi
+
+if ! $RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" | POST "/mgmt/tm/sys/ha-group/"
+then
+    echo_err "Failed to create ha-group"
+    exit 1
+fi
