@@ -4,6 +4,8 @@
 
 ## v4.1.0 - not yet released
 
+- Feat: Add `f5.ltm.pool.list`
+- Feat: Add `f5.net.vlan.list`, `f5.net.trunk.list`
 - Feat: Add `f5.cluster.traffic-group.ha-group.set`
 - Feat: Add `f5.sys.ha-group.create`, `f5.sys.ha-group.delete`, `f5.sys.ha-group.get`, `f5.sys.ha-group.list`
 - Feat: Add recursive option to `restsh.util.setvars`

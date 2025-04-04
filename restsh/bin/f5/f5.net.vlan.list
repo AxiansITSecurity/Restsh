@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2024-07-03
+
+# Shortdesc: Lists VLANs.
+# Desc:
+# Lists VLANs.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r Raw output."
+    exit 2
+fi
+
+if [ "$RAW" -eq 1 ]
+then
+    GET "/mgmt/tm/net/vlan"
+else
+    GET "/mgmt/tm/net/vlan" \
+        | JQ -r '.items[] | [.fullPath,.tag] | @tsv' \
+        | COLUMN -o "|" -N "VLAN,Tag"
+fi
