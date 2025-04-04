@@ -8,7 +8,7 @@
 - Feat: Add `f5.device.disable-setup`, `f5.device.dns.set`
 - Feat: Add `f5.pkg.list`, `f5.pkg.uninstall`
 - Feat: Add `f5.password.change.admin`, `f5.password.change.root`
-- Feat: Add `f5.do.get`, `f5.do.reset`
+- Feat: Add `f5.do.get`, `f5.do.get.id`, `f5.do.reset`
 - Feat: Add `f5.device.cert.check`, `f5.device.cert.csr.create`, `f5.device.cert.install`
 - Feat: Add `f5.sys.snmp.disable`
 - Feat: Add `aafw.pipeline.start.task.axscripts`
