@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+DATE_SUFFIX=1
+while getopts ':hn' OPTION
 do
     case "$OPTION" in
+        n) DATE_SUFFIX=0 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,7 +33,9 @@ if [ "$OPTION" = "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <key> <cert> [<chain bundle>]" 1>&2
+    echo "Usage: $(basename "$0") [options...] <key> <cert> [<chain bundle>]"
+    echo "Options:"
+    echo "    -n  Do not add date suffix"
     exit 2
 fi
 
@@ -41,9 +45,14 @@ FILE_BUNDLE=""
 [ -n "${3+x}" ] && FILE_BUNDLE=$3
 
 CN=$(openssl x509 -in "$FILE_CERT" -noout -subject -nameopt compat | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|')
-STARTDATE_TS=$(date +%s --date="$(openssl x509 -in "$FILE_CERT" -noout -startdate | cut -d= -f2)")
-STARTDATE=$(date +%Y-%m --date=@"${STARTDATE_TS}")
-CERT_NAME="${CN}_${STARTDATE}"
+if [ "$DATE_SUFFIX" -eq 1 ]
+then
+    STARTDATE_TS=$(date +%s --date="$(openssl x509 -in "$FILE_CERT" -noout -startdate | cut -d= -f2)")
+    STARTDATE=$(date +%Y-%m --date=@"${STARTDATE_TS}")
+    CERT_NAME="${CN}_${STARTDATE}"
+else
+    CERT_NAME="${CN}"
+fi
 
 echo "Importing cert $CN"
 

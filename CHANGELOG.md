@@ -24,6 +24,7 @@
 - Feat: Add wait options for `gitlab.project.pipeline.start`
 - Feat: Add `gitlab.project.pipeline.jobs`, `gitlab.project.job.log`
 - Feat: Add `gitlab.project.job.cancel`, `gitlab.project.job.erase`, `gitlab.project.job.retry`, `gitlab.project.job.start`
+- Upd: `f5.cert.bundle.import` add option to not add suffix
 - Upd: Add branch option to `gitlab.project.pipeline.list`
 - Upd: Add `Accept` Header to HTTP-Requests.
 - Upd: `aafw.group.clone` supports pull for existing repositories
