@@ -5,7 +5,7 @@
 
 # Shortdesc: Updates a System iFile.
 # Desc:
-# Creates a System iFile.
+# Updates a System iFile.
 # https://community.f5.com/t5/codeshare/syncing-local-repositories-and-ifiles-using-icontrol-rest-api/ta-p/290848
 
 # Strict error handling
