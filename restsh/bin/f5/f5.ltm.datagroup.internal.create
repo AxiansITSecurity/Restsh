@@ -27,7 +27,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
@@ -46,7 +46,7 @@ RECORDS=$(f5.ltm.datagroup.internal.get_records_from_file "$INFILE")
 if [ -z "$RECORDS" ]
 then
     echo_err "Invalid input file"
-    return 1
+    exit 1
 fi
 JQ -n --arg name "$NAME" \
     --arg partition "$PARTITION" \
