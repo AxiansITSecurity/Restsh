@@ -28,7 +28,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
@@ -39,11 +39,19 @@ fi
 FILE=$1
 FULLPATH=$2
 
-read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
+IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "$FULLPATH")
 FILENAME=$(basename "$FILE")
 
 f5.file.upload /mgmt/shared/file-transfer/uploads "$FILE" > /dev/null
 
-JQ -n --arg name "$NAME" --arg partition "$PARTITION" --arg filename "file:/var/config/rest/downloads/$FILENAME" \
-  '{ name: $name, partition: $partition, "source-path": $filename }' |
-    POST "/mgmt/tm/sys/file/ifile"
+JQ -n --arg partition "$PARTITION" \
+    --arg subpath "$SUBPATH" \
+    --arg name "$NAME" \
+    --arg filename "file:/var/config/rest/downloads/$FILENAME" \
+    '{
+        partition: $partition,
+        subPath: $subpath,
+        name: $name,
+        "source-path": $filename
+    }' \
+    | POST "/mgmt/tm/sys/file/ifile"

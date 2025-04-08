@@ -37,4 +37,59 @@ f5.common.fullPathSplit() {
     echo "$PARTITION $NAME"
 }
 
+# Splits the fullPath into partition, subpath and name
+f5.common.fullPathSplit2() {
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
+    then
+        echo "Splits the fullPath into partition, subpath and name" 1>&2
+        echo "Usage: f5.common.fullPathSplit2 <full path>" 1>&2
+        return 2
+    fi
+    local FULLPATH=$1
+    local PARTITION
+    local SUBPATH
+    local NAME
+    local PARTS
+    mapfile -t -d'/' PARTS <<< "$FULLPATH"
+
+    if [ ${#PARTS[@]} -eq 3 ]
+    then
+        PARTITION=${PARTS[1]}
+        SUBPATH=""
+        NAME=${PARTS[2]}
+    elif [ ${#PARTS[@]} -eq 4 ]
+    then
+        PARTITION=${PARTS[1]}
+        SUBPATH=${PARTS[2]}
+        NAME=${PARTS[3]}
+    else
+        PARTITION="Common"
+        SUBPATH=""
+        NAME=$FULLPATH
+    fi
+    printf "%s,%s,%s" "$PARTITION" "$SUBPATH" "$NAME"
+}
+
+# Joins path components with defined separator.
+f5.common.fullPathJoin() {
+    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
+    then
+        echo "Joins path components with defined separator." 1>&2
+        echo "Usage: f5.common.fullPathJoin <separator> <components...>" 1>&2
+        return 2
+    fi
+    local SEPARATOR=$1
+    shift
+    local FP=""
+    local C
+    for C in "$@"
+    do
+        [ -n "$C" ] || continue
+        FP="${FP}${SEPARATOR}${C}"
+    done
+    echo "$FP"
+}
+
 export -f f5.common.fullPathSplit
+export -f f5.common.fullPathSplit2
+export -f f5.common.fullPathJoin

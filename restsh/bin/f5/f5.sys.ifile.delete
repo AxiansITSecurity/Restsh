@@ -37,5 +37,6 @@ then
 fi
 
 FULLPATH=$1
+
 DELETE "/mgmt/tm/sys/file/ifile/${FULLPATH//\//\~}" > /dev/null
 

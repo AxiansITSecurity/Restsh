@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-04-08
+
+# Shortdesc: Test suite for f5.common library.
+# Desc:
+# Test suite for f5.common library.
+
+# Strict error handling
+set -eEuo pipefail
+
+test.f5.common.fullPathSplit() {
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "name1")
+    [ "$PARTITION" = "Common" ] || return 1
+    [ "$NAME" = "name1" ] || return 1
+
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "/tenant1/name1")
+    [ "$PARTITION" = "tenant1" ] || return 1
+    [ "$NAME" = "name1" ] || return 1
+
+    read -r PARTITION NAME < <(f5.common.fullPathSplit "/tenant1/app1/name1")
+    [ "$PARTITION" = "tenant1~app1" ] || return 1
+    [ "$NAME" = "name1" ] || return 1
+}
+
+test.f5.common.fullPathSplit2() {
+    IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "name1")
+    [ "$PARTITION" = "Common" ] || return 1
+    [ -z "$SUBPATH" ] || return 1
+    [ "$NAME" = "name1" ] || return 1
+
+    IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "/tenant1/name1")
+    [ "$PARTITION" = "tenant1" ] || return 1
+    [ -z "$SUBPATH" ] || return 1
+    [ "$NAME" = "name1" ] || return 1
+
+    IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "/tenant1/app1/name1")
+    [ "$PARTITION" = "tenant1" ] || return 1
+    [ "$SUBPATH" = "app1" ] || return 1
+    [ "$NAME" = "name1" ] || return 1
+}
+
+test.f5.common.fullPathJoin() {
+    FP=$(f5.common.fullPathJoin "~" tenant1 app1 name1)
+    [ "$FP" = "~tenant1~app1~name1" ] || return 1
+
+    FP=$(f5.common.fullPathJoin "~" tenant1 "" name1)
+    [ "$FP" = "~tenant1~name1" ] || return 1
+
+    FP=$(f5.common.fullPathJoin "~" tenant1 name1)
+    [ "$FP" = "~tenant1~name1" ] || return 1
+}
+
+# shellcheck disable=SC2034
+TESTS_F5_COMMON=(
+    test.f5.common.fullPathSplit
+    test.f5.common.fullPathSplit2
+    test.f5.common.fullPathJoin
+)

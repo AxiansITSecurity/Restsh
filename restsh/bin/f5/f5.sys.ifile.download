@@ -28,7 +28,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
@@ -38,15 +38,17 @@ fi
 
 FULLPATH=$1
 FILENAME=$2
-read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
+IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "$FULLPATH")
+FULLPATH=$(f5.common.fullPathJoin "~" "$PARTITION" "$SUBPATH" "$NAME")
+FILESTORE_NAME=$(f5.common.fullPathJoin ":" "$PARTITION" "$SUBPATH" "$NAME")
 
 # Get iFile configuration
-IFILE=$(GET "/mgmt/tm/sys/file/ifile/~${PARTITION}~${NAME}")
+IFILE=$(GET "/mgmt/tm/sys/file/ifile/${FULLPATH}")
 REVISION=$(JQ -r ".revision" <<< "$IFILE")
 
 # Find the file for download and copy it to a location where we can download it
 # This involves some guessing of the filename
-if ! F5_FILE=$(f5.run "ls -1 /config/filestore/files_d/${PARTITION}_d/ifile_d/:${PARTITION}:${NAME}_?????_${REVISION}")
+if ! F5_FILE=$(f5.run "ls -1 /config/filestore/files_d/${PARTITION}_d/ifile_d/${FILESTORE_NAME}_*_${REVISION}")
 then
     echo_err "File not found"
     exit 1

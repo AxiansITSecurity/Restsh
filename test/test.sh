@@ -30,6 +30,7 @@ ALL_GROUPS["next"]="TESTS_NEXT"
 ALL_GROUPS["restsh"]="TESTS_RESTSH"
 
 . "$SCRIPTPATH/restsh.util"
+. "$SCRIPTPATH/f5.common"
 
 TESTS_AAFW=()
 TESTS_CERT=()
@@ -39,6 +40,7 @@ TESTS_NEXT=()
 TESTS_RESTSH=(
     "restsh/bin/restsh/restsh".*
     "${TESTS_RESTSH_UTIL[@]}"
+    "${TESTS_F5_COMMON[@]}"
 )
 
 # Run single test
