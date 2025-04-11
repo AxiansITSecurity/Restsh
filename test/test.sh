@@ -41,6 +41,7 @@ TESTS_RESTSH=(
     "restsh/bin/restsh/restsh".*
     "${TESTS_RESTSH_UTIL[@]}"
     "${TESTS_F5_COMMON[@]}"
+    "${TESTS_MO_F5_AS3[@]}"
 )
 
 # Run single test
