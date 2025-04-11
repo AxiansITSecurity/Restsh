@@ -54,6 +54,10 @@ cat > .gitlab-ci.yml << EOL
 include:
   - project: \$PIPELINE_PROJECT_CERTIFICATES
     file: 'certificates.yml'
+    #file: 'pipelines/f5-device-certbot.yml'
+    #file: 'pipelines/f5-device-scm.yml'
+    #file: 'pipelines/f5-tm-certbot.yml'
+    #file: 'pipelines/f5-tm-scm.yml'
 EOL
 for F in dev test prod
 do
