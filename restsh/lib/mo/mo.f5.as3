@@ -64,9 +64,7 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
             echo "    Resolving array $VALUE" 1>&2
             if declare -p "$VALUE" >/dev/null 2>&1
             then
-                TMP=("${VALUE}[@]")
-                ARRAY="${!TMP}"
-                declare -a "$NAME"="(${ARRAY[*]})"
+                eval "$(declare -a -p "$VALUE" | sed "s/ $VALUE=/ $NAME=/")"
             else
                 echo "Array $VALUE not defined"
                 exit 1
