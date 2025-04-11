@@ -30,7 +30,6 @@ ALL_GROUPS["next"]="TESTS_NEXT"
 ALL_GROUPS["restsh"]="TESTS_RESTSH"
 
 . "$SCRIPTPATH/restsh.util"
-. "$SCRIPTPATH/f5.common"
 . "$SCRIPTPATH/mo.f5.as3"
 
 TESTS_AAFW=()
@@ -41,7 +40,6 @@ TESTS_NEXT=()
 TESTS_RESTSH=(
     "restsh/bin/restsh/restsh".*
     "${TESTS_RESTSH_UTIL[@]}"
-    "${TESTS_F5_COMMON[@]}"
     "${TESTS_MO_F5_AS3[@]}"
 )
 

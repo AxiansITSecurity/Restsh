@@ -7,6 +7,8 @@
 # Desc:
 # Test suite for mo.f5.as3 library.
 
+# shellcheck disable=SC2034
+
 # Strict error handling
 set -eEuo pipefail
 
@@ -58,7 +60,6 @@ EOL
     [ "$STR" = "test string" ]
 }
 
-# shellcheck disable=SC2034
 TESTS_MO_F5_AS3=(
     test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION
 )
