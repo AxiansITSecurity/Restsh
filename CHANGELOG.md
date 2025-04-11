@@ -28,7 +28,7 @@
 - Upd: `f5.cert.bundle.import` add option to not add suffix
 - Upd: Add branch option to `gitlab.project.pipeline.list`
 - Upd: Add `Accept` Header to HTTP-Requests.
-- Upd: `aafw.group.clone` supports pull for existing repositories
+- Upd: `aafw.group.clone` supports pull for existing repositories and is renamed to `gitlab.group.clone`
 - Upd: Add automerge option to `gitlab.mr.create`
 
 ***
