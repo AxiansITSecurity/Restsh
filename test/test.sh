@@ -31,6 +31,7 @@ ALL_GROUPS["restsh"]="TESTS_RESTSH"
 
 . "$SCRIPTPATH/restsh.util"
 . "$SCRIPTPATH/f5.common"
+. "$SCRIPTPATH/mo.f5.as3"
 
 TESTS_AAFW=()
 TESTS_CERT=()
