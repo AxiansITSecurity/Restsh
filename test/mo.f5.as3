@@ -14,7 +14,7 @@ test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION() {
     local TMP
     TMP=$(mktemp -d)
     local VAR_TEST1="test string"
-    local ARRAY_TEST2=("/ratelimit/test1,5 30 60" "/ratelimit/test2,10 60 120")
+    local ARRAY_TEST2=("/ratelimit/test1,5 30 60" "/ratelimit/test2,10 60 120" "/ratelimit/test3,\$foo")
     local ARRAY_TEST3=()
     cat > "$TMP/parent.json" << EOL
 {
@@ -50,9 +50,11 @@ EOL
     local RECORD0 RECORD1 STR
     RECORD0=$(JQ -r '.records[0]."/ratelimit/test1"' <<< "$JSON")
     RECORD1=$(JQ -r '.records[1]."/ratelimit/test2"' <<< "$JSON")
+    RECORD2=$(JQ -r '.records[1]."/ratelimit/test3"' <<< "$JSON")
     STR=$(JQ -r '.string' <<< "$JSON")
     [ "$RECORD0" = "5 30 60" ]
     [ "$RECORD1" = "10 60 120" ]
+    [ "$RECORD2" = "\$foo" ]
     [ "$STR" = "test string" ]
 }
 
