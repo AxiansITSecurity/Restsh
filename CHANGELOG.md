@@ -33,6 +33,13 @@
 
 ***
 
+## v4.0.2 - not yet released
+
+- Fix: MO_F5_AS3_INCLUDE_DECLARATION - support empty arrays
+- Fix: MO_F5_AS3_INCLUDE_DECLARATION - Array values with spaces are incorrectly splited
+
+***
+
 ## v4.0.1 - 2025-04-03
 
 - Fix: `restsh.util.json_validate` mark correct line
