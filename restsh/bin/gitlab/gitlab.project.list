@@ -45,7 +45,7 @@ then
     PAGE=$1
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects?page=$PAGE&per_page=100")
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
 then
     if [ "$RAW" -eq 1 ]
     then

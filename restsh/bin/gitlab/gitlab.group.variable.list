@@ -42,7 +42,7 @@ fi
 GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/variables")
+if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/variables?per_page=${GITLAB_PER_PAGE}")
 then
     if [ "$RAW" -eq 1 ]
     then

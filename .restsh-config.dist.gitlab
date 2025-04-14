@@ -46,6 +46,7 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 
 # GitLab specific settings
 [ -n "${GITLAB_ENABLE_AUTOCOMPLETE+x}" ] || export GITLAB_ENABLE_AUTOCOMPLETE=1
+[ -n "${GITLAB_PER_PAGE+x}" ] || export GITLAB_PER_PAGE=250
 
 # Axians Automation Framework settings
 # Clone with https

@@ -30,3 +30,6 @@ if [ -z "${RESTSH_INIT_CMD+x}" ]
 then
     export RESTSH_INIT_CMD="gitlab.version"
 fi
+
+# Pagination
+[ -n "${GITLAB_PER_PAGE+x}" ] || export GITLAB_PER_PAGE=250

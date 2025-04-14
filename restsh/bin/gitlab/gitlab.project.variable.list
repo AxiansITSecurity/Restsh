@@ -42,7 +42,7 @@ fi
 PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/variables")
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/variables?per_page=${GITLAB_PER_PAGE}")
 then
     if [ "$RAW" -eq 1 ]
     then
