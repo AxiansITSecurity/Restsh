@@ -34,19 +34,26 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project>"
-    echo -e "    -r Raw output."
+    echo "Usage: $(basename "$0") [options...] <project> [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
     exit 2
 fi
 
 PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/protected_branches")
+PAGE=0
+if [ -n "${2+x}" ]
+then
+    PAGE=$2
+fi
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/protected_branches?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ "." <<< "$RESULT"
     else
         JQ -r '.[] | [.name,.push_access_levels[].access_level_description, .merge_access_levels[].access_level_description, .allow_force_push] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "branch,push,merge,force"

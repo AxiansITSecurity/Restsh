@@ -30,23 +30,30 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
+if [ $# -lt 1 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <group>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...] <group> [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
     exit 2
 fi
 
 GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/variables?per_page=${GITLAB_PER_PAGE}")
+PAGE=0
+if [ -n "${2+x}" ]
+then
+    PAGE=$2
+fi
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/variables?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ "." <<< "$RESULT"
     else
         JQ -r '.[] | [.key, .value, .masked, .raw] | @tsv' <<< "$RESULT" | \
             COLUMN -o " | " -N "key,value,masked,raw"

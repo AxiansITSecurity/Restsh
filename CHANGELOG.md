@@ -6,6 +6,7 @@
 
 - Feat: Add `gitlab.project.schedules.create`, `gitlab.project.schedules.delete`, `gitlab.project.schedules.get`, `gitlab.project.schedules.list`, `gitlab.project.schedules.start`
 - Feat: Add `gitlab.group.id`, `gitlab.project.id`, `gitlab.group.subgroups`
+- Feat: Support pagination for GitLab list functions
 - Feat: Add `f5.ltm.pool.list`
 - Feat: Add `f5.net.vlan.list`, `f5.net.trunk.list`
 - Feat: Add `f5.cluster.traffic-group.ha-group.set`

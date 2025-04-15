@@ -34,8 +34,9 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] [<page>]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...] [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
     exit 2
 fi
 
@@ -49,7 +50,7 @@ if RESULT=$(GET "$GITLAB_API_PREFIX/projects?page=$PAGE&per_page=${GITLAB_PER_PA
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ "." <<< "$RESULT"
     else
         JQ -r '.[] | [.id, .path_with_namespace, .owner.username] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "id,path_with_namespace,owner"

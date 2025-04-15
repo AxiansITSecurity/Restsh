@@ -30,25 +30,35 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$#" -ne 1 ] || [ "$OPTION" = "invalid" ]
+if [ "$#" -lt 1 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project>"
-    echo -e "\t-r Raw output."
+    echo "Usage: $(basename "$0") [options...] <project> [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
     exit 2
 fi
 
 PROJECT=$1
-
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests?state=opened")
-
-if [ "$RAW" -eq 1 ]
+PAGE=0
+if [ -n "${2+x}" ]
 then
-    echo "$RESULT"
-else
-    JQ -r '.[] | [.iid, .merge_status, .source_branch, .target_branch, .author.name] | @tsv' <<< "$RESULT" | \
-        COLUMN -o "|" -N "id,merge status,source,target,author"
+    PAGE=$2
 fi
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests?state=opened&page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        JQ "." <<< "$RESULT"
+    else
+        JQ -r '.[] | [.iid, .merge_status, .source_branch, .target_branch, .author.name] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "id,merge status,source,target,author"
+    fi
+    exit 0
+fi
+
+exit1

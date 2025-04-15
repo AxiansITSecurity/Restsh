@@ -44,4 +44,4 @@ restsh.util.check.isnumber "$DST" || DST=$(restsh.util.urlencode "$DST")
 while read -r LINE
 do
     POST "$GITLAB_API_PREFIX/groups/$DST/variables" <<< "$LINE"
-done < <(GET "$GITLAB_API_PREFIX/groups/$SRC/variables" | JQ -rc '.[]')
+done < <(GET "$GITLAB_API_PREFIX/groups/$SRC/variables?per_page=${GITLAB_PER_PAGE}" | JQ -rc '.[]')
