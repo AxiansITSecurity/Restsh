@@ -47,5 +47,5 @@ if [ "$RAW" -eq 1 ]
 then
     POST "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/play" <<< ""
 else
-    POST -r -f ".status" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/play" <<< ""
+    POST -r -f ".web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/play" <<< ""
 fi
