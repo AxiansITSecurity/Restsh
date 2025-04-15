@@ -22,16 +22,15 @@ fi
 usage() {
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") --cn=<common name> <key file> <csr file>"
+    echo "Usage: $(basename "$0") [options...] --cn=<common name> <key file> <csr file>"
     echo "Options:"
-    echo -e "\t-a <dns alternative name>"
-    echo -e "\t-i <ip alternative name>"
-    echo -e "\t--cn=<common name>"
-    echo -e "\t--org=<organization>"
-    echo -e "\t--ou=<organizational unit>"
-    echo -e "\t--city=<city>"
-    echo -e "\t--state=<state>"
-    echo -e "\t--country=<country>"
+    echo "    -a <dns alternative name>"
+    echo "    -i <ip alternative name>"
+    echo "    --org=<organization>"
+    echo "    --ou=<organizational unit>"
+    echo "    --city=<city>"
+    echo "    --state=<state>"
+    echo "    --country=<country>"
     exit 2
 }
 
