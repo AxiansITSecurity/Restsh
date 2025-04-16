@@ -51,7 +51,7 @@ else
     NUM_JOBS=2
 fi
 
-gitlab.project.pipeline.start -w -s "CI_PIPELINE_SOURCE=push" \
+gitlab.project.pipeline.start -w -s "CI_PIPELINE_SOURCE=trigger" \
     -s "TASK_HOST=$TASK_HOST" "${PIPELINE_OPTS[@]}" \
     "$PROJECT" "$BRANCH"
 
