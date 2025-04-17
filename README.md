@@ -41,6 +41,10 @@ You can use custom config files to work with several api endpoints. If not defin
 restsh/restsh.start custom-config1
 ```
 
+### Custom environment variables
+
+You can use the environment variable `RESTSH_CUSTOM_ENV` to define a custom file that will be sourced from `restsh.init`.
+
 ### Password encryption
 
 You can store the RESTSH_PASS AES256 encrypted in the configuration file.
