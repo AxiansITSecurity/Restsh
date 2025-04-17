@@ -164,7 +164,7 @@ MO_INCLUDE_BASE64URL() {
     base64 -w0 < "$FILENAME" | tr -d '\n' | tr '+/' '-_' | tr -d '='
 }
 
-# Include an external template.
+# Include an external file.
 # Usage: {{MO_INCLUDE_PLAIN '<filename>'}}
 # Usage: {{MO_INCLUDE_PLAIN '<filename>' '<basedir>'}}
 MO_INCLUDE_PLAIN() {
@@ -190,7 +190,7 @@ MO_INCLUDE_JSON_ENCODE() {
     else
         FILENAME="${MO_FUNCTION_ARGS[0]}"
     fi
-    jq "@json" "$FILENAME" | tr -d '\n'
+    jq -R -s '.' < "$FILENAME" | tr -d '\n'
 }
 
 # Parses the file with mustache before including it
