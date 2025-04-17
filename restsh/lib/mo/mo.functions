@@ -107,19 +107,19 @@ MO_CSV_GET_ENTRY() {
     local VALUE=${MO_FUNCTION_ARGS[0]}
     local NR=${MO_FUNCTION_ARGS[1]}
     local CSV
-    mapfile -t -d, <<< "$VALUE" CSV
+    mapfile -t -d, CSV <<< "$VALUE"
     printf "%s" "${CSV[$NR]}" | tr -d '\n'
 }
 
 # Returns an entry from a comma separated list or default value if not found.
-# Usage: {{MO_CSV_GET_ENTRY {{.}} '1'}}
+# Usage: {{MO_CSV_GET_ENTRY {{.}} '1' 'default'}}
 MO_CSV_GET_ENTRY_OR_DEFAULT() {
     local VALUE=${MO_FUNCTION_ARGS[0]}
     local NR=${MO_FUNCTION_ARGS[1]}
-    local DEFAULT=${MO_FUNCTION_ARGS[1]}
+    local DEFAULT=${MO_FUNCTION_ARGS[2]}
     local CSV
-    mapfile -t -d, <<< "$VALUE" CSV
-    if [ "${CSV[$NR]}" = "" ]
+    mapfile -t -d, CSV <<< "$VALUE"
+    if [ "${#CSV[@]}" -le $NR ]
     then
         printf "%s" "$DEFAULT"
     else
