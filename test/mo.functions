@@ -1,0 +1,425 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-04-17
+
+# Shortdesc: Test suite for mo.functions library.
+# Desc:
+# Test suite for mo.functions library.
+
+# shellcheck disable=SC2034
+
+# Strict error handling
+set -eEuo pipefail
+
+test.mo.functions.MO_COMMA_IF_NOT_FIRST() {
+    local TMP
+    TMP=$(mktemp -d)
+    local ARRAY=("test0" "test1" "test2")
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "records": [
+            {{#ARRAY}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY}}
+        ]
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.records[2]' <<< "$JSON")
+    [ "$RECORD_FIRST" = "test0" ]
+    [ "$RECORD_LAST" = "test2" ]
+}
+
+test.mo.functions.MO_COMMA_IF_NOT_EMPTY() {
+    local TMP
+    TMP=$(mktemp -d)
+    local ARRAY1=("test0" "test1" "test2")
+    local ARRAY2=()
+    local ARRAY3=("test3" "test4" "test5")
+    local ARRAY4=()
+    local ARRAY5=()
+    local ARRAY6=("test6" "test7" "test8")
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "records": [
+            {{#ARRAY1}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY1}}
+            {{MO_COMMA_IF_NOT_EMPTY 'ARRAY1' 'ARRAY2'}}
+            {{#ARRAY2}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY2}}
+            {{MO_COMMA_IF_NOT_EMPTY 'ARRAY1' 'ARRAY2' 'ARRAY3'}}
+            {{#ARRAY3}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY3}}
+            {{MO_COMMA_IF_NOT_EMPTY 'ARRAY1' 'ARRAY2' 'ARRAY3' 'ARRAY4'}}
+            {{#ARRAY4}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY4}}
+            {{MO_COMMA_IF_NOT_EMPTY 'ARRAY1' 'ARRAY2' 'ARRAY3' 'ARRAY4' 'ARRAY5'}}
+            {{#ARRAY5}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY5}}
+            {{MO_COMMA_IF_NOT_EMPTY 'ARRAY1' 'ARRAY2' 'ARRAY3' 'ARRAY4' 'ARRAY5' 'ARRAY6'}}
+            {{#ARRAY6}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/ARRAY6}}
+        ]
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.records[8]' <<< "$JSON")
+    [ "$RECORD_FIRST" = "test0" ]
+    [ "$RECORD_LAST" = "test8" ]
+}
+
+test.mo.functions.MO_VALUE_OR_DEFAULT() {
+    local TMP
+    TMP=$(mktemp -d)
+    local VALUE1="test1"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_VALUE_OR_DEFAULT 'VALUE1' 'default_value'}}",
+        "key2": "{{MO_VALUE_OR_DEFAULT 'VALUE2' 'default_value'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    [ "$RECORD_FIRST" = "test1" ]
+    [ "$RECORD_LAST" = "default_value" ]
+}
+
+test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT() {
+    local TMP
+    TMP=$(mktemp -d)
+    local VALUE1_KEY="test1"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_VALUE_EXPAND_OR_DEFAULT 'VALUE1' 'KEY' 'default_value'}}",
+        "key2": "{{MO_VALUE_EXPAND_OR_DEFAULT 'VALUE2' 'KEY' 'default_value'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    [ "$RECORD_FIRST" = "test1" ]
+    [ "$RECORD_LAST" = "default_value" ]
+}
+
+test.mo.functions.MO_TRUE_IF_NOT_EMPTY() {
+    local TMP
+    TMP=$(mktemp -d)
+    local VALUE1="test1"
+    local VALUE2=""
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": {{MO_TRUE_IF_NOT_EMPTY 'VALUE1'}},
+        "key2": {{MO_TRUE_IF_NOT_EMPTY 'VALUE2'}}
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    [ "$RECORD_FIRST" = "true" ]
+    [ "$RECORD_LAST" = "false" ]
+}
+
+test.mo.functions.MO_CSV_GET() {
+    local TMP
+    TMP=$(mktemp -d)
+    local CSV="test0,test1,test2"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        {{#CSV}}
+            "key0": "{{MO_CSV_GET_FIRST {{.}}}}",
+            "key1": "{{MO_CSV_GET_ENTRY {{.}} '1'}}",
+            "key2": "{{MO_CSV_GET_LAST {{.}}}}",
+            "key3": "{{MO_CSV_GET_ENTRY_OR_DEFAULT {{.}} '3' 'default'}}"
+        {{/CSV}}
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_ENTRY RECORD_LAST RECORD_DEFAULT
+    RECORD_FIRST=$(JQ -r '.Common.key0' <<< "$JSON")
+    RECORD_ENTRY=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    RECORD_DEFAULT=$(JQ -r '.Common.key3' <<< "$JSON")
+    [ "$RECORD_FIRST" = "test0" ]
+    [ "$RECORD_ENTRY" = "test1" ]
+    [ "$RECORD_LAST" = "test2" ]
+    [ "$RECORD_DEFAULT" = "default" ]
+}
+
+test.mo.functions.MO_BASE64URL() {
+    local TMP
+    TMP=$(mktemp -d)
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_BASE64URL 'abc'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    [ "$RECORD_FIRST" = "YWJj" ]
+}
+
+test.mo.functions.MO_INCLUDE_BASE64() {
+    local TMP
+    TMP=$(mktemp -d)
+    echo "abc" > "$TMP/test"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_INCLUDE_BASE64 'test' '$TMP'}}",
+        "key2": "{{MO_INCLUDE_BASE64 '$TMP/test'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    [ "$RECORD_FIRST" = "YWJjCg==" ]
+    [ "$RECORD_LAST" = "YWJjCg==" ]
+}
+
+test.mo.functions.MO_INCLUDE_BASE64URL() {
+    local TMP
+    TMP=$(mktemp -d)
+    echo "abc" > "$TMP/test"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_INCLUDE_BASE64URL 'test' '$TMP'}}",
+        "key2": "{{MO_INCLUDE_BASE64URL '$TMP/test'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    [ "$RECORD_FIRST" = "YWJjCg" ]
+    [ "$RECORD_LAST" = "YWJjCg" ]
+}
+
+test.mo.functions.MO_INCLUDE_PLAIN() {
+    local TMP
+    TMP=$(mktemp -d)
+    printf "abc" > "$TMP/test"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_INCLUDE_PLAIN 'test' '$TMP'}}",
+        "key2": "{{MO_INCLUDE_PLAIN '$TMP/test'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    [ "$RECORD_FIRST" = "abc" ]
+    [ "$RECORD_LAST" = "abc" ]
+}
+
+test.mo.functions.MO_INCLUDE_JSON_ENCODE() {
+    local TMP
+    TMP=$(mktemp -d)
+    echo 'a"bc' > "$TMP/test"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": {{MO_INCLUDE_JSON_ENCODE 'test' '$TMP'}},
+        "key2": {{MO_INCLUDE_JSON_ENCODE '$TMP/test'}}
+    }
+}
+EOL
+    local VALUE
+    VALUE=$(JQ -n --arg v "$(<$TMP/test)" '{$v}' | JQ -r '.v')
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
+    printf "%s\n" "$RECORD_FIRST"
+    echo $VALUE
+    [ "$RECORD_FIRST" = "$VALUE" ]
+    [ "$RECORD_LAST" = "$VALUE" ]
+}
+
+test.mo.functions.MO_INCLUDE_PARSE() {
+    local TMP
+    TMP=$(mktemp -d)
+    local VAR_TEST=("test1" "test2")
+    cat > "$TMP/parent.json" << EOL
+{
+    "Tenant": {{MO_INCLUDE_PARSE '$TMP/include.json'}}
+}
+EOL
+    cat > "$TMP/include.json" << EOL
+{
+    "Common": {
+        "records": [
+            {{#VAR_TEST}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/VAR_TEST}}
+        ]
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD0 RECORD1 STR
+    RECORD0=$(JQ -r '.Tenant.Common.records[0]' <<< "$JSON")
+    RECORD1=$(JQ -r '.Tenant.Common.records[1]' <<< "$JSON")
+    STR=$(JQ -r '.string' <<< "$JSON")
+    [ "$RECORD0" = "test1" ]
+    [ "$RECORD1" = "test2" ]
+}
+
+test.mo.functions.MO_VAR_PARSE() {
+    local TMP
+    TMP=$(mktemp -d)
+    local VAR_TEST=("test1" "test2")
+    cat > "$TMP/parent.json" << EOL
+{
+    "Tenant": {{MO_VAR_PARSE 'INCLUDE'}}
+}
+EOL
+    local INCLUDE='{
+    "Common": {
+        "records": [
+            {{#VAR_TEST}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/VAR_TEST}}
+        ]
+    }
+}'
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD0 RECORD1 STR
+    RECORD0=$(JQ -r '.Tenant.Common.records[0]' <<< "$JSON")
+    RECORD1=$(JQ -r '.Tenant.Common.records[1]' <<< "$JSON")
+    STR=$(JQ -r '.string' <<< "$JSON")
+    [ "$RECORD0" = "test1" ]
+    [ "$RECORD1" = "test2" ]
+}
+
+test.mo.functions.MO_VAR_PARSE_IF() {
+    local TMP
+    TMP=$(mktemp -d)
+    local VAR_TEST=("test1" "test2")
+    local F5_VERSION="17"
+    cat > "$TMP/parent.json" << EOL
+{{MO_VAR_PARSE_IF 'F5_VERSION' '17' 'INCLUDE'}}
+{{MO_VAR_PARSE_IF 'F5_VERSION' '16' 'INCLUDE2'}}
+EOL
+    local INCLUDE='{
+    "Common": {
+        "records": [
+            {{#VAR_TEST}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/VAR_TEST}}
+        ]
+    }
+}'
+    local INCLUDE2='{
+    "Common2": {
+        "records": [
+            {{#VAR_TEST}}
+                {{MO_COMMA_IF_NOT_FIRST}}
+                "{{.}}"
+            {{/VAR_TEST}}
+        ]
+    }
+}'
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD0 RECORD1 STR
+    RECORD0=$(JQ -r '.Common.records[0]' <<< "$JSON")
+    RECORD1=$(JQ -r '.Common.records[1]' <<< "$JSON")
+    STR=$(JQ -r '.string' <<< "$JSON")
+    [ "$RECORD0" = "test1" ]
+    [ "$RECORD1" = "test2" ]
+    if JQE -r '.Common2.records[0]' <<< "$JSON"
+    then
+        return 1
+    fi
+}
+
+TESTS_MO_FUNCTIONS=(
+    test.mo.functions.MO_COMMA_IF_NOT_FIRST
+    test.mo.functions.MO_COMMA_IF_NOT_EMPTY
+    test.mo.functions.MO_VALUE_OR_DEFAULT
+    test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT
+    test.mo.functions.MO_TRUE_IF_NOT_EMPTY
+    test.mo.functions.MO_CSV_GET
+    test.mo.functions.MO_BASE64URL
+    test.mo.functions.MO_INCLUDE_BASE64
+    test.mo.functions.MO_INCLUDE_BASE64URL
+    test.mo.functions.MO_INCLUDE_PLAIN
+    test.mo.functions.MO_INCLUDE_JSON_ENCODE
+    test.mo.functions.MO_INCLUDE_PARSE
+    test.mo.functions.MO_VAR_PARSE
+    test.mo.functions.MO_VAR_PARSE_IF
+)

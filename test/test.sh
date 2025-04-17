@@ -32,6 +32,7 @@ ALL_GROUPS["restsh"]="TESTS_RESTSH"
 . "$SCRIPTPATH/restsh.util"
 . "$SCRIPTPATH/f5.common"
 . "$SCRIPTPATH/mo.f5.as3"
+. "$SCRIPTPATH/mo.functions"
 
 TESTS_AAFW=()
 TESTS_CERT=()
@@ -43,6 +44,7 @@ TESTS_RESTSH=(
     "${TESTS_RESTSH_UTIL[@]}"
     "${TESTS_F5_COMMON[@]}"
     "${TESTS_MO_F5_AS3[@]}"
+    "${TESTS_MO_FUNCTIONS[@]}"
 )
 
 # Run single test
