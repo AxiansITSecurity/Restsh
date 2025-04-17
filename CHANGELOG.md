@@ -2,10 +2,13 @@
 
 ***
 
-## v4.0.2 - not yet released
+## v4.0.2 - 2025-04-17
 
 - Fix: MO_F5_AS3_INCLUDE_DECLARATION - support empty arrays
 - Fix: MO_F5_AS3_INCLUDE_DECLARATION - Array values with spaces are incorrectly splited
+- Fix: MO_INCLUDE_JSON_ENCODE
+- Fix: MO_INCLUDE_* - handle undefined second argument
+- Fix: MO_CSV_GET_ENTRY_OR_DEFAULT - print default
 
 ***
 
