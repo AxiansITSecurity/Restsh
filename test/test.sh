@@ -11,10 +11,18 @@
 
 SCRIPTPATH=$(dirname "$0")
 
+export RESTSH_CUSTOM_ENV="$SCRIPTPATH/test.env"
+
 RESTSH_PATH="$(realpath restsh)"
 export RESTSH_PATH
 export RESTSH_HOST="localhost"
 . "$RESTSH_PATH/restsh.init"
+
+if [ "$RESTSH_CUSTOM_TEST" -ne 1 ]
+then
+    echo_err "Custom environment not found."
+    exit 1
+fi
 
 # Set a random secret for tests
 RESTSH_SECRET=$(restsh.pwgen)
