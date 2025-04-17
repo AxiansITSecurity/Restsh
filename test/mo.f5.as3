@@ -12,6 +12,76 @@
 # Strict error handling
 set -eEuo pipefail
 
+test.mo.f5.as3.MO_IP_RANGE() {
+    local TMP
+    TMP=$(mktemp -d)
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "records": [
+            {{MO_IP_RANGE '10.1.1.10' '10.1.1.20'}}
+        ]
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST RECORD_LAST
+    RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.records[10]' <<< "$JSON")
+    [ "$RECORD_FIRST" = "10.1.1.10" ]
+    [ "$RECORD_LAST" = "10.1.1.20" ]
+}
+
+test.mo.f5.as3.MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER() {
+    local TMP
+    TMP=$(mktemp -d)
+    mkdir "$TMP/irules"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        {{MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER '$TMP/irules'}}
+    }
+}
+EOL
+    echo "test0" > "$TMP/irules/test0.irule"
+    echo "test1" > "$TMP/irules/test1.irule"
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local IRULE0
+    local IRULE1
+    IRULE0=$(JQ -r '.Common.test0.iRule.base64' <<< "$JSON")
+    IRULE1=$(JQ -r '.Common.test1.iRule.base64' <<< "$JSON")
+    [ "$(base64 -d <<< "$IRULE0")" = "test0" ]
+    [ "$(base64 -d <<< "$IRULE1")" = "test1" ]
+}
+
+test.mo.f5.as3.MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER() {
+    local TMP
+    TMP=$(mktemp -d)
+    mkdir "$TMP/ifiles"
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        {{MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER '$TMP/ifiles'}}
+    }
+}
+EOL
+    echo "test0" > "$TMP/ifiles/test0.txt"
+    echo "test1" > "$TMP/ifiles/test1.txt"
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local IFILE0
+    local IFILE1
+    IFILE0=$(JQ -r '.Common."test0.txt".iFile.base64' <<< "$JSON")
+    IFILE1=$(JQ -r '.Common."test1.txt".iFile.base64' <<< "$JSON")
+    [ "$(base64 -d <<< "$IFILE0")" = "test0" ]
+    [ "$(base64 -d <<< "$IFILE1")" = "test1" ]
+}
+
 test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION() {
     local TMP
     TMP=$(mktemp -d)
@@ -47,7 +117,7 @@ EOL
 }
 EOL
     JSON=$($RESTSH_MO -- "$TMP/parent.json")
-    echo "$JSON"
+    #echo "$JSON"
     rm -rf "$TMP"
     local RECORD0 RECORD1 STR
     RECORD0=$(JQ -r '.records[0]."/ratelimit/test1"' <<< "$JSON")
@@ -62,4 +132,7 @@ EOL
 
 TESTS_MO_F5_AS3=(
     test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION
+    test.mo.f5.as3.MO_IP_RANGE
+    test.mo.f5.as3.MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER
+    test.mo.f5.as3.MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER
 )
