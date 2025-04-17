@@ -288,7 +288,7 @@ test.mo.functions.MO_INCLUDE_JSON_ENCODE() {
 }
 EOL
     local VALUE
-    VALUE=$(JQ -n --arg v "$(<$TMP/test)" '{$v}' | JQ -r '.v')
+    VALUE=$(JQ -n --arg v "$(<"$TMP/test")" '{$v}' | JQ -r '.v')
     JSON=$($RESTSH_MO -- "$TMP/parent.json")
     echo "$JSON"
     rm -rf "$TMP"
@@ -296,7 +296,6 @@ EOL
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
     printf "%s\n" "$RECORD_FIRST"
-    echo $VALUE
     [ "$RECORD_FIRST" = "$VALUE" ]
     [ "$RECORD_LAST" = "$VALUE" ]
 }

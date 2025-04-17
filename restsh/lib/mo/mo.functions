@@ -119,7 +119,7 @@ MO_CSV_GET_ENTRY_OR_DEFAULT() {
     local DEFAULT=${MO_FUNCTION_ARGS[2]}
     local CSV
     mapfile -t -d, CSV <<< "$VALUE"
-    if [ "${#CSV[@]}" -le $NR ]
+    if [ "${#CSV[@]}" -le "$NR" ]
     then
         printf "%s" "$DEFAULT"
     else
