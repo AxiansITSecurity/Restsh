@@ -140,7 +140,7 @@ MO_BASE64URL() {
 # Usage: {{MO_INCLUDE_BASE64 '<filename>' '<basedir>'}}
 MO_INCLUDE_BASE64() {
     local FILENAME
-    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    if [ -n "${MO_FUNCTION_ARGS[1]+x}" ] && [ -n "${MO_FUNCTION_ARGS[1]}" ]
     then
         FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
     else
@@ -155,7 +155,7 @@ MO_INCLUDE_BASE64() {
 # Usage: {{MO_INCLUDE_BASE64URL '<filename>' '<basedir>'}}
 MO_INCLUDE_BASE64URL() {
     local FILENAME
-    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    if [ -n "${MO_FUNCTION_ARGS[1]+x}" ] && [ -n "${MO_FUNCTION_ARGS[1]}" ]
     then
         FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
     else
@@ -169,7 +169,7 @@ MO_INCLUDE_BASE64URL() {
 # Usage: {{MO_INCLUDE_PLAIN '<filename>' '<basedir>'}}
 MO_INCLUDE_PLAIN() {
     local FILENAME
-    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    if [ -n "${MO_FUNCTION_ARGS[1]+x}" ] && [ -n "${MO_FUNCTION_ARGS[1]}" ]
     then
         FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
     else
@@ -184,7 +184,7 @@ MO_INCLUDE_PLAIN() {
 # Usage: {{MO_INCLUDE_JSON_ENCODE '<filename>' '<basedir>'}}
 MO_INCLUDE_JSON_ENCODE() {
     local FILENAME
-    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    if [ -n "${MO_FUNCTION_ARGS[1]+x}" ] && [ -n "${MO_FUNCTION_ARGS[1]}" ]
     then
         FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
     else
@@ -198,7 +198,7 @@ MO_INCLUDE_JSON_ENCODE() {
 # Usage: {{MO_INCLUDE_PARSE '<filename>' '<basedir>'}}
 MO_INCLUDE_PARSE() {
     local FILENAME
-    if [ -n "${MO_FUNCTION_ARGS[1]}" ]
+    if [ -n "${MO_FUNCTION_ARGS[1]+x}" ] && [ -n "${MO_FUNCTION_ARGS[1]}" ]
     then
         FILENAME="${MO_FUNCTION_ARGS[1]}/${MO_FUNCTION_ARGS[0]}"
     else
