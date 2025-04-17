@@ -7,7 +7,7 @@
 # Desc:
 # F5 AS3 helper functions for mustache.
 
-# Prints all IPs in a range
+# Prints all IPs in a range (including) for the last octet
 MO_IP_RANGE() {
     local START=${MO_FUNCTION_ARGS[0]}
     local END=${MO_FUNCTION_ARGS[1]}
@@ -15,21 +15,12 @@ MO_IP_RANGE() {
     local OCTETS_END
     mapfile -t -d. OCTETS_START <<< "$START"
     mapfile -t -d. OCTETS_END <<< "$END"
-    local FIRST SECOND THIRD LAST
+    local LAST
     local COMMA=""
-    for ((FIRST=OCTETS_START[0]; FIRST <= OCTETS_END[0]; FIRST++))
+    for ((LAST=OCTETS_START[3]; LAST <= OCTETS_END[3]; LAST++))
     do
-        for ((SECOND=OCTETS_START[1]; SECOND <= OCTETS_END[1]; SECOND++))
-        do
-            for ((THIRD=OCTETS_START[2]; THIRD <= OCTETS_END[2]; THIRD++))
-            do
-                for ((LAST=OCTETS_START[3]; LAST <= OCTETS_END[3]; LAST++))
-                do
-                    echo "$COMMA\"$FIRST.$SECOND.$THIRD.$LAST\""
-                    COMMA=","
-                done
-            done
-        done
+        echo "$COMMA\"${OCTETS_START[0]}.${OCTETS_START[1]}.${OCTETS_START[2]}.$LAST\""
+        COMMA=","
     done
     return 0
 }
