@@ -1,0 +1,29 @@
+{
+    "name": "{{VAR_NAME}}",
+    "fullPath": "{{VAR_FULL_PATH}}",
+    "answerDefaultZones": "yes",
+    "cacheSize": 5767168,
+    "nameserverMinRtt": 50,
+    "nameserverTtl": 900,
+    "outboundMsgRetry": 5,
+    "prefetch": "no",
+    "randomizeQueryNameCase": "yes",
+    "routeDomain": "/Common/0",
+    "useIpv4": "yes",
+    "useIpv6": "yes",
+    "useTcp": "yes",
+    "useUdp": "yes",
+    "forwardZones": [
+        {
+            "name": "{{VAR_FORWARD_ZONE}}",
+            "nameservers": [
+                {
+                    "name": "{{VAR_DNS1}}"
+                },
+                {
+                    "name": "{{VAR_DNS2}}"
+                }
+            ]
+        }
+    ]
+}

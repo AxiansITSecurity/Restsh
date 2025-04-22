@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-04-22
+
+# Shortdesc: Adds a dns-resolver.
+# Desc:
+# Adds a dns-resolver.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+TEMPLATE="${RESTSH_PATH}/templates/f5/ltm/net.dns-resolver.json"
+DEFAULTS="${RESTSH_PATH}/templates/f5/ltm/net.dns-resolver.var"
+while getopts ':d:s:t:' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        t) TEMPLATE=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$#" -lt 1 ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <full path>"
+    echo "Options:"
+    echo "    -d <file>         File to read variables from"
+    echo "    -s \"VAR=VALUE\"  Set a variable for template processing"
+    echo "    -t <template>     Declaration template to use"
+    echo "Template is: $TEMPLATE"
+    echo "Defaults are:"
+    sed -E 's/.*\|\| (.*)/\t\1/' "$DEFAULTS"
+    echo ""
+    echo "Example:"
+    echo "    $(basename "$0") -s VAR_DNS1=10.1.1.1:53 -s VAR_DNS2=10.1.1.2:53 /Common/dns-resolver-example"
+    exit 2
+fi
+
+export VAR_FULL_PATH="$1"
+read -r VAR_PARTITION VAR_NAME < <(f5.common.fullPathSplit "$1")
+export VAR_PARTITION
+export VAR_NAME
+
+if [ ! -f "$TEMPLATE" ]
+then
+    if [ -f "${RESTSH_PATH}/templates/f5/ltm/$TEMPLATE" ]
+    then
+        TEMPLATE="${RESTSH_PATH}/templates/f5/ltm/$TEMPLATE"
+    else
+        echo_err "Template not found"
+        exit 1
+    fi
+fi
+
+# Include mustache
+. "${RESTSH_PATH}/dist/mo/mo"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
+
+MO_OPTIONS=()
+if [ -n "$DEFAULTS" ]
+then
+    if [ ! -s "$DEFAULTS" ]
+    then
+        echo_err "Variables file not found."
+        exit 1
+    fi
+    MO_OPTIONS+=("-s=""$DEFAULTS")
+fi
+
+$RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" | POST "/mgmt/tm/net/dns-resolver"

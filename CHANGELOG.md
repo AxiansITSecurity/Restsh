@@ -4,6 +4,7 @@
 
 ## v4.1.0 - not yet released
 
+- Feat: Add `f5.net.dns-resolver.add`, `f5.net.dns-resolver.delete`, `f5.net.dns-resolver.get`, `f5.net.dns-resolver.list`, `f5.net.dns-resolver.modify`
 - Feat: Use `RESTSH_CUSTOM_ENV` environment variable to source a custom file from `restsh.init`
 - Feat: Add `gitlab.project.schedules.create`, `gitlab.project.schedules.delete`, `gitlab.project.schedules.get`, `gitlab.project.schedules.list`, `gitlab.project.schedules.start`
 - Feat: Add `gitlab.group.id`, `gitlab.project.id`, `gitlab.group.subgroups`
