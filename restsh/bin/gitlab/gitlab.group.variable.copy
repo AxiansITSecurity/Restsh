@@ -43,5 +43,11 @@ restsh.util.check.isnumber "$DST" || DST=$(restsh.util.urlencode "$DST")
 
 while read -r LINE
 do
-    POST "$GITLAB_API_PREFIX/groups/$DST/variables" <<< "$LINE"
+    if ! RESULT=$(POST "$GITLAB_API_PREFIX/groups/$DST/variables" <<< "$LINE" 2>&1)
+    then
+        JQ -r '.error.output.message.key[0]' <<< "$RESULT"
+    else
+        echo -n "Copied variable "
+        JQ -r '.key' <<< "$RESULT"
+    fi
 done < <(GET "$GITLAB_API_PREFIX/groups/$SRC/variables?per_page=${GITLAB_PER_PAGE}" | JQ -rc '.[]')
