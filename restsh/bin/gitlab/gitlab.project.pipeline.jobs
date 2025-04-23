@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-01-28
 
-# Shortdesc: Lists all jobs for a pipeline for a projects.
+# Shortdesc: Lists all jobs of a pipeline for a project.
 # Desc:
-# Lists all jobs for a pipeline for a projects.
+# Lists all jobs of a pipeline for a project.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -54,7 +54,7 @@ if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/jobs?page=$P
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ '.' <<< "$RESULT"
     else
         JQ -r '.[] | [.id, .created_at, .finished_at, .web_url] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "id,created,finished,url"
