@@ -51,8 +51,22 @@ else
     NUM_JOBS=2
 fi
 
+# Special case for draft branch
+if [ "$BRANCH" = "draft" ]
+then
+    if gitlab.project.pipeline.start -s "CI_COMMIT_BRANCH=$BRANCH" \
+        -s "CI_PIPELINE_SOURCE=push" -s "TASK_HOST=$TASK_HOST" \
+        "${PIPELINE_OPTS[@]}" \
+        "$PROJECT" "$BRANCH"
+    then
+        exit 0
+    fi
+    exit 1
+fi
+
+# Start pipeline to create manual jobs
 gitlab.project.pipeline.start -w -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK_HOST=$TASK_HOST" "${PIPELINE_OPTS[@]}" \
+    -s "TASK_HOST=$TASK_HOST" \
     "$PROJECT" "$BRANCH"
 
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
