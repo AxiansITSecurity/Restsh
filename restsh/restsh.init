@@ -236,14 +236,6 @@ then
     echo "Happy RESTing"
     echo ""
 
-    # Optional atuin support
-    # https://atuin.sh/
-    if command -v atuin > /dev/null
-    then
-        eval "$(atuin init bash --disable-up-arrow)"
-        eval "$(atuin gen-completions --shell bash)"
-    fi
-
     # Do not add commands to history that begin with space
     export HISTCONTROL=ignorespace
 
@@ -254,6 +246,20 @@ then
     then
         ${RESTSH_INIT_CMD}
         echo ""
+    fi
+
+    # Optional Atuin support
+    # https://atuin.sh/
+    if command -v atuin > /dev/null
+    then
+        unset __atuin_initialized
+        unset ATUIN_HISTORY_ID
+        unset ATUIN_PREEXEC_BACKEND
+        unset ATUIN_SESSION
+        . "$HOME/.atuin/bin/env"
+        [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
+        eval "$(atuin init bash --disable-up-arrow)"
+        eval "$(atuin gen-completions --shell bash)"
     fi
 
     # Do not exit on error after initialization
