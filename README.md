@@ -110,6 +110,15 @@ Further dependencies are:
 - curl (v7.76.0)
 - jq
 
+## Atuin
+
+Restsh supports the integration of [Atuin](https://atuin.sh/) for better shell history support.
+
+```sh
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+atuin import auto
+```
+
 ## Customize
 
 You can add your own scripts into the `restsh/bin/custom` and `restsh/lib/custom` folders.
