@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-04-23
+
+# Shortdesc: Downloads a job artifact.
+# Desc:
+# Downloads a job artifact.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <project> <job id> <filename>"
+    exit 2
+fi
+
+PROJECT=$1
+ID=$2
+FILENAME=$3
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+if [ -f "$FILENAME" ]
+then
+    echo_err "Filename already exists"
+    exit 1
+fi
+
+DOWNLOAD "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/artifacts" "$FILENAME"
+unzip -l "$FILENAME"

@@ -24,10 +24,9 @@
 - Feat: Add `aafw.pipeline.start.task.axscripts`
 - Feat: Allow encrypted variables in `restsh.util.setvar` for simple variables
 - Feat: Add `gitlab.project.clone`
-- Feat: Add `gitlab.project.pipeline.variables`, `gitlab.project.pipeline.latest`, `gitlab.project.pipeline.latest.jobs`
+- Feat: Add `gitlab.project.pipeline.jobs`, `gitlab.project.pipeline.variables`, `gitlab.project.pipeline.latest`, `gitlab.project.pipeline.latest.jobs`
 - Feat: Add wait options for `gitlab.project.pipeline.start`
-- Feat: Add `gitlab.project.pipeline.jobs`, `gitlab.project.job.log`
-- Feat: Add `gitlab.project.job.cancel`, `gitlab.project.job.erase`, `gitlab.project.job.retry`, `gitlab.project.job.start`
+- Feat: Add `gitlab.project.job.log`, `gitlab.project.job.artifact`, `gitlab.project.job.cancel`, `gitlab.project.job.erase`, `gitlab.project.job.retry`, `gitlab.project.job.start`
 - Upd: Support subPath for `f5.sys.ifile.create`, `f5.sys.ifile.delete`, `f5.sys.ifile.download`, `f5.sys.ifile.update`
 - Upd: `f5.cert.bundle.import` add option to not add suffix
 - Upd: Add branch option to `gitlab.project.pipeline.list`
