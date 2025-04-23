@@ -24,7 +24,7 @@
 - Feat: Add `aafw.pipeline.start.task.axscripts`
 - Feat: Allow encrypted variables in `restsh.util.setvar` for simple variables
 - Feat: Add `gitlab.project.clone`
-- Feat: Add `gitlab.project.pipeline.variables`, `gitlab.project.pipeline.latest`
+- Feat: Add `gitlab.project.pipeline.variables`, `gitlab.project.pipeline.latest`, `gitlab.project.pipeline.latest.jobs`
 - Feat: Add wait options for `gitlab.project.pipeline.start`
 - Feat: Add `gitlab.project.pipeline.jobs`, `gitlab.project.job.log`
 - Feat: Add `gitlab.project.job.cancel`, `gitlab.project.job.erase`, `gitlab.project.job.retry`, `gitlab.project.job.start`

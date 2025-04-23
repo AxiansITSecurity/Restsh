@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-01-28
+
+# Shortdesc: Lists all jobs of the latest pipeline run for a project.
+# Desc:
+# Lists all jobs of the latest pipeline run for a project.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -lt 1 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <project> [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
+    exit 2
+fi
+
+PROJECT=$1
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+PAGE=0
+if [ -n "${3+x}" ]
+then
+    PAGE=$3
+fi
+
+ID=$(GET -rf '.id' "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/latest")
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/jobs?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        JQ '.' <<< "$RESULT"
+    else
+        JQ -r '.[] | [.id, .created_at, .finished_at, .web_url] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "id,created,finished,url"
+    fi
+    exit 0
+fi
+
+exit 1
