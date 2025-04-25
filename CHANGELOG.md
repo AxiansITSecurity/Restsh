@@ -2,7 +2,7 @@
 
 ***
 
-## v4.1.0 - not yet released
+## v4.1.0 - 2025-04-25
 
 - Feat: Optional integration of [Atuin](https://atuin.sh/)
 - Feat: Add `f5.net.dns-resolver.add`, `f5.net.dns-resolver.delete`, `f5.net.dns-resolver.get`, `f5.net.dns-resolver.list`, `f5.net.dns-resolver.modify`
