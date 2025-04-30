@@ -21,6 +21,8 @@ export F5_ASM_SIGNATURE_FILTER_READY="?\$filter=hasSuggestions+eq+false+AND+wasU
 export F5_ASM_SIGNATURE_FILTER_SUGGESTIONS="?\$filter=hasSuggestions+eq+true+AND+performStaging+eq+true+AND+enabled+eq+true"
 # All disabled signatures
 export F5_ASM_SIGNATURE_FILTER_DISABLED="?\$filter=enabled+eq+false"
+# All enabled and not staged signatures
+export F5_ASM_SIGNATURE_FILTER_ENABLED="?\$filter=enabled+eq+true+AND+performStaging+eq+false"
 
 # Gets the id of signature for a policy by global signatureId
 f5.asm.policy.signature.getid() {

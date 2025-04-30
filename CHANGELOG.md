@@ -2,6 +2,10 @@
 
 ***
 
+## v4.2.0 - not yet released
+
+- Feat: Add `f5.asm.policy.signature.list`
+
 ## v4.1.0 - 2025-04-25
 
 - Feat: Optional integration of [Atuin](https://atuin.sh/)
