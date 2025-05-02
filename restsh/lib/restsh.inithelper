@@ -29,15 +29,28 @@ restsh.init.check.env() {
     then
         if [ -z "${RESTSH_USER+x}" ] || [ -z "${RESTSH_USER}" ]
         then
-            read -r -p "User: " RESTSH_USER
-            export RESTSH_USER
+            # Ask for user only in interactive mode
+            if [ -n "${RESTSH_INTERACTIVE+x}" ]
+            then
+                read -r -p "User: " RESTSH_USER
+                export RESTSH_USER
+            else
+                echo_warn "No restsh user set"
+                export RESTSH_USER=""
+            fi
         fi
-
         if [ -z "${RESTSH_PASS+x}" ] || [ -z "${RESTSH_PASS}" ]
         then
-            RESTSH_PASS=$(restsh.util.askpass Password)
-            export RESTSH_PASS
-            printf "\n"
+            # Ask for password only in interactive mode
+            if [ -n "${RESTSH_INTERACTIVE+x}" ]
+            then
+                RESTSH_PASS=$(restsh.util.askpass Password)
+                export RESTSH_PASS
+                printf "\n"
+            else
+                echo_warn "No restsh password set"
+                export RESTSH_PASS=""
+            fi
         fi
     elif [ "$RESTSH_AUTH" == "token" ]
     then
