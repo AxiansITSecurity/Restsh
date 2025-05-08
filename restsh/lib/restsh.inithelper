@@ -153,4 +153,16 @@ restsh.init.prompt_command() {
     fi
 }
 
+# Print help for current command
+_restsh.init.shortcuts.help() {
+    local CMD=${READLINE_LINE%% *}
+    [ -n "$CMD" ] || return
+    "$CMD" -h
+}
+
+# Register keyboard shortcuts
+restsh.init.shortcuts() {
+    bind -x '"\C-h": _restsh.init.shortcuts.help'
+}
+
 export -f restsh.init.setresturl

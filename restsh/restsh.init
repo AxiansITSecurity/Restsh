@@ -262,6 +262,9 @@ then
         eval "$(atuin gen-completions --shell bash)"
     fi
 
+    # Register keyboard shortcuts
+    restsh.init.shortcuts
+
     # Do not exit on error after initialization
     set +eE
 fi

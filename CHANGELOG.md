@@ -5,6 +5,7 @@
 ## v4.2.0 - not yet released
 
 - Feat: Add `f5.asm.policy.signature.list`
+- Feat: Pressing `Ctrl`+`h` shows the help of current command
 
 ## v4.1.0 - 2025-04-25
 
