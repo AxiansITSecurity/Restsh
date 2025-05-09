@@ -143,13 +143,13 @@ restsh.init.prompt_command() {
     then
         RESTSH_TOKEN_LIFETIME=$(<"$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME")
         export RESTSH_TOKEN_LIFETIME
-        rm "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+        rm -f "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
     fi
     if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_VALUE" ]
     then
         RESTSH_TOKEN_VALUE=$(<"$RESTSH_TMP/.RESTSH_TOKEN_VALUE")
         export RESTSH_TOKEN_VALUE
-        rm "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
+        rm -f "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
     fi
 }
 
