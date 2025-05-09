@@ -126,7 +126,7 @@ restsh.init.prompt_command() {
     fi
     if [ -n "${RESTSH_INTERACTIVE+x}" ]
     then
-        case $TERM in
+        case "$TERM" in
             xterm*)
                 TITLEBAR='\[\033]0;restsh - ${RESTSH_URL}\007\]'
                 ;;
