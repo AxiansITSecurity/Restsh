@@ -137,7 +137,7 @@ restsh.init.prompt_command() {
         local GIT_BRANCH
         GIT_BRANCH=$(git branch --show-current 2>/dev/null)
         [ -n "$GIT_BRANCH" ] && GIT_BRANCH=" ($GIT_BRANCH)"
-        export PS1="$TITLEBAR\w${GIT_BRANCH}\n\[$COLOR\]${RESTSH_URL}\[\033[00m\]# "
+        export PS1="$TITLEBAR\w${GIT_BRANCH}\[\033[500C\033[${#RESTSH_URL}D \[$COLOR\]${RESTSH_URL}\[\033[00m\]\n\[\e[97;1m\]> \[\e[0m\]"
     fi
     if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME" ]
     then
