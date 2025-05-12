@@ -32,10 +32,13 @@ fi
 
 # Get options
 POLICY_DIR="$RESTSH_PATH/templates/check/http-header"
-while getopts ':p:' OPTION
+CURL_OPTS=()
+while getopts ':kp:r:' OPTION
 do
     case "$OPTION" in
+        k) CURL_OPTS+=("-k") ;;
         p) POLICY_DIR=$OPTARG ;;
+        r) CURL_OPTS+=("--resolve" "$OPTARG") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -47,7 +50,9 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <uri>"
     echo "Options":
+    echo "    -k Ignore SSL certificate errors"
     echo "    -p Header Policy folder, default: $POLICY_DIR"
+    echo "    -r Curl resolve option, e.g. demo1.lab.lan:443:10.125.245.56"
     exit 2
 fi
 
@@ -65,7 +70,7 @@ do
     [ -z "$HEADER" ] && continue
     # Set header array
     HEADERS["$HEADER"]="$VALUE"
-done < <(curl -sI "$URI")
+done < <(curl -sI "${CURL_OPTS[@]}" "$URI")
 
 RC=0
 for POLICY in "$POLICY_DIR"/*.sh
