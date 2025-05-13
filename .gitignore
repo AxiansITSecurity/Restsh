@@ -1,4 +1,5 @@
 *~
+.restsh-secret
 .restsh-config
 .restsh-config-*
 *.tgz
