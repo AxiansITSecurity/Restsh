@@ -120,15 +120,15 @@ restsh.init.setresturl() {
 restsh.init.prompt_command() {
     if [ "$?" -eq 0 ]
     then
-        local COLOR="\033[01;32m"
+        local COLOR="\e[01;32m"
     else
-        local COLOR="\033[0;31m"
+        local COLOR="\e[0;31m"
     fi
     if [ -n "${RESTSH_INTERACTIVE+x}" ]
     then
         case "$TERM" in
             xterm*)
-                TITLEBAR='\[\033]0;restsh - ${RESTSH_URL}\007\]'
+                TITLEBAR='\[\e]0;restsh - ${RESTSH_URL}\007\]'
                 ;;
             *)
                 TITLEBAR=""
@@ -137,7 +137,7 @@ restsh.init.prompt_command() {
         local GIT_BRANCH
         GIT_BRANCH=$(git branch --show-current 2>/dev/null)
         [ -n "$GIT_BRANCH" ] && GIT_BRANCH=" ($GIT_BRANCH)"
-        export PS1="$TITLEBAR\w${GIT_BRANCH}\[\033[500C\033[${#RESTSH_URL}D \[$COLOR\]${RESTSH_URL}\[\033[00m\]\n\[\e[97;1m\]> \[\e[0m\]"
+        export PS1="$TITLEBAR\w${GIT_BRANCH}\[\e[500C\e[${#RESTSH_URL}D \[$COLOR\]${RESTSH_URL}\[\e[00m\]\n\[\e[97;1m\]> \[\e[0m\]"
     fi
     if [ -s "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME" ]
     then
