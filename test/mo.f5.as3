@@ -26,12 +26,29 @@ test.mo.f5.as3.MO_IP_RANGE() {
 EOL
     JSON=$($RESTSH_MO -- "$TMP/parent.json")
     echo "$JSON"
-    rm -rf "$TMP"
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.records[10]' <<< "$JSON")
-    [ "$RECORD_FIRST" = "10.1.1.10" ]
-    [ "$RECORD_LAST" = "10.1.1.20" ]
+    [ "$RECORD_FIRST" = "10.1.1.10" ] || return 1
+    [ "$RECORD_LAST" = "10.1.1.20" ] || return 1
+
+    # Test with start = end
+        cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "records": [
+            {{MO_IP_RANGE '10.1.1.10' '10.1.1.10'}}
+        ]
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.records[1]' <<< "$JSON")
+    [ "$RECORD_FIRST" = "10.1.1.10" ] || return 1
+    [ "$RECORD_LAST" = "null" ] || return 1
+    rm -rf "$TMP"
 }
 
 test.mo.f5.as3.MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER() {
@@ -54,8 +71,8 @@ EOL
     local IRULE1
     IRULE0=$(JQ -r '.Common.test0.iRule.base64' <<< "$JSON")
     IRULE1=$(JQ -r '.Common.test1.iRule.base64' <<< "$JSON")
-    [ "$(base64 -d <<< "$IRULE0")" = "test0" ]
-    [ "$(base64 -d <<< "$IRULE1")" = "test1" ]
+    [ "$(base64 -d <<< "$IRULE0")" = "test0" ] || return 1
+    [ "$(base64 -d <<< "$IRULE1")" = "test1" ] || return 1
 }
 
 test.mo.f5.as3.MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER() {
@@ -78,8 +95,8 @@ EOL
     local IFILE1
     IFILE0=$(JQ -r '.Common."test0.txt".iFile.base64' <<< "$JSON")
     IFILE1=$(JQ -r '.Common."test1.txt".iFile.base64' <<< "$JSON")
-    [ "$(base64 -d <<< "$IFILE0")" = "test0" ]
-    [ "$(base64 -d <<< "$IFILE1")" = "test1" ]
+    [ "$(base64 -d <<< "$IFILE0")" = "test0" ] || return 1
+    [ "$(base64 -d <<< "$IFILE1")" = "test1" ] || return 1
 }
 
 test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION() {
@@ -122,12 +139,12 @@ EOL
     local RECORD0 RECORD1 STR
     RECORD0=$(JQ -r '.records[0]."/ratelimit/test1"' <<< "$JSON")
     RECORD1=$(JQ -r '.records[1]."/ratelimit/test2"' <<< "$JSON")
-    RECORD2=$(JQ -r '.records[1]."/ratelimit/test3"' <<< "$JSON")
+    RECORD2=$(JQ -r '.records[2]."/ratelimit/test3"' <<< "$JSON")
     STR=$(JQ -r '.string' <<< "$JSON")
-    [ "$RECORD0" = "5 30 60" ]
-    [ "$RECORD1" = "10 60 120" ]
-    [ "$RECORD2" = "\$foo" ]
-    [ "$STR" = "test string" ]
+    [ "$RECORD0" = "5 30 60" ] || return 1
+    [ "$RECORD1" = "10 60 120" ] || return 1
+    [ "$RECORD2" = "\$foo" ] || return 1
+    [ "$STR" = "test string" ] || return 1
 }
 
 TESTS_MO_F5_AS3=(

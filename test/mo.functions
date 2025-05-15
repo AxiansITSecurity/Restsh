@@ -34,8 +34,8 @@ EOL
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.records[2]' <<< "$JSON")
-    [ "$RECORD_FIRST" = "test0" ]
-    [ "$RECORD_LAST" = "test2" ]
+    [ "$RECORD_FIRST" = "test0" ] || return 1
+    [ "$RECORD_LAST" = "test2" ] || return 1
 }
 
 test.mo.functions.MO_COMMA_IF_NOT_EMPTY() {
@@ -90,14 +90,14 @@ EOL
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.records[8]' <<< "$JSON")
-    [ "$RECORD_FIRST" = "test0" ]
-    [ "$RECORD_LAST" = "test8" ]
+    [ "$RECORD_FIRST" = "test0" ] || return 1
+    [ "$RECORD_LAST" = "test8" ] || return 1
 }
 
 test.mo.functions.MO_VALUE_OR_DEFAULT() {
     local TMP
     TMP=$(mktemp -d)
-    local VALUE1="test1"
+    export VALUE1="test1"
     cat > "$TMP/parent.json" << EOL
 {
     "Common": {
@@ -108,18 +108,19 @@ test.mo.functions.MO_VALUE_OR_DEFAULT() {
 EOL
     JSON=$($RESTSH_MO -- "$TMP/parent.json")
     echo "$JSON"
+    unset VALUE1
     rm -rf "$TMP"
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
-    [ "$RECORD_FIRST" = "test1" ]
-    [ "$RECORD_LAST" = "default_value" ]
+    [ "$RECORD_FIRST" = "test1" ] || return 1
+    [ "$RECORD_LAST" = "default_value" ] || return 1
 }
 
 test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT() {
     local TMP
     TMP=$(mktemp -d)
-    local VALUE1_KEY="test1"
+    export VALUE1KEY="test1"
     cat > "$TMP/parent.json" << EOL
 {
     "Common": {
@@ -130,12 +131,13 @@ test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT() {
 EOL
     JSON=$($RESTSH_MO -- "$TMP/parent.json")
     echo "$JSON"
+    unset VALUE1KEY
     rm -rf "$TMP"
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
-    [ "$RECORD_FIRST" = "test1" ]
-    [ "$RECORD_LAST" = "default_value" ]
+    [ "$RECORD_FIRST" = "test1" ] || return 1
+    [ "$RECORD_LAST" = "default_value" ] || return 1
 }
 
 test.mo.functions.MO_TRUE_IF_NOT_EMPTY() {
@@ -157,8 +159,8 @@ EOL
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
-    [ "$RECORD_FIRST" = "true" ]
-    [ "$RECORD_LAST" = "false" ]
+    [ "$RECORD_FIRST" = "true" ] || return 1
+    [ "$RECORD_LAST" = "false" ] || return 1
 }
 
 test.mo.functions.MO_CSV_GET() {
@@ -185,10 +187,10 @@ EOL
     RECORD_ENTRY=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
     RECORD_DEFAULT=$(JQ -r '.Common.key3' <<< "$JSON")
-    [ "$RECORD_FIRST" = "test0" ]
-    [ "$RECORD_ENTRY" = "test1" ]
-    [ "$RECORD_LAST" = "test2" ]
-    [ "$RECORD_DEFAULT" = "default" ]
+    [ "$RECORD_FIRST" = "test0" ] || return 1
+    [ "$RECORD_ENTRY" = "test1" ] || return 1
+    [ "$RECORD_LAST" = "test2" ] || return 1
+    [ "$RECORD_DEFAULT" = "default" ] || return 1
 }
 
 test.mo.functions.MO_BASE64URL() {
@@ -206,7 +208,7 @@ EOL
     rm -rf "$TMP"
     local RECORD_FIRST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
-    [ "$RECORD_FIRST" = "YWJj" ]
+    [ "$RECORD_FIRST" = "YWJj" ] || return 1
 }
 
 test.mo.functions.MO_INCLUDE_BASE64() {
@@ -227,8 +229,8 @@ EOL
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
-    [ "$RECORD_FIRST" = "YWJjCg==" ]
-    [ "$RECORD_LAST" = "YWJjCg==" ]
+    [ "$RECORD_FIRST" = "YWJjCg==" ] || return 1
+    [ "$RECORD_LAST" = "YWJjCg==" ] || return 1
 }
 
 test.mo.functions.MO_INCLUDE_BASE64URL() {
@@ -249,8 +251,8 @@ EOL
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
-    [ "$RECORD_FIRST" = "YWJjCg" ]
-    [ "$RECORD_LAST" = "YWJjCg" ]
+    [ "$RECORD_FIRST" = "YWJjCg" ] || return 1
+    [ "$RECORD_LAST" = "YWJjCg" ] || return 1
 }
 
 test.mo.functions.MO_INCLUDE_PLAIN() {
@@ -271,8 +273,8 @@ EOL
     local RECORD_FIRST RECORD_LAST
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
-    [ "$RECORD_FIRST" = "abc" ]
-    [ "$RECORD_LAST" = "abc" ]
+    [ "$RECORD_FIRST" = "abc" ] || return 1
+    [ "$RECORD_LAST" = "abc" ] || return 1
 }
 
 test.mo.functions.MO_INCLUDE_JSON_ENCODE() {
@@ -296,8 +298,8 @@ EOL
     RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
     printf "%s\n" "$RECORD_FIRST"
-    [ "$RECORD_FIRST" = "$VALUE" ]
-    [ "$RECORD_LAST" = "$VALUE" ]
+    [ "$RECORD_FIRST" = "$VALUE" ] || return 1
+    [ "$RECORD_LAST" = "$VALUE" ] || return 1
 }
 
 test.mo.functions.MO_INCLUDE_PARSE() {
@@ -328,8 +330,8 @@ EOL
     RECORD0=$(JQ -r '.Tenant.Common.records[0]' <<< "$JSON")
     RECORD1=$(JQ -r '.Tenant.Common.records[1]' <<< "$JSON")
     STR=$(JQ -r '.string' <<< "$JSON")
-    [ "$RECORD0" = "test1" ]
-    [ "$RECORD1" = "test2" ]
+    [ "$RECORD0" = "test1" ] || return 1
+    [ "$RECORD1" = "test2" ] || return 1
 }
 
 test.mo.functions.MO_VAR_PARSE() {
@@ -358,8 +360,8 @@ EOL
     RECORD0=$(JQ -r '.Tenant.Common.records[0]' <<< "$JSON")
     RECORD1=$(JQ -r '.Tenant.Common.records[1]' <<< "$JSON")
     STR=$(JQ -r '.string' <<< "$JSON")
-    [ "$RECORD0" = "test1" ]
-    [ "$RECORD1" = "test2" ]
+    [ "$RECORD0" = "test1" ] || return 1
+    [ "$RECORD1" = "test2" ] || return 1
 }
 
 test.mo.functions.MO_VAR_PARSE_IF() {
@@ -398,8 +400,8 @@ EOL
     RECORD0=$(JQ -r '.Common.records[0]' <<< "$JSON")
     RECORD1=$(JQ -r '.Common.records[1]' <<< "$JSON")
     STR=$(JQ -r '.string' <<< "$JSON")
-    [ "$RECORD0" = "test1" ]
-    [ "$RECORD1" = "test2" ]
+    [ "$RECORD0" = "test1" ] || return 1
+    [ "$RECORD1" = "test2" ] || return 1
     if JQE -r '.Common2.records[0]' <<< "$JSON"
     then
         return 1

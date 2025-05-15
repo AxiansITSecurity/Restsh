@@ -50,7 +50,7 @@ test.restsh.util.MO() {
     local OUTPUT
     VAR_TEST="test"
     OUTPUT=$(MO <<< '{{VAR_TEST}}')
-    [ "$OUTPUT" = "$VAR_TEST" ]
+    [ "$OUTPUT" = "$VAR_TEST" ] || return 1
 }
 
 test.restsh.util.JQ() {
@@ -85,13 +85,13 @@ test.restsh.util.parseoutput() {
 
 test.restsh.util.declare.var() {
     restsh.util.declare.var "KEY1=wert"
-    [ "$KEY1" = "wert" ]
+    [ "$KEY1" = "wert" ] || return 1
 }
 
 test.restsh.util.eval_stage_var() {
     EXAMPLE_DEV="test"
     restsh.util.eval_stage_var "EXAMPLE" "DEV"
-    [ "$EXAMPLE" = "$EXAMPLE_DEV" ]
+    [ "$EXAMPLE" = "$EXAMPLE_DEV" ] || return 1
 }
 
 test.restsh.util.setvars() {
@@ -103,10 +103,10 @@ test.restsh.util.setvars() {
     echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/sub/TEST_ARRAY2.array"
     restsh.util.setvars "$RESTSH_TMP/vars"
     rm -r "$RESTSH_TMP/vars"
-    [ -n "$VAR_TEST_STR" ]
-    [ -n "$ARRAY_TEST_ARRAY" ]
-    [ -z "${VAR_TEST_STR2+x}" ]
-    [ -z "${ARRAY_TEST_ARRAY2+x}" ]
+    [ -n "$VAR_TEST_STR" ] || return 1
+    [ -n "$ARRAY_TEST_ARRAY" ] || return 1
+    [ -z "${VAR_TEST_STR2+x}" ] || return 1
+    [ -z "${ARRAY_TEST_ARRAY2+x}" ] || return 1
 }
 
 test.restsh.util.setvars.recursive() {
@@ -119,10 +119,10 @@ test.restsh.util.setvars.recursive() {
 
     restsh.util.setvars -r "$RESTSH_TMP/vars"
     rm -r "$RESTSH_TMP/vars"
-    [ -n "$VAR_TEST_STR" ]
-    [ -n "$ARRAY_TEST_ARRAY" ]
-    [ -n "$VAR_TEST_STR2" ]
-    [ -n "$ARRAY_TEST_ARRAY2" ]
+    [ -n "$VAR_TEST_STR" ] || return 1
+    [ -n "$ARRAY_TEST_ARRAY" ] || return 1
+    [ -n "$VAR_TEST_STR2" ] || return 1
+    [ -n "$ARRAY_TEST_ARRAY2" ] || return 1
 }
 
 test.restsh.util.setvar() {
@@ -132,14 +132,14 @@ test.restsh.util.setvar() {
     restsh.util.setvar "$RESTSH_TMP/vars/TEST_STR.txt"
     restsh.util.setvar "$RESTSH_TMP/vars/TEST_ARRAY.array"
     rm -r "$RESTSH_TMP/vars"
-    [ -n "$VAR_TEST_STR" ]
-    [ -n "$ARRAY_TEST_ARRAY" ]
+    [ -n "$VAR_TEST_STR" ] || return 1
+    [ -n "$ARRAY_TEST_ARRAY" ] || return 1
 }
 
 test.restsh.util.urlencode() {
     local OUTPUT
     OUTPUT=$(restsh.util.urlencode "test test")
-    [ "$OUTPUT" = "test%20test" ]
+    [ "$OUTPUT" = "test%20test" ] || return 1
 }
 
 test.restsh.util.json_validate() {
@@ -178,7 +178,7 @@ test.restsh.util.filesize() {
     local OUTPUT
     OUTPUT=$(restsh.util.filesize "$RESTSH_TMP/test")
     rm -f "$RESTSH_TMP/test"
-    [ "$OUTPUT" = "5" ]
+    [ "$OUTPUT" = "5" ] || return 1
 }
 
 test.restsh.util.array.includes() {
@@ -191,19 +191,19 @@ test.restsh.util.array.includes() {
 test.restsh.util.uc() {
     local OUTPUT
     OUTPUT=$(restsh.util.uc "test")
-    [ "$OUTPUT" = "TEST" ]
+    [ "$OUTPUT" = "TEST" ] || return 1
 }
 
 test.restsh.util.lc() {
     local OUTPUT
     OUTPUT=$(restsh.util.lc "TEST")
-    [ "$OUTPUT" = "test" ]
+    [ "$OUTPUT" = "test" ] || return 1
 }
 
 test.restsh.util.askpass() {
     local OUTPUT
     OUTPUT=$(restsh.util.askpass "prompt" <<< "test")
-    [ "$OUTPUT" = "test" ]
+    [ "$OUTPUT" = "test" ] || return 1
 }
 
 test.restsh.util.isencrypted() {
@@ -214,13 +214,13 @@ test.restsh.util.isencrypted() {
 test.restsh.util.trim() {
     local OUTPUT
     OUTPUT=$(restsh.util.trim "  test ")
-    [ "$OUTPUT" = "test" ]
+    [ "$OUTPUT" = "test" ] || return 1
 }
 
 test.restsh.util.base64url() {
     local OUTPUT
     OUTPUT=$(restsh.util.base64url "test")
-    [ "$OUTPUT" = "dGVzdA" ]
+    [ "$OUTPUT" = "dGVzdA" ] || return 1
 }
 
 # shellcheck disable=SC2034
