@@ -6,6 +6,7 @@
 
 - Feat: Add `f5.botdefense.profile.create`, `f5.botdefense.profile.get`, `f5.botdefense.profile.list`, `f5.botdefense.profile.update`
 - Feat: Add `f5.botdefense.whitelist.add`, `f5.botdefense.whitelist.batch`, `f5.botdefense.whitelist.list`, `f5.botdefense.whitelist.remove`, `f5.botdefense.whitelist.update`
+- Feat: Add `f5.botdefense.override.add`, `f5.botdefense.override.batch`, `f5.botdefense.override.list`, `f5.botdefense.override.remove`, `f5.botdefense.override.update`
 - Feat: Add `f5.asm.policy.signature.list`
 - Feat: Pressing `Ctrl`+`h` shows the help of current command
 - Feat: More options for `restsh.check.http-header`

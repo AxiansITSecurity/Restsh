@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-05-16
+
+# Shortdesc: Lists all Overrides for a F5 Bot Defense Profile.
+# Desc:
+# Lists all Overrides for a F5 Bot Defense Profile.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ] || [ $# -lt 1 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <full path> [override]"
+    echo "    -r  Raw output."
+    echo ""
+    echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
+    echo "    signatureCategoryOverrides signatureOverrides"
+    exit 2
+fi
+FULLPATH=${1//\//\~}
+if [ -n "${2+x}" ]
+then
+    OVERRIDES=("$2")
+else
+    OVERRIDES=("anomalyCategoryOverrides" "anomalyOverrides" "signatureCategoryOverrides" "signatureOverrides")
+fi
+
+# Main
+for OVERRIDE in "${OVERRIDES[@]}"
+do
+    GET "${GET_OPTS[@]}" "/mgmt/tm/security/bot-defense/profile/$FULLPATH/$OVERRIDE"
+done
