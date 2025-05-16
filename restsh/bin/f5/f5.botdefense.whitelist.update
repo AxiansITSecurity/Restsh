@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-05-16
 
-# Shortdesc: Adds an entry to the F5 Bot Defense Profile Whitelist.
+# Shortdesc: Updates an entry in the F5 Bot Defense Profile Whitelist.
 # Desc:
-# Adds an entry to the F5 Bot Defense Profile Whitelist.
+# Updates an entry in the F5 Bot Defense Profile Whitelist.
 
 # Strict error handling
 set -eEu -o pipefail
