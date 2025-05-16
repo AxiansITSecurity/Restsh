@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-05-16
+
+# Shortdesc: Replaces Whitelist Entries for a F5 Bot Defense Profile with the content of a CSV.
+# Desc:
+# Replaces Whitelist Entries for a F5 Bot Defense Profile with the content of a CSV.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ] || [ $# -lt 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <full path> <whitelist entries csv>"
+    echo "CSV format: Name,sourceAddress,url"
+    exit 2
+fi
+FULLPATH_ORG=$1
+FULLPATH=${FULLPATH_ORG//\//\~}
+CSV=$2
+
+# Get existing entries
+mapfile -t EXISTING_ENTRIES < <(GET -rf '.items[].name' "/mgmt/tm/security/bot-defense/profile/$FULLPATH/whitelist")
+
+# Add or modify entries
+CSV_ENTRIES=()
+while IFS="," read -r NAME SRC URL
+do
+    if restsh.util.array.includes "$NAME" "${EXISTING_ENTRIES[@]}"
+    then
+        echo "Updating $NAME"
+        f5.botdefense.whitelist.update "$FULLPATH_ORG" "$NAME" "$SRC" "$URL" > /dev/null
+    else
+        echo "Adding $NAME"
+        f5.botdefense.whitelist.add "$FULLPATH_ORG" "$NAME" "$SRC" "$URL" > /dev/null
+    fi
+    CSV_ENTRIES+=("$NAME")
+done < "$CSV"
+
+# Remove obsolete entries
+for NAME in "${EXISTING_ENTRIES[@]}"
+do
+    if ! restsh.util.array.includes "$NAME" "${CSV_ENTRIES[@]}"
+    then
+        echo "Removing $NAME"
+        f5.botdefense.whitelist.remove "$FULLPATH_ORG" "$NAME" > /dev/null
+    fi
+done

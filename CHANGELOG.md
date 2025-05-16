@@ -4,6 +4,8 @@
 
 ## v4.2.0 - not yet released
 
+- Feat: Add `f5.botdefense.profile.create`, `f5.botdefense.profile.get`, `f5.botdefense.profile.list`, `f5.botdefense.profile.update`
+- Feat: Add `f5.botdefense.whitelist.add`, `f5.botdefense.whitelist.batch`, `f5.botdefense.whitelist.list`, `f5.botdefense.whitelist.remove`, `f5.botdefense.whitelist.update`
 - Feat: Add `f5.asm.policy.signature.list`
 - Feat: Pressing `Ctrl`+`h` shows the help of current command
 - Feat: More options for `restsh.check.http-header`
