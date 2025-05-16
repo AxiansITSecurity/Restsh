@@ -36,8 +36,9 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo "    -f <filter>  Filter output with jq."
+    echo "    -r           Raw output."
     exit 2
 fi
 
