@@ -35,7 +35,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <full path> <override> <name>"
     echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
-    echo "    signatureCategoryOverrides signatureOverrides"
+    echo "    signatureCategoryOverrides, signatureOverrides"
     exit 2
 fi
 FULLPATH=${1//\//\~}

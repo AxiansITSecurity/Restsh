@@ -36,7 +36,7 @@ then
     echo "    -r  Raw output."
     echo ""
     echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
-    echo "    signatureCategoryOverrides signatureOverrides"
+    echo "    signatureCategoryOverrides, signatureOverrides"
     exit 2
 fi
 FULLPATH=${1//\//\~}

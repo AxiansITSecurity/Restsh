@@ -35,7 +35,7 @@ then
     echo "Usage: $(basename "$0") [options...] <full path> <folder>"
     echo "    Folder structure: <override>/name.json"
     echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
-    echo "    signatureCategoryOverrides signatureOverrides"
+    echo "    signatureCategoryOverrides, signatureOverrides"
     exit 2
 fi
 FULLPATH_ORG=$1

@@ -33,7 +33,7 @@ if [ "$OPTION" == "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <json configuration file>"
+    echo "Usage: $(basename "$0") <json configuration file>"
     exit 2
 fi
 CONFIG=$1
