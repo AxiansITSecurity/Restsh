@@ -19,3 +19,6 @@ POLICY_WEB_HOST_SSH_PRIV_KEY,,false,true,Private key for the web host user.
 POLICY_WEB_HOST_SSH_PRIV_KEY_PASSPHRASE_FILE,,false,true,File with the passphrase for the private key.
 POLICY_WEB_HOST_BASEPATH,/srv/www/waf,false,true,Document root for the policy files.
 POLICY_WEB_HOST_BASEURI,waf/,false,true,Relative uri for the policy files (empty or must end with /).
+
+# Bot Defense
+BOT_DEFENSE_SYNC,1,false,true,Sync cluster after deployment.
