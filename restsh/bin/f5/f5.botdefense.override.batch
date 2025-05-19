@@ -42,7 +42,12 @@ FULLPATH_ORG=$1
 FULLPATH=${FULLPATH_ORG//\//\~}
 FOLDER=$2
 
-OVERRIDES=("anomalyCategoryOverrides" "anomalyOverrides" "signatureCategoryOverrides" "signatureOverrides")
+OVERRIDES=(
+    "anomalyCategoryOverrides"
+    "anomalyOverrides"
+    "signatureCategoryOverrides"
+    "signatureOverrides"
+)
 for OVERRIDE in "${OVERRIDES[@]}"
 do
     [ -d "$FOLDER/$OVERRIDE" ] || continue
