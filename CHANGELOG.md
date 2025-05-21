@@ -4,6 +4,7 @@
 
 ## v4.2.0 - not yet released
 
+- Feat: Add `f5.asm.live-update.check`, `f5.asm.live-update.file.list`, `f5.asm.live-update.file.remove`, `f5.asm.live-update.file.upload`, `f5.asm.live-update.install`, `f5.asm.live-update.list`, `f5.asm.live-update.status`
 - Feat: Add `f5.botdefense.profile.create`, `f5.botdefense.profile.get`, `f5.botdefense.profile.list`, `f5.botdefense.profile.update`
 - Feat: Add `f5.botdefense.whitelist.add`, `f5.botdefense.whitelist.batch`, `f5.botdefense.whitelist.list`, `f5.botdefense.whitelist.remove`, `f5.botdefense.whitelist.update`
 - Feat: Add `f5.botdefense.override.add`, `f5.botdefense.override.batch`, `f5.botdefense.override.list`, `f5.botdefense.override.remove`, `f5.botdefense.override.update`

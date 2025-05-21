@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-05-21
+
+# Shortdesc: Check and retrieve the live update component file.
+# Desc:
+# Check and retrieve the live update component file.
+# Reference: https://my.f5.com/manage/s/article/K58021531
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+COMPONENTS=(
+    "asm-attack-signatures"
+    "behavioral-waf"
+    "bot-signatures"
+    "browser-challenges"
+    "server-technologies"
+    "threat-campaigns"
+)
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [-r] [component]"
+    echo "Available components:"
+    for COMPONENT in "${COMPONENTS[@]}"
+    do
+        echo "    - $COMPONENT"
+    done
+    exit 2
+fi
+
+if [ -n "${1+x}" ]
+then
+    COMPONENTS=("$1")
+fi
+
+# Main
+{
+    for COMPONENT in "${COMPONENTS[@]}"
+    do
+        if [ "$RAW" -eq 1 ]
+        then
+            PATCH "/mgmt/tm/live-update/$COMPONENT/availability" <<< '{"status": "check"}' || true
+        else
+            printf "%s" "$COMPONENT: "
+            if ! RESULT=$(PATCH "/mgmt/tm/live-update/$COMPONENT/availability" <<< '{"status": "check"}' 2>&1)
+            then
+                JQ -r ".error.output.message" <<< "$RESULT"
+            else
+                JQ -r ".status" <<< "$RESULT"
+            fi
+        fi
+    done
+}
