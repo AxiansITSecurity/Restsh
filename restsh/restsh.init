@@ -202,7 +202,11 @@ restsh.init.setresturl
 RESTSH_TMP=$(mktemp -d)
 export RESTSH_TMP
 # Remove it on exit
-trap "rm -rf ""$RESTSH_TMP" EXIT
+_restsh_cleanup() {
+    rm -rf "$RESTSH_TMP"
+    printf "\e]2;\a"
+}
+trap _restsh_cleanup EXIT
 
 # OK
 echo_ok "restsh $RESTSH_VERSION initialized"
