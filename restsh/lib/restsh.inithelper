@@ -54,10 +54,14 @@ restsh.init.check.env() {
         fi
     elif [ "$RESTSH_AUTH" == "token" ]
     then
-        if [ -z "${RESTSH_TOKEN_HEADER+x}" ] || [ -z "${RESTSH_TOKEN_VALUE+x}" ]
+        if [ -z "${RESTSH_TOKEN_HEADER+x}" ]
         then
-            echo_err "No token configured, set variables RESTSH_TOKEN_HEADER and RESTSH_TOKEN_VALUE."
+            echo_err "No token header configured, set variables RESTSH_TOKEN_HEADER."
             return 1
+        fi
+        if [ -z "${RESTSH_TOKEN_VALUE+x}" ]
+        then
+            export RESTSH_TOKEN_VALUE=""
         fi
     fi
     return 0

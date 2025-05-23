@@ -15,7 +15,7 @@ restsh asks for username and password. If you want to integrate restsh in a pipe
 ### Token based authentication
 
 ```sh
-[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
+[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH=""
 [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-F5-Auth-Token"
 ```
 
