@@ -1,6 +1,6 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
-CI_PUSH_TOKEN,,true,true,Access Token with write repository permissions to push artifacts.
+CI_PUSH_TOKEN,access-token-value,true,true,Access Token with write repository permissions to push artifacts.
 
 # Runner tag
 F5_ENV,f5,false,true,F5 environment name.
