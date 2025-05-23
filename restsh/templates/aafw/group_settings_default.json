@@ -1,4 +1,5 @@
 {
+    "visibility": "private",
     "default_branch": "master",
     "auto_devops_enabled": false,
     "default_branch_protection": 0

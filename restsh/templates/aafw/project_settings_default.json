@@ -1,4 +1,5 @@
 {
+    "visibility": "private",
     "issues_enabled": false,
     "wiki_enabled": false,
     "snippets_enabled": false,
