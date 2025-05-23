@@ -1,5 +1,7 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
+WAF_PUSH_DECLARATION,0,false,true,Push declaration in repository.
+
 # WAF policy defaults
 WAF_POLICY_PARTITION,Common,false,true,F5 Partition for the WAF-Policies.
 WAF_POLICY_DEFAULT_DIR,default-policy-v17,false,true,Default configuration directory.
