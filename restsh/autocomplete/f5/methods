@@ -31,6 +31,8 @@
 /mgmt/shared/analytics/event-analysis-tasks
 /mgmt/shared/
 /mgmt/shared/api
+/mgmt/shared/appsvcs
+/mgmt/shared/appsvcs/declare
 /mgmt/shared/appsvcs/declare/
 /mgmt/shared/appsvcs/declare/{id}
 /mgmt/shared/appsvcs/declare/{id}/applications
@@ -608,6 +610,7 @@
 /mgmt/tm/asm/parent-policy-settings
 /mgmt/tm/asm/policies
 /mgmt/tm/asm/policies/{id}
+/mgmt/tm/asm/policies/{id}/
 /mgmt/tm/asm/policies/{id}/action-items
 /mgmt/tm/asm/policies/{id}/audit-logs
 /mgmt/tm/asm/policies/{id}/blocking-settings
@@ -675,6 +678,7 @@
 /mgmt/tm/asm/policies/{id}/threat-campaigns
 /mgmt/tm/asm/policies/{id}/urls
 /mgmt/tm/asm/policies/{id}/urls/{id}
+/mgmt/tm/asm/policies/{id}/urls/{id}/
 /mgmt/tm/asm/policies/{id}/urls/{id}/parameters
 /mgmt/tm/asm/policies/{id}/vulnerabilities
 /mgmt/tm/asm/policies/{id}/vulnerabilities/{id}
@@ -689,6 +693,7 @@
 /mgmt/tm/asm/policy-building/disallowed-filetypes
 /mgmt/tm/asm/policy-diffs
 /mgmt/tm/asm/policy-diffs/{id}
+/mgmt/tm/asm/policy-diffs/{id}/
 /mgmt/tm/asm/policy-diffs/{id}/differences
 /mgmt/tm/asm/policy-groups
 /mgmt/tm/asm/policy-groups/{id}
@@ -1190,6 +1195,7 @@
 /mgmt/tm/ltm/virtual
 /mgmt/tm/ltm/virtual-address
 /mgmt/tm/ltm/virtual/{id}
+/mgmt/tm/ltm/virtual/{id}/
 /mgmt/tm/ltm/virtual/{id}/policies
 /mgmt/tm/ltm/virtual/{id}/profiles
 /mgmt/tm/net

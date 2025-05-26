@@ -12,12 +12,24 @@ _method() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     local prev="${COMP_WORDS[COMP_CWORD-1]}"
     local opts=""
+    local org=$cur
+    local P
+    while read -r P
+    do
+        local REGEX="^${P//\{id\}/\[^\/\]+}\$"
+        if [[ $cur =~ $REGEX ]]
+        then
+            cur="$P"
+            break
+        fi
+    done < "$RESTSH_PATH/autocomplete/scm/method_$prev"
     case "$prev" in
         DELETE|GET|PATCH|POST|PUT)
             opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/autocomplete/scm/method_$prev" | sort -u)
             if [ -z "$opts" ] && [ "${cur:0-1}" != "/" ]
             then
                 cur="$cur/"
+                org="$org/"
                 opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/autocomplete/scm/method_$prev" | sort -u)
             fi
             if [ -z "$opts" ]
@@ -26,7 +38,7 @@ _method() {
             fi
             ;;
     esac
-    mapfile -t COMPREPLY <<< "$opts"
+    mapfile -t COMPREPLY < <(sed -e "s|$cur|$org|" <<< "$opts")
 }
 
 complete -o nospace -F _method DELETE
