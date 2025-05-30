@@ -552,7 +552,7 @@ restsh.util.json_validate() {
         fi
         # Print the line with failure with some context
         echo "--"
-        I=$((LINE-4))
+        I=$((LINE-5))
         local TEXT
         while read -r TEXT
         do
