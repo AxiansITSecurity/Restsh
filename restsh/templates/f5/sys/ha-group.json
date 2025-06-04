@@ -11,7 +11,7 @@
                 "minimumThreshold": 1,
                 "percentUp": 100,
                 "sufficientThreshold": "1",
-                "weight": 10
+                "weight": {{VAR_POOL_WEIGHT}}
             }
         {{#ARRAY_POOLS}}
     ],
@@ -24,7 +24,7 @@
                 "minimumThreshold": 1,
                 "percentUp": 100,
                 "sufficientThreshold": "all",
-                "weight": 10
+                "weight": {{VAR_TRUNK_WEIGHT}}
             }
         {{/ARRAY_TRUNKS}}
     ]

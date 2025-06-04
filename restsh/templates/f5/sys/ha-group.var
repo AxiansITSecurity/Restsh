@@ -1,4 +1,6 @@
 [ -n "${VAR_NAME+x}" ] || VAR_NAME="ha-group"
-[ -n "${VAR_ACTIVE_BONUS+x}" ] || VAR_ACTIVE_BONUS="20"
+[ -n "${VAR_ACTIVE_BONUS+x}" ] || VAR_ACTIVE_BONUS="19"
 [ -n "${ARRAY_POOLS+x}" ] || ARRAY_POOLS=()
 [ -n "${ARRAY_TRUNKS+x}" ] || ARRAY_TRUNKS=()
+[ -n "${VAR_TRUNK_WEIGHT+x}" ] || VAR_TRUNK_WEIGHT="10"
+[ -n "${VAR_POOL_WEIGHT+x}" ] || VAR_POOL_WEIGHT="20"
