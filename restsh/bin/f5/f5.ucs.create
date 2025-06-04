@@ -69,10 +69,16 @@ do
         exit 1
     fi
     COUNTER=$((COUNTER+1))
-    if ! STATUS=$(GET -r -c 5 "$UCS_TASK_ENDPOINT/$TASK_ID" | \
-        $RESTSH_JQ -r "._taskState")
+    if ! STATUS=$(GET -r -c 5 -f "._taskState" "$UCS_TASK_ENDPOINT/$TASK_ID")
     then
+        echo_err "Can not get task status."
+        GET "$UCS_TASK_ENDPOINT/$TASK_ID"
         exit 1
+    fi
+    if ! restsh.util.check.notempty "$STATUS"
+    then
+        echo_warn "Invalid return code, retrying"
+        continue
     fi
     case "$STATUS" in
         STARTED|NEW|"")
