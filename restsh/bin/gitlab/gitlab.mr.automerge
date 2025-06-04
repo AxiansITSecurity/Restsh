@@ -49,7 +49,7 @@ RESULT=$(JQ -n \
     --arg msg "$MSG" \
     '{
         merge_commit_message: $msg,
-        merge_when_pipeline_succeeds: true
+        auto_merge: true
     }' | PUT "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests/$IID/merge")
 
 if [ "$RAW" -eq 1 ]
