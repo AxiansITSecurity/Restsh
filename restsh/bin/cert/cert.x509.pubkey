@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-02
 
-# Shortdesc: Shows the publich key of a x509 certificate.
+# Shortdesc: Shows the public key of a x509 certificate.
 # Desc:
-# Shows the publich key of a x509 certificate.
+# Shows the public key of a x509 certificate.
 
 # Strict error handling
 set -eEu -o pipefail

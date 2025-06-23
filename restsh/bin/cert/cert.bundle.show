@@ -3,7 +3,7 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-02
 
-# Shortdesc: Lists the certifactes in a cert bundle file.
+# Shortdesc: Lists the certificates in a cert bundle file.
 # Desc:
 # Lists the certificates in a cert bundle file.
 
