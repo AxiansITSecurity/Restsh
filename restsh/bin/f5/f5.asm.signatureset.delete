@@ -34,6 +34,7 @@ then
     echo "Usage: $(basename "$0") <signature set name>"
     exit 2
 fi
+NAME=$1
 
 if ID=$(f5.asm.signatureset.getid "$NAME")
 then
