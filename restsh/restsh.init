@@ -260,7 +260,7 @@ then
         unset ATUIN_HISTORY_ID
         unset ATUIN_PREEXEC_BACKEND
         unset ATUIN_SESSION
-        . "$HOME/.atuin/bin/env"
+        [[ -f "$HOME/.atuin/bin/env" ]] && . "$HOME/.atuin/bin/env"
         [[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
         eval "$(atuin init bash --disable-up-arrow)"
         eval "$(atuin gen-completions --shell bash)"
