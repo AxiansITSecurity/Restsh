@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-20
+# Date: 2025-06-24
 
 # Shortdesc: Starts the restsh environment.
 # Desc:
@@ -14,35 +14,72 @@
 RESTSH_PATH="$(dirname "$(realpath "$0")")"
 export RESTSH_PATH
 
+[ -n "${CONFIG_FILE_PREFIX+x}" ] || CONFIG_FILE_PREFIX=".restsh-config-"
+CONFIG_FILE_PREFIX_LEN=${#CONFIG_FILE_PREFIX}
+
 # Interactive mode
 export RESTSH_INTERACTIVE=1
 
-# Set restsh custom configuration file.
-if [ -n "${1+x}" ]
-then
-    export RESTSH_CONFIG=$1
-else
-    if WHIPTAIL=$(command -v whiptail)
-    then
-        export NEWT_COLORS='
+export NEWT_COLORS='
     root=,blue
     checkbox=black,lightgray
     actlistbox=white,blue
     roottext=,blue
     disabledentry=gray,
     entry=white,gray'
-        CONFIG_FILES=()
-        while read -r FILE
-        do
-            NAME=$(basename "$FILE")
-            [ "$NAME" = ".restsh-config.dist.f5" ] && continue
-            [ "$NAME" = ".restsh-config.dist.gitlab" ] && continue
-            [ "$NAME" = ".restsh-config.dist.next" ] && continue
-            [ "$NAME" = ".restsh-config.dist.scm" ] && continue
-            [ "$NAME" = ".restsh-config.dist" ] && continue
-            CONFIG_FILES+=("$NAME" "")
-        done < <(find ./ -maxdepth 1 -name .restsh-config\* -type f | sort)
-        SELECT=$($WHIPTAIL --clear --backtitle "restsh" --noitem --menu "Choose configuration file" 0 80 0 -- "${CONFIG_FILES[@]}" 3>&1 1>&2 2>&3)
+
+show_configs() {
+    local CONFIG_PATH=$1
+    local CONFIG_FILES=()
+    local NAME
+    local SELECT
+    if [ "$CONFIG_PATH" != "$START_PATH" ]
+    then
+        CONFIG_FILES+=("PARENT:" "..")
+    fi
+    while read -r DIR
+    do
+        NAME=$(basename "$DIR")
+        [ "${NAME:0:1}" = "." ] && continue
+        CONFIG_FILES+=("FOLDER:$NAME" "$NAME")
+    done < <(find "$CONFIG_PATH" -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort)
+    while read -r FILE
+    do
+        NAME=$(basename "$FILE")
+        [ "${NAME:19}" = ".restsh-config.dist" ] && continue
+        CONFIG_FILES+=("FILE:$NAME" "${NAME:$CONFIG_FILE_PREFIX_LEN}")
+    done < <(find "$CONFIG_PATH" -maxdepth 1 -name "${CONFIG_FILE_PREFIX}*" -type f  -printf "%f\n" | sort)
+    SELECT=$(whiptail --clear --backtitle "$CONFIG_PATH" --notags --menu "Choose configuration file" 0 80 0 -- "${CONFIG_FILES[@]}" 3>&1 1>&2 2>&3)
+    if [ "${SELECT:0:7}" = "PARENT:" ]
+    then
+        local PARENT
+        PARENT=$(realpath "$CONFIG_PATH/..")
+        show_configs "$PARENT"
+    elif [ "${SELECT:0:7}" = "FOLDER:" ]
+    then
+        show_configs "${CONFIG_PATH}/${SELECT:7}"
+    else
+        echo "${CONFIG_PATH}/${SELECT:5}"
+    fi
+}
+
+# Set restsh custom configuration file.
+if [ -n "${1+x}" ] && [ -f "$1" ]
+then
+    export RESTSH_CONFIG=$1
+else
+    if [ -n "${1+x}" ] || [ -d "$1" ]
+    then
+        START_PATH=$(realpath "$1")
+    elif [ -n "${RESTSH_CONFIG_PATH+x}" ]
+    then
+        START_PATH=$(realpath "$RESTSH_CONFIG_PATH")
+    else
+        START_PATH=$(pwd)
+    fi
+    if command -v whiptail > /dev/null
+    then
+        SELECT=$(show_configs "$START_PATH")
         export RESTSH_CONFIG="$SELECT"
     fi
 fi
