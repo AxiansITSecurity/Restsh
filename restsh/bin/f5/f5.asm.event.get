@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-19
+# Date: 2025-06-26
 
-# Shortdesc: Export ASM Event Report in html.
+# Shortdesc: Gets an ASM Event.
 # Desc:
-# Export ASM Event Report in html.
+# Gets an ASM Event.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -34,27 +34,6 @@ then
     echo "Usage: $(basename "$0") <support id>"
     exit 2
 fi
-
 SUPPORTID=$1
-FILENAME="ASM_security_event_report_${SUPPORTID}.html"
 
-TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
-       --arg filter "id eq '$SUPPORTID'" \
-'{
-    "restPath": "/mgmt/tm/asm/events/requests",
-    "filename": $filename,
-    "filter": $filter
-}' | POST "/mgmt/tm/asm/tasks/export-to-file?\$select=id" | \
-        $RESTSH_JQ -r ".id")
-
-f5.asm.taskwait "export-to-file" "$TASK_ID"
-
-# Get file size
-if ! TOTAL_SIZE=$(f5.file.size "/var/ts/var/rest/$RESTSH_USER~$FILENAME")
-then
-    echo_err "Can not retrieve file size for $FILENAME"
-    exit 1
-fi
-
-# Download file in chunks
-restsh.download "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" "$TOTAL_SIZE" "$FILENAME"
+GET "/mgmt/tm/asm/events/requests/$SUPPORTID"
