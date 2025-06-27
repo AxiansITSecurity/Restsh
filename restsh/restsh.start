@@ -58,6 +58,9 @@ show_configs() {
     elif [ "${SELECT:0:7}" = "FOLDER:" ]
     then
         show_configs "${CONFIG_PATH}/${SELECT:7}"
+    elif [ -z "$SELECT" ]
+    then
+        return 1
     else
         echo "${CONFIG_PATH}/${SELECT:5}"
     fi
