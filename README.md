@@ -4,7 +4,7 @@ Restsh is a shell environment to work with REST-API's on the command line. It is
 
 This framework includes [MO](https://github.com/tests-always-included/mo), a mustache template engine written in bash.
 
-Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
+Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST-API's. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
 
 ## Running interactively
 
