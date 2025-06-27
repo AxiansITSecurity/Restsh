@@ -4,18 +4,20 @@
 
 ```sh
 GET /mgmt/tm/ltm/virtual?\$select=fullPath
+# or
+f5.ltm.vs.list
 ```
 
 ## Get details of a virtual servers
 
 ```sh
-GET f5.ltm.vs.get /Common/vs_test
+f5.ltm.vs.get /Common/vs_test
 ```
 
 ## Attach a log profile to a list of virtual servers
 
 ```sh
-cat > log-profile.json << EOL
+cat > $RESTSH_TMP/log-profile.json << EOL
 {
  "securityLogProfiles": [
     "/Common/siem_all_requests"
@@ -25,7 +27,7 @@ EOL
 
 while read -r VS
 do
-    PATCH "/mgmt/tm/ltm/virtual/$VS" < log-profile.json
+    PATCH "/mgmt/tm/ltm/virtual/$VS" < $RESTSH_TMP/log-profile.json
 done < VIRTUAL_SERVERS.array
 ```
 
@@ -35,7 +37,7 @@ done < VIRTUAL_SERVERS.array
 
 ```sh
 # Calculate the policy hash
-HASH=$(f5.asm.policy.gethash /Common/t)
+HASH=$(f5.asm.policy.gethash /Common/test-policy)
 
 # Change to blocking mode
 PATCH "/mgmt/tm/asm/policies/$HASH" <<< '{"enforcementMode": "blocking" }' | JQ "[.fullPath,.enforcementMode]"
@@ -67,9 +69,9 @@ f5.asm.policy.list -r -f ".items[].fullPath" | XARGS f5.asm.policy.export
 - Policy: /Common/policy
 
 ```sh
-# Read an array into VAR_DISALLOWED_FILETYPES
+# Read an array into ARRAY_FILETYPES_DISALLOWED
 # One filetype per line
-restsh.util.setvars ../ax-f5-automation-framework/waftemplates/config/default-policy-v16/FILETYPES_DISALLOWED.array
+restsh.util.setvars aafw/waftemplates/config/default-policy-v16/FILETYPES_DISALLOWED.array
 
 # Iterate through the array and add one filetype at a time
 for FILETYPE in "${ARRAY_FILETYPES_DISALLOWED[@]}"
@@ -86,9 +88,9 @@ f5.asm.policy.apply /Common/policy
 - Policy: /Common/policy
 
 ```sh
-# Read an array into VAR_DISALLOWED_FILETYPES
+# Read an array into ARRAY_URLS_DISALLOWED
 # One url per line
-restsh.util.setvars ../ax-f5-automation-framework/waftemplates/config/default-policy-v16/URLS_DISALLOWED.array
+restsh.util.setvars aafw/waftemplates/config/default-policy-v16/URLS_DISALLOWED.array
 
 # Iterate through the array and add one url at a time
 for URL in "${ARRAY_URLS_DISALLOWED[@]}"
@@ -100,7 +102,7 @@ done
 ## Modify defense attributes of an json profile
 
 - Policy: `/Common/apisecurity`
-- Json profile: `json_POST_~trading~rest~sell_stocks.php`
+- JSON profile: `json_POST_~trading~rest~sell_stocks.php`
 
 ```sh
 f5.asm.entity.modify -t json-profiles.defense-attributes.json -sVAR_JSON_MAX_DATA_LENGTH=5 -sVAR_JSON_MAX_ARRAY_LENGTH=2 -sVAR_JSON_MAX_STRUCTURE_DEPTH=3 -sVAR_JSON_MAX_VALUE_LENGTH=10 /Common/apisecurity json-profiles json_POST_~trading~rest~sell_stocks.php

@@ -1,10 +1,10 @@
 # Use restsh
 
-restsh is a small framework to work with REST-API's within the bash. It is designed to be used interactively, in scripts or in CI/CD pipelines.
+Restsh is a shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
 
-This framework includes the [mustache template engine](https://github.com/tests-always-included/mo) written in bash.
+This framework includes [MO](https://github.com/tests-always-included/mo), a mustache template engine written in bash.
 
-restsh is not a shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, jq and mustache to interact with REST-API's.
+Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST api's. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
 
 ## Running interactively
 
@@ -35,7 +35,7 @@ restsh/restsh.start
 
 ### Custom config
 
-You can use custom config files to work with several api endpoints. If not defined restsh searches for a file named `.restsh-config` in the current folder and in the user home.
+You can use custom config files to work with several api endpoints. If not defined Restsh searches for a file named `.restsh-config` in the current folder and in the user home.
 
 ```sh
 restsh/restsh.start custom-config1
@@ -49,17 +49,17 @@ You can use the environment variable `RESTSH_CUSTOM_ENV` to define a custom file
 
 ### Password encryption
 
-You can store the RESTSH_PASS AES256 encrypted in the configuration file.
+You can store the `RESTSH_PASS` and `RESTSH_TOKEN_VALUE` AES256 encrypted in the configuration file.
 
-- Start restsh
+- Start Restsh
 - Create the encrypted password string:
 
     ```sh
     restsh.util.encrypt
     ```
 
-- Exit restsh and define the `RESTSH_PASS` variable as `<output of above command>`, beginning with AES256:.
-- In interactive mode, restsh asks for the secret if it is not defined in `RESTSH_SECRET`. In script mode it terminates with an error.
+- Exit Restsh and define the `RESTSH_PASS` variable as `<output of above command>`, beginning with `AES256:`.
+- In interactive mode, Restsh asks for the secret if it is not defined in `RESTSH_SECRET`. In script mode it terminates with an error.
 - As an alternative you can set `RESTSH_SECRET_FILE` to a file to read the `RESTSH_SECRET` from.
 
 ### Debug
@@ -105,7 +105,7 @@ RESTSH_MODULES=("aafw" "cert" "custom" "f5" "gitlab" "next" "scm")
 
 ## Dependencies
 
-restsh works only inside the bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
+Restsh works only inside the bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
 
 Further dependencies are:
 
