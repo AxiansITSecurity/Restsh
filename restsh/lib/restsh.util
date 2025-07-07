@@ -552,15 +552,20 @@ restsh.util.json_validate() {
         fi
         # Print the line with failure with some context
         echo "--"
-        I=$((LINE-5))
+        local I=1
+        local START=$((LINE-5))
+        local END=$((LINE+5))
         local TEXT
         while read -r TEXT
         do
-            [ "$I" -eq "$LINE" ] && echo -ne "${COLOR_RED}"
-            printf "%s: %s\n" "$I" "$TEXT"
-            [ "$I" -eq "$LINE" ] && echo -ne "${COLOR_RESET}"
+            if [ "$I" -ge "$START" ] && [ "$I" -le "$END" ]
+            then
+                [ "$I" -eq "$LINE" ] && echo -ne "${COLOR_RED}"
+                printf "%s: %s\n" "$I" "$TEXT"
+                [ "$I" -eq "$LINE" ] && echo -ne "${COLOR_RESET}"
+            fi
             I=$((I+1))
-        done < <(head "-$((LINE+5))" <<< "$JSON" | tail -10)
+        done <<< "$JSON"
         echo "--"
         return 1
     fi
