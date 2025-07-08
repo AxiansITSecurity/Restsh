@@ -13,6 +13,7 @@
 - Feat: Pressing `Ctrl`+`h` shows the help of current command
 - Feat: More options for `restsh.check.http-header`
 - Feat: Support folders with configuration files
+- Upd: `f5.cert.bundle.import` - Add option to set name
 - Upd: Improved autocompletion for REST commands
 
 ## v4.1.0 - 2025-04-25

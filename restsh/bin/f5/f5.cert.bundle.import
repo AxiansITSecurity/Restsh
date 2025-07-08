@@ -20,10 +20,12 @@ then
 fi
 
 DATE_SUFFIX=1
-while getopts ':hn' OPTION
+BUNDLE_NAME=""
+while getopts ':hns:' OPTION
 do
     case "$OPTION" in
         n) DATE_SUFFIX=0 ;;
+        s) BUNDLE_NAME="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,7 +37,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <key> <cert> [<chain bundle>]"
     echo "Options:"
-    echo "    -n  Do not add date suffix"
+    echo "    -s <name>  Set the name of the bundle, default: FQDN"
+    echo "    -n         Do not add date suffix"
     exit 2
 fi
 
@@ -45,20 +48,23 @@ FILE_BUNDLE=""
 [ -n "${3+x}" ] && FILE_BUNDLE=$3
 
 CN=$(openssl x509 -in "$FILE_CERT" -noout -subject -nameopt compat | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|')
+if [ -z "$BUNDLE_NAME" ]
+then
+    BUNDLE_NAME="$CN"
+fi
+
 if [ "$DATE_SUFFIX" -eq 1 ]
 then
     STARTDATE_TS=$(date +%s --date="$(openssl x509 -in "$FILE_CERT" -noout -startdate | cut -d= -f2)")
     STARTDATE=$(date +%Y-%m --date=@"${STARTDATE_TS}")
-    CERT_NAME="${CN}_${STARTDATE}"
-else
-    CERT_NAME="${CN}"
+    BUNDLE_NAME="${BUNDLE_NAME}_${STARTDATE}"
 fi
 
-echo "Importing cert $CN"
+echo "Importing cert bundle $BUNDLE_NAME"
 
-f5.cert.import "$CERT_NAME" "$FILE_CERT"
-f5.cert.key.import "$CERT_NAME" "$FILE_KEY"
+f5.cert.import "$BUNDLE_NAME" "$FILE_CERT"
+f5.cert.key.import "$BUNDLE_NAME" "$FILE_KEY"
 if [ -n "$FILE_BUNDLE" ]
 then
-    f5.cert.import "${CERT_NAME}_cabundle" "$FILE_BUNDLE"
+    f5.cert.import "${BUNDLE_NAME}_cabundle" "$FILE_BUNDLE"
 fi
