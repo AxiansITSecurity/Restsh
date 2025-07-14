@@ -136,8 +136,9 @@ then
     then
         echo "Reading secret from: ${RESTSH_SECRET_FILE}"
         RESTSH_SECRET=$(<"$RESTSH_SECRET_FILE")
+        export RESTSH_SECRET
     else
-        echo_err "Secret file not found: ${RESTSH_SECRET_FILE}"
+        echo_err "Secret file not found or empty: ${RESTSH_SECRET_FILE}"
     fi
 fi
 
