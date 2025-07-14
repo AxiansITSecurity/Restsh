@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-07-14
 
-# Shortdesc: Deletes a group (marks it for deletion).
+# Shortdesc: Restores a group marked for deletion.
 # Desc:
-# Deletes a group (marks it for deletion).
+# Restores a group marked for deletion.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -20,11 +20,9 @@ then
 fi
 
 # Get options
-FORCE=0
-while getopts ':f' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -34,19 +32,11 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <group>"
-    echo "Options:"
-    echo "    -f Immediately deletes a subgroup if it is marked for deletion."
+    echo "Usage: $(basename "$0") <group>"
     exit 2
 fi
 
-OPTS=""
 GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-if [ "$FORCE" -eq 1 ]
-then
-    OPTS="?permanently_remove=true&full_path=$GROUP"
-fi
-
-DELETE "$GITLAB_API_PREFIX/groups/${GROUP}$OPTS"
+POST "$GITLAB_API_PREFIX/groups/${GROUP}/restore" <<< ""

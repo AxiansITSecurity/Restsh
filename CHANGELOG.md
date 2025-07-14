@@ -4,6 +4,8 @@
 
 ## v4.2.1 - not yet released
 
+- Upd: Support groups marked for deletion: `gitlab.group.delete`, `gitlab.group.restore`
+
 ***
 
 ## v4.2.0 - 2025-07-14
