@@ -2,7 +2,7 @@
 
 ***
 
-## v4.2.0 - not yet released
+## v4.2.0 - 2025-07-14
 
 - Feat: Add `f5.asm.event.get`, `f5.asm.event.list`, `f5.asm.event.report`
 - Feat: Add `f5.asm.live-update.check`, `f5.asm.live-update.file.list`, `f5.asm.live-update.file.remove`, `f5.asm.live-update.file.upload`, `f5.asm.live-update.install`, `f5.asm.live-update.list`, `f5.asm.live-update.status`
