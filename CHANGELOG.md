@@ -2,6 +2,10 @@
 
 ***
 
+## v4.2.1 - not yet released
+
+***
+
 ## v4.2.0 - 2025-07-14
 
 - Feat: Add `f5.asm.event.get`, `f5.asm.event.list`, `f5.asm.event.report`
