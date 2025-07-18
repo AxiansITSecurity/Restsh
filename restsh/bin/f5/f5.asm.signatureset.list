@@ -21,10 +21,12 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+FILTER=""
+while getopts ':ru' OPTION
 do
     case "$OPTION" in
         r) RAW=1 ;;
+        u) FILTER="&\$filter=isUserDefined%20eq%20true" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -34,19 +36,21 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r Raw output."
+    echo "    -u Show only user defined signature sets"
     exit 2
 fi
 
 # Main
-if RESULT=$(GET "/mgmt/tm/asm/signature-sets?\$select=name,id,signatureCount,isUserDefined")
+if RESULT=$(GET "/mgmt/tm/asm/signature-sets?\$select=name,id,signatureCount,isUserDefined${FILTER}")
 then
     if [ "$RAW" -eq 1 ]
     then
         echo "$RESULT"
     else
-        JQ -r '.items[] | select(.isUserDefined == true) | [.name,.id,.signatureCount] | @tsv' <<< "$RESULT" | \
+        JQ -r '.items[] | [.name,.id,.signatureCount] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "Name,Id,Count"
     fi
     exit 0
