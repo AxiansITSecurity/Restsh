@@ -25,6 +25,8 @@
 - Upd: `f5.cert.bundle.import` - Add option to set name
 - Upd: Improved autocompletion for REST commands
 
+***
+
 ## v4.1.0 - 2025-04-25
 
 - Feat: Optional integration of [Atuin](https://atuin.sh/)
