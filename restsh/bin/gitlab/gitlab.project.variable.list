@@ -55,8 +55,8 @@ then
     then
         JQ "." <<< "$RESULT"
     else
-        JQ -r '.[] | [.key, .value, .masked, .raw] | @tsv' <<< "$RESULT" | \
-            COLUMN -o " | " -N "key,value,masked,raw"
+        JQ -r '.[] | [.key, .value, .masked, .raw, .hidden, .protected] | @tsv' <<< "$RESULT" | \
+            COLUMN -o " | " -N "key,value,masked,raw,hidden,protected"
     fi
     exit 0
 fi

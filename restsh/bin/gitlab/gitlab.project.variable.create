@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-10-01
+# Date: 2025-07-21
 
 # Shortdesc: Creates a project CI/CD variable.
 # Desc:
@@ -20,13 +20,17 @@ then
 fi
 
 # Get options
-MASK=0
 EXPAND=0
-while getopts ':me' OPTION
+HIDDEN=0
+MASK=0
+PROTECT=0
+while getopts ':demp' OPTION
 do
     case "$OPTION" in
-        m) MASK=1 ;;
+        d) HIDDEN=1 ;;
         e) EXPAND=1 ;;
+        m) MASK=1 ;;
+        p) PROTECT=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,9 +40,12 @@ if [ $# -ne 4 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m] [-e] <project> <key> <value> <description>"
-    echo -e "\t-e Expand variable"
-    echo -e "\t-m Mask variable"
+    echo "Usage: $(basename "$0") [options...] <project> <key> <value> <description>"
+    echo "Options:"
+    echo "    -d Hide variable"
+    echo "    -e Expand variable"
+    echo "    -m Mask variable"
+    echo "    -p Protect variable"
     exit 2
 fi
 
@@ -48,25 +55,39 @@ VALUE=$3
 DESC=$4
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-case $MASK in
-    0) MASK=false ;;
-    1) MASK=true ;;
-esac
-
 case $EXPAND in
     0) EXPAND=true ;;
     1) EXPAND=false ;;
 esac
 
+case $HIDDEN in
+    0) HIDDEN=false ;;
+    1) HIDDEN=true ;;
+esac
+
+case $MASK in
+    0) MASK=false ;;
+    1) MASK=true ;;
+esac
+
+case $PROTECT in
+    0) PROTECT=false ;;
+    1) PROTECT=true ;;
+esac
+
 JQ -n --arg key "$KEY" \
     --arg value "$VALUE" \
     --arg desc "$DESC" \
+    --argjson hidden "$HIDDEN" \
     --argjson masked "$MASK" \
+    --argjson protected "$PROTECT" \
     --argjson raw "$EXPAND" \
     '{
         "key": $key,
         "value": $value,
         "description": $desc,
         "masked": $masked,
+        "masked_and_hidden": $hidden,
+        "protected": $protected,
         "raw": $raw
     }' | POST "$GITLAB_API_PREFIX/projects/$PROJECT/variables"
