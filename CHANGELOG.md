@@ -2,6 +2,10 @@
 
 ***
 
+## v4.3.0 - not yet released
+
+***
+
 ## v4.2.1 - not yet released
 
 - Feat: Support masked_and_hidden and protected CI/CD-Variables
@@ -24,6 +28,8 @@
 - Feat: Support folders with configuration files
 - Upd: `f5.cert.bundle.import` - Add option to set name
 - Upd: Improved autocompletion for REST commands
+
+***
 
 ## v4.1.0 - 2025-04-25
 
