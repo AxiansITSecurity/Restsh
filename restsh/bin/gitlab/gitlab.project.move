@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-07-22
+
+# Shortdesc: Transfer a project to a new group (namespace).
+# Desc:
+# Transfer a project to a new group (namespace).
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+PROJECT=""
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <project> <group>"
+    exit 2
+fi
+
+PROJECT=$1
+GROUP=$2
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+JQ -n --arg group "$GROUP" \
+    '{
+        namespace: $group
+    }' | PUT "$GITLAB_API_PREFIX/projects/${PROJECT}/transfer"
