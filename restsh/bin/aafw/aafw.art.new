@@ -1,0 +1,135 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-07-22
+
+# Shortdesc: Creates an AS3 Application from an ART.
+# Desc:
+# Creates an AS3 Application from an ART.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+INTERACTIVE=0
+while getopts ':i' OPTION
+do
+    case "$OPTION" in
+        i) INTERACTIVE=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 4 ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <project path> <app name> <stage> <template>"
+    echo "Options:"
+    echo "    -i Interactive mode - asks for variable values"
+    exit 2
+fi
+
+PROJECT_PATH=$1
+APP_NAME=$2
+STAGE=$3
+TEMPLATE=$4
+
+ask() {
+    local SRC=$1
+    local DST=$2
+    local PROMPT
+    PROMPT=$(head -1 "$SRC")
+    PROMPT=${PROMPT//# /}
+    if [ "${DST: -3}" = "txt" ]
+    then
+        local VALUE
+        read -r -p "$PROMPT: " VALUE
+        printf "%s" "$VALUE" > "$DST"
+    else
+        echo "$PROMPT (press ^D to commit):"
+        cat > "$DST"
+    fi
+    return 0
+}
+
+# Main
+ART_TMP="$RESTSH_TMP/art.tmp"
+trap 'rm -rf -- "$ART_TMP"' EXIT
+
+rm -rf "$ART_TMP"
+mkdir "$ART_TMP"
+cd "$ART_TMP" || exit 1
+git clone "${RESTSH_AAFW_URI}${RESTSH_AAFW_ART}" art
+if [ ! -d "${PROJECT_PATH}" ]
+then
+    git clone "${RESTSH_AAFW_URI}${PROJECT_PATH}" tenant
+    TENANT_FOLDER="$ART_TMP/tenant"
+else
+    TENANT_FOLDER="$(pwd)/${PROJECT_PATH}"
+fi
+
+if [ ! -f "$ART_TMP/art/$TEMPLATE/app.json" ]
+then
+    echo_err "Template $TEMPLATE not found."
+    exit 1
+fi
+
+sed -e "s/VAR_/VAR_${APP_NAME}_/g" \
+    -e "s/ARRAY_/ARRAY_${APP_NAME}_/g" \
+    -e "s/__APPNAME__/${APP_NAME}/g" \
+    "$ART_TMP/art/$TEMPLATE/app.json" > "$ART_TMP/tenant/applications/$APP_NAME.json"
+
+if [ -d "$TENANT_FOLDER/config/$APP_NAME" ]
+then
+    echo_err "Application already exists"
+    exit 1
+fi
+
+mkdir -p "$TENANT_FOLDER/config/$APP_NAME/$STAGE"
+for F in "$ART_TMP/art/$TEMPLATE/config/"*.{array,txt}
+do
+    CONFIG_FILE=$(basename "$F")
+    if [ "$INTERACTIVE" -eq 1 ]
+    then
+        if ! ask "$F" "$TENANT_FOLDER/config/$APP_NAME/$STAGE/${APP_NAME}_${CONFIG_FILE}"
+        then
+            echo_err "Canceled"
+            exit 1
+        fi
+    else
+        cp "$F" "$TENANT_FOLDER/config/$APP_NAME/$STAGE/${APP_NAME}_${CONFIG_FILE}"
+    fi
+done
+
+while read -r F
+do
+    FILE=$(basename "$F")
+    SUBDIR=$(basename "$(dirname "$F")")
+    cp "$F" "${TENANT_FOLDER}/applications/${SUBDIR}/${APP_NAME}_${FILE}"
+done < <(find "${ART_TMP}/art/${TEMPLATE}/"{ifiles,irules} -type f ! -name .\*)
+
+while read -r F
+do
+    FILE=$(basename "$F")
+    SUBDIR=$(basename "$(dirname "$F")")
+    cp "$F" "${TENANT_FOLDER}/${SUBDIR}/${APP_NAME}_${FILE}"
+done < <(find "${ART_TMP}/art/${TEMPLATE}/"{files,snippets,vars} -type f ! -name .\*)
+
+cd "$TENANT_FOLDER" || exit 1
+git add .
+git commit -m "Add application $APP_NAME from ART $TEMPLATE"
+git push
+
+cd "$RESTSH_TMP"
+rm -rf "$ART_TMP"

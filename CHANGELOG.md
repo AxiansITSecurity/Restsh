@@ -4,6 +4,9 @@
 
 ## v4.3.0 - not yet released
 
+- Feat: `aafw.art.new`
+- Feat: `gitlab.project.move`
+
 ***
 
 ## v4.2.1 - not yet released
