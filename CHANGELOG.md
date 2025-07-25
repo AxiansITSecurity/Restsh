@@ -8,6 +8,7 @@
 - Upd: `f5.asm.signatureset.list` lists all signature sets as default
 - Upd: Support groups marked for deletion: `gitlab.group.delete`, `gitlab.group.restore`
 - Fix: Export RESTSH_SECRET after reading it from file
+- Fix: `f5.file.size` return 1 if file does not exist
 
 ***
 
