@@ -120,7 +120,10 @@ f5.file.size() {
         | jq -r ".commandResult" | tr -d '\r\n')
     then
         printf "%s" "$SIZE"
-        return 0
+        if restsh.util.check.isnumber "$SIZE"
+        then
+            return 0
+        fi
     fi
     return 1
 }
