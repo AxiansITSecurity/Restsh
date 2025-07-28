@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-07-28
+
+# Shortdesc: Lists live-update schedules for all components.
+# Desc:
+# Lists live-update schedules for all components.
+# Reference: https://my.f5.com/manage/s/article/K58021531
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+COMPONENTS=(
+    "asm-attack-signatures"
+    "bot-signatures"
+    "browser-challenges"
+    "server-technologies"
+    "threat-campaigns"
+)
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0")"
+    exit 2
+fi
+
+# Main
+if [ "$RAW" -eq 1 ]
+then
+    for COMPONENT in "${COMPONENTS[@]}"
+    do
+        GET "/mgmt/tm/live-update/$COMPONENT/install-schedule"
+    done
+else
+    {
+        for COMPONENT in "${COMPONENTS[@]}"
+        do
+            # shellcheck disable=SC2034
+            while IFS=$'\t' read -r FREQ START END ALLTIMES ALLDAYS SUN MON TUE WED THU FRI SAT KIND SELF
+            do
+                printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
+                    "$COMPONENT" "$FREQ" "$START" "$END" "$ALLTIMES" "$ALLDAYS" "$SUN" "$MON" "$TUE" "$WED" "$THU" "$FRI" "$SAT"
+            done < <(GET "/mgmt/tm/live-update/$COMPONENT/install-schedule" \
+                | JQ -r "[.frequency,.startTime,.endTime,.applyAtAllTimes,.applyOnAllDays,.applyOnSundays,.applyOnMondays,.applyOnTuesdays,.applyOnWednesdays,.applyOnThursdays,.applyOnFridays,.applyOnSaturdays] | @tsv")
+        done
+    } | COLUMN -o "|" -N "component,frequency,startTime,endTime,applyAtAllTimes,applyOnAllDays,Sun,Mon,Tue,Wed,Thu,Fri,Sat"
+fi
