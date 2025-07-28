@@ -17,5 +17,6 @@
     "model_experiments_access_level": "disabled",
     "model_registry_access_level": "disabled",
     "releases_access_level": "disabled",
-    "security_and_compliance_access_level": "disabled"
+    "security_and_compliance_access_level": "disabled",
+    "only_allow_merge_if_pipeline_succeeds": true
 }
