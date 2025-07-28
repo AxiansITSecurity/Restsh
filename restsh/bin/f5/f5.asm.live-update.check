@@ -23,7 +23,6 @@ fi
 # Get options
 COMPONENTS=(
     "asm-attack-signatures"
-    "behavioral-waf"
     "bot-signatures"
     "browser-challenges"
     "server-technologies"

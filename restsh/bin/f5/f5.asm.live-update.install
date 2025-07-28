@@ -21,6 +21,13 @@ then
 fi
 
 # Get options
+COMPONENTS=(
+    "asm-attack-signatures"
+    "bot-signatures"
+    "browser-challenges"
+    "server-technologies"
+    "threat-campaigns"
+)
 while getopts ':' OPTION
 do
     case "$OPTION" in
