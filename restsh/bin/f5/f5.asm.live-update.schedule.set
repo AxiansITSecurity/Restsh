@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-21
+# Date: 2025-07-28
 
-# Shortdesc: Installs a live-update file.
+# Shortdesc: Lists live-update schedules for all components.
 # Desc:
-# Installs a live-update file.
+# Lists live-update schedules for all components.
 # Reference: https://my.f5.com/manage/s/article/K58021531
 
 # Strict error handling
@@ -40,16 +40,20 @@ if [ "$OPTION" == "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <component> <file id>"
+    echo "Usage: $(basename "$0") <component> <frequency>"
     echo "Available components:"
     for COMPONENT in "${COMPONENTS[@]}"
     do
         echo "    - $COMPONENT"
     done
+    echo "Frequency: One of never, real-time, scheduled"
     exit 2
 fi
 COMPONENT=$1
-FILEID=$2
+FREQUENCY=$2
 
 # Main
-PATCH "/mgmt/tm/live-update/$COMPONENT/installations/$FILEID" <<< '{"status": "install"}'
+JQ -n --arg frequency "$FREQUENCY" \
+    '{
+        frequency: $frequency
+    }' | PATCH "/mgmt/tm/live-update/$COMPONENT/install-schedule"
