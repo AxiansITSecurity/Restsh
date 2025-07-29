@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-07-28
+# Date: 2025-07-29
 
 # Shortdesc: Lists live-update schedules for all components.
 # Desc:
@@ -28,9 +28,38 @@ COMPONENTS=(
     "server-technologies"
     "threat-campaigns"
 )
-while getopts ':' OPTION
+STARTTIME="00:00"
+ENDTIME="23:59"
+APPLYATALLTIMES="true"
+APPLYONALLDAYS="true"
+APPLYONSUNDAYS="false"
+APPLYONMONDAYS="false"
+APPLYONTUESDAYS="false"
+APPLYONWEDNESDAYS="false"
+APPLYONTHURSDAYS="false"
+APPLYONFRIDAYS="false"
+APPLYONSATURDAYS="false"
+while getopts ':-:' OPTION
 do
+    if [ "$OPTION" = "-" ]
+    then
+        # long option: reformulate OPTION and OPTARG
+        OPTION="${OPTARG%%=*}"        # extract long option name
+        OPTARG="${OPTARG#"$OPTION"}"  # extract long option argument (may be empty)
+        OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
+    fi
     case "$OPTION" in
+        startTime)         STARTTIME=$OPTARG ;;
+        endTime)           ENDTIME=$OPTARG ;;
+        applyAtAllTimes)   APPLYATALLTIMES=$OPTARG ;;
+        applyOnAllDays)    APPLYONALLDAYS=$OPTARG ;;
+        applyOnSundays)    APPLYONSUNDAYS=$OPTARG ;;
+        applyOnMondays)    APPLYONMONDAYS=$OPTARG ;;
+        applyOnTuesdays)   APPLYONTUESDAYS=$OPTARG ;;
+        applyOnWednesdays) APPLYONWEDNESDAYS=$OPTARG ;;
+        applyOnThursdays)  APPLYONTHURSDAYS=$OPTARG ;;
+        applyOnFridays)    APPLYONFRIDAYS=$OPTARG ;;
+        applyOnSaturdays)  APPLYONSATURDAYS=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -40,13 +69,25 @@ if [ "$OPTION" == "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <component> <frequency>"
+    echo "Usage: $(basename "$0") [options...] <component> <frequency>"
     echo "Available components:"
     for COMPONENT in "${COMPONENTS[@]}"
     do
         echo "    - $COMPONENT"
     done
     echo "Frequency: One of never, real-time, scheduled"
+    echo "Options:"
+    echo "    --startTime=00:00"
+    echo "    --endTime=23:59"
+    echo "    --applyAtAllTimes=true"
+    echo "    --applyOnAllDays=true"
+    echo "    --applyOnSundays=false"
+    echo "    --applyOnMondays=false"
+    echo "    --applyOnTuesdays=false"
+    echo "    --applyOnWednesdays=false"
+    echo "    --applyOnThursdays=false"
+    echo "    --applyOnFridays=false"
+    echo "    --applyOnSaturdays=false"
     exit 2
 fi
 COMPONENT=$1
@@ -54,6 +95,28 @@ FREQUENCY=$2
 
 # Main
 JQ -n --arg frequency "$FREQUENCY" \
+    --arg startTime "$STARTTIME" \
+    --arg endTime "$ENDTIME" \
+    --argjson applyAtAllTimes "$APPLYATALLTIMES" \
+    --argjson applyOnAllDays "$APPLYONALLDAYS" \
+    --argjson applyOnSundays "$APPLYONSUNDAYS" \
+    --argjson applyOnMondays "$APPLYONMONDAYS" \
+    --argjson applyOnTuesdays "$APPLYONTUESDAYS" \
+    --argjson applyOnWednesdays "$APPLYONWEDNESDAYS" \
+    --argjson applyOnThursdays "$APPLYONTHURSDAYS" \
+    --argjson applyOnFridays "$APPLYONFRIDAYS" \
+    --argjson applyOnSaturdays "$APPLYONSATURDAYS" \
     '{
-        frequency: $frequency
+        frequency: $frequency,
+        startTime: $startTime,
+        endTime: $endTime,
+        applyAtAllTimes: $applyAtAllTimes,
+        applyOnAllDays: $applyOnAllDays,
+        applyOnSundays: $applyOnSundays,
+        applyOnMondays: $applyOnMondays,
+        applyOnTuesdays: $applyOnTuesdays,
+        applyOnWednesdays: $applyOnWednesdays,
+        applyOnThursdays: $applyOnThursdays,
+        applyOnFridays: $applyOnFridays,
+        applyOnSaturdays: $applyOnSaturdays
     }' | PATCH "/mgmt/tm/live-update/$COMPONENT/install-schedule"
