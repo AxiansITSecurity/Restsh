@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-07-22
+# Date: 2025-08-01
 
 # Shortdesc: Creates an AS3 Application from an ART.
 # Desc:
@@ -21,62 +21,98 @@ fi
 
 # Get options
 INTERACTIVE=0
-while getopts ':i' OPTION
+PUSH=0
+VARIABLES_FILE=""
+while getopts ':ipv:' OPTION
 do
     case "$OPTION" in
         i) INTERACTIVE=1 ;;
+        p) PUSH=1 ;;
+        v) VARIABLES_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ $# -ne 4 ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <app name> <stage> <template>"
+    echo "Usage: $(basename "$0") [options...] <project path> <app name> <template>"
     echo "Options:"
-    echo "    -i Interactive mode - asks for variable values"
+    echo "    -i         Interactive mode - asks for variable values"
+    echo "    -p         Commit and push"
+    echo "    -v <file>  Read variables from yaml file"
     exit 2
 fi
 
 PROJECT_PATH=$1
 APP_NAME=$2
-STAGE=$3
-TEMPLATE=$4
+TEMPLATE=$3
 
+# Get value interactively
 ask() {
     local SRC=$1
     local DST=$2
     local PROMPT
     PROMPT=$(head -1 "$SRC")
     PROMPT=${PROMPT//# /}
+    local STAGE
+    STAGE=$(basename "$(dirname "$SRC")")
     if [ "${DST: -3}" = "txt" ]
     then
         local VALUE
-        read -r -p "$PROMPT: " VALUE
+        read -r -p "$STAGE - $PROMPT: " VALUE
         printf "%s" "$VALUE" > "$DST"
     else
-        echo "$PROMPT (press ^D to commit):"
+        echo "$STAGE - $PROMPT (press ^D to commit):"
         cat > "$DST"
     fi
     return 0
+}
+
+# Fetch value from yaml file
+get_value() {
+    local SRC=$1
+    local CONFIG
+    local STAGE
+    if [ "${SRC: -4}" = ".txt" ]
+    then
+        CONFIG=$(basename "$SRC" ".txt")
+        STAGE=$(basename "$(dirname "$SRC")")
+        if ! yq -r ".${STAGE}.${CONFIG}" "$VARIABLES_FILE"
+        then
+            echo_err "Fetching value .${STAGE}.${CONFIG} failed" 1>&2
+        fi
+    elif [ "${SRC: -5}" = ".array" ]
+    then
+        CONFIG=$(basename "$SRC" ".array")
+        STAGE=$(basename "$(dirname "$SRC")")
+        echo "Fetching array .${STAGE}.${CONFIG}" 1>&2
+        if ! yq -r ".${STAGE}.${CONFIG}[]" "$VARIABLES_FILE"
+        then
+            echo_err "Fetching array .${STAGE}.${CONFIG} failed" 1>&2
+        fi
+    fi
 }
 
 # Main
 ART_TMP="$RESTSH_TMP/art.tmp"
 trap 'rm -rf -- "$ART_TMP"' EXIT
 
+START_PATH=$(pwd)
 rm -rf "$ART_TMP"
 mkdir "$ART_TMP"
 cd "$ART_TMP" || exit 1
 git clone "${RESTSH_AAFW_URI}${RESTSH_AAFW_ART}" art
-if [ ! -d "${PROJECT_PATH}" ]
+if [ ! -d "${START_PATH}/${PROJECT_PATH}" ]
 then
     git clone "${RESTSH_AAFW_URI}${PROJECT_PATH}" tenant
     TENANT_FOLDER="$ART_TMP/tenant"
 else
-    TENANT_FOLDER="$(pwd)/${PROJECT_PATH}"
+    TENANT_FOLDER="${START_PATH}/${PROJECT_PATH}"
+    cd "$TENANT_FOLDER"
+    git pull
 fi
 
 if [ ! -f "$ART_TMP/art/$TEMPLATE/app.json" ]
@@ -85,51 +121,90 @@ then
     exit 1
 fi
 
-sed -e "s/VAR_/VAR_${APP_NAME}_/g" \
-    -e "s/ARRAY_/ARRAY_${APP_NAME}_/g" \
-    -e "s/__APPNAME__/${APP_NAME}/g" \
-    "$ART_TMP/art/$TEMPLATE/app.json" > "$ART_TMP/tenant/applications/$APP_NAME.json"
-
 if [ -d "$TENANT_FOLDER/config/$APP_NAME" ]
 then
     echo_err "Application already exists"
     exit 1
 fi
 
-mkdir -p "$TENANT_FOLDER/config/$APP_NAME/$STAGE"
-for F in "$ART_TMP/art/$TEMPLATE/config/"*.{array,txt}
+if [ -n "$VARIABLES_FILE" ]
+then
+    VARIABLES_FILE=$(realpath "${START_PATH}/${VARIABLES_FILE}")
+    if ! yq "." < "$VARIABLES_FILE" > /dev/null
+    then
+        echo_err "Invalid variable file"
+        exit 1
+    fi
+fi
+
+# AS3 template
+sed -e "s/VAR_/VAR_${APP_NAME}_/g" \
+    -e "s/ARRAY_/ARRAY_${APP_NAME}_/g" \
+    -e "s/__APPNAME__/${APP_NAME}/g" \
+    "$ART_TMP/art/$TEMPLATE/app.json" > "$TENANT_FOLDER/applications/$APP_NAME.json"
+
+# Configuration
+mkdir -p "$TENANT_FOLDER/config/$APP_NAME"
+for F in $(find "$ART_TMP/art/$TEMPLATE/config" -type f ! -name .\* | sort)
 do
     CONFIG_FILE=$(basename "$F")
+    STAGE=$(basename "$(dirname "$F")")
+    if [ "$STAGE" = "config" ]
+    then
+        STAGE=""
+    else
+        mkdir -p "$TENANT_FOLDER/config/$APP_NAME/$STAGE"
+        STAGE="${STAGE}/"
+    fi
+    DST="$TENANT_FOLDER/config/$APP_NAME/${STAGE}${APP_NAME}_${CONFIG_FILE}"
     if [ "$INTERACTIVE" -eq 1 ]
     then
-        if ! ask "$F" "$TENANT_FOLDER/config/$APP_NAME/$STAGE/${APP_NAME}_${CONFIG_FILE}"
+        if ! ask "$F" "$DST"
         then
             echo_err "Canceled"
             exit 1
         fi
+    elif [ -n "$VARIABLES_FILE" ]
+    then
+        VALUE=$(get_value "$F")
+        printf "%s" "$VALUE" > "$DST"
     else
-        cp "$F" "$TENANT_FOLDER/config/$APP_NAME/$STAGE/${APP_NAME}_${CONFIG_FILE}"
+        cp "$F" "$DST"
     fi
 done
 
+# iRules and iFiles
 while read -r F
 do
     FILE=$(basename "$F")
     SUBDIR=$(basename "$(dirname "$F")")
-    cp "$F" "${TENANT_FOLDER}/applications/${SUBDIR}/${APP_NAME}_${FILE}"
+    install "$F" "${TENANT_FOLDER}/applications/${SUBDIR}/${APP_NAME}/${FILE}"
 done < <(find "${ART_TMP}/art/${TEMPLATE}/"{ifiles,irules} -type f ! -name .\*)
 
+# All other files
 while read -r F
 do
     FILE=$(basename "$F")
     SUBDIR=$(basename "$(dirname "$F")")
-    cp "$F" "${TENANT_FOLDER}/${SUBDIR}/${APP_NAME}_${FILE}"
+    install "$F" "${TENANT_FOLDER}/${SUBDIR}/${APP_NAME}_${FILE}"
 done < <(find "${ART_TMP}/art/${TEMPLATE}/"{files,snippets,vars} -type f ! -name .\*)
 
-cd "$TENANT_FOLDER" || exit 1
-git add .
-git commit -m "Add application $APP_NAME from ART $TEMPLATE"
-git push
+# Run deploy script from ART repository
+if [ -s "${ART_TMP}/art/${TEMPLATE}/deploy.sh" ]
+then
+    cd "$TENANT_FOLDER" || exit 1
+    eval "${ART_TMP}/art/${TEMPLATE}/deploy.sh"
+fi
 
+# Push to origin
+if [ "$PUSH" -eq 1 ]
+then
+    cd "$TENANT_FOLDER" || exit 1
+    git add .
+    git commit -m "Add application $APP_NAME from ART $TEMPLATE"
+    git push
+fi
+
+# Cleanup
 cd "$RESTSH_TMP"
 rm -rf "$ART_TMP"
