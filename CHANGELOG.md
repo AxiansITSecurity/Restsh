@@ -6,6 +6,8 @@
 
 - Feat: `aafw.art.new`
 - Feat: `gitlab.project.move`
+- Feat: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.remove`
+- Feat: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.remove`
 
 ***
 
