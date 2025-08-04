@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-08-01
+# Date: 2025-08-04
 
-# Shortdesc: Creates an AS3 Application from an ART.
+# Shortdesc: Creates an AS3 Application from an Application Ready Template.
 # Desc:
-# Creates an AS3 Application from an ART.
+# Creates an AS3 Application from an Application Ready Template.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -21,11 +21,13 @@ fi
 
 # Get options
 INTERACTIVE=0
+OVERWRITE=0
 PUSH=0
 VARIABLES_FILE=""
-while getopts ':ipv:' OPTION
+while getopts ':fipv:' OPTION
 do
     case "$OPTION" in
+        f) OVERWRITE=1 ;;
         i) INTERACTIVE=1 ;;
         p) PUSH=1 ;;
         v) VARIABLES_FILE="$OPTARG" ;;
@@ -39,7 +41,9 @@ then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <app name> <template>"
+    echo "Project path:  GitLab Project or local Git folder"
     echo "Options:"
+    echo "    -f         Overwrite application"
     echo "    -i         Interactive mode - asks for variable values"
     echo "    -p         Commit and push"
     echo "    -v <file>  Read variables from yaml file"
@@ -121,7 +125,7 @@ then
     exit 1
 fi
 
-if [ -d "$TENANT_FOLDER/config/$APP_NAME" ]
+if [ "$OVERWRITE" -eq 0 ] && [ -d "$TENANT_FOLDER/config/$APP_NAME" ]
 then
     echo_err "Application already exists"
     exit 1
@@ -129,7 +133,11 @@ fi
 
 if [ -n "$VARIABLES_FILE" ]
 then
-    VARIABLES_FILE=$(realpath "${START_PATH}/${VARIABLES_FILE}")
+    if ! VARIABLES_FILE=$(realpath "${START_PATH}/${VARIABLES_FILE}")
+    then
+        echo_err "Variables file not found"
+        exit 1
+    fi
     if ! yq "." < "$VARIABLES_FILE" > /dev/null
     then
         echo_err "Invalid variable file"
@@ -144,7 +152,7 @@ sed -e "s/VAR_/VAR_${APP_NAME}_/g" \
     "$ART_TMP/art/$TEMPLATE/app.json" > "$TENANT_FOLDER/applications/$APP_NAME.json"
 
 # Configuration
-mkdir -p "$TENANT_FOLDER/config/$APP_NAME"
+install -d "$TENANT_FOLDER/config/$APP_NAME"
 for F in $(find "$ART_TMP/art/$TEMPLATE/config" -type f ! -name .\* | sort)
 do
     CONFIG_FILE=$(basename "$F")
@@ -153,7 +161,7 @@ do
     then
         STAGE=""
     else
-        mkdir -p "$TENANT_FOLDER/config/$APP_NAME/$STAGE"
+        install -d "$TENANT_FOLDER/config/$APP_NAME/$STAGE"
         STAGE="${STAGE}/"
     fi
     DST="$TENANT_FOLDER/config/$APP_NAME/${STAGE}${APP_NAME}_${CONFIG_FILE}"
@@ -169,7 +177,7 @@ do
         VALUE=$(get_value "$F")
         printf "%s" "$VALUE" > "$DST"
     else
-        cp "$F" "$DST"
+        install "$F" "$DST"
     fi
 done
 
@@ -193,6 +201,9 @@ done < <(find "${ART_TMP}/art/${TEMPLATE}/"{files,snippets,vars} -type f ! -name
 if [ -s "${ART_TMP}/art/${TEMPLATE}/deploy.sh" ]
 then
     cd "$TENANT_FOLDER" || exit 1
+    export ART_TMP
+    export TENANT_FOLDER
+    export TEMPLATE
     eval "${ART_TMP}/art/${TEMPLATE}/deploy.sh"
 fi
 
