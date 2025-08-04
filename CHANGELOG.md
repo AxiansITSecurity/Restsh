@@ -2,7 +2,7 @@
 
 ***
 
-## v4.2.1 - not yet released
+## v4.2.1 - 2025-08-04
 
 - Feat: Manage job token scopes for projects: `gitlab.project.job_token_scope.allowlist.add`, `gitlab.project.job_token_scope.allowlist.list`, `gitlab.project.job_token_scope.allowlist.remove`
 - Feat: Support live-update schedules: `f5.asm.live-update.schedule.list`, `f5.asm.live-update.schedule.set`
