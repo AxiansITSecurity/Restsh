@@ -82,7 +82,7 @@ restsh.help.showenv() {
     while read -r LINE
     do
         echo -e "\t$LINE"
-    done < <(export | grep RESTSH | grep -v "PS1" | \
+    done < <(export | grep "declare -x RESTSH" | \
         sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
             -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
             -e "s/(RESTSH_REFRESH_TOKEN=).*/\1\"***\"/"| \

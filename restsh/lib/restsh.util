@@ -235,7 +235,7 @@ XARGS() {
     xargs -n1 -P1 "$@"
 }
 
-#Print Key/Value pairs
+# Print Key/Value pairs
 KV() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
