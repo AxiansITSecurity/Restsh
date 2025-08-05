@@ -102,22 +102,38 @@ get_value() {
 
 # Main
 ART_TMP="$RESTSH_TMP/art.tmp"
-trap 'rm -rf -- "$ART_TMP"' EXIT
-
-START_PATH=$(pwd)
 rm -rf "$ART_TMP"
 mkdir "$ART_TMP"
-cd "$ART_TMP" || exit 1
-git clone "${RESTSH_AAFW_URI}${RESTSH_AAFW_ART}" art
-if [ ! -d "${START_PATH}/${PROJECT_PATH}" ]
+
+trap 'rm -rf -- "$ART_TMP"' EXIT
+
+# Optionally check for valid variables file
+if [ -n "$VARIABLES_FILE" ]
 then
-    git clone "${RESTSH_AAFW_URI}${PROJECT_PATH}" tenant
-    TENANT_FOLDER="$ART_TMP/tenant"
-else
-    TENANT_FOLDER="${START_PATH}/${PROJECT_PATH}"
-    cd "$TENANT_FOLDER"
-    git pull
+    if ! VARIABLES_FILE=$(realpath "${VARIABLES_FILE}")
+    then
+        echo_err "Variables file not found"
+        exit 1
+    fi
+    if ! yq "." < "$VARIABLES_FILE" > /dev/null
+    then
+        echo_err "Invalid variable file"
+        exit 1
+    fi
 fi
+
+# Clone or update tenant repository
+if TENANT_FOLDER=$(realpath "${PROJECT_PATH}")
+then
+    cd "$TENANT_FOLDER" || exit 1
+    git pull
+else
+    TENANT_FOLDER="$ART_TMP/tenant"
+    git clone "${RESTSH_AAFW_URI}${PROJECT_PATH}" "$TENANT_FOLDER"
+fi
+
+# Clone ART repository
+git clone "${RESTSH_AAFW_URI}${RESTSH_AAFW_ART}" "$ART_TMP/art"
 
 if [ ! -f "$ART_TMP/art/$TEMPLATE/app.json" ]
 then
@@ -129,27 +145,6 @@ if [ "$OVERWRITE" -eq 0 ] && [ -d "$TENANT_FOLDER/config/$APP_NAME" ]
 then
     echo_err "Application already exists"
     exit 1
-fi
-
-if [ -n "$VARIABLES_FILE" ]
-then
-    if [ "${VARIABLES_FILE:0:1}" = "/" ]
-    then
-        if [ ! -f "$VARIABLES_FILE" ]
-        then
-            echo_err "Variables file not found"
-            exit 1
-        fi
-    elif ! VARIABLES_FILE=$(realpath "${START_PATH}/${VARIABLES_FILE}")
-    then
-        echo_err "Variables file not found"
-        exit 1
-    fi
-    if ! yq "." < "$VARIABLES_FILE" > /dev/null
-    then
-        echo_err "Invalid variable file"
-        exit 1
-    fi
 fi
 
 # AS3 template
@@ -222,7 +217,3 @@ then
     git commit -m "Add application $APP_NAME from ART $TEMPLATE"
     git push
 fi
-
-# Cleanup
-cd "$RESTSH_TMP"
-rm -rf "$ART_TMP"
