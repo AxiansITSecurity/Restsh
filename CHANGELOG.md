@@ -5,6 +5,7 @@
 ## v4.3.0 - not yet released
 
 - Feat: `aafw.art.new`
+- Feat: Support marked for deletion for projects: `gitlab.project.restore`, `gitlab.project.delete`
 - Feat: `gitlab.project.move`, `gitlab.project.rename`
 - Feat: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.modify`, `gitlab.group.member.remove`
 - Feat: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.modify`, `gitlab.project.member.remove`
