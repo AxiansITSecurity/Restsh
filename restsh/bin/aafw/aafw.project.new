@@ -57,7 +57,7 @@ then
     echo "    -i <type>           Initialize repository for as3, cert, do, tasks or waf."
     echo "    -l <push,merge>     Access level for protected branches, default: Maintainer access for merge only."
     echo "    -s <skeleton path>  Skeleton path for initialization."
-    echo "    -p <branches>       Branch names to protect."
+    echo "    -p <branches>       Comma separated list of branches to protect."
     echo "Access levels:"
     echo "    0  => No access"
     echo "    30 => Developer access"
