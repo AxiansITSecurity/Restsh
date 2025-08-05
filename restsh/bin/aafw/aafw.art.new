@@ -42,6 +42,7 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <app name> <template>"
     echo "Project path:  GitLab Project or local Git folder"
+    echo "ART project: $RESTSH_AAFW_ART"
     echo "Options:"
     echo "    -f         Overwrite application"
     echo "    -i         Interactive mode - asks for variable values"
@@ -88,11 +89,10 @@ get_value() {
         then
             echo_err "Fetching value .${STAGE}.${CONFIG} failed" 1>&2
         fi
-    elif [ "${SRC: -5}" = ".array" ]
+    elif [ "${SRC: -6}" = ".array" ]
     then
         CONFIG=$(basename "$SRC" ".array")
         STAGE=$(basename "$(dirname "$SRC")")
-        echo "Fetching array .${STAGE}.${CONFIG}" 1>&2
         if ! yq -r ".${STAGE}.${CONFIG}[]" "$VARIABLES_FILE"
         then
             echo_err "Fetching array .${STAGE}.${CONFIG} failed" 1>&2
@@ -133,7 +133,14 @@ fi
 
 if [ -n "$VARIABLES_FILE" ]
 then
-    if ! VARIABLES_FILE=$(realpath "${START_PATH}/${VARIABLES_FILE}")
+    if [ "${VARIABLES_FILE:0:1}" = "/" ]
+    then
+        if [ ! -f "$VARIABLES_FILE" ]
+        then
+            echo_err "Variables file not found"
+            exit 1
+        fi
+    elif ! VARIABLES_FILE=$(realpath "${START_PATH}/${VARIABLES_FILE}")
     then
         echo_err "Variables file not found"
         exit 1
