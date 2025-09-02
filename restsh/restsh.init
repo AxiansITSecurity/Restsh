@@ -196,6 +196,21 @@ then
     fi
 fi
 
+# Vault Integration
+if [ -n "${RESTSH_PASS+x}" ] && [ "${RESTSH_PASS:0:6}" = "VAULT:" ]
+then
+    vault.login
+    RESTSH_PASS=$(vault.get "${RESTSH_PASS:6}" "RESTSH_PASS")
+    export RESTSH_PASS
+fi
+
+if [ -n "${RESTSH_TOKEN_VALUE+x}" ] && [ "${RESTSH_TOKEN_VALUE:0:6}" = "VAULT:" ]
+then
+    vault.login
+    RESTSH_TOKEN_VALUE=$(vault.get "${RESTSH_TOKEN_VALUE:6}" "RESTSH_TOKEN_VALUE")
+    export RESTSH_TOKEN_VALUE
+fi
+
 # Set restsh url
 restsh.init.setresturl
 

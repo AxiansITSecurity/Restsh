@@ -4,6 +4,7 @@
 
 ## v4.3.0 - not yet released
 
+- Feat: Support for HashiCorp Vault
 - Feat: `aafw.art.new`
 - Feat: `gitlab.project.history`
 - Feat: Support marked for deletion for projects: `gitlab.project.restore`, `gitlab.project.delete`

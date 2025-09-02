@@ -54,6 +54,14 @@ scm.auth.login() {
         fi
     fi
 
+    # Vault Integration
+    if [ "${SCM_SECRET:0:6}" = "VAULT:" ]
+    then
+        vault.login
+        SCM_SECRET=$(vault.get "${SCM_SECRET:6}" "SCM_SECRET")
+        export SCM_SECRET
+    fi
+
     restsh.util.setcurloptions
     RESTSH_CURL_OPTS+=("-X" "POST" "-H" "Content-Type: application/x-www-form-urlencoded")
     RESTSH_CURL_OPTS+=("-d" "client_id=$SCM_CLIENTID" "-d" "client_secret=$SCM_SECRET")
