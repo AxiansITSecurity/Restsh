@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+#shellcheck disable=SC2120
+
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-12-17
 
