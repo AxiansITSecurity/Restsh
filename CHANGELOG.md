@@ -4,6 +4,8 @@
 
 ## v4.3.0 - not yet released
 
+This version removes support for F5 Next.
+
 - Feat: Support for HashiCorp Vault
 - Feat: `aafw.art.new`
 - Feat: `gitlab.project.history`
