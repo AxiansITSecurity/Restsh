@@ -53,6 +53,6 @@ PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK_STAGE=$BRANCH" -s "TASK=asm_settings" -s "TASK_HOST=$TASK_HOST" \
+    -s "TASK=asm_settings" -s "TASK_HOST=$TASK_HOST" \
     -s "RESTART_ASM=$RESTART_ASM" -s "SYNC=$SYNC" \
-    "${PIPELINE_OPTS[@]}" "$PROJECT" "master"
+    "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"

@@ -49,7 +49,7 @@ then
 fi
 git clone "$CLONE_URI"
 cd "$DIR" || exit 1
-git switch -c master
+git switch -c draft
 cat > .gitlab-ci.yml << EOL
 include:
   - project: \$PIPELINE_PROJECT_TASKS

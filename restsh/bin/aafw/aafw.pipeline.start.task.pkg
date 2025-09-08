@@ -50,6 +50,6 @@ BRANCH=$(restsh.util.lc "$2")
 PKG=$3
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK_STAGE=$BRANCH" -s "TASK=pkg_install" -s "TASK_HOST=$TASK_HOST" \
+    -s "TASK=pkg_install" -s "TASK_HOST=$TASK_HOST" \
     -s "TASK_PKG=$PKG" "${PIPELINE_OPTS[@]}" \
-    "$PROJECT" "master"
+    "$PROJECT" "$BRANCH"

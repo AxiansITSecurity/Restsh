@@ -47,5 +47,5 @@ PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=api" \
-    -s "TASK_HOST=$TASK_HOST" -s "CERT_CI_STAGE=$BRANCH" \
-    "${PIPELINE_OPTS[@]}" "$PROJECT" "master"
+    -s "TASK_HOST=$TASK_HOST" \
+    "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
