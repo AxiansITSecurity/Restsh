@@ -1,0 +1,117 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-09
+
+# Shortdesc: Manages F5OS-A Authentication.
+# Desc:
+# Manages F5OS-A Authentication.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Gets the authentication token from F5OS-A and sets the RESTSH_TOKEN_VALUE environment variable.
+f5osa.auth.token.get() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Gets the authentication token from F5OS-A and sets the RESTSH_TOKEN_VALUE environment variable." 1>&2
+        echo "Usage: f5os.auth.token.get" 1>&2
+        return 2
+    fi
+    export RESTSH_TOKEN_VALUE=""
+    # Ask for user/password if not set
+    if [ -z "${RESTSH_USER+x}" ]
+    then
+        read -r -p "User: " RESTSH_USER
+        export RESTSH_USER
+    fi
+    if [ -z "${RESTSH_PASS+x}" ]
+    then
+        RESTSH_PASS=$(restsh.util.askpass Password)
+        echo ""
+        export RESTSH_PASS
+    fi
+
+    local RESTSH_CURL_OPTS=("--fail" "-s" "-i")
+    if [ "$RESTSH_CURL_INSECURE" -eq 1 ]
+    then
+        RESTSH_CURL_OPTS+=("-k")
+    fi
+
+    local RESULT
+    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -u "$RESTSH_USER:$RESTSH_PASS" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OSA_API_PREFIX")
+    then
+        local TOKEN
+        TOKEN=$(awk -v RS='\r' '/X-Auth-Token/ {print $2}' <<< "$RESULT")
+        if [ -n "${TOKEN}" ]
+        then
+            local NOW
+            NOW=$(date +%s)
+            RESTSH_TOKEN_LIFETIME=$((NOW+F5OSA_TOKEN_LIFETIME))
+            export RESTSH_TOKEN_VALUE="$TOKEN"
+            export RESTSH_TOKEN_LIFETIME
+            return 0
+        fi
+    fi
+    export RESTSH_TOKEN_VALUE=""
+    unset RESTSH_PASS
+    unset RESTSH_USER
+    echo_err "Authentication failure"
+    return 1
+}
+
+# Renews the token if it was expired
+f5osa.auth.token.renew() {
+    if [ "$RESTSH_AUTH" != "token" ]
+    then
+        return 0
+    fi
+    local NOW
+    NOW=$(date +%s)
+    if [ "$NOW" -gt "$RESTSH_TOKEN_LIFETIME" ]
+    then
+        local RESTSH_CURL_OPTS=("--fail" "-s" "-i")
+        if [ "$RESTSH_CURL_INSECURE" -eq 1 ]
+        then
+            RESTSH_CURL_OPTS+=("-k")
+        fi
+
+        # Use current token to get a new one
+        local RESULT
+        if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -H "X-F5-Auth-Token: $RESTSH_TOKEN_VALUE" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OSA_API_PREFIX")
+        then
+            local TOKEN
+            TOKEN=$(awk -v RS='\r' '/X-Auth-Token/ {print $2}' <<< "$RESULT")
+            if [ -n "${TOKEN}" ]
+            then
+                local NOW
+                NOW=$(date +%s)
+                RESTSH_TOKEN_LIFETIME=$((NOW+F5OSA_TOKEN_LIFETIME))
+                export RESTSH_TOKEN_VALUE="$TOKEN"
+                export RESTSH_TOKEN_LIFETIME
+                # This files are read by the prompt command and used to inject the refreshed token into the parent bash session
+                printf "%s" "$RESTSH_TOKEN_LIFETIME" > "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+                printf "%s" "$RESTSH_TOKEN_VALUE" > "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
+                return 0
+            fi
+        else
+            # Fallback to basic auth
+            if f5osa.auth.token.get
+            then
+                # This files are read by the prompt command and used to inject the refreshed token into the parent bash session
+                printf "%s" "$RESTSH_TOKEN_LIFETIME" > "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+                printf "%s" "$RESTSH_TOKEN_VALUE" > "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
+                return 0
+            fi
+        fi
+        export RESTSH_TOKEN_VALUE=""
+        echo_err "Failure renewing token"
+        return 1
+    fi
+}
+
+export -f f5osa.auth.token.get
+export -f f5osa.auth.token.renew

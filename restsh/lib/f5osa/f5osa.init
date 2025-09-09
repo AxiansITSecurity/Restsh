@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-09
+
+# Shortdesc: Sets environment variables for F5.
+# Desc:
+# Sets environment variables for F5.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+[ -n "${F5OSA_ENABLE_AUTOCOMPLETE+x}" ] || export F5OSA_ENABLE_AUTOCOMPLETE=0
+[ -n "${F5OSA_TOKEN_LIFETIME+x}" ] || export F5OSA_TOKEN_LIFETIME=60
+
+if [ -n "${RESTSH_INTERACTIVE+x}" ]
+then
+    if [ "$F5OSA_ENABLE_AUTOCOMPLETE" -eq 1 ]
+    then
+        . "$RESTSH_PATH/autocomplete/f5osa/autocomplete.sh"
+    fi
+fi
+
+# Prefix for the F5 REST API
+export F5OSA_API_PREFIX="/restconf"
+
+if [ -z "${RESTSH_INIT_CMD+x}" ]
+then
+    if [ "$RESTSH_AUTH" = "basic" ]
+    then
+        export RESTSH_INIT_CMD="f5osa.version"
+    elif [ "$RESTSH_AUTH" = "token" ]
+    then
+        export RESTSH_INIT_CMD="f5osa.auth.token.get"
+    else
+        export RESTSH_INIT_CMD=""
+    fi
+fi

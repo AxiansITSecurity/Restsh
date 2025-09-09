@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-10-24
+# Date: 2025-09-09
 
-# Shortdesc: Custom configuration file for restsh.init, preconfigured for F5 TMOS.
+# Shortdesc: Custom configuration file for restsh.init, preconfigured for F5OS.
 # Desc:
-# Custom configuration file for restsh.init, preconfigured for F5 TMOS.
+# Custom configuration file for restsh.init, preconfigured for F5OS.
 # Set central environment variables if not already set.
 
 # Enabled modules
 # shellcheck disable=SC2034
-RESTSH_MODULES=("cert" "custom" "f5")
+RESTSH_MODULES=("cert" "custom" "f5osa")
 
 # Debugging
 # export RESTSH_DEBUG="true"
@@ -18,15 +18,15 @@ RESTSH_MODULES=("cert" "custom" "f5")
 # REST host to connect to
 #[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
 [ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="localhost"
-#[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
+[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="8888"
 
 # Curl options
 # Set this to 1 to enable curl insecure option (disables tls checks).
 [ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="1"
 
 # Authentication settings
-[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"
-#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
+#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"
+[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
 #[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="netrc"
 #[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="anonymous"
 
@@ -35,20 +35,17 @@ RESTSH_MODULES=("cert" "custom" "f5")
 #[ -n "${RESTSH_PASS+x}" ] || export RESTSH_PASS="apipass"
 
 # Set token header and value
-[ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-F5-Auth-Token"
+[ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-Auth-Token"
 #[ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="the_token"
 
 # Set REST payload format
-#[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
+[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/yang-data+json"
 
 # Chunk size in bytes for restsh.upload and restsh.download, default 512kB
 #[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
 
-###############################################################################
-# F5 specific settings
-#[ -n "${F5_TASK_CHECK_INTERVAL+x}" ] || export F5_TASK_CHECK_INTERVAL=10
-#[ -n "${F5_TASK_TIMEOUT+x}" ] || export F5_TASK_TIMEOUT=18
-[ -n "${F5_ENABLE_AUTOCOMPLETE+x}" ] || export F5_ENABLE_AUTOCOMPLETE=1
-
 # Command that is executed after initialization in interactive mode
-# export RESTSH_INIT_CMD=""
+#export RESTSH_INIT_CMD=""
+
+# Set token lifetime to 14 minutes, default lifetime is 15 minutes in F5OS-A
+[ -n "${F5OSA_TOKEN_LIFETIME+x}" ] || export F5OSA_TOKEN_LIFETIME=840

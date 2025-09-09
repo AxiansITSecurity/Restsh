@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-09
+
+# Shortdesc: Lists tenants.
+# Desc:
+# Manages Lists tenants.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Token refresh
+f5osa.auth.token.renew
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r Raw output."
+    exit 2
+fi
+
+# Main
+if [ "$RAW" -eq 1 ]
+then
+    GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants"
+else
+    GET -r "$F5OSA_API_PREFIX/data/f5-tenants:tenants" \
+        | JQ -r '."f5-tenants:tenants".tenant[] | [.name, .state."running-state",.state."status", .state."vcpu-cores-per-node", .state.memory, .state."mgmt-ip"] | @tsv' \
+        | COLUMN -o "|" -N "Name,State,Status,vCPUs,Memory,Mgmt-IP"
+fi

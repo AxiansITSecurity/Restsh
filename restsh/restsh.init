@@ -87,7 +87,7 @@ then
         echo_warn "Not setting RESTSH_MODULES is deprecated."
     fi
     # Include all modules
-    RESTSH_MODULES=("aafw" "cert" "custom" "f5" "gitlab" "scm")
+    RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
 fi
 
 # Include enabled modules by setting path and including functions
