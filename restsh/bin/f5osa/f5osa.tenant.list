@@ -19,9 +19,6 @@ then
     exit 1
 fi
 
-# Token refresh
-f5osa.auth.token.renew
-
 # Get options
 RAW=0
 while getopts ':r' OPTION

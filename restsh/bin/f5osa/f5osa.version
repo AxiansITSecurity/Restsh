@@ -19,8 +19,5 @@ then
     exit 1
 fi
 
-# Token refresh
-f5osa.auth.token.renew
-
 # Main
 GET "$F5OSA_API_PREFIX/data/openconfig-system:system/f5-system-version:version"

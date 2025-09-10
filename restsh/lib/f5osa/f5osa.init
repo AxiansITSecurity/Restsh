@@ -35,6 +35,7 @@ then
     elif [ "$RESTSH_AUTH" = "token" ]
     then
         export RESTSH_INIT_CMD="f5osa.auth.token.get"
+        export RESTSH_HTTP_PRE_EXEC="f5osa.auth.token.renew"
     else
         export RESTSH_INIT_CMD=""
     fi
