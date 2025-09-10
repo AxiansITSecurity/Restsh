@@ -56,6 +56,7 @@ fi
 [ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 [ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
 [ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
+[ -n "${RESTSH_HTTP_PRE_EXEC+x}" ] || export RESTSH_HTTP_PRE_EXEC=""
 
 # Include custom environment definitions
 if [ -n "${RESTSH_CUSTOM_ENV+x}" ] && [ -n "${RESTSH_CUSTOM_ENV}" ] && [ -s "${RESTSH_CUSTOM_ENV}" ]
