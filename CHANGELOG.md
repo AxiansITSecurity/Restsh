@@ -14,6 +14,7 @@ This version removes support for F5 Next.
 - Feat: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.modify`, `gitlab.group.member.remove`
 - Feat: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.modify`, `gitlab.project.member.remove`
 - Upd: `gitlab.branch.new` renamed to `gitlab.branch.create`
+- Fix: `f5.auth.token.extend` - Define timeout
 
 ***
 
