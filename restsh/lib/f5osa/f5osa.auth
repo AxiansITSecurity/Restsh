@@ -67,7 +67,7 @@ f5osa.auth.token.get() {
 
 # Renews the token if it was expired
 f5osa.auth.token.renew() {
-    if [ "$RESTSH_AUTH" != "token" ]
+    if [ "$RESTSH_AUTH" != "token" ] || [ -z "${RESTSH_TOKEN_LIFETIME+x}" ]
     then
         return 0
     fi
