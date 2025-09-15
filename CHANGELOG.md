@@ -4,7 +4,7 @@
 
 ## v4.3.0 - not yet released
 
-This version removes support for F5 Next.
+This version removes support for F5 Next and adds initial support for F5OS-A.
 
 - Feat: Support for HashiCorp Vault
 - Feat: `aafw.art.new`
