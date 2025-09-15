@@ -47,6 +47,12 @@ restsh.http() {
     local METHOD=$1
     local URI=$2
 
+    # HTTP Pre-Exec Function
+    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+    then
+        eval "${RESTSH_HTTP_PRE_EXEC}"
+    fi
+
     # We must set the curl options first
     restsh.util.setcurloptions
 
@@ -101,6 +107,12 @@ restsh.download() {
     local URI=$1
     local TOTAL_SIZE=$2
     local FILENAME=$3
+
+    # HTTP Pre-Exec Function
+    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+    then
+        eval "${RESTSH_HTTP_PRE_EXEC}"
+    fi
 
     # We must set the curl options first
     restsh.util.setcurloptions
@@ -195,6 +207,12 @@ restsh.upload() {
         return 1
     fi
 
+    # HTTP Pre-Exec Function
+    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+    then
+        eval "${RESTSH_HTTP_PRE_EXEC}"
+    fi
+
     # We must set the curl options first
     restsh.util.setcurloptions
 
@@ -248,10 +266,6 @@ restsh.upload() {
 
 # Executes a HTTP DELETE request
 DELETE() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=()
     local OPTION OPTIND
     while getopts ':c:f:r' OPTION
@@ -281,10 +295,6 @@ DELETE() {
 
 # Downloads a file with HTTP
 DOWNLOAD() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=()
     local OPTION OPTIND
     while getopts ':c:' OPTION
@@ -317,10 +327,6 @@ DOWNLOAD() {
 
 # Executes a HTTP GET request
 GET() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=()
     local OPTION OPTIND
     while getopts ':c:f:r' OPTION
@@ -350,10 +356,6 @@ GET() {
 
 # Executes a HTTP OPTIONS request
 OPTIONS() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=()
     local OPTION OPTIND
     while getopts ':c:f:r' OPTION
@@ -383,10 +385,6 @@ OPTIONS() {
 
 # Executes a HTTP PATCH request
 PATCH() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=("-b")
     local OPTION OPTIND
     while getopts ':c:f:r' OPTION
@@ -417,10 +415,6 @@ PATCH() {
 
 # Executes a HTTP POST request
 POST() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=("-b")
     local OPTION OPTIND
     while getopts ':c:f:r' OPTION
@@ -451,10 +445,6 @@ POST() {
 
 # Executes a HTTP PUT request
 PUT() {
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
-    then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
-    fi
     local ARGS=("-b")
     local OPTION OPTIND
     while getopts ':c:f:r' OPTION
