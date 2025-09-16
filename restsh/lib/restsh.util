@@ -488,6 +488,13 @@ restsh.util.setvar() {
         then
             echo "Decrypting $VAR"
             VALUE=$(restsh.util.decrypt "$VALUE")
+        elif [ "${VALUE:0:6}" = "VAULT:" ]
+        then
+            # Vault integration
+            if vault.login
+            then
+                VALUE=$(vault.get "${VALUE:6}" "$(basename "$FILE" .txt)")
+            fi
         fi
         declare -g -x "$VAR"="$VALUE"
         echo "Declaring variable: $VAR"
@@ -768,12 +775,18 @@ vault.login() {
         echo "Usage: vault.login" 1>&2
         return 2
     fi
+    if restsh.util.check.varnotempty VAULT_TOKEN
+    then
+        # Already logged in
+        return 0
+    fi
     if restsh.util.check.varnotempty VAULT_ID_TOKEN
     then
         vault.login.jwt
     else
-        echo_err "Only Vault JWT authentication is implemented"
-        exit 1
+        echo_err "Only Vault JWT authentication is implemented."
+        echo_err "Variable VAULT_ID_TOKEN is not set."
+        return 1
     fi
 }
 
@@ -852,6 +865,17 @@ vault.get() {
     return 0
 }
 
+# Logout from Vault
+vault.logout() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Logout from Vault" 1>&2
+        echo "Usage: vault.logout" 1>&2
+        return 2
+    fi
+    export VAULT_TOKEN=""
+}
+
 # Export all functions
 export -f echo_ok
 export -f print_json_ok
@@ -889,3 +913,4 @@ export -f restsh.util.base64url
 export -f vault.login
 export -f vault.login.jwt
 export -f vault.get
+export -f vault.logout
