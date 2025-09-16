@@ -10,18 +10,5 @@ WAF_POLICY_RETAIN_SIGNATURE_ENFORCE,1,false,true,1=Retain signature enforcment s
 WAF_POLICY_LINT_SCRIPT,lint.sh,false,true,Lint script name in the wafcustom repo.
 WAF_RESTRICT_MERGE,1,false,true,Enforce merge request rules.
 
-# Where to copy the compiled WAF policy
-POLICY_WEB_HOST_LOCAL,2,false,true,0 = Use ssh to copy files, 1 = Use local Webserver for policy serving, 2 = Upload files to F5.
-
-# Variables for the server hosting the compiled policy files
-POLICY_WEB_HOST,,false,true,Server that hosts the compiled policy.
-POLICY_WEB_HOST_HTTPS_PORT,4430,false,true,HTTPS port for the webserver.
-POLICY_WEB_HOST_SSH_PORT,2222,false,true,SSH port for the webserver host.
-POLICY_WEB_HOST_SSH_USER,gitlab-ci,false,true,User for the web host.
-POLICY_WEB_HOST_SSH_PRIV_KEY,,false,true,Private key for the web host user.
-POLICY_WEB_HOST_SSH_PRIV_KEY_PASSPHRASE_FILE,,false,true,File with the passphrase for the private key.
-POLICY_WEB_HOST_BASEPATH,/srv/www/waf,false,true,Document root for the policy files.
-POLICY_WEB_HOST_BASEURI,waf/,false,true,Relative uri for the policy files (empty or must end with /).
-
 # Bot Defense
 BOT_DEFENSE_SYNC,1,false,true,Sync cluster after deployment.
