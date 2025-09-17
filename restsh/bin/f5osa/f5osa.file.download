@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-16
+
+# Shortdesc: Downloads a file.
+# Desc:
+# Manages Downloads a file.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 2 ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <remote filepath> <local filepath>"
+    exit 2
+fi
+FILEPATH_REMOTE=$1
+FILEPATH_LOCAL=$2
+
+FILENAME_REMOTE=$(basename "$FILEPATH_REMOTE")
+FILEPATH_REMOTE=$(dirname "$FILEPATH_REMOTE")
+
+# Main
+
+# HTTP Pre-Exec Function
+if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+then
+    eval "${RESTSH_HTTP_PRE_EXEC}"
+fi
+
+# We must set the curl options first
+restsh.util.setcurloptions
+
+$RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" \
+    --location \
+    -H "Content-Type: multipart/form-data" \
+    -F "file-path=$FILEPATH_REMOTE/" \
+    -F "file-name=$FILENAME_REMOTE" \
+    "${RESTSH_URL}/restconf/data/f5-utils-file-transfer:file/f5-file-download:download-file/f5-file-download:start-download" \
+    > "${FILEPATH_LOCAL}"

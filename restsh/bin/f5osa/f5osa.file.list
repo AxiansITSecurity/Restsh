@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-16
+
+# Shortdesc: Lists files.
+# Desc:
+# Manages Lists files.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <path>"
+    echo "Options:"
+    echo "    -r Raw output."
+    echo "Valid paths:"
+    echo "    log/host, log/system, log/confd"
+    echo "    diags/shared, diags/core, diags/crash"
+    echo "    configs"
+    echo "    images/import, images/staging, images/tenants"
+    echo "    mibs"
+    exit 2
+fi
+FILEPATH=$1
+
+# Main
+RESULT=$(JQ -n --arg filepath "$FILEPATH" \
+    '{
+        "f5-utils-file-transfer:path": $filepath
+    }' | POST -r "$F5OSA_API_PREFIX/data/f5-utils-file-transfer:file/list")
+
+if [ "$RAW" -eq 1 ]
+then
+    JQ "." <<< "$RESULT"
+else
+    JQ -r '."f5-utils-file-transfer:output".entries[] | [.name, .date, .size] | @tsv' <<< "$RESULT" \
+        | COLUMN -o "|" -N "Name,Date,Size"
+fi

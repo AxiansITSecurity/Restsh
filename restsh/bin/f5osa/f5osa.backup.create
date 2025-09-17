@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-16
+
+# Shortdesc: Creates a backup.
+# Desc:
+# Creates a backup.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <backup filename>"
+    exit 2
+fi
+FILENAME=$1
+
+# Main
+JQ -n --arg filename "$FILENAME" \
+    '{
+        "f5-database:name": $filename
+    }' | POST "$F5OSA_API_PREFIX/data/openconfig-system:system/f5-database:database/f5-database:config-backup"
