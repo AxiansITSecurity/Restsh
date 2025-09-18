@@ -8,6 +8,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 
 - Feat: Support for HashiCorp Vault
 - Feat: `aafw.art.new`
+- Feat: `gitlab.runner.jobs`
 - Feat: `gitlab.project.history`
 - Feat: Support marked for deletion for projects: `gitlab.project.restore`, `gitlab.project.delete`
 - Feat: `gitlab.project.move`, `gitlab.project.rename`

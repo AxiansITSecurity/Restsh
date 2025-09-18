@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-18
+
+# Shortdesc: Lists jobs for a runner.
+# Desc:
+# Lists jobs for a runner.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -lt 1 ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <runner id> [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
+    exit 2
+fi
+ID=$1
+
+PAGE=0
+if [ -n "${1+x}" ]
+then
+    PAGE=$1
+fi
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/runners/$ID/jobs?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        JQ "." <<< "$RESULT"
+    else
+        JQ -r '.[] | [.id, .project.path_with_namespace, .status, .started_at] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "id,project,status,started_at"
+    fi
+    exit 0
+fi
+
+exit 1
