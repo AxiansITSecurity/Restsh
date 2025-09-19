@@ -66,6 +66,12 @@ restsh.http() {
 
     RESTSH_CURL_OPTS+=("-H" "Accept: $RESTSH_CONTENT, */*")
 
+    if [ "$METHOD" = "HEAD" ]
+    then
+        RESTSH_CURL_OPTS+=("-I")
+        PARSE_OPT+=("-r")
+    fi
+
     if [ "$RETRIES" -gt 0 ]
     then
         RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "$RESTSH_CURL_OPT_RETRY_ALL" "--retry-delay" "10")
@@ -282,10 +288,11 @@ DELETE() {
     then
         {
             echo "Executes a HTTP DELETE request"
-            echo "Usage: DELETE [-c <retries>] [-f <filter>] [-r] <uri>"
-            echo -e "\tUse -c to define retries."
-            echo -e "\tUse -f to apply an jq filter to output"
-            echo -e "\tUse -r for raw output."
+            echo "Usage: DELETE [options...] <uri>"
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+            echo "    -f Apply an jq filter to output."
+            echo "    -r Raw output."
         } 1>&2
         return 2
     fi
@@ -309,8 +316,9 @@ DOWNLOAD() {
     then
         {
             echo "Downloads a file with HTTP"
-            echo "Usage: DOWNLOAD [-c <retries>] <uri> <output filename>"
-            echo -e "\tUse -c to define retries."
+            echo "Usage: DOWNLOAD [options...] <uri> <output filename>"
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
         } 1>&2
         return 2
     fi
@@ -343,14 +351,41 @@ GET() {
     then
         {
             echo "Executes a HTTP GET request"
-            echo "Usage: GET [-c <retries>] [-f <filter>] [-r] <uri>"
-            echo -e "\tUse -c to define retries."
-            echo -e "\tUse -f to apply an jq filter to output."
-            echo -e "\tUse -r for raw output."
+            echo "Usage: GET [options...] <uri>"
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+            echo "    -f Apply an jq filter to output."
+            echo "    -r Raw output."
         } 1>&2
         return 2
     fi
     ARGS+=("GET" "$1")
+    restsh.http "${ARGS[@]}"
+}
+
+# Executes a HTTP HEAD request
+HEAD() {
+    local ARGS=()
+    local OPTION OPTIND
+    while getopts ':c:' OPTION
+    do
+        case "$OPTION" in
+            c) ARGS+=("-c" "$OPTARG") ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
+    then
+        {
+            echo "Executes a HTTP HEAD request and returns raw headers."
+            echo "Usage: HEAD [options...] <uri>"
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+        } 1>&2
+        return 2
+    fi
+    ARGS+=("HEAD" "$1")
     restsh.http "${ARGS[@]}"
 }
 
@@ -372,10 +407,11 @@ OPTIONS() {
     then
         {
             echo "Executes a HTTP OPTIONS request"
-            echo "Usage: OPTIONS [-c <retries>] [-f <filter>] [-r] <uri>"
-            echo -e "\tUse -c to define retries."
-            echo -e "\tUse -f to apply an jq filter to output."
-            echo -e "\tUse -r for raw output."
+            echo "Usage: OPTIONS [options...] <uri>"
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+            echo "    -f Apply an jq filter to output."
+            echo "    -r Raw output."
         } 1>&2
         return 2
     fi
@@ -401,11 +437,12 @@ PATCH() {
     then
         {
             echo "Executes a HTTP PATCH request"
-            echo "Usage: PATCH [-r] [-c] <uri>"
-            echo -e "\tPipe the payload in the command."
-            echo -e "\tUse -c to define retries."
-            echo -e "\tUse -f to apply an jq filter to output."
-            echo -e "\tUse -r for raw output."
+            echo "Usage: PATCH [options...] <uri>"
+            echo "Payload is read from STDIN."
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+            echo "    -f Apply an jq filter to output."
+            echo "    -r Raw output."
         } 1>&2
         return 2
     fi
@@ -431,11 +468,12 @@ POST() {
     then
         {
             echo "Executes a HTTP POST request"
-            echo "Usage: POST [-r] [-c] <uri>"
-            echo -e "\tPipe the payload in the command."
-            echo -e "\tUse -c to define retries."
-            echo -e "\tUse -f to apply an jq filter to output."
-            echo -e "\tUse -r for raw output."
+            echo "Usage: POST [options...] <uri>"
+            echo "Payload is read from STDIN."
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+            echo "    -f Apply an jq filter to output."
+            echo "    -r Raw output."
         } 1>&2
         return 2
     fi
@@ -461,11 +499,12 @@ PUT() {
     then
         {
             echo "Executes a HTTP PUT request"
-            echo "Usage: PUT [-c <retries>] [-f <filter>] [-r] <uri>"
-            echo -e "\tPipe the payload in the command."
-            echo -e "\tUse -c to define retries."
-            echo -e "\tUse -f to apply an jq filter to output."
-            echo -e "\tUse -r for raw output."
+            echo "Usage: PUT [options...] <uri>"
+            echo "Payload is read from STDIN."
+            echo "Options:"
+            echo "    -c Number of retries (default no retries)."
+            echo "    -f Apply an jq filter to output."
+            echo "    -r Raw output."
         } 1>&2
         return 2
     fi
@@ -478,6 +517,7 @@ export -f restsh.download
 export -f restsh.upload
 export -f DELETE
 export -f DOWNLOAD
+export -f HEAD
 export -f GET
 export -f OPTIONS
 export -f PATCH
