@@ -9,6 +9,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 - Feat: F5OS-A support - Login and token management, backup and file management.
     - `f5osa.auth.token.get`, `f5osa.backup.create`, `f5osa.file.download`, `f5osa.tenant.list`, `f5osa.auth.token.renew`, `f5osa.file.delete`, `f5osa.file.list`, `f5osa.version`
 - Feat: Support for HashiCorp Vault
+- Feat: Add support for HTTP HEAD
 - Feat: `aafw.art.new`
 - Feat: `gitlab.runner.jobs`
 - Feat: `gitlab.project.history`
