@@ -24,3 +24,7 @@ CERTBOT_SERVER,,false,true,Certbot Server - leave empty for Let's Encrypt.
 CERTBOT_EAB_KID,,false,true,Key Identifier for External Account Binding.
 CERTBOT_EAB_HMAC,hmackey-for-eab,true,true,HMAC key for External Account Binding.
 CERTBOT_ACME_DG,/Common/Shared/acme-challenge,false,true,Datagroup to store the acme challenge.
+
+# SCEP
+SCEP_URI,,false,true,SCEP URI
+SCEP_PASS,password,true,true,SCEP Password
