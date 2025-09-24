@@ -6,7 +6,6 @@
 # Shortdesc: Downloads a System iFile.
 # Desc:
 # Downloads a System iFile.
-# https://community.f5.com/t5/codeshare/syncing-local-repositories-and-ifiles-using-icontrol-rest-api/ta-p/290848
 
 # Strict error handling
 set -eEu -o pipefail
@@ -36,34 +35,8 @@ then
     exit 2
 fi
 
-FULLPATH=$1
+FULLPATH=${1//\//\~}
 FILENAME=$2
-IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "$FULLPATH")
-FULLPATH=$(f5.common.fullPathJoin "~" "$PARTITION" "$SUBPATH" "$NAME")
-FILESTORE_NAME=$(f5.common.fullPathJoin ":" "$PARTITION" "$SUBPATH" "$NAME")
 
-# Get iFile configuration
-IFILE=$(GET "/mgmt/tm/sys/file/ifile/${FULLPATH}")
-REVISION=$(JQ -r ".revision" <<< "$IFILE")
-
-# Find the file for download and copy it to a location where we can download it
-# This involves some guessing of the filename
-if ! F5_FILE=$(f5.run "ls -1 /config/filestore/files_d/${PARTITION}_d/ifile_d/${FILESTORE_NAME}_*_${REVISION}")
-then
-    echo_err "File not found"
-    exit 1
-elif [ "$(wc -l <<< "$F5_FILE")" -ne 1 ]
-then
-    echo_err "Multiple files found"
-    exit 1
-fi
-
-F5_FILE_DOWNLOAD="ifile_${PARTITION}_${NAME}"
-if f5.run "cp '$F5_FILE' '/shared/images/$F5_FILE_DOWNLOAD'"
-then
-    f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$F5_FILE_DOWNLOAD" 0 "$FILENAME"
-    f5.file.remove "/shared/images/$F5_FILE_DOWNLOAD" > /dev/null
-    exit 0
-fi
-
-exit 1
+FILE=$(GET -rf ".cachePath" "/mgmt/tm/sys/file/ifile/${FULLPATH}?options=-hidden")
+f5.run "base64 $FILE" | base64 -d > "$FILENAME"
