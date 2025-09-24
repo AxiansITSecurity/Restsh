@@ -36,4 +36,4 @@ then
     exit 2
 fi
 
-f5.file.download "/mgmt/cm/autodeploy/qkview-downloads" "$2" 0 "$3"
+f5.file.download "/mgmt/cm/autodeploy/qkview-downloads" "$1" 0 "$2"
