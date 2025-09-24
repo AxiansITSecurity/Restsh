@@ -39,11 +39,11 @@ then
     exit 2
 fi
 
-CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert")
+CERTLIST=$(GET "/mgmt/tm/sys/file/ssl-cert?options=-hidden")
 
 if [ "$RAW" -eq 1 ]
 then
-    echo "$CERTLIST"
+    JQ "." <<< "$CERTLIST"
     exit 0
 fi
 
