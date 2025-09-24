@@ -123,7 +123,7 @@ do
 done
 
 KEY_FILE="/config/httpd/conf/ssl.key/$NAME.key"
-CSR_FILE="/shared/images/$NAME.csr"
+CSR_FILE="/config/httpd/conf/ssl.csr/$NAME.csr"
 
 echo "Uploading CSR configuration"
 f5.file-transfer.upload "$CSR_CONFIG"
@@ -138,9 +138,8 @@ else
 fi
 f5.file.remove "/var/config/rest/downloads/csr.conf"
 
-echo "Downloading CSR"
-f5.file.download /mgmt/cm/autodeploy/software-image-downloads "$NAME.csr" 0 "$RESTSH_TMP/csr.pem"
-f5.file.remove "$CSR_FILE"
+echo "Fetching CSR"
+f5.run "cat $CSR_FILE" > "$RESTSH_TMP/csr.pem"
 
 if ! openssl req -verify -in "$RESTSH_TMP/csr.pem" -noout > /dev/null
 then
