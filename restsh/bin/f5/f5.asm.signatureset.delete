@@ -39,7 +39,7 @@ NAME=$1
 if ID=$(f5.asm.signatureset.getid "$NAME")
 then
     # Delete
-    DELETE "/mgmt/tm/asm/signature-sets/$ID"
+    DELETE "/mgmt/tm/asm/signature-sets/$ID" > /dev/null
 else
     exit 1
 fi

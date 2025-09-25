@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-05-02
 
-# Shortdesc: Creates a new signature set.
+# Shortdesc: Creates a new manual signature set.
 # Desc:
-# Creates a new signature set.
+# Creates a new manual signature set.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -53,5 +53,5 @@ done
 export VAR_SIGNATURES
 
 # Create
-$RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/signatureset.json" \
+$RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/signatureset-manual.json" \
     | POST /mgmt/tm/asm/signature-sets

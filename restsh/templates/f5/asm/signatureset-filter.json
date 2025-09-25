@@ -1,0 +1,18 @@
+{
+    "name": "{{VAR_NAME}}",
+    "isUserDefined": true,
+    "assignToPolicyByDefault": false,
+    "defaultLearn": true,
+    "defaultBlock": true,
+    "defaultAlarm": true,
+    "type": "filter-based",
+    "filter": {
+        "attackTypeReference": {
+            "link": "https://localhost/mgmt/tm/asm/attack-types/{{VAR_ATTACK_TYPE}}"
+        },
+        "accuracyFilter": "eq",
+        "accuracyValue": "{{VAR_ACCURACY}}",
+        "riskFilter": "eq",
+        "riskValue": "{{VAR_RISK}}"
+    }
+}
