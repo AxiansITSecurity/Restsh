@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# (c) Axians IT Security GmbH
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-12-13
 
@@ -33,8 +34,9 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
-    echo "Usage: $(basename "$0") [-d <folder>] <clone uri>"
-    echo -e "\t-d <folder>  Parent folder for cloned repository."
+    echo "Usage: $(basename "$0") [options...] <clone uri>"
+    echo "Options:"
+    echo "    -d <folder>  Parent folder for cloned repository."
     exit 2
 fi
 
@@ -54,10 +56,12 @@ cat > .gitlab-ci.yml << EOL
 include:
   - project: \$PIPELINE_PROJECT_CERTIFICATES
     file: 'certificates.yml'
-    #file: 'pipelines/f5-device-certbot.yml'
-    #file: 'pipelines/f5-device-scm.yml'
-    #file: 'pipelines/f5-tm-certbot.yml'
     #file: 'pipelines/f5-tm-scm.yml'
+    #file: 'pipelines/f5-tm-certbot.yml'
+    #file: 'pipelines/f5-tm-scep.yml'
+    #file: 'pipelines/f5-device-scm.yml'
+    #file: 'pipelines/f5-device-certbot.yml'
+    #file: 'pipelines/f5-device-scep.yml'
 EOL
 for F in dev test prod
 do
