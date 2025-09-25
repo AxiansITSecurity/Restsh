@@ -6,6 +6,7 @@
 
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
+- Feat: `cert.key.verify`
 - Feat: `f5.cert.export`, `f5.cert.key.export`
 - Feat: `aafw.cert.new`
 - Feat: F5OS-A support - Login and token management, backup and file management.
