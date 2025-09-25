@@ -19,9 +19,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+SILENT=0
+while getopts ':hs' OPTION
 do
     case "$OPTION" in
+        s) SILENT=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,22 +33,26 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <bundle file>"
+    echo "Usage: $(basename "$0") [options...] <bundle file>"
+    echo "Options:"
+    echo "    -s Silence output"
     exit 2
 fi
 
 CHAIN_FILE=$1
-TMP_DIR=$(mktemp -d)
-csplit -k -f "${TMP_DIR}/cert" "${CHAIN_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>/dev/null
+TMP_DIR=$(mktemp -d -p "$RESTSH_TMP")
+csplit -k -z -f "${TMP_DIR}/cert" "${CHAIN_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>&1 || true
 for CERT in "${TMP_DIR}"/cert*; do
-    if [ -s "${CERT}" ]
+    if CN=$(openssl x509 -in "$CERT" -noout -subject -nameopt compat \
+        | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|' -e 's|/|_|g' -e 's| |_|g')
     then
-        if CN=$(openssl x509 -in "$CERT" -noout -subject -nameopt compat \
-            | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|' -e 's|/|_|g')
-        then
-            openssl x509 -in "$CERT" -noout -subject
-            openssl x509 -in "$CERT" -out "$TMP_DIR/$CN" && rm "$CERT"
-        fi
+        [ "$SILENT" -eq 1 ] || openssl x509 -in "$CERT" -noout -subject
+        openssl x509 -in "$CERT" -out "$TMP_DIR/$CN" && rm "$CERT"
     fi
 done
-echo "Saved certificates: $TMP_DIR"
+if [ "$SILENT" -eq 1 ]
+then
+    echo "$TMP_DIR"
+else
+    echo "Saved certificates: $TMP_DIR"
+fi

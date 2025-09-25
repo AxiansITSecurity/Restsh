@@ -21,6 +21,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 - Feat: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.modify`, `gitlab.group.member.remove`
 - Feat: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.modify`, `gitlab.project.member.remove`
 - Upd: `gitlab.branch.new` renamed to `gitlab.branch.create`
+- Upd: `cert.bundle.split` - add silent option and do not create empty files
 - Fix: `f5.auth.token.extend` - Define timeout
 
 ***
