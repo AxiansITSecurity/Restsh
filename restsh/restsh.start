@@ -29,13 +29,16 @@ export NEWT_COLORS='
     disabledentry=gray,
     entry=white,gray'
 
+ICON_FOLDER=$(printf '\U1F5BF ')
+ICON_FILE=$(printf '\U1F5CE ')
+
 # Show the configuration select with whiptail
 show_configs() {
     local CONFIG_PATH=$1
     local CONFIG_FILES=()
     if [ "$CONFIG_PATH" != "$START_PATH" ]
     then
-        CONFIG_FILES+=("PARENT:" "..")
+        CONFIG_FILES+=("PARENT:" "$ICON_FOLDER  ..")
     fi
     local DIR
     local NAME
@@ -43,14 +46,14 @@ show_configs() {
     do
         NAME=$(basename "$DIR")
         [ "${NAME:0:1}" = "." ] && continue
-        CONFIG_FILES+=("FOLDER:$NAME" "$NAME")
+        CONFIG_FILES+=("FOLDER:$NAME" "$ICON_FOLDER $NAME")
     done < <(find "$CONFIG_PATH" -maxdepth 1 -mindepth 1 -type d -printf "%f\n" | sort)
     local FILE
     while read -r FILE
     do
         NAME=$(basename "$FILE")
         [ "${NAME:19}" = ".restsh-config.dist" ] && continue
-        CONFIG_FILES+=("FILE:$NAME" "${NAME:$CONFIG_FILE_PREFIX_LEN}")
+        CONFIG_FILES+=("FILE:$NAME" "$ICON_FILE ${NAME:$CONFIG_FILE_PREFIX_LEN}")
     done < <(find "$CONFIG_PATH" -maxdepth 1 -name "${CONFIG_FILE_PREFIX}*" -type f  -printf "%f\n" | sort)
     local SELECT
     SELECT=$(whiptail --clear --backtitle "$CONFIG_PATH" --notags --menu "Choose configuration file" 0 80 0 -- "${CONFIG_FILES[@]}" 3>&1 1>&2 2>&3)
