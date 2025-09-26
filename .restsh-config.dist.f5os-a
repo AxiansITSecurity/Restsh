@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-09-09
 
-# Shortdesc: Custom configuration file for restsh.init, preconfigured for F5OS.
+# Shortdesc: Custom configuration file for restsh.init, preconfigured for F5OS-A.
 # Desc:
-# Custom configuration file for restsh.init, preconfigured for F5OS.
+# Custom configuration file for restsh.init, preconfigured for F5OS-A.
 # Set central environment variables if not already set.
 
 # Enabled modules
