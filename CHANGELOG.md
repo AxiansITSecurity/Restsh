@@ -7,7 +7,7 @@
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
 - Feat: `f5.asm.signatureset.attacktypes`, `f5.asm.signatureset.filter.create`
-- Feat: `cert.key.verify`
+- Feat: `cert.key.verify`, `cert.x509.check`
 - Feat: `f5.cert.export`, `f5.cert.key.export`
 - Feat: `aafw.cert.new`
 - Feat: F5OS-A support - Login and token management, backup and file management.

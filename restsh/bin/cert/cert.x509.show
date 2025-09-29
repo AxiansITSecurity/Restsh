@@ -36,4 +36,4 @@ then
 fi
 
 CERT_FILE=$1
-openssl x509 -in "$CERT_FILE" -noout -subject -dates -serial -issuer
+openssl x509 -in "$CERT_FILE" -noout -subject -dates -serial -issuer -purpose

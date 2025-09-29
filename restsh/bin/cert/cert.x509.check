@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-09-29
+
+# Shortdesc: Checks if the certificate is issued for specific hostname and will not expire within 7 days.
+# Desc:
+# Checks if the certificate is issued for specific hostname and will not expire within 7 days.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+EXPIRE="604800"
+while getopts ':he:' OPTION
+do
+    case "$OPTION" in
+        e) EXPIRE="$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <x509 cert file> <hostname>"
+    exit 2
+fi
+
+CERT_FILE=$1
+CERT_HOST=$2
+
+openssl x509 -in "$CERT_FILE" -noout -checkhost "$CERT_HOST"
+openssl x509 -in "$CERT_FILE" -noout -dates
+openssl x509 -in "$CERT_FILE" -noout -checkend "$EXPIRE"
