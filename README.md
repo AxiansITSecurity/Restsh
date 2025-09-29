@@ -100,7 +100,7 @@ export RESTSH_PATH="/path/to/restsh"
 Enable modules:
 
 ```sh
-RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "next" "scm")
+RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
 ```
 
 ## Dependencies
