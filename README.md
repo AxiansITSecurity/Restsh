@@ -92,15 +92,15 @@ export RESTSH_PATH="/path/to/restsh"
 | ------ | ----------- |
 | aafw | Axians Automation Framework |
 | cert | Certificate handling |
-| f5 | F5 BIG-IP Classic |
+| f5 | F5 BIG-IP TMOS |
+| f5osa | F5OS-A / rSeries |
 | gitlab | GitLab |
-| next | F5 BIG-IP Next |
 | scm | Sectigo Cert Manager |
 
 Enable modules:
 
 ```sh
-RESTSH_MODULES=("aafw" "cert" "custom" "f5" "gitlab" "next" "scm")
+RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "next" "scm")
 ```
 
 ## Dependencies

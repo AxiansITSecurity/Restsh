@@ -1,5 +1,7 @@
 # Use restsh with Sectigo Cert Manager
 
+All functions for this module are prefixed with `scm.`.
+
 ## Authentication
 
 SCM uses OAuth2 based authentication. You must create a client id and client secret in SCM.

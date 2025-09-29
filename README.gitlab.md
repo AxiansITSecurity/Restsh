@@ -1,5 +1,7 @@
 # Use restsh with GitLab
 
+All functions for this module are prefixed with `gitlab.`.
+
 ## Authentication
 
 You can use a private token for authentication. Set `RESTSH_TOKEN_HEADER` to `PRIVATE-TOKEN` and set the `RESTSH_TOKEN_VALUE` to your generated private token.
