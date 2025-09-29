@@ -20,7 +20,7 @@ then
 fi
 
 # Get options
-KEY_ALG="ec:secp384r1"
+KEY_ALG=""
 while getopts ':hk:' OPTION
 do
     case "$OPTION" in
@@ -36,7 +36,7 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch> <fqdn>"
     echo "Options:"
-    echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1 (default)"
+    echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1"
     exit 2
 fi
 
@@ -45,11 +45,17 @@ BRANCH=$2
 CERT=$3
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-KEY_TYPE=${KEY_ALG%%:*}
-KEY_SIZE=${KEY_ALG#*:}
-CONTENT="KEYTYPE=${KEY_TYPE}-private
+if [ -n "$KEY_ALG" ]
+then
+    KEY_TYPE=${KEY_ALG%%:*}
+    KEY_SIZE=${KEY_ALG#*:}
+    CONTENT="KEYTYPE=${KEY_TYPE}-private
 KEYSIZE=$KEY_SIZE
 "
+else
+    CONTENT=""
+fi
+
 FILEPATH=$(restsh.util.urlencode "config/$BRANCH/$CERT")
 
 JQ -n --arg branch "$BRANCH" \
