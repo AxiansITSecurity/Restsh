@@ -25,7 +25,8 @@ INIT_OPTS=()
 PROTECTED_BRANCHES=()
 ACCESS_LEVEL=(0 40)
 SKELETON_PATH=""
-while getopts ':d:hi:l:p:s:' OPTION
+CLM_TYPE=""
+while getopts ':d:hi:l:p:s:t:' OPTION
 do
     case "$OPTION" in
         d)
@@ -42,6 +43,7 @@ do
         l) mapfile -d, -t ACCESS_LEVEL <<< "$OPTARG" ;;
         p) mapfile -d, -t PROTECTED_BRANCHES <<< "$OPTARG" ;;
         s) SKELETON_PATH=$OPTARG ;;
+        t) CLM_TYPE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -57,6 +59,7 @@ then
     echo "    -i <type>           Initialize repository for as3, cert, do, tasks or waf."
     echo "    -l <push,merge>     Access level for protected branches, default: Maintainer access for merge only."
     echo "    -s <skeleton path>  Skeleton path for initialization."
+    echo "    -t <clm type>       CLM pipeline to use (only for type = cert, see aafw.project.init.cert -h for details)"
     echo "    -p <branches>       Comma separated list of branches to protect."
     echo "Access levels:"
     echo "    0  => No access"
@@ -115,6 +118,7 @@ then
             aafw.project.init.as3 "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${SKELETON_PATH}" "$CLONE_URI"
             ;;
         cert)
+            [ -n "$CLM_TYPE" ] && INIT_OPTS+=("-t" "$CLM_TYPE")
             aafw.project.init.cert "${INIT_OPTS[@]}" "$CLONE_URI"
             ;;
         do)
