@@ -120,6 +120,7 @@ then
         echo_err "Invalid variable file"
         exit 1
     fi
+    echo "Reading variables from $VARIABLES_FILE"
 fi
 
 # Clone or update tenant repository
@@ -151,11 +152,11 @@ fi
 sed -e "s/VAR_/VAR_${APP_NAME}_/g" \
     -e "s/ARRAY_/ARRAY_${APP_NAME}_/g" \
     -e "s/__APPNAME__/${APP_NAME}/g" \
-    "$ART_TMP/art/$TEMPLATE/app.json" > "$TENANT_FOLDER/applications/$APP_NAME.json"
+    "${ART_TMP}/art/${TEMPLATE}/app.json" > "${TENANT_FOLDER}/applications/${APP_NAME}.json"
 
 # Configuration
-install -d "$TENANT_FOLDER/config/$APP_NAME"
-for F in $(find "$ART_TMP/art/$TEMPLATE/config" -type f ! -name .\* | sort)
+install -d "${TENANT_FOLDER}/config/${APP_NAME}"
+for F in $(find "${ART_TMP}/art/${TEMPLATE}/config" -type f ! -name .\* | sort)
 do
     CONFIG_FILE=$(basename "$F")
     STAGE=$(basename "$(dirname "$F")")
@@ -163,10 +164,10 @@ do
     then
         STAGE=""
     else
-        install -d "$TENANT_FOLDER/config/$APP_NAME/$STAGE"
         STAGE="${STAGE}/"
     fi
-    DST="$TENANT_FOLDER/config/$APP_NAME/${STAGE}${APP_NAME}_${CONFIG_FILE}"
+    install -d "${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}"
+    DST="${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}${APP_NAME}_${CONFIG_FILE}"
     if [ "$INTERACTIVE" -eq 1 ]
     then
         if ! ask "$F" "$DST"
@@ -184,20 +185,14 @@ do
 done
 
 # iRules and iFiles
+install -d "${TENANT_FOLDER}/applications/${APP_NAME}/ifiles"
+install -d "${TENANT_FOLDER}/applications/${APP_NAME}/irules"
 while read -r F
 do
     FILE=$(basename "$F")
     SUBDIR=$(basename "$(dirname "$F")")
-    install "$F" "${TENANT_FOLDER}/applications/${SUBDIR}/${APP_NAME}/${FILE}"
+    install "$F" "${TENANT_FOLDER}/applications/${APP_NAME}/${SUBDIR}/${FILE}"
 done < <(find "${ART_TMP}/art/${TEMPLATE}/"{ifiles,irules} -type f ! -name .\*)
-
-# All other files
-while read -r F
-do
-    FILE=$(basename "$F")
-    SUBDIR=$(basename "$(dirname "$F")")
-    install "$F" "${TENANT_FOLDER}/${SUBDIR}/${APP_NAME}_${FILE}"
-done < <(find "${ART_TMP}/art/${TEMPLATE}/"{files,snippets,vars} -type f ! -name .\*)
 
 # Run deploy script from ART repository
 if [ -s "${ART_TMP}/art/${TEMPLATE}/deploy.sh" ]
