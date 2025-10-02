@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-10-02
+
+# Shortdesc: Creates a snmp v3 user.
+# Desc:
+# Creates a snmp v3 user.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+ACCESS="ro"
+AUTHPROTO="sha"
+PRIVPROTO="aes"
+OID=".1"
+
+while getopts ':a:ho:' OPTION
+do
+    case "$OPTION" in
+        a) ACCESS=$OPTARG ;;
+        o) OID=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <username> <auth pass> <priv pass>"
+    exit 2
+fi
+
+USERNAME=$1
+AUTHPASS=$2
+PRIVPASS=$3
+
+JQ -n --arg username "$USERNAME" \
+    --arg access "$ACCESS" \
+    --arg authpass "$AUTHPASS" \
+    --arg authproto "$AUTHPROTO" \
+    --arg privpass "$PRIVPASS" \
+    --arg privproto "$PRIVPROTO" \
+    --arg oid "$OID" \
+    '{
+      "username": $username,
+      "access": $access,
+      "authPassword": $authpass,
+      "authProtocol": $authproto,
+      "privacyPassword": $privpass,
+      "privacyProtocol": $privproto,
+      "securityLevel": "auth-privacy",
+      "oidSubset": $oid
+    }' \
+    | POST "/mgmt/tm/sys/snmp/users/$USERNAME"
