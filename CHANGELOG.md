@@ -9,7 +9,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 - Feat: `f5.sys.snmp.user.create`, `f5.sys.snmp.user.delete`, `f5.sys.snmp.user.list`
 - Feat: `f5.asm.signatureset.attacktypes`, `f5.asm.signatureset.filter.create`
 - Feat: `cert.key.verify`, `cert.x509.check`
-- Feat: `f5.cert.export`, `f5.cert.key.export`
+- Feat: `f5.cert.get`, `f5.cert.export`, `f5.cert.key.export`
 - Feat: `aafw.cert.new`
 - Feat: F5OS-A support - Login and token management, backup and file management.
     - `f5osa.auth.token.get`, `f5osa.backup.create`, `f5osa.file.download`, `f5osa.tenant.list`, `f5osa.auth.token.renew`, `f5osa.file.delete`, `f5osa.file.list`, `f5osa.version`
