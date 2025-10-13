@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
+# (c) Axians IT Security GmbH
 # Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-19
+# Date: 2025-10-13
 
 # Shortdesc: Deploys a new certificate.
 # Desc:
@@ -20,11 +21,32 @@ then
 fi
 
 # Get options
-KEY_ALG=""
-while getopts ':hk:' OPTION
+KEY_ALG="ec:secp384r1"
+ORG=""
+OU=""
+CITY=""
+STATE=""
+COUNTRY=""
+ALT_NAMES=()
+ALT_IPS=()
+while getopts ':-:a:hi:k:' OPTION
 do
+    if [ "$OPTION" = "-" ]
+    then
+        # long option: reformulate OPTION and OPTARG
+        OPTION="${OPTARG%%=*}"        # extract long option name
+        OPTARG="${OPTARG#"$OPTION"}"  # extract long option argument (may be empty)
+        OPTARG="${OPTARG#=}"          # if long option argument, remove assigning `=`
+    fi
     case "$OPTION" in
+        a) ALT_NAMES+=("$OPTARG") ;;
+        i) ALT_IPS+=("$OPTARG") ;;
         k) KEY_ALG="$OPTARG" ;;
+        org) ORG="$OPTARG" ;;
+        ou) OU="$OPTARG" ;;
+        city) CITY="$OPTARG" ;;
+        state) STATE="$OPTARG" ;;
+        country) COUNTRY="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,7 +58,14 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch> <fqdn>"
     echo "Options:"
-    echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1"
+    echo "    -a <dns alternative name>"
+    echo "    -i <ip alternative name>"
+    echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1 (default)"
+    echo "    --org=<organization>"
+    echo "    --ou=<organizational unit>"
+    echo "    --city=<city>"
+    echo "    --state=<state>"
+    echo "    --country=<country>"
     exit 2
 fi
 
@@ -45,16 +74,32 @@ BRANCH=$2
 CERT=$3
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if [ -n "$KEY_ALG" ]
-then
-    KEY_TYPE=${KEY_ALG%%:*}
-    KEY_SIZE=${KEY_ALG#*:}
-    CONTENT="KEYTYPE=${KEY_TYPE}-private
-KEYSIZE=$KEY_SIZE
-"
-else
-    CONTENT=""
-fi
+KEY_TYPE=${KEY_ALG%%:*}
+KEY_SIZE=${KEY_ALG#*:}
+case "$KEY_TYPE" in
+    ec) KEY_STRENGTH="CURVENAME" ;;
+    rsa) KEY_STRENGTH="KEYSIZE" ;;
+    *)
+        echo_err "Invalid key type"
+        exit 1
+        ;;
+esac
+
+ALT_NAMES_STR=$(restsh.util.array.string -q'"' "${ALT_NAMES[@]}")
+ALT_IPS_STR=$(restsh.util.array.string -q'"' "${ALT_IPS[@]}")
+
+CONTENT=$(cat << EOL | base64
+KEYTYPE=${KEY_TYPE}-private
+$KEY_STRENGTH=$KEY_SIZE
+ORG="$ORG"
+OU="$OU"
+CITY="$CITY"
+STATE="$STATE"
+COUNTRY="$COUNTRY"
+ALT_NAMES=(${ALT_NAMES_STR})
+ALT_IPS=(${ALT_IPS_STR})
+EOL
+)
 
 FILEPATH=$(restsh.util.urlencode "config/$BRANCH/$CERT")
 
@@ -64,5 +109,6 @@ JQ -n --arg branch "$BRANCH" \
     '{
         "branch": $branch,
         "commit_message": $msg,
+        "encoding": "base64"
         "content": $content
     }' | POST "$GITLAB_API_PREFIX/projects/${PROJECT}/repository/files/$FILEPATH"
