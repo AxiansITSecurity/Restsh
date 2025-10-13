@@ -6,6 +6,7 @@
 
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
+- Feat: `restsh.util.array.string`
 - Feat: `f5.sys.snmp.user.create`, `f5.sys.snmp.user.delete`, `f5.sys.snmp.user.list`
 - Feat: `f5.asm.signatureset.attacktypes`, `f5.asm.signatureset.filter.create`
 - Feat: `cert.key.verify`, `cert.x509.check`

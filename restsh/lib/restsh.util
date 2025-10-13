@@ -662,6 +662,39 @@ restsh.util.array.includes() {
     return 1
 }
 
+# Converts an array to a quoted string
+restsh.util.array.string() {
+    local OPTION OPTIND
+    local FIND_OPTS=("-maxdepth" "1")
+    local SEP=" "
+    local Q=""
+    while getopts ':s:q:' OPTION
+    do
+        case "$OPTION" in
+            s) SEP="$OPTARG" ;;
+            q) Q="$OPTARG" ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+    if [ "$OPTION" = "invalid" ]
+    then
+        echo "Converts an array to a quoted string" 1>&2
+        echo "Usage: restsh.util.array.string <array>" 1>&2
+        echo "Options:" 1>&2
+        echo "    -s <separator>  Separator, default: blank" 1>&2
+        echo "    -q <quote>      Quoting character, default: none" 1>&2
+        return 2
+    fi
+    local A
+    local S=""
+    for A in "$@"
+    do
+        printf "%s%s%s%s" "${S}" "${Q}" "${A}" "${Q}"
+        S="$SEP"
+    done
+}
+
 # Convert string to upper case.
 restsh.util.uc() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
@@ -904,6 +937,7 @@ export -f restsh.util.check.isnumber
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
 export -f restsh.util.array.includes
+export -f restsh.util.array.string
 export -f restsh.util.uc
 export -f restsh.util.lc
 export -f restsh.util.askpass

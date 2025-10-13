@@ -188,6 +188,17 @@ test.restsh.util.array.includes() {
     if ! restsh.util.array.includes "test" "test2" "foo" "bar"; then true; else false; fi
 }
 
+test.restsh.util.array.string() {
+    local ARRAY=("abc" "dfg" "hij" "x y")
+    local STR
+    STR=$(restsh.util.array.string -q'"' "${ARRAY[@]}")
+    if [ "$STR" = '"abc" "dfg" "hij" "x y"' ]; then true; else false; fi
+    STR=$(restsh.util.array.string -q'"' -s, "${ARRAY[@]}")
+    if [ "$STR" = '"abc","dfg","hij","x y"' ]; then true; else false; fi
+    STR=$(restsh.util.array.string -s, "${ARRAY[@]}")
+    if [ "$STR" = 'abc,dfg,hij,x y' ]; then true; else false; fi
+}
+
 test.restsh.util.uc() {
     local OUTPUT
     OUTPUT=$(restsh.util.uc "test")
@@ -253,6 +264,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.declare.var
     test.restsh.util.filesize
     test.restsh.util.array.includes
+    test.restsh.util.array.string
     test.restsh.util.uc
     test.restsh.util.lc
     test.restsh.util.askpass
