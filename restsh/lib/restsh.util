@@ -668,11 +668,13 @@ restsh.util.array.string() {
     local FIND_OPTS=("-maxdepth" "1")
     local SEP=" "
     local Q=""
-    while getopts ':s:q:' OPTION
+    local P=""
+    while getopts ':p:q:s:' OPTION
     do
         case "$OPTION" in
-            s) SEP="$OPTARG" ;;
+            p) P="$OPTARG" ;;
             q) Q="$OPTARG" ;;
+            s) SEP="$OPTARG" ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -682,6 +684,7 @@ restsh.util.array.string() {
         echo "Converts an array to a quoted string" 1>&2
         echo "Usage: restsh.util.array.string <array>" 1>&2
         echo "Options:" 1>&2
+        echo "    -p <prefix>     Prefix element with, default: blank" 1>&2
         echo "    -s <separator>  Separator, default: blank" 1>&2
         echo "    -q <quote>      Quoting character, default: none" 1>&2
         return 2
@@ -690,7 +693,7 @@ restsh.util.array.string() {
     local S=""
     for A in "$@"
     do
-        printf "%s%s%s%s" "${S}" "${Q}" "${A}" "${Q}"
+        printf "%s%s%s%s%s" "${S}" "${Q}" "${P}" "${A}" "${Q}"
         S="$SEP"
     done
 }
