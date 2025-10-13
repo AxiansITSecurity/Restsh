@@ -43,9 +43,11 @@ then
     echo "                   - f5-tm-scm: Traffic Management Certificate with SCM"
     echo "                   - f5-tm-certbot: Traffic Management Certificate with Certbot"
     echo "                   - f5-tm-scep: Traffic Management Certificate with SCEP"
+    echo "                   - f5-tm-vault: Traffic Management Certificate with HashiCorp Vault"
     echo "                   - f5-device-scm: Device Certificate with SCM"
     echo "                   - f5-device-certbot: Device Certificate with Certbot"
     echo "                   - f5-device-scep: Device Certificate with SCEP"
+    echo "                   - f5-device-vault: Device Certificate with HashiCorp Vault"
     exit 2
 fi
 
@@ -66,9 +68,11 @@ case "$PIPELINE_TYPE" in
     f5-tm-scm) PIPELINE_FILE="pipelines/f5-tm-scm.yml" ;;
     f5-tm-certbot) PIPELINE_FILE="pipelines/f5-tm-certbot.yml" ;;
     f5-tm-scep) PIPELINE_FILE="pipelines/f5-tm-scep.yml" ;;
+    f5-tm-vault) PIPELINE_FILE="pipelines/f5-tm-vault.yml" ;;
     f5-device-scm) PIPELINE_FILE="pipelines/f5-device-scm.yml" ;;
     f5-device-certbot) PIPELINE_FILE="pipelines/f5-device-certbot.yml" ;;
     f5-device-scep) PIPELINE_FILE="pipelines/f5-device-scep.yml" ;;
+    f5-device-vault) PIPELINE_FILE="pipelines/f5-device-vault.yml" ;;
     *) PIPELINE_FILE="certificates.yml" ;;
 esac
 
@@ -79,9 +83,11 @@ include:
     #file: 'pipelines/f5-tm-scm.yml'
     #file: 'pipelines/f5-tm-certbot.yml'
     #file: 'pipelines/f5-tm-scep.yml'
+    #file: 'pipelines/f5-tm-vault.yml'
     #file: 'pipelines/f5-device-scm.yml'
     #file: 'pipelines/f5-device-certbot.yml'
     #file: 'pipelines/f5-device-scep.yml'
+    #file: 'pipelines/f5-device-vault.yml'
 EOL
 for F in dev test prod
 do
