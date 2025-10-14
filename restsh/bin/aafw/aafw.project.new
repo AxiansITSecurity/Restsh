@@ -19,6 +19,11 @@ then
     exit 1
 fi
 
+[ -n "${RESTSH_AAFW_GROUP+x}" ] || { echo_err "Variable RESTSH_AAFW_GROUP not set" ; exit 1; }
+[ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set" ; exit 1; }
+[ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set" ; exit 1; }
+[ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set" ; exit 1; }
+
 # Get options
 INIT_PROJECT=""
 INIT_OPTS=()
