@@ -7,13 +7,16 @@
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
 - Feat: `restsh.util.array.string`
-- Feat: `f5.sys.snmp.user.create`, `f5.sys.snmp.user.delete`, `f5.sys.snmp.user.list`
+- Feat: SNMPv3 user management
+    - `f5.sys.snmp.user.create`, `f5.sys.snmp.user.delete`, `f5.sys.snmp.user.list`
 - Feat: `f5.asm.signatureset.attacktypes`, `f5.asm.signatureset.filter.create`
 - Feat: `cert.key.verify`, `cert.x509.check`
 - Feat: `f5.cert.get`, `f5.cert.export`, `f5.cert.key.export`
 - Feat: `aafw.cert.new`
 - Feat: F5OS-A support - Login and token management, backup and file management.
-    - `f5osa.auth.token.get`, `f5osa.backup.create`, `f5osa.file.download`, `f5osa.tenant.list`, `f5osa.auth.token.renew`, `f5osa.file.delete`, `f5osa.file.list`, `f5osa.version`
+    - Login: `f5osa.auth.token.get`, `f5osa.auth.token.renew`
+    - General: `f5osa.version`, `f5osa.tenant.list`
+    - Backup: `f5osa.backup.create`, `f5osa.file.download`, `f5osa.file.delete`, `f5osa.file.list`
 - Feat: Support for HashiCorp Vault
 - Feat: Add support for HTTP HEAD
 - Feat: `aafw.art.new`
@@ -21,8 +24,9 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 - Feat: `gitlab.project.history`
 - Feat: Support marked for deletion for projects: `gitlab.project.restore`, `gitlab.project.delete`
 - Feat: `gitlab.project.move`, `gitlab.project.rename`
-- Feat: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.modify`, `gitlab.group.member.remove`
-- Feat: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.modify`, `gitlab.project.member.remove`
+- Feat: User management functions:
+    - For groups: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.modify`, `gitlab.group.member.remove`
+    - For projects: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.modify`, `gitlab.project.member.remove`
 - Upd: `gitlab.branch.new` renamed to `gitlab.branch.create`
 - Upd: `cert.bundle.split` - add silent option and do not create empty files
 - Fix: `f5.auth.token.extend` - Define timeout
