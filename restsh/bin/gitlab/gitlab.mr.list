@@ -61,4 +61,4 @@ then
     exit 0
 fi
 
-exit1
+exit 1
