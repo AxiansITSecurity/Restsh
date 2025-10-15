@@ -21,9 +21,11 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+ALL=0
+while getopts ':ar' OPTION
 do
     case "$OPTION" in
+        a) ALL=1 ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -36,6 +38,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <group> [<page>]"
     echo "Options:"
+    echo "    -a Show all projects"
     echo "    -r Raw output."
     exit 2
 fi
@@ -53,10 +56,21 @@ if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/projects?page=$PAGE&per_page=$
 then
     if [ "$RAW" -eq 1 ]
     then
-        JQ "." <<< "$RESULT"
+        if [ "$ALL" -eq 1 ]
+        then
+            JQ "." <<< "$RESULT"
+        else
+            JQ '.[] | [select(.archived == false)]' <<< "$RESULT"
+        fi
     else
-        JQ -r '.[] | [.id, .name] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,name"
+        if [ "$ALL" -eq 1 ]
+        then
+            JQ -r '.[] | [.id, .name, .archived] | @tsv' <<< "$RESULT" | \
+                COLUMN -o "|" -N "id,name,archived"
+        else
+            JQ -r '.[] | select(.archived == false) | [.id, .name] | @tsv' <<< "$RESULT" | \
+                COLUMN -o "|" -N "id,name"
+        fi
     fi
 else
     exit 1

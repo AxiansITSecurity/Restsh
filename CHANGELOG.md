@@ -6,6 +6,8 @@
 
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
+- Feat: Support archived projects
+    - `gitlab.project.archive`
 - Feat: `restsh.util.array.string`
 - Feat: SNMPv3 user management
     - `f5.sys.snmp.user.create`, `f5.sys.snmp.user.delete`, `f5.sys.snmp.user.list`
