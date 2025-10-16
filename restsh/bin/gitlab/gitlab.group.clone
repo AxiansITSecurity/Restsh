@@ -62,7 +62,7 @@ clone_group() {
     while read -r GROUP
     do
         clone_group "$GROUP"
-    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/subgroups" | JQ -r '.[] | select(.marked_for_deletion_on == null) |.full_path')
+    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/subgroups" | JQ -r '.[] | select(.marked_for_deletion_on == null) | .full_path')
 }
 
 clone_group "$TOP_GROUP"
