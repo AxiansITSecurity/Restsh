@@ -6,6 +6,8 @@
 
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
+- Feat: Allow setting explicit certificate name <> CN
+    - `f5.cert.csr.create`, `f5.csr.create-from-key`
 - Feat: Support archived projects
     - `gitlab.project.archive`
 - Feat: `restsh.util.array.string`
