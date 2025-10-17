@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# (c) Axians IT Security GmbH
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-08-01
 
@@ -25,22 +26,24 @@ usage() {
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") --key=<key> --cn=<common name>"
     echo "Options:"
-    echo -e "\t-a <dns alternative name>"
-    echo -e "\t-c <config file>"
-    echo -e "\t-i <ip alternative name>"
-    echo -e "\t--partition=<f5 partition>, default: Common"
-    echo -e "\t--key=<key>"
-    echo -e "\t--cn=<common name>"
-    echo -e "\t--org=<organization>"
-    echo -e "\t--ou=<organizational unit>"
-    echo -e "\t--city=<city>"
-    echo -e "\t--state=<state>"
-    echo -e "\t--country=<country>"
+    echo "    -a <dns alternative name>"
+    echo "    -c <config file>"
+    echo "    -i <ip alternative name>"
+    echo "    -n <name>"
+    echo "    --partition=<f5 partition>, default: Common"
+    echo "    --key=<key>"
+    echo "    --cn=<common name>"
+    echo "    --org=<organization>"
+    echo "    --ou=<organizational unit>"
+    echo "    --city=<city>"
+    echo "    --state=<state>"
+    echo "    --country=<country>"
     exit 2
 }
 
 # Get options
 PARTITION="Common"
+NAME=""
 KEY=""
 CN=""
 ORG=""
@@ -51,7 +54,7 @@ COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
 CONFIG_FILE=""
-while getopts ':-:a:i:c:' OPTION
+while getopts ':-:a:c:i:n:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then
@@ -63,6 +66,7 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
+        n) NAME=$OPTARG ;;
         c) CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
         key) KEY="$OPTARG" ;;
@@ -84,11 +88,13 @@ fi
 
 [ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 
+[ -n "$NAME" ] || NAME="$CN"
+
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 [ "$SAN" = " " ] && SAN="DNS:$CN"
 
 JQ -n --arg cn "$CN" \
-    --arg name "$KEY" \
+    --arg name "$NAME" \
     --arg key "/$PARTITION/$KEY" \
     --arg org "$ORG" \
     --arg ou "$OU" \

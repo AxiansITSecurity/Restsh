@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# (c) Axians IT Security GmbH
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2024-08-01
 
@@ -25,23 +26,25 @@ usage() {
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") --cn=<common name>"
     echo "Options:"
-    echo -e "\t-a <dns alternative name>"
-    echo -e "\t-i <ip alternative name>"
-    echo -e "\t--partition=<f5 partition>, default: Common"
-    echo -e "\t--keytype=<key type>, default: rsa-private, valid: rsa-private, ec-private"
-    echo -e "\t--keysize=<keysize>, default: 4096, valid: 2048, 4096"
-    echo -e "\t--curvename=<curve name>, default: prime256v1, valid: prime256v1, secp384r1, secp521r1"
-    echo -e "\t--cn=<common name>"
-    echo -e "\t--org=<organization>"
-    echo -e "\t--ou=<organizational unit>"
-    echo -e "\t--city=<city>"
-    echo -e "\t--state=<state>"
-    echo -e "\t--country=<country>"
+    echo "    -a <dns alternative name>"
+    echo "    -i <ip alternative name>"
+    echo "    -n <name>"
+    echo "    --partition=<f5 partition>, default: Common"
+    echo "    --keytype=<key type>, default: rsa-private, valid: rsa-private, ec-private"
+    echo "    --keysize=<keysize>, default: 4096, valid: 2048, 4096"
+    echo "    --curvename=<curve name>, default: prime256v1, valid: prime256v1, secp384r1, secp521r1"
+    echo "    --cn=<common name>"
+    echo "    --org=<organization>"
+    echo "    --ou=<organizational unit>"
+    echo "    --city=<city>"
+    echo "    --state=<state>"
+    echo "    --country=<country>"
     exit 2
 }
 
 # Get options
 PARTITION="Common"
+NAME=""
 KEYSIZE=4096
 KEYTYPE="rsa-private"
 CURVENAME="prime256v1"
@@ -54,7 +57,7 @@ COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
 CONFIG_FILE=""
-while getopts ':-:a:i:' OPTION
+while getopts ':-:a:i:n:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then
@@ -66,6 +69,7 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
+        n) NAME=$OPTARG ;;
         c) CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
         keytype) KEYTYPE="$OPTARG" ;;
@@ -89,12 +93,14 @@ fi
 
 [ -n "$CONFIG_FILE" ] && . "$CONFIG_FILE"
 
+[ -n "$NAME" ] || NAME="$CN"
+
 SAN=$(IFS=,; printf '%s' "${ALT_NAMES[*]} ${ALT_IPS[*]}")
 [ "$SAN" = " " ] && SAN="DNS:$CN"
 
 if [ "$KEYTYPE" = "rsa-private" ]
 then
-    JQ -n --arg name "${CN}" \
+    JQ -n --arg name "${NAME}" \
         --arg cn "$CN" \
         --arg partition "$PARTITION" \
         --arg keysize "$KEYSIZE" \
@@ -120,7 +126,7 @@ then
             "subject-alternative-name": $san
         }' | POST "/mgmt/tm/sys/crypto/key"
 else
-    JQ -n --arg name "${CN}" \
+    JQ -n --arg name "${NAME}" \
         --arg cn "$CN" \
         --arg partition "$PARTITION" \
         --arg keytype "$KEYTYPE" \
