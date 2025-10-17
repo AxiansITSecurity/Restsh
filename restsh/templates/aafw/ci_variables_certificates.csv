@@ -28,3 +28,13 @@ CERTBOT_ACME_DG,/Common/Shared/acme-challenge,false,true,Datagroup to store the 
 # SCEP
 SCEP_URI,,false,true,SCEP URI
 SCEP_PASS,password,true,true,SCEP Password
+
+# HashiCorp Vault
+VAULT_AUTH_ROLE_DEV,,false,true,Vault Authentication Role
+VAULT_PKI_DEV,,false,true,Vault Certificate Backend
+
+VAULT_AUTH_ROLE_TEST,,false,true,Vault Authentication Role
+VAULT_PKI_TEST,,false,true,Vault Certificate Backend
+
+VAULT_AUTH_ROLE_PROD,,false,true,Vault Authentication Role
+VAULT_PKI_PROD,,false,true,Vault Certificate Backend
