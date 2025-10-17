@@ -58,7 +58,8 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <branch> <fqdn>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch> <certificate name>"
+    echo "The certificate name is usually the common name."
     echo "Options:"
     echo "    -a <dns alternative name>"
     echo "    -i <ip alternative name>"
@@ -114,6 +115,6 @@ JQ -n --arg branch "$BRANCH" \
     '{
         "branch": $branch,
         "commit_message": $msg,
-        "encoding": "base64"
+        "encoding": "base64",
         "content": $content
     }' | POST "$GITLAB_API_PREFIX/projects/${PROJECT}/repository/files/$FILEPATH"
