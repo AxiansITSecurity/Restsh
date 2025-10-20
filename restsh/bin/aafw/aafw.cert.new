@@ -21,7 +21,7 @@ then
 fi
 
 # Get options
-KEY_ALG="ec:secp384r1"
+KEY_ALG=""
 CN=""
 ORG=""
 OU=""
@@ -63,7 +63,7 @@ then
     echo "Options:"
     echo "    -a <dns alternative name>"
     echo "    -i <ip alternative name>"
-    echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1 (default)"
+    echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1"
     echo "    --cn=<CN>"
     echo "    --org=<organization>"
     echo "    --ou=<organizational unit>"
@@ -78,33 +78,35 @@ BRANCH=$2
 CERT=$3
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-KEY_TYPE=${KEY_ALG%%:*}
-KEY_SIZE=${KEY_ALG#*:}
-case "$KEY_TYPE" in
-    ec) KEY_STRENGTH="CURVENAME" ;;
-    rsa) KEY_STRENGTH="KEYSIZE" ;;
-    *)
-        echo_err "Invalid key type"
-        exit 1
-        ;;
-esac
+if [ -n "$KEY_ALG" ]
+then
+    KEY_TYPE=${KEY_ALG%%:*}
+    KEY_SIZE=${KEY_ALG#*:}
+    case "$KEY_TYPE" in
+        ec) KEY_STRENGTH="CURVENAME" ;;
+        rsa) KEY_STRENGTH="KEYSIZE" ;;
+        *)
+            echo_err "Invalid key type"
+            exit 1
+            ;;
+    esac
+fi
 
 ALT_NAMES_STR=$(restsh.util.array.string -q'"' "${ALT_NAMES[@]}")
 ALT_IPS_STR=$(restsh.util.array.string -q'"' "${ALT_IPS[@]}")
-[ -n "$CN" ] || CN="$CERT"
 
-CONTENT=$(cat << EOL | base64
-KEYTYPE=${KEY_TYPE}-private
-$KEY_STRENGTH=$KEY_SIZE
-CN="$CN"
-ORG="$ORG"
-OU="$OU"
-CITY="$CITY"
-STATE="$STATE"
-COUNTRY="$COUNTRY"
-ALT_NAMES=(${ALT_NAMES_STR})
-ALT_IPS=(${ALT_IPS_STR})
-EOL
+CONTENT=$({
+        [ -z "${KEY_ALG}" ] || printf 'KEYTYPE="%s"\n' "${KEY_TYPE}-private"
+        [ -z "${KEY_ALG}" ] || printf '%s="%s"\n' "$KEY_STRENGTH" "$KEY_SIZE"
+        [ -z "${CN}" ] || printf 'CN="%s"\n' "${CN}"
+        [ -z "${ORG}" ] || printf 'ORG="%s"\n' "${ORG}"
+        [ -z "${OU}" ] || printf 'OU="%s""\n' "${OU}"
+        [ -z "${CITY}" ] || printf 'CITY="%s"\n' "${CITY}"
+        [ -z "${STATE}" ] || printf 'STATE="%s"\n' "${STATE}"
+        [ -z "${COUNTRY}" ] || printf 'COUNTRY="%s"\n' "${COUNTRY}"
+        [ -z "${ALT_NAMES_STR}" ] || printf 'ALT_NAMES=(%s)\n' "${ALT_NAMES_STR}"
+        [ -z "${ALT_IPS_STR}" ] || printf 'ALT_IPS=(%s)\n' "${ALT_IPS_STR}"
+    } | base64
 )
 
 FILEPATH=$(restsh.util.urlencode "config/$BRANCH/$CERT")
