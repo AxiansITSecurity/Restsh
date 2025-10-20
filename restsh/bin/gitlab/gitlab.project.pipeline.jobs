@@ -56,8 +56,8 @@ then
     then
         JQ '.' <<< "$RESULT"
     else
-        JQ -r '.[] | [.id, .created_at, .finished_at, .web_url] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,created,finished,url"
+        JQ -r '.[] | [.id, .name, .created_at, .finished_at, .pipeline.status, .web_url] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "id,name,created,finished,status,url"
     fi
     exit 0
 fi
