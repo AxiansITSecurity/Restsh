@@ -12,7 +12,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
     - Feat: `restsh.util.array.string`
     - Feat: `cert.key.verify`, `cert.x509.check`
     - Upd: `cert.bundle.split` - add silent option and do not create empty files
-- AAFW
+- Axians Automation Framework
     - Feat: `aafw.art.new`
     - Feat: `aafw.cert.new`
 - F5 TMOS Module
