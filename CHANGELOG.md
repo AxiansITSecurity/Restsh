@@ -30,10 +30,10 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 - GitLab Module
     - Feat: Support archived projects
         - `gitlab.project.archive`
-        - Feat: `gitlab.runner.jobs`
+    - Feat: `gitlab.runner.jobs`
     - Feat: `gitlab.project.history`
     - Feat: Support marked for deletion for projects: `gitlab.project.restore`, `gitlab.project.delete`
-    - Feat: `gitlab.project.move`, `gitlab.project.rename`
+    - Feat: `gitlab.project.move`, `gitlab.project.rename`, `gitlab.project.fork`
     - Feat: User management functions
         - For groups: `gitlab.group.member.add`, `gitlab.group.member.list`, `gitlab.group.member.modify`, `gitlab.group.member.remove`
         - For projects: `gitlab.project.member.add`, `gitlab.project.member.list`, `gitlab.project.member.modify`, `gitlab.project.member.remove`

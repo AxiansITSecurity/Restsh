@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Author: Juergen Mang <juergen.mang@axians.de>
+# Date: 2025-10-21
+
+# Shortdesc: Forks a project.
+# Desc:
+# Forks a project.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+DETACH=0
+RAW=0
+while getopts ':dhr' OPTION
+do
+    case "$OPTION" in
+        d) DETACH=1 ;;
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <project path> <fork path>"
+    echo "Options"
+    echo "    -d Remove fork relationship"
+    exit 2
+fi
+
+PROJECT=$1
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+FORK=$2
+
+NAME=$(basename "$FORK")
+GROUP=$(dirname "$FORK")
+NAMESPACE_ID=$(gitlab.group.id "$GROUP")
+FORK=$(restsh.util.urlencode "$FORK")
+
+ID=$(JQ -n --arg name "$NAME" \
+    --arg namespace_id "$NAMESPACE_ID" \
+    --arg group "$GROUP" \
+    '{
+        name: $name,
+        namespace_id: $namespace_id,
+        namespace_path: $group,
+        path: $name
+    }' | POST -r -f '.id' "$GITLAB_API_PREFIX/projects/$PROJECT/fork")
+
+if ! restsh.util.check.isnumber "$ID"
+then
+    exit 1
+fi
+
+if [ "$DETACH" -eq 1 ]
+then
+    DELETE "$GITLAB_API_PREFIX/projects/$ID/fork"
+fi
+
+if [ "$RAW" -eq 1 ]
+then
+    GET "$GITLAB_API_PREFIX/projects/$ID"
+else
+    echo "$ID"
+fi
