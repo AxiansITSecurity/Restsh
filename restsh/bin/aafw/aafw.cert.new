@@ -104,8 +104,8 @@ CONTENT=$({
         [ -z "${CITY}" ] || printf 'CITY="%s"\n' "${CITY}"
         [ -z "${STATE}" ] || printf 'STATE="%s"\n' "${STATE}"
         [ -z "${COUNTRY}" ] || printf 'COUNTRY="%s"\n' "${COUNTRY}"
-        [ -z "${ALT_NAMES_STR}" ] || printf 'ALT_NAMES=(%s)\n' "${ALT_NAMES_STR}"
-        [ -z "${ALT_IPS_STR}" ] || printf 'ALT_IPS=(%s)\n' "${ALT_IPS_STR}"
+        [ -z "${ALT_NAMES_STR}" ] || printf 'ALT_NAMES_DNS=(%s)\n' "${ALT_NAMES_STR}"
+        [ -z "${ALT_IPS_STR}" ] || printf 'ALT_NAMES_IP=(%s)\n' "${ALT_IPS_STR}"
     } | base64
 )
 
