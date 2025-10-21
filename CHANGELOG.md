@@ -32,6 +32,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
         - `gitlab.project.archive`
     - Feat: `gitlab.runner.jobs`
     - Feat: `gitlab.project.history`
+    - Feat: `gitlab.project.pipeline.path`
     - Feat: Support marked for deletion for projects: `gitlab.project.restore`, `gitlab.project.delete`
     - Feat: `gitlab.project.move`, `gitlab.project.rename`, `gitlab.project.fork`
     - Feat: User management functions
