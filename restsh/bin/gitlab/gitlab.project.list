@@ -65,7 +65,7 @@ then
             JQ -r '.[] | [.id, .path_with_namespace, .archived] | @tsv' <<< "$RESULT" | \
                 COLUMN -o "|" -N "id,path_with_namespace,archived"
         else
-            JQ -r '.[] | [.id, .path_with_namespace] | @tsv' <<< "$RESULT" | \
+            JQ -r '.[] | select(.archived == false) | [.id, .path_with_namespace] | @tsv' <<< "$RESULT" | \
                 COLUMN -o "|" -N "id,path_with_namespace"
         fi
     fi
