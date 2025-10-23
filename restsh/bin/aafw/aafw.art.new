@@ -168,7 +168,6 @@ sed -e "s/VAR_/VAR_${APP_NAME_UC}_/g" \
     "${ART_TMP}/art/${TEMPLATE}/app.json" > "${TENANT_FOLDER}/applications/${APP_NAME}.json"
 
 # Configuration
-install -d "${TENANT_FOLDER}/config/${APP_NAME}"
 for F in $(find "${ART_TMP}/art/${TEMPLATE}/config" -type f ! -name .\* | sort)
 do
     CONFIG_FILE=$(basename "$F")
