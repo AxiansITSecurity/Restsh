@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-08-04
+# (c) Axians IT Security GmbH
+# https://www.axians.de/security
 
 # Shortdesc: Creates an AS3 Application from an Application Ready Template.
 # Desc:
@@ -20,13 +20,15 @@ then
 fi
 
 # Get options
+ART_PROJECT="$RESTSH_AAFW_ART"
 INTERACTIVE=0
 OVERWRITE=0
 PUSH=0
 VARIABLES_FILE=""
-while getopts ':fipv:' OPTION
+while getopts ':a:fipv:' OPTION
 do
     case "$OPTION" in
+        a) ART_PROJECT="$OPTARG" ;;
         f) OVERWRITE=1 ;;
         i) INTERACTIVE=1 ;;
         p) PUSH=1 ;;
@@ -42,8 +44,8 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <app name> <template>"
     echo "Project path:  GitLab Project or local Git folder"
-    echo "ART project: $RESTSH_AAFW_ART"
     echo "Options:"
+    echo "    -a         ART Project, default: $RESTSH_AAFW_ART"
     echo "    -f         Overwrite application"
     echo "    -i         Interactive mode - asks for variable values"
     echo "    -p         Commit and push"
@@ -54,6 +56,14 @@ fi
 PROJECT_PATH=$1
 APP_NAME=$2
 TEMPLATE=$3
+
+if ! restsh.util.check.isvarname "$APP_NAME"
+then
+    echo_err "Invalid App Name"
+    exit 1
+fi
+
+APP_NAME_UC=${APP_NAME^^}
 
 # Get value interactively
 ask() {
@@ -110,7 +120,8 @@ trap 'rm -rf -- "$ART_TMP"' EXIT
 # Optionally check for valid variables file
 if [ -n "$VARIABLES_FILE" ]
 then
-    if ! VARIABLES_FILE=$(realpath "${VARIABLES_FILE}")
+    VARIABLES_FILE=$(realpath "${VARIABLES_FILE}")
+    if [ ! -f "$VARIABLES_FILE" ]
     then
         echo_err "Variables file not found"
         exit 1
@@ -124,7 +135,8 @@ then
 fi
 
 # Clone or update tenant repository
-if TENANT_FOLDER=$(realpath "${PROJECT_PATH}")
+TENANT_FOLDER=$(realpath "${PROJECT_PATH}")
+if [ -d "$TENANT_FOLDER" ]
 then
     cd "$TENANT_FOLDER" || exit 1
     git pull
@@ -134,7 +146,7 @@ else
 fi
 
 # Clone ART repository
-git clone "${RESTSH_AAFW_URI}${RESTSH_AAFW_ART}" "$ART_TMP/art"
+git clone "${RESTSH_AAFW_URI}${ART_PROJECT}" "$ART_TMP/art"
 
 if [ ! -f "$ART_TMP/art/$TEMPLATE/app.json" ]
 then
@@ -149,9 +161,10 @@ then
 fi
 
 # AS3 template
-sed -e "s/VAR_/VAR_${APP_NAME}_/g" \
-    -e "s/ARRAY_/ARRAY_${APP_NAME}_/g" \
+sed -e "s/VAR_/VAR_${APP_NAME_UC}_/g" \
+    -e "s/ARRAY_/ARRAY_${APP_NAME_UC}_/g" \
     -e "s/__APPNAME__/${APP_NAME}/g" \
+    -e "s/__APPNAME_UC__/${APP_NAME_UC}/g" \
     "${ART_TMP}/art/${TEMPLATE}/app.json" > "${TENANT_FOLDER}/applications/${APP_NAME}.json"
 
 # Configuration
@@ -167,7 +180,7 @@ do
         STAGE="${STAGE}/"
     fi
     install -d "${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}"
-    DST="${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}${APP_NAME}_${CONFIG_FILE}"
+    DST="${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}${APP_NAME_UC}_${CONFIG_FILE}"
     if [ "$INTERACTIVE" -eq 1 ]
     then
         if ! ask "$F" "$DST"
