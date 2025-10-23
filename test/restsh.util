@@ -173,6 +173,14 @@ test.restsh.util.check.isnumber() {
     if ! restsh.util.check.isnumber "test"; then true; else false; fi
 }
 
+test.restsh.util.check.isvarname() {
+    restsh.util.check.isvarname "testvar"
+    restsh.util.check.isvarname "TEST_VAR"
+    if ! restsh.util.check.isvarname "1abc"; then true; else false; fi
+    if ! restsh.util.check.isvarname " 10"; then true; else false; fi
+    if ! restsh.util.check.isvarname "te-st"; then true; else false; fi
+}
+
 test.restsh.util.filesize() {
     echo "test" > "$RESTSH_TMP/test"
     local OUTPUT
@@ -261,6 +269,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.check.notempty
     test.restsh.util.check.varnotempty
     test.restsh.util.check.isnumber
+    test.restsh.util.check.isvarname
     test.restsh.util.declare.var
     test.restsh.util.filesize
     test.restsh.util.array.includes

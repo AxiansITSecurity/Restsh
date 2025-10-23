@@ -9,8 +9,9 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 - General
     - Feat: Add support for HTTP HEAD
     - Feat: Support for HashiCorp Vault
-    - Feat: `restsh.util.array.string`
     - Feat: `cert.key.verify`, `cert.x509.check`
+    - Feat: `restsh.util.array.string`
+    - Feat: `restsh.util.check.isvarname`
     - Upd: `cert.bundle.split` - add silent option and do not create empty files
 - Axians Automation Framework
     - Feat: `aafw.art.new`

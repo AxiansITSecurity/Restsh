@@ -628,6 +628,27 @@ restsh.util.check.isnumber() {
     return 1
 }
 
+# Returns 1 if value is not a valid variable name
+restsh.util.check.isvarname() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Returns 1 if value is not a valid variable name" 1>&2
+        echo "Usage: restsh.util.check.isvarname <value>" 1>&2
+        return 2
+    fi
+    local VALUE=$1
+    if restsh.util.check.isnumber "${VALUE:0:1}"
+    then
+        return 1
+    fi
+    local REGEX='^[0-9a-zA-Z_]+$'
+    if [[ "$VALUE" =~ $REGEX ]]
+    then
+        return 0
+    fi
+    return 1
+}
+
 # Get file size
 restsh.util.filesize() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
@@ -937,6 +958,7 @@ export -f restsh.util.json_validate
 export -f restsh.util.check.notempty
 export -f restsh.util.check.varnotempty
 export -f restsh.util.check.isnumber
+export -f restsh.util.check.isvarname
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
 export -f restsh.util.array.includes
