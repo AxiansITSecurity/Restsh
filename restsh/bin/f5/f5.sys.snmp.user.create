@@ -20,8 +20,8 @@ then
 fi
 
 ACCESS="ro"
-AUTHPROTO="sha"
-PRIVPROTO="aes"
+AUTHPROTO="sha256"
+PRIVPROTO="aes256"
 OID=".1"
 
 while getopts ':a:ho:' OPTION
