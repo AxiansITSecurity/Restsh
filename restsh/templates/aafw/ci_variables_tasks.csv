@@ -1,0 +1,3 @@
+# Fields: KEY VALUE MASKED RAW DESC
+
+TASK_BACKUP_CLEANUP,1,false,true,Cleanup F5 before backup.
