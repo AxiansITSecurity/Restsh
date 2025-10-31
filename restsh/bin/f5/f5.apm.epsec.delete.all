@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Deletes all none System EPSEC Packages.
+# Shortdesc: Deletes all none system EPSEC packages.
 # Desc:
-# Deletes all none System EPSEC Packages.
+# Deletes all none system EPSEC packages.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -21,9 +21,11 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+VERBOSE=0
+while getopts ':v' OPTION
 do
     case "$OPTION" in
+        v) export VERBOSE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -39,5 +41,6 @@ fi
 
 while read -r PACKAGE
 do
+    echo_verbose "Deleting package $PACKAGE"
     DELETE "/mgmt/tm/apm/epsec/epsec-package/$PACKAGE"
 done < <(GET -rf '.items[] | select(.systemPackage == "false") | .name' /mgmt/tm/apm/epsec/epsec-package)
