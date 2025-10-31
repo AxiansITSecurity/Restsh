@@ -12,6 +12,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
     - Feat: `cert.key.verify`, `cert.x509.check`
     - Feat: `restsh.util.array.string`
     - Feat: `restsh.util.check.isvarname`
+    - Feat: `echo_verbose`
     - Upd: `cert.bundle.split` - add silent option and do not create empty files
 - Axians Automation Framework
     - Feat: `aafw.art.new`

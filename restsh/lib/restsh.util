@@ -21,6 +21,14 @@ export COLOR_RESET="\033[0m"
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
+# Prints message only if VERBOSE is set to 1
+echo_verbose() {
+    if [ -n "${VERBOSE+x}" ] && [ "$VERBOSE" -eq 1 ]
+    then
+        echo "$@"
+    fi
+}
+
 # Prints green ok messages to STDOUT.
 echo_ok() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
@@ -934,6 +942,7 @@ vault.logout() {
 }
 
 # Export all functions
+export -f echo_verbose
 export -f echo_ok
 export -f print_json_ok
 export -f print_json_ok_curl
