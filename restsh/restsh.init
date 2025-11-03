@@ -50,13 +50,20 @@ else
 fi
 
 # Set defaults if not already set
-[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="anonymous"
-[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
-[ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
-[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
-[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
-[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
-[ -n "${RESTSH_HTTP_PRE_EXEC+x}" ] || export RESTSH_HTTP_PRE_EXEC=""
+[ -n "${RESTSH_AUTH+x}" ] || RESTSH_AUTH="anonymous"
+export RESTSH_AUTH
+[ -n "${RESTSH_SCHEME+x}" ] || RESTSH_SCHEME="https"
+export RESTSH_SCHEME
+[ -n "${RESTSH_PORT+x}" ] || RESTSH_PORT="443"
+export RESTSH_PORT
+[ -n "${RESTSH_CURL_INSECURE+x}" ] || RESTSH_CURL_INSECURE="0"
+export RESTSH_CURL_INSECURE
+[ -n "${RESTSH_CONTENT+x}" ] || RESTSH_CONTENT="application/json"
+export RESTSH_CONTENT
+[ -n "${RESTSH_CHUNK_SIZE+x}" ] || RESTSH_CHUNK_SIZE="524288"
+export RESTSH_CHUNK_SIZE
+[ -n "${RESTSH_HTTP_PRE_EXEC+x}" ] || RESTSH_HTTP_PRE_EXEC=""
+export RESTSH_HTTP_PRE_EXEC
 
 # Include custom environment definitions
 if [ -n "${RESTSH_CUSTOM_ENV+x}" ] && [ -n "${RESTSH_CUSTOM_ENV}" ] && [ -s "${RESTSH_CUSTOM_ENV}" ]
