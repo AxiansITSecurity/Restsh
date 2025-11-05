@@ -25,7 +25,7 @@ RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
 
 # Curl options
 # Set this to 1 to enable curl insecure option (disables tls checks).
-#[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
+[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 
 # Authentication settings
 #[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"

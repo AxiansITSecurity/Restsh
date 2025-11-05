@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2025-09-09
 
-# Shortdesc: Custom configuration file for restsh.init, preconfigured for F5OS-A.
+# Shortdesc: Custom configuration file for restsh.init, pre-configured for F5OS-A.
 # Desc:
-# Custom configuration file for restsh.init, preconfigured for F5OS-A.
+# Custom configuration file for restsh.init, pre-configured for F5OS-A.
 # Set central environment variables if not already set.
 
 # Enabled modules
@@ -17,12 +17,12 @@ RESTSH_MODULES=("cert" "custom" "f5osa")
 
 # REST host to connect to
 #[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
-[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="localhost"
+[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="<restsh-endpoint>"
 [ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="8888"
 
 # Curl options
 # Set this to 1 to enable curl insecure option (disables tls checks).
-[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="1"
+[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 
 # Authentication settings
 #[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"

@@ -3,9 +3,9 @@
 # Author: Juergen Mang <juergen.mang@axians.de>
 # Date: 2023-10-24
 
-# Shortdesc: Custom configuration file for restsh.init, preconfigured for Sectigo Cert Manager.
+# Shortdesc: Custom configuration file for restsh.init, pre-configured for Sectigo Cert Manager.
 # Desc:
-# Custom configuration file for restsh.init, preconfigured for Sectigo Cert Manager.
+# Custom configuration file for restsh.init, pre-configured for Sectigo Cert Manager.
 # Set central environment variables if not already set.
 
 # Enabled modules
@@ -22,7 +22,7 @@ RESTSH_MODULES=("cert" "custom" "scm")
 
 # Curl options
 # Set this to 1 to enable curl insecure option (disables tls checks).
-#[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
+[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 
 # Authentication settings
 #[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"

@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Restsh setup and configuration script.
+# Desc:
+# Restsh setup and configuration script.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Set Restsh base path
+RESTSH_PATH="$(dirname "$(realpath "$0")")"
+export RESTSH_PATH
+
+# Get defaults from environment
+[ -n "${RESTSH_CONFIG_FILE_PREFIX+x}" ] || RESTSH_CONFIG_FILE_PREFIX=".restsh-config-"
+[ -n "${RESTSH_CONFIG_PATH+x}" ] || RESTSH_CONFIG_PATH="${HOME}/.restsh-config"
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+# Functions
+
+# Show usage information
+restsh.setup.usage() {
+    exec 1>&2
+    echo "Restsh setup and configuration script."
+    echo ""
+    echo "First Initializes the Restsh environment:"
+    echo "    $(basename "$0") init"
+    echo ""
+    echo "Then add configuration files:"
+    echo "    $(basename "$0") add <type> <folder> <host>"
+    echo "        Type: One of f5, f5os-a, gitlab"
+    echo "        Folder: Subfolder in the config folder"
+    echo "        Host: Hostname of the REST endpoint"
+    exit 2
+}
+
+# Initialize the Restsh environment
+restsh.setup.init() {
+    if [ -d "${RESTSH_CONFIG_PATH}" ]
+    then
+        echo "Restsh already setup."
+        echo "Restsh config folder: $RESTSH_CONFIG_PATH"
+        exit 1
+    fi
+    install -d "${RESTSH_CONFIG_PATH}"
+    cat >> "${HOME}/.bashrc" << EOL
+
+# Restsh
+export RESTSH_CONFIG_PATH="${RESTSH_CONFIG_PATH}"
+alias restsh="${RESTSH_PATH}/restsh.start"
+
+EOL
+}
+
+# Adds a Restsh configuration file
+restsh.setup.add() {
+    if [ $# -ne 3 ]
+    then
+        echo "Invalid number of arguments."
+        restsh.setup.usage
+    fi
+    local RESTSH_TYPE=$1
+    local RESTSH_FOLDER=$2
+    local RESTSH_HOST=$3
+
+    local DIST_CONFIG
+    DIST_CONFIG=$(realpath "${RESTSH_PATH}/../.restsh-config.dist.${RESTSH_TYPE}")
+    if [ ! -f "$DIST_CONFIG" ]
+    then
+        echo "Invalid type."
+        restsh.setup.usage
+    fi
+
+    if ! install -d "${RESTSH_CONFIG_PATH}/${RESTSH_FOLDER}"
+    then
+        echo "Failure creating configuration subfolder."
+        return 1
+    fi
+    local CONFIG_FILE="${RESTSH_CONFIG_PATH}/${RESTSH_FOLDER}/${RESTSH_CONFIG_FILE_PREFIX}${RESTSH_HOST}"
+    if [ -s "$CONFIG_FILE" ]
+    then
+        echo "Configuration already exists."
+        return 1
+    fi
+    sed -e "s/<restsh-endpoint>/${RESTSH_HOST}/" \
+        "$DIST_CONFIG" > "$CONFIG_FILE"
+    echo "Configuration file ${CONFIG_FILE} created."
+    return 0
+}
+
+# Main
+if [ "$OPTION" = "invalid" ] || [ $# -lt 1 ]
+then
+    restsh.setup.usage
+fi
+
+ACTION=$1
+shift
+case "$ACTION" in
+    add)  restsh.setup.add "$@" ;;
+    init) restsh.setup.init ;;
+    *)    restsh.setup.usage ;;
+esac
