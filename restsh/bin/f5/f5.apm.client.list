@@ -46,6 +46,6 @@ then
     GET "/mgmt/tm/apm/client/image"
 else
     GET "/mgmt/tm/apm/client/image" \
-        | JQ -r '.items[] | [.name,.configSource] | @tsv' \
-        | COLUMN -o "|" -N "Name,configSource"
+        | JQ -r '.items[] | [.fullPath,.configSource] | @tsv' \
+        | COLUMN -o "|" -N "fullPath,configSource"
 fi

@@ -45,7 +45,10 @@ if [ "$RAW" -eq 1 ]
 then
     GET "/mgmt/tm/apm/epsec/epsec-package"
 else
+    INSTALLED_VERSION=$(GET -r /mgmt/tm/apm/epsec/software-status/ \
+    | JQ -r '.. | objects | with_entries(select(.key | contains("version"))) | select(. != {}) | .version.description')
+    echo "Installed version: $INSTALLED_VERSION"
     GET "/mgmt/tm/apm/epsec/epsec-package" \
-        | JQ -r '.items[] | [.name,.systemPackage,.version] | @tsv' \
-        | COLUMN -o "|" -N "Name,SystemPackage,Version"
+        | JQ -r '.items[] | [.fullPath,.systemPackage,.version] | @tsv' \
+        | COLUMN -o "|" -N "fullPath,SystemPackage,Version"
 fi

@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Deletes all none system EPSEC packages.
+# Shortdesc: Deletes all EPSEC packages that are not installed and not a system package.
 # Desc:
-# Deletes all none system EPSEC packages.
+# Deletes all EPSEC packages that are not installed and not a system package.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -39,8 +39,16 @@ then
     exit 2
 fi
 
-while read -r PACKAGE
+INSTALLED_VERSION=$(GET -r /mgmt/tm/apm/epsec/software-status/ \
+    | JQ -r '.. | objects | with_entries(select(.key | contains("version"))) | select(. != {}) | .version.description')
+
+while IFS=$'\t' read -r PACKAGE VERSION
 do
-    echo_verbose "Deleting package $PACKAGE"
-    DELETE "/mgmt/tm/apm/epsec/epsec-package/$PACKAGE"
-done < <(GET -rf '.items[] | select(.systemPackage == "false") | .name' /mgmt/tm/apm/epsec/epsec-package)
+    if [ "$VERSION" = "$INSTALLED_VERSION" ]
+    then
+        echo_verbose "Skipping installed version $VERSION"
+    else
+        echo_verbose "Deleting package $PACKAGE"
+        DELETE "/mgmt/tm/apm/epsec/epsec-package/${PACKAGE//\//\~}"
+    fi
+done < <(GET -rf '.items[] | select(.systemPackage == "false") | [.fullPath, .version] | @tsv' /mgmt/tm/apm/epsec/epsec-package)

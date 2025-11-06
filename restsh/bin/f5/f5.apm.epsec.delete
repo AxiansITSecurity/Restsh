@@ -33,9 +33,9 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <package>"
+    echo "Usage: $(basename "$0") <package full path>"
     exit 2
 fi
 PACKAGE=$1
 
-DELETE "/mgmt/tm/apm/epsec/epsec-package/$PACKAGE"
+DELETE "/mgmt/tm/apm/epsec/epsec-package/${PACKAGE//\//\~}"
