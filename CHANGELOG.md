@@ -17,8 +17,8 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
     - Upd: `cert.bundle.split` - add silent option and do not create empty files
     - Upd: Enable certificate checking in distributed configuration files as default.
 - Axians Automation Framework
-    - Feat: `aafw.art.new`
-    - Feat: `aafw.cert.new`
+    - Feat: `aafw.art.new` - Deploy an Application Ready Template
+    - Feat: `aafw.cert.new` - Deploy a new certificate
 - F5 TMOS Module
     - Feat: Allow setting explicit certificate name <> CN
         - `f5.cert.csr.create`, `f5.csr.create-from-key`
