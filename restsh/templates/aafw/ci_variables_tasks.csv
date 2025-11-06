@@ -1,3 +1,4 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
 TASK_BACKUP_CLEANUP,1,false,true,Cleanup F5 before backup.
+TASK_BACKUP_KEEP_DAYS,7,false,true,Maximum age for backup files in days.
