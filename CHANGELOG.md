@@ -27,7 +27,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
     - Feat: `f5.cert.get`, `f5.cert.export`, `f5.cert.key.export`
     - Feat: `f5.asm.signatureset.attacktypes`, `f5.asm.signatureset.filter.create`
     - Feat: `f5.net.vlan.create`
-    - Feat: `f5.net.selfip.list`
+    - Feat: `f5.net.selfip.create`, `f5.net.selfip.list`
     - Feat: APM package management
         - `f5.apm.client.delete`, `f5.apm.client.list`
         - `f5.apm.epsec.delete`, `f5.apm.epsec.delete.all`, `f5.apm.epsec.list`
