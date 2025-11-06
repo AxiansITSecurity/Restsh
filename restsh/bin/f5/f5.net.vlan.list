@@ -44,7 +44,7 @@ if [ "$RAW" -eq 1 ]
 then
     GET "/mgmt/tm/net/vlan"
 else
-    GET "/mgmt/tm/net/vlan" \
+    GET -r "/mgmt/tm/net/vlan" \
         | JQ -r '.items[] | [.fullPath,.tag] | @tsv' \
         | COLUMN -o "|" -N "VLAN,Tag"
 fi

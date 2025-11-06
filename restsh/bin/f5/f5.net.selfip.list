@@ -45,7 +45,7 @@ if [ "$RAW" -eq 1 ]
 then
     GET "/mgmt/tm/net/self"
 else
-    GET "/mgmt/tm/net/self" \
+    GET -r "/mgmt/tm/net/self" \
         | JQ -r '.items[] | [.name,.address,.vlan,.trafficGroup] | @tsv' \
         | COLUMN -o "|" -N "Name,Address,VLAN,Traffic Group"
 fi
