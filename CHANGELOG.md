@@ -2,7 +2,7 @@
 
 ***
 
-## v4.3.0 - not yet released
+## v4.3.0 - 2025-11-10
 
 This version removes support for F5 Next and adds initial support for F5OS-A.
 
