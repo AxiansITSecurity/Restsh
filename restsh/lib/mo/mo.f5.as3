@@ -137,9 +137,9 @@ MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER() {
         cat << EOL
 "$NAME": {
     "class": "iFile",
+    "ignoreChanges": false,
     "iFile": {
-        "base64": "$CONTENT",
-        "ignoreChanges": false
+        "base64": "$CONTENT"
     }
 }
 EOL
