@@ -4,6 +4,9 @@
 
 ## v4.4.0 - not yet released
 
+- F5 TMOS Module
+    - Feat: `f5.cluster.device-groups.sync-failover`
+
 ***
 
 ## v4.3.0 - 2025-11-10
