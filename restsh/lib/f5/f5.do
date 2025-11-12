@@ -29,15 +29,10 @@ f5.do.taskwait() {
     local F5_TASK_TIMEOUT=180
     while :
     do
-        if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
-        then
-            echo_err "Timeout waiting for task."
-            return 1
-        fi
         sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
         local CODE
-        if ! CODE=$(GET -c 180 -r -f ".[] | select(.id == \"$TASK_ID\") | .result.code" "$CHECK_TASK_URI")
+        if ! CODE=$(GET -c 180 -r -f ".[] | select(.id == \"$TASK_ID\") | .result.code" "$CHECK_TASK_URI" 2>/dev/null)
         then
             echo_err "Can not get task status."
             GET "$CHECK_TASK_URI/$TASK_ID"
@@ -48,26 +43,28 @@ f5.do.taskwait() {
             echo_warn "Invalid return code, retrying"
             continue
         fi
-        local RC=0
         case "$CODE" in
             0|202)
                 # In progress
-                RC=$CODE
+                if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+                then
+                    echo_err "Timeout waiting for task."
+                    return 1
+                fi
                 ;;
             200)
-                # ok
-                RC=$CODE
+                # Success
+                return 0
                 ;;
             *)
+                # Failure
                 echo_err "Declarative onboarding task failed: $CODE"
                 # Print result message from f5
                 GET "$CHECK_TASK_URI/$TASK_ID"
                 return 1
                 ;;
         esac
-        [ "$RC" -eq 200 ] && break
     done
-    return 0
 }
 
 export -f f5.do.taskwait
