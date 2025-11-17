@@ -7,3 +7,4 @@ IRULEFW_OPTIONS,-n,false,true,Do not create libraries
 AS3_LINT_SCRIPT,lint.sh,false,true,Lint script name in the as3snippets repo.
 AS3_PUSH_DECLARATION,0,false,true,Push declaration in repository.
 AS3_RESTRICT_MERGE,1,false,true,Enforce merge request rules.
+AS3_APP_CONFIG,1,false,true,Enables per App configuration.
