@@ -4,6 +4,8 @@
 
 ## v4.4.0 - not yet released
 
+- General
+    - Upd: `restsh.util.setvar` sets array variables now only with `ARRAY_` prefix.
 - F5 TMOS Module
     - Feat: `f5.cluster.device-groups.sync-failover`
 
