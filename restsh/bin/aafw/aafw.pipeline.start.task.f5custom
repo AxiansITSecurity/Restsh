@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Starts the f5custom tasks.
+# Desc:
+# Starts the f5custom tasks.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+TASK_HOST=""
+PIPELINE_OPTS=()
+while getopts ':t:w' OPTION
+do
+    case "$OPTION" in
+        t) TASK_HOST=$OPTARG ;;
+        w) PIPELINE_OPTS+=("-w") ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 3 ] || [ "$OPTION" = "invalid " ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <project path> <stage> <script>"
+    echo "Options:"
+    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w  Wait for finished pipeline."
+    echo ""
+    echo "    Script: Script in the repository defined by the CI/CD variable TASKS_CUSTOM_REPO."
+    exit 2
+fi
+
+PROJECT=$1
+BRANCH=$(restsh.util.lc "$2")
+CUSTOM_SCRIPT=$3
+
+gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
+    -s "TASK=f5custom" -s "TASK_HOST=$TASK_HOST" \
+    -s "CUSTOM_SCRIPT=$CUSTOM_SCRIPT" "${PIPELINE_OPTS[@]}" \
+    "$PROJECT" "$BRANCH"
