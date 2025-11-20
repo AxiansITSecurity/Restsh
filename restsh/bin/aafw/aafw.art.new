@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
 # Shortdesc: Creates an AS3 Application from an Application Ready Template.
@@ -19,18 +20,26 @@ then
     exit 1
 fi
 
+if [ -z "${RESTSH_AAFW_ART+x}" ]
+then
+    echo_err "Variable RESTSH_AAFW_ART is not defined in your configuration."
+    exit 1
+fi
+
 # Get options
 ART_PROJECT="$RESTSH_AAFW_ART"
 INTERACTIVE=0
 OVERWRITE=0
 PUSH=0
 VARIABLES_FILE=""
-while getopts ':a:fipv:' OPTION
+VARIABLES_REWRITE=1
+while getopts ':a:finpv:' OPTION
 do
     case "$OPTION" in
         a) ART_PROJECT="$OPTARG" ;;
         f) OVERWRITE=1 ;;
         i) INTERACTIVE=1 ;;
+        n) VARIABLES_REWRITE=0 ;;
         p) PUSH=1 ;;
         v) VARIABLES_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
@@ -48,6 +57,7 @@ then
     echo "    -a         ART Project, default: $RESTSH_AAFW_ART"
     echo "    -f         Overwrite application"
     echo "    -i         Interactive mode - asks for variable values"
+    echo "    -n         Do not rename variables"
     echo "    -p         Commit and push"
     echo "    -v <file>  Read variables from yaml file"
     exit 2
@@ -161,11 +171,19 @@ then
 fi
 
 # AS3 template
-sed -e "s/VAR_/VAR_${APP_NAME_UC}_/g" \
-    -e "s/ARRAY_/ARRAY_${APP_NAME_UC}_/g" \
-    -e "s/__APPNAME__/${APP_NAME}/g" \
-    -e "s/__APPNAME_UC__/${APP_NAME_UC}/g" \
-    "${ART_TMP}/art/${TEMPLATE}/app.json" > "${TENANT_FOLDER}/applications/${APP_NAME}.json"
+install -d "${TENANT_FOLDER}/applications/${APP_NAME}"
+if [ "$VARIABLES_REWRITE" -eq 1 ]
+then
+    sed -e "s/VAR_/VAR_${APP_NAME_UC}_/g" \
+        -e "s/ARRAY_/ARRAY_${APP_NAME_UC}_/g" \
+        -e "s/__APPNAME__/${APP_NAME}/g" \
+        -e "s/__APPNAME_UC__/${APP_NAME_UC}/g" \
+        "${ART_TMP}/art/${TEMPLATE}/app.json" > "${TENANT_FOLDER}/applications/${APP_NAME}/${APP_NAME}.json"
+else
+    sed -e "s/__APPNAME__/${APP_NAME}/g" \
+        -e "s/__APPNAME_UC__/${APP_NAME_UC}/g" \
+        "${ART_TMP}/art/${TEMPLATE}/app.json" > "${TENANT_FOLDER}/applications/${APP_NAME}/${APP_NAME}.json"
+fi
 
 # Configuration
 for F in $(find "${ART_TMP}/art/${TEMPLATE}/config" -type f ! -name .\* | sort)
@@ -179,7 +197,12 @@ do
         STAGE="${STAGE}/"
     fi
     install -d "${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}"
-    DST="${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}${APP_NAME_UC}_${CONFIG_FILE}"
+    if [ "$VARIABLES_REWRITE" -eq 1 ]
+    then
+        DST="${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}${APP_NAME_UC}_${CONFIG_FILE}"
+    else
+        DST="${TENANT_FOLDER}/applications/${APP_NAME}/config/${STAGE}${CONFIG_FILE}"
+    fi
     if [ "$INTERACTIVE" -eq 1 ]
     then
         if ! ask "$F" "$DST"

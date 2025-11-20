@@ -6,6 +6,8 @@
 
 - General
     - Upd: `restsh.util.setvar` sets array variables now only with `ARRAY_` prefix.
+- Axians Automation Framework
+    - Upd: `aafw.art.new` - Add option to not rename variables.
 - F5 TMOS Module
     - Feat: `f5.cluster.device-groups.sync-failover`
 
