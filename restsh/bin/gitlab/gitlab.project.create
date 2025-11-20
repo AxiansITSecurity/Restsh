@@ -21,9 +21,11 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+BRANCH="master"
+while getopts ':b:r' OPTION
 do
     case "$OPTION" in
+        b) BRANCH=$OPTARG ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -34,19 +36,24 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <namespace id> <name>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...] <namespace id> <name>"
+    echo "    -b <branch>  Default branch, default: master"
+    echo "    -r           Raw output."
     exit 2
 fi
 
 NAMESPACE_ID=$1
 NAME=$2
 
+restsh.util.check.isnumber "$NAMESPACE_ID" || NAMESPACE_ID=$(gitlab.group.id "$NAMESPACE_ID")
+
 if RESULT=$(JQ -n --arg name "$NAME" \
+    --arg branch "$BRANCH" \
     --argjson namespace_id "$NAMESPACE_ID" \
     '{
         "name": $name,
-        "namespace_id": $namespace_id
+        "namespace_id": $namespace_id,
+        "default_branch": $branch
     }' | POST -r "$GITLAB_API_PREFIX/projects")
 then
     ID=$(JQ -r ".id" <<< "$RESULT")

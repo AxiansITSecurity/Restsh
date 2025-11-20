@@ -11,6 +11,8 @@
     - Upd: `aafw.art.new` - Add option to not rename variables.
 - F5 TMOS Module
     - Feat: `f5.cluster.device-groups.sync-failover`
+- GitLab Module
+    - Upd: `gitlab.project.create` - Add option for default branch
 
 ***
 
