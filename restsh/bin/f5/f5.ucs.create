@@ -72,7 +72,7 @@ do
     if ! STATUS=$(GET -r -c 5 -f "._taskState" "$UCS_TASK_ENDPOINT/$TASK_ID")
     then
         echo_err "Can not get task status."
-        GET "$UCS_TASK_ENDPOINT/$TASK_ID"
+        GET -r "$UCS_TASK_ENDPOINT/$TASK_ID"
         exit 1
     fi
     if ! restsh.util.check.notempty "$STATUS"

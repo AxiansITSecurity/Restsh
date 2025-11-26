@@ -62,6 +62,8 @@ do
     if ! STATUS=$(GET -r -c 5 "$QKVIEW_ENDPOINT/$TASK_ID" | \
         $RESTSH_JQ -r ".status")
     then
+        echo_err "Can not get task status."
+        GET -r "$QKVIEW_ENDPOINT/$TASK_ID"
         exit 1
     fi
     case "$STATUS" in
