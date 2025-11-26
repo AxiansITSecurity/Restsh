@@ -6,6 +6,7 @@
 
 - General
     - Upd: `restsh.util.setvar` sets array variables now only with `ARRAY_` prefix.
+    - Feat: `restsh.util.var.decrypt` - Decrypts a variable or fetches it from HashiCorp Vault in place.
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.f5custom`
     - Upd: `aafw.art.new` - Add option to not rename variables.

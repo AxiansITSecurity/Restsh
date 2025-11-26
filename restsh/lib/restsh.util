@@ -801,6 +801,33 @@ restsh.util.isencrypted() {
     return 1
 }
 
+# Decrypts a variable or fetches it from HashiCorp Vault.
+restsh.util.var.decrypt() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        echo "Decrypts a variable or fetches it from HashiCorp Vault." 1>&2
+        echo "Usage: restsh.util.var.decrypt <variable reference>" 1>&2
+        return 2
+    fi
+    local VAR=$1
+    local VALUE="${!VAR}"
+    if [ "${VALUE:0:7}" = "AES256:" ]
+    then
+        VALUE=$(restsh.util.decrypt "$VALUE")
+        unset "$VAR"
+        declare -g -x "$VAR"="$VALUE"
+    elif [ "${VALUE:0:6}" = "VAULT:" ]
+    then
+        # Vault integration
+        if vault.login
+        then
+            VALUE=$(vault.get "${VALUE:6}" "$VAR")
+            unset "$VAR"
+            declare -g -x "$VAR"="$VALUE"
+        fi
+    fi
+}
+
 # Trim leading and trailing whitespaces.
 restsh.util.trim() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]

@@ -230,6 +230,15 @@ test.restsh.util.isencrypted() {
     if ! restsh.util.isencrypted "test"; then true; else false; fi
 }
 
+test.restsh.util.var.decrypt() {
+    local ENCRYPTED
+    local STR
+    STR=$(restsh.pwgen)
+    ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
+    restsh.util.var.decrypt ENCRYPTED
+    [ "$STR" = "$ENCRYPTED" ]
+}
+
 test.restsh.util.trim() {
     local OUTPUT
     OUTPUT=$(restsh.util.trim "  test ")
@@ -278,6 +287,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.lc
     test.restsh.util.askpass
     test.restsh.util.isencrypted
+    test.restsh.util.var.decrypt
     test.restsh.util.trim
     test.restsh.util.base64url
 )
