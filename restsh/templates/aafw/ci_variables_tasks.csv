@@ -2,3 +2,4 @@
 
 TASK_BACKUP_CLEANUP,1,false,true,Cleanup F5 before backup.
 TASK_BACKUP_KEEP_DAYS,7,false,true,Maximum age for backup files in days.
+TASK_BACKUP_PASSPHRASE,,false,true,Passphrase for backup encryption.
