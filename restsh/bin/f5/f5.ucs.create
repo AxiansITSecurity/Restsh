@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates an ucs file on the F5, /var/local/ucs/.
 # Desc:
 # Creates an ucs file on the F5, /var/local/ucs/.
-# https://community.f5.com/t5/technical-forum/using-an-asynchronous-task-creating-ucs-file/td-p/272613
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,10 +22,11 @@ fi
 
 UCS_TASK_ENDPOINT="/mgmt/tm/task/sys/ucs"
 F5_DIR="/var/local/ucs"
-
-while getopts ':h' OPTION
+PASSPHRASE=""
+while getopts ':e:h' OPTION
 do
     case "$OPTION" in
+        e) PASSPHRASE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,20 +36,36 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <output file>"
+    echo "Usage: $(basename "$0") [options...] <output file>"
     echo "Archive is created in $F5_DIR"
+    echo "Options:"
+    echo "    -e <passphrase>  Encrypt backup with passphrase"
     exit 2
 fi
 
 NAME=$1
 
 # Create the task
-TASK_ID=$($RESTSH_JQ -n --arg name "$F5_DIR/$NAME" \
-'{
-    "command": "save",
-    "name": $name
-}' | POST -r "$UCS_TASK_ENDPOINT" \
-    | $RESTSH_JQ -r "._taskId")
+
+OPTIONS="{}"
+if [ -n "$PASSPHRASE" ]
+then
+    OPTIONS=$(JQ -n --arg passphrase "$PASSPHRASE" \
+        '{
+            passphrase: $passphrase
+        }'
+    )
+fi
+
+TASK_ID=$(JQ -n --arg name "$F5_DIR/$NAME" \
+    --argjson options "$OPTIONS" \
+    '{
+        "command": "save",
+        "name": $name,
+        "options": [
+            $options
+        ]
+    }' | POST -r -f "._taskId" "$UCS_TASK_ENDPOINT")
 # Start the task
 if ! PUT -r "$UCS_TASK_ENDPOINT/$TASK_ID" <<< '{"_taskState":"VALIDATING"}' > /dev/null
 then
