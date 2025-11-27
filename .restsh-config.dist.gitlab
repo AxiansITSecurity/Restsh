@@ -59,9 +59,10 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || export RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
 [ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || export RESTSH_AAFW_DOSKELETON="${RESTSH_AAFW_GROUP}/doskeleton"
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
-
 # ART
 [ -n "${RESTSH_AAFW_ART+x}" ] || export RESTSH_AAFW_ART="${RESTSH_AAFW_GROUP}/art"
+# Default project settings
+[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/templates/aafw/project_settings_default.json"
 
 # Command that is executed after initialization in interactive mode
 # export RESTSH_INIT_CMD=""

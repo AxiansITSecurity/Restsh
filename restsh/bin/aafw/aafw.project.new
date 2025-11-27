@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-02-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a GitLab project for automation.
 # Desc:
@@ -23,6 +24,7 @@ fi
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set" ; exit 1; }
 [ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set" ; exit 1; }
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set" ; exit 1; }
+[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/templates/aafw/project_settings_default.json"
 
 # Get options
 INIT_PROJECT=""
@@ -31,7 +33,7 @@ PROTECTED_BRANCHES=()
 ACCESS_LEVEL=(0 40)
 SKELETON_PATH=""
 CLM_TYPE=""
-while getopts ':d:hi:l:p:s:t:' OPTION
+while getopts ':d:e:hi:l:p:s:t:' OPTION
 do
     case "$OPTION" in
         d)
@@ -44,6 +46,7 @@ do
                 INIT_OPTS+=("-d" "$OPTARG")
             fi
             ;;
+        e) RESTSH_AAFW_PROJECT_SETTINGS="$OPTARG" ;;
         i) INIT_PROJECT=$OPTARG ;;
         l) mapfile -d, -t ACCESS_LEVEL <<< "$OPTARG" ;;
         p) mapfile -d, -t PROTECTED_BRANCHES <<< "$OPTARG" ;;
@@ -61,6 +64,8 @@ then
     echo "Usage: $(basename "$0") [options...] <project path>"
     echo "Options:"
     echo "    -d <folder>         Parent folder for cloned repository."
+    echo "    -e <file>           Project settings json file."
+    echo "                        Default: templates/aafw/project_settings_default.json."
     echo "    -i <type>           Initialize repository for as3, cert, do, tasks or waf."
     echo "    -l <push,merge>     Access level for protected branches, default: Maintainer access for merge only."
     echo "    -s <skeleton path>  Skeleton path for initialization."
@@ -71,7 +76,7 @@ then
     echo "    30 => Developer access"
     echo "    40 => Maintainer access"
     echo "    60 => Admin access"
-    echo "Skeletons:"
+    echo "Gitlab skeletons paths:"
     echo "    AS3: $RESTSH_AAFW_AS3SKELETON"
     echo "    DO:  $RESTSH_AAFW_DOSKELETON"
     echo "    WAF: $RESTSH_AAFW_WAFSKELETON"
@@ -81,6 +86,12 @@ fi
 PROJECT_PATH=$1
 PROJECT_NAME="${PROJECT_PATH##*/}"
 GROUP_NAME=${PROJECT_PATH%/*}
+
+if [ ! -s "$RESTSH_AAFW_PROJECT_SETTINGS" ]
+then
+    echo_err "Default project settings file not found."
+    exit 1
+fi
 
 GROUP_ID=$(gitlab.group.get -r "$GROUP_NAME" | JQ -r ".id")
 PROJECT_ID=$(gitlab.project.create -r "$GROUP_ID" "$PROJECT_NAME")
@@ -93,7 +104,7 @@ then
     done
 fi
 
-if ! RESULT=$(PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID" < "$RESTSH_PATH/templates/aafw/project_settings_default.json")
+if ! RESULT=$(PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID" < "$RESTSH_AAFW_PROJECT_SETTINGS")
 then
     echo_err "Failure setting project options for $PROJECT_ID"
     echo_err "$RESULT"
