@@ -76,7 +76,7 @@ then
     echo "    30 => Developer access"
     echo "    40 => Maintainer access"
     echo "    60 => Admin access"
-    echo "Gitlab skeletons paths:"
+    echo "GitLab skeletons paths:"
     echo "    AS3: $RESTSH_AAFW_AS3SKELETON"
     echo "    DO:  $RESTSH_AAFW_DOSKELETON"
     echo "    WAF: $RESTSH_AAFW_WAFSKELETON"
