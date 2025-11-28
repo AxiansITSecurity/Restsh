@@ -15,6 +15,7 @@
     - Feat: `f5.cluster.device-groups.sync-failover`
     - Feat: `f5.ucs.create` - Add option to encrypt backup
 - GitLab Module
+    - Feat: `gitlab.group.projects.recursive` - Recursive project list
     - Upd: `gitlab.project.create` - Add option for default branch
 
 ***

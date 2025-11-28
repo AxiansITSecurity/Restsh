@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Lists all projects of a group recursively.
+# Desc:
+# Lists all projects of a group recursively.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+URL_ENCODE=0
+while getopts ':eh' OPTION
+do
+    case "$OPTION" in
+        e) URL_ENCODE=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options] <group path>"
+    echo "Options":
+    echo "    -e  Print names url encoded"
+    exit 2
+fi
+TOP_GROUP=$1
+
+read_group() {
+    local FETCH_GROUP=$1
+    local FETCH_GROUP_ESCAPED
+    FETCH_GROUP_ESCAPED=$(restsh.util.urlencode "$FETCH_GROUP")
+    local PROJECT
+    while read -r PROJECT
+    do
+        if [ "$URL_ENCODE" -eq 1 ]
+        then
+            printf "%s\n" "$(restsh.util.urlencode "$PROJECT")"
+        else
+            echo "$PROJECT"
+        fi
+    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/projects" | JQ -r '.[] | select(.archived == false and .marked_for_deletion_at == null) | .path_with_namespace')
+    local GROUP
+    while read -r GROUP
+    do
+        read_group "$GROUP"
+    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/subgroups" | JQ -r '.[] | select(.marked_for_deletion_on == null) | .full_path')
+}
+
+read_group "$TOP_GROUP"
