@@ -10,6 +10,7 @@
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.f5custom`
     - Upd: `aafw.art.new` - Add option to not rename variables.
+    - Upd: `aafw.cert.new` - Add option for custom certificate settings.
     - Upd: `aafw.project.new` - Add option to define default project settings file.
 - F5 TMOS Module
     - Feat: `f5.cluster.device-groups.sync-failover`

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-10-13
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deploys a new certificate.
 # Desc:
@@ -30,7 +30,8 @@ STATE=""
 COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
-while getopts ':-:a:hi:k:' OPTION
+VALUES=()
+while getopts ':-:a:hi:k:o:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then
@@ -42,8 +43,9 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("$OPTARG") ;;
         i) ALT_IPS+=("$OPTARG") ;;
-        cn) CN=$OPTARG ;;
         k) KEY_ALG="$OPTARG" ;;
+        o) VALUES+=("$OPTARG") ;;
+        cn) CN=$OPTARG ;;
         org) ORG="$OPTARG" ;;
         ou) OU="$OPTARG" ;;
         city) CITY="$OPTARG" ;;
@@ -64,6 +66,7 @@ then
     echo "    -a <dns alternative name>"
     echo "    -i <ip alternative name>"
     echo "    -k <private key type>  rsa:2048, rsa:4096, ec:prime256v1, ec:secp384r1"
+    echo "    -o NAME=VALUE  Add additional variables to configuration file"
     echo "    --cn=<CN>"
     echo "    --org=<organization>"
     echo "    --ou=<organizational unit>"
@@ -95,7 +98,8 @@ fi
 ALT_NAMES_STR=$(restsh.util.array.string -q'"' "${ALT_NAMES[@]}")
 ALT_IPS_STR=$(restsh.util.array.string -q'"' "${ALT_IPS[@]}")
 
-CONTENT=$({
+print_content() {
+    {
         [ -z "${KEY_ALG}" ] || printf 'KEYTYPE="%s"\n' "${KEY_TYPE}-private"
         [ -z "${KEY_ALG}" ] || printf '%s="%s"\n' "$KEY_STRENGTH" "$KEY_SIZE"
         [ -z "${CN}" ] || printf 'CN="%s"\n' "${CN}"
@@ -106,13 +110,17 @@ CONTENT=$({
         [ -z "${COUNTRY}" ] || printf 'COUNTRY="%s"\n' "${COUNTRY}"
         [ -z "${ALT_NAMES_STR}" ] || printf 'ALT_NAMES_DNS=(%s)\n' "${ALT_NAMES_STR}"
         [ -z "${ALT_IPS_STR}" ] || printf 'ALT_NAMES_IP=(%s)\n' "${ALT_IPS_STR}"
+        for VALUE in "${VALUES[@]}"
+        do
+            printf '%s\n' "$VALUE"
+        done
     } | base64
-)
+}
 
 FILEPATH=$(restsh.util.urlencode "config/$BRANCH/$CERT")
 
 JQ -n --arg branch "$BRANCH" \
-    --arg content "$CONTENT" \
+    --arg content "$(print_content)" \
     --arg msg "Create certificate $CERT" \
     '{
         "branch": $branch,
