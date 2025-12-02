@@ -22,7 +22,7 @@ fi
 # Get options
 TASK_HOST=""
 RESTART_ASM=1
-SYNC=1
+SYNC=0
 PIPELINE_OPTS=()
 while getopts ':nst:w' OPTION
 do
