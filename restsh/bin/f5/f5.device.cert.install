@@ -57,4 +57,5 @@ JQ -n --arg cert "$CERT_FILE" --arg key "$KEY_FILE" \
         "sslCertkeyfile": $key
     }' | PUT /mgmt/tm/sys/httpd
 
-f5.sys.service.restart httpd
+# Ignore error from httpd restart
+f5.sys.service.restart httpd > /dev/null 2>&1 || true
