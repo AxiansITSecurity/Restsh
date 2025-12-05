@@ -41,9 +41,8 @@ CERT_FILE="/config/httpd/conf/ssl.crt/$NAME.crt"
 
 f5.file-transfer.upload "$CERT_FILE_LOCAL"
 CERT_FILE_REMOTE=$(basename "$CERT_FILE_LOCAL")
-f5.run "mv /var/config/rest/downloads/$CERT_FILE_REMOTE $CERT_FILE"
-f5.run "chmod 755 $CERT_FILE"
-f5.run "chown root:root $CERT_FILE"
+f5.run "install -o root -g root -m 755 /var/config/rest/downloads/$CERT_FILE_REMOTE $CERT_FILE"
+f5.run "rm -f /var/config/rest/downloads/$CERT_FILE_REMOTE"
 f5.run "restorecon -RvF $CERT_FILE"
 
 if ! f5.file.size "$CERT_FILE" > /dev/null
