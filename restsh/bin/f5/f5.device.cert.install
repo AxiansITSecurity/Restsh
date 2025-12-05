@@ -59,3 +59,16 @@ JQ -n --arg cert "$CERT_FILE" --arg key "$KEY_FILE" \
 
 # Ignore error from httpd restart
 f5.sys.service.restart httpd > /dev/null 2>&1 || true
+
+# Wait for httpd restart
+I=0
+while ! f5.version >/dev/null 2>&1
+do
+    sleep 2
+    I=$((I+1))
+    if [ "$I" -eq 10 ]
+    then
+        echo_err "Timeout waiting for httpd"
+        exit 1
+    fi
+done
