@@ -3,6 +3,7 @@
 CERT_EXPIRATION_STRING,1 week,false,true,Date string to detect soon expiring certificates.
 CERT_SYNC,1,false,true,Sync cluster after deployment of new certificates.
 CERT_CHAIN,1,false,true,Download certificate with chain in a bundle.
+CERT_ROTATE_KEYS,1,false,true,Create new keys.
 
 # Sectico Cert Manager
 SCM_CLIENTID,,false,true,SCM OAuth ClientID
