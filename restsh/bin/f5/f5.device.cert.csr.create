@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-25
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Installs a device certificate.
 # Desc:
@@ -131,15 +132,16 @@ f5.file-transfer.upload "$CSR_CONFIG"
 if f5.file.size "$KEY_FILE"
 then
     echo "Creating CSR"
-    f5.run "openssl req -new -key $KEY_FILE -extensions v3_req -config /var/config/rest/downloads/csr.conf -out $CSR_FILE"
+    f5.run "openssl" "req" "-new" "-key" "$KEY_FILE" "-extensions" "v3_req" "-config" "/var/config/rest/downloads/csr.conf" "-out" "$CSR_FILE"
 else
     echo "Creating new key and CSR"
-    f5.run "RANDFILE=/tmp/.random openssl req -new -nodes -newkey rsa:$KEYSIZE -extensions v3_req -config /var/config/rest/downloads/csr.conf -keyout $KEY_FILE -out $CSR_FILE"
+    f5.run "RANDFILE=/tmp/.random" "openssl" "req" "-new" "-nodes" "-newkey" "rsa:$KEYSIZE" "-extensions" "v3_req" \
+        "-config" "/var/config/rest/downloads/csr.conf" "-keyout" "$KEY_FILE" "-out" "$CSR_FILE"
 fi
 f5.file.remove "/var/config/rest/downloads/csr.conf"
 
 echo "Fetching CSR"
-f5.run "cat $CSR_FILE" > "$RESTSH_TMP/csr.pem"
+f5.run "cat" "$CSR_FILE" > "$RESTSH_TMP/csr.pem"
 
 if ! openssl req -verify -in "$RESTSH_TMP/csr.pem" -noout > /dev/null
 then

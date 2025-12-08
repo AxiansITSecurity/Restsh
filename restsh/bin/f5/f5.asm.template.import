@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-04-30
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Imports a F5 ASM Policy Template.
 # Desc:
@@ -43,7 +44,7 @@ f5.file-transfer.upload "$FILENAME"
 
 # Move to the correct location for import
 FILENAME=$(basename "$FILENAME")
-f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$NAME"
+f5.run "mv" "/var/config/rest/downloads/$FILENAME" "/ts/var/rest/${RESTSH_USER}~$NAME"
 
 # Start import task
 TASK_ID=$($RESTSH_JQ -n --arg filename "$NAME" \

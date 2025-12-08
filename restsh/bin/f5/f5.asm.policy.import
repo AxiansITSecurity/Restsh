@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-01-29
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Imports a F5 ASM Policy in json, binary or xml format.
 # Desc:
@@ -54,7 +55,7 @@ NAME=$2
 if f5.file-transfer.upload "$FILENAME" > /dev/null
 then
     FILENAME=$(basename "$FILENAME")
-    f5.run "mv /var/config/rest/downloads/$FILENAME /ts/var/rest/${RESTSH_USER}~$FILENAME"
+    f5.run "mv" "/var/config/rest/downloads/$FILENAME" "/ts/var/rest/${RESTSH_USER}~$FILENAME"
     echo_ok "Uploaded $FILENAME to /ts/var/rest/"
 else
     echo_err "Failure uploading $FILENAME"
@@ -66,7 +67,7 @@ then
     if f5.file-transfer.upload "$OPENAPI_FILE" > /dev/null
     then
         OPENAPI_FILE=$(basename "$OPENAPI_FILE")
-        f5.run "mv /var/config/rest/downloads/$OPENAPI_FILE /ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE"
+        f5.run "mv" "/var/config/rest/downloads/$OPENAPI_FILE" "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE"
         echo_ok "Uploaded $OPENAPI_FILE to /ts/var/rest/"
     else
         echo_err "Failure uploading $FILENAME"

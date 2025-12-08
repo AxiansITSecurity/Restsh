@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-25
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Installs a device certificate, restarts httpd.
 # Desc:
@@ -41,9 +42,9 @@ CERT_FILE="/config/httpd/conf/ssl.crt/$NAME.crt"
 
 f5.file-transfer.upload "$CERT_FILE_LOCAL"
 CERT_FILE_REMOTE=$(basename "$CERT_FILE_LOCAL")
-f5.run "install -o root -g root -m 755 /var/config/rest/downloads/$CERT_FILE_REMOTE $CERT_FILE"
-f5.run "rm -f /var/config/rest/downloads/$CERT_FILE_REMOTE"
-f5.run "restorecon -RvF $CERT_FILE"
+f5.run "install" "-o" "root" "-g" "root" "-m" "755" "/var/config/rest/downloads/$CERT_FILE_REMOTE $CERT_FILE"
+f5.run "rm" "-f" "/var/config/rest/downloads/$CERT_FILE_REMOTE"
+f5.run "restorecon" "-RvF" "$CERT_FILE"
 
 if ! f5.file.size "$CERT_FILE" > /dev/null
 then

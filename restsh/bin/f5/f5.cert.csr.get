@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
-# Shortdesc: Gets a CSR.
+# Shortdesc: Gets a CSR and prints it to STDOUT.
 # Desc:
-# Gets a CSR.
-# https://community.f5.com/kb/codeshare/generate-private-key-w-csr-via-icontrol-rest/283528
+# Gets a CSR and prints it to STDOUT.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -36,9 +36,9 @@ then
 fi
 
 CSR=$1
-if OUTPUT=$(f5.run "tmsh list sys crypto csr $CSR")
+if OUTPUT=$(f5.run "tmsh" "list" "sys" "crypto" "csr" "$CSR")
 then
-    if [ "$OUTPUT" = "null" ]
+    if [ -z "$OUTPUT" ]
     then
         echo_err "CSR not found"
         exit 1

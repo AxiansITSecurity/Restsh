@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Downloads a System iFile.
 # Desc:
@@ -39,4 +40,4 @@ FULLPATH=${1//\//\~}
 FILENAME=$2
 
 FILE=$(GET -rf ".cachePath" "/mgmt/tm/sys/file/ifile/${FULLPATH}?options=-hidden")
-f5.run "base64 $FILE" | base64 -d > "$FILENAME"
+f5.run "base64" "$FILE" | base64 -d > "$FILENAME"

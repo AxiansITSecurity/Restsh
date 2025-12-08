@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-25
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Checks for a valid device certificate.
 # Desc:
@@ -31,7 +32,7 @@ EXPIRATION=$2
 
 CERT=$(GET -rf ".sslCertfile" /mgmt/tm/sys/httpd)
 EXPIRATION=$(date +%s -d"now + $EXPIRATION")
-CERT_EXPIRATION=$(f5.run "openssl x509 -in $CERT -noout -enddate" | cut -d= -f2)
+CERT_EXPIRATION=$(f5.run "openssl" "x509" "-in" "$CERT" "-noout" "-enddate" | cut -d= -f2)
 CERT_EXPIRATION=$(date +%s -d"$CERT_EXPIRATION")
 
 if [ "$CERT_EXPIRATION" -lt "$EXPIRATION" ]
@@ -40,7 +41,7 @@ then
     exit 1
 fi
 
-if ! f5.run "openssl x509 -in $CERT -noout -text" | grep -q "DNS:$FQDN"
+if ! f5.run "openssl" "x509" "-in" "$CERT" "-noout" "-text" | grep -q "DNS:$FQDN"
 then
     echo_err "$FQDN certificate SAN is invalid"
     exit 1

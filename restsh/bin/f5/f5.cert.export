@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-24
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Exports a traffic management certificate.
 # Desc:
@@ -45,4 +45,4 @@ CERTIFICATE=${1//\//\~}
 
 # File paths
 CACHE_PATH=$(GET -rf '.cachePath' "/mgmt/tm/sys/file/ssl-cert/${CERTIFICATE}?options=-hidden&\$select=cachePath")
-f5.run "cat $CACHE_PATH" > "$OUTPUT_FILE"
+f5.run "cat" "$CACHE_PATH" > "$OUTPUT_FILE"
