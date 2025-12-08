@@ -20,6 +20,7 @@
     - Upd: `f5.device.cert.install` - Wait for httpd restart
     - Upd: `f5.sys.datagroup.external.download` Use options=-hidden to get the cache path for the file
     - Fix: `f5.run` - Quoting issues
+    - Fix: `f5.asm.template.export` - Allow filepath for export
 - GitLab Module
     - Feat: `gitlab.group.projects.recursive` - Recursive project list
     - Upd: `gitlab.project.create` - Add option for default branch
