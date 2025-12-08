@@ -18,7 +18,7 @@
     - Feat: `f5.ucs.create` - Add option to encrypt backup
     - Feat: `f5.cert.pkcs12.import` - Import a PKCS12 file
     - Upd: `f5.device.cert.install` - Wait for httpd restart
-    - Upd: `f5.sys.datagroup.external.download` Use options=-hidden to get the cache path for the file
+    - Upd: `f5.sys.datagroup.external.download` - Use options=-hidden to get the cache path for the file
     - Fix: `f5.run` - Quoting issues
     - Fix: `f5.asm.template.export` - Allow filepath for export
 - GitLab Module
