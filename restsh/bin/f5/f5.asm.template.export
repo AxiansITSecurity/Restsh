@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-04-30
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Exports a F5 ASM Policy Template.
 # Desc:
@@ -27,7 +28,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
@@ -37,13 +38,14 @@ fi
 
 TEMPLATE=$1
 FILENAME=$2
+BASENAME=$(basename "$2")
 
 if ! TEMPLATEID=$(f5.asm.template.getid "$TEMPLATE")
 then
     exit 1
 fi
 
-if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
+if ! TASK_ID=$(JQ -n --arg filename "$FILENAME" \
     --arg templateLink "https://localhost/mgmt/tm/asm/policy-templates/$TEMPLATEID" \
     '{
         "filename": $filename,
@@ -51,7 +53,7 @@ if ! TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
             "link": $templateLink
         }
     }' | POST "/mgmt/tm/asm/tasks/export-policy-template" \
-           | $RESTSH_JQ -r ".id")
+       | JQ -r ".id")
 then
     echo "Export of policy template failed."
     exit 1
@@ -65,11 +67,11 @@ then
 fi
 
 # Get file size
-if ! TOTAL_SIZE=$(f5.file.size "/var/ts/var/rest/$RESTSH_USER~$FILENAME")
+if ! TOTAL_SIZE=$(f5.file.size "/var/ts/var/rest/$RESTSH_USER~$BASENAME")
 then
-    echo_err "Can not retrieve file size for /var/ts/var/rest/$RESTSH_USER~$FILENAME"
+    echo_err "Can not retrieve file size for /var/ts/var/rest/$RESTSH_USER~$BASENAME"
     exit 1
 fi
 
 # Download policy in chunks
-restsh.download "/mgmt/tm/asm/file-transfer/downloads/$FILENAME" "$TOTAL_SIZE" "$FILENAME"
+restsh.download "/mgmt/tm/asm/file-transfer/downloads/$BASENAME" "$TOTAL_SIZE" "$FILENAME"
