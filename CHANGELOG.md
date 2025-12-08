@@ -18,6 +18,7 @@
     - Feat: `f5.ucs.create` - Add option to encrypt backup
     - Feat: `f5.cert.pkcs12.import` - Import a PKCS12 file
     - Upd: `f5.device.cert.install` - Wait for httpd restart
+    - Fix: `f5.run` - Quoting issues
 - GitLab Module
     - Feat: `gitlab.group.projects.recursive` - Recursive project list
     - Upd: `gitlab.project.create` - Add option for default branch

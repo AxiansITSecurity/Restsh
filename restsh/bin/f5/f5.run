@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Runs a shell command on the F5.
 # Desc:
@@ -34,18 +35,22 @@ if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-r] <shell command>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [-r] <shell command> [options...]"
+    echo "    -r  Print raw output."
     exit 2
 fi
-COMMAND=$(printf "%s" "$*")
+COMMAND=$(restsh.util.array.string -q\" "$@")
 
 # Main
-if RESPONSE=$(POST "/mgmt/tm/util/bash" <<< "{ \"command\": \"run\", \"utilCmdArgs\":\" -c ' $COMMAND'\" }")
+if RESPONSE=$(JQ -n --arg command " -c '$COMMAND'" \
+    '{
+        command: "run",
+        utilCmdArgs: $command
+    }' | POST /mgmt/tm/util/bash)
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESPONSE"
+        JQ '.' <<< "$RESPONSE"
     else
         RESULT=$(JQ -r ".commandResult" <<< "$RESPONSE")
         if restsh.util.check.notempty "$RESULT"
