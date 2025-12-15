@@ -57,12 +57,12 @@ clone_group() {
         else
             git clone "${RESTSH_AAFW_URI}/${PROJECT}.git" "${PROJECT}"
         fi
-    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/projects" | JQ -r '.[] | select(.archived == false and .marked_for_deletion_at == null) | .path_with_namespace')
+    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/projects?per_page=${GITLAB_PER_PAGE}" | JQ -r '.[] | select(.archived == false and .marked_for_deletion_at == null) | .path_with_namespace')
     local GROUP
     while read -r GROUP
     do
         clone_group "$GROUP"
-    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/subgroups" | JQ -r '.[] | select(.marked_for_deletion_on == null) | .full_path')
+    done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/subgroups?per_page=${GITLAB_PER_PAGE}" | JQ -r '.[] | select(.marked_for_deletion_on == null) | .full_path')
 }
 
 clone_group "$TOP_GROUP"
