@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Clones an empty repository and initializes it for tasks.
 # Desc:
@@ -62,7 +63,7 @@ do
     mkdir -p "config/$F"
     touch "config/$F/.gitkeep"
 done
-for F in internal-cas waftemplates signaturesets
+for F in internal-cas waftemplates signaturesets signatureset-templates
 do
     mkdir -p "$F"
     touch "$F/.gitkeep"
