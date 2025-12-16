@@ -87,17 +87,6 @@ then
     exit 1
 fi
 
-MO_OPTIONS=()
-if [ -n "$DEFAULTS" ]
-then
-    if [ ! -s "$DEFAULTS" ]
-    then
-        echo_err "Variables file not found."
-        exit 1
-    fi
-    MO_OPTIONS+=("-s=""$DEFAULTS")
-fi
-
 # Create
-$RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" \
+$RESTSH_MO -- "$TEMPLATE" \
     | PATCH "/mgmt/tm/asm/signature-sets/$ID"
