@@ -49,6 +49,7 @@ VAR_SIGNATURES=()
 while read -r LINE
 do
     [ "${LINE:0:1}" = "#" ] && continue
+    [ -z "$LINE" ] && continue
     VAR_SIGNATURES+=("$LINE")
 done
 export VAR_SIGNATURES
