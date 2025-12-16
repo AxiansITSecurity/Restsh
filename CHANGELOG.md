@@ -14,6 +14,7 @@
     - Upd: `aafw.cert.new` - Add option for custom certificate settings.
     - Upd: `aafw.project.new` - Add option to define default project settings file.
 - F5 TMOS Module
+    - Feat: `f5.asm.signatureset.filter.modify`
     - Feat: `f5.cluster.device-groups.sync-failover`
     - Feat: `f5.ucs.create` - Add option to encrypt backup
     - Feat: `f5.cert.pkcs12.import` - Import a PKCS12 file

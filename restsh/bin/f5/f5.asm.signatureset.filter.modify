@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Creates a new filter based signature set.
+# Desc:
+# Creates a new filter based signature set.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Include mustache
+. "${RESTSH_PATH}/dist/mo/mo"
+. "${RESTSH_PATH}/lib/mo/mo.functions"
+
+DEFAULTS=""
+TEMPLATE=""
+while getopts ':d:hs:t:' OPTION
+do
+    case "$OPTION" in
+        d) DEFAULTS=$OPTARG ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        t) TEMPLATE=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <signature set name>"
+    echo "Options:"
+    echo "    -d <variables file>  File to read variables from"
+    echo "    -s VAR=VALUE         Define variable for template"
+    echo "    -t <template>        JSON Template, default: $TEMPLATE"
+    echo "Default template variables:"
+    echo "    VAR_ATTACK_TYPE=<name> (Will be resolved to id)"
+    echo "    VAR_ACCURACY=high"
+    echo "    VAR_RISK=all"
+    exit 2
+fi
+export VAR_NAME=$1
+if [ -z "${VAR_ATTACK_TYPE+x}" ] && [ -z "$TEMPLATE" ]
+then
+    echo_err "VAR_ATTACK_TYPE must be specified for the default template"
+fi
+[ -n "${VAR_ACCURACY+x}" ] || export VAR_ACCURACY=high
+[ -n "${VAR_RISK+x}" ] || export VAR_RISK=all
+
+if [ -z "$TEMPLATE" ]
+then
+    TEMPLATE="$RESTSH_PATH/templates/f5/asm/signatureset-filter.json"
+fi
+
+if [ -n "${VAR_ATTACK_TYPE+x}" ]
+then
+    # Resolve attack type name to id
+    if ! VAR_ATTACK_TYPE=$(GET -r "/mgmt/tm/asm/attack-types?\$select=id,name" \
+        | JQE -r ".items[] | select(.name == \"$VAR_ATTACK_TYPE\") | .id")
+    then
+        echo_err "Failure resolving attack type."
+        exit 1
+    fi
+fi
+
+if ! ID=$(GET -r "/mgmt/tm/asm/signature-sets?\$select=id,name" \
+    | JQE -r ".items[] | select(.name == \"$VAR_NAME\") | .id")
+then
+    echo_err "Signature set not found"
+    exit 1
+fi
+
+MO_OPTIONS=()
+if [ -n "$DEFAULTS" ]
+then
+    if [ ! -s "$DEFAULTS" ]
+    then
+        echo_err "Variables file not found."
+        exit 1
+    fi
+    MO_OPTIONS+=("-s=""$DEFAULTS")
+fi
+
+# Create
+$RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" \
+    | PATCH "/mgmt/tm/asm/signature-sets/$ID"
