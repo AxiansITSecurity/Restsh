@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-25
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a new filter based signature set.
 # Desc:
@@ -67,8 +68,8 @@ fi
 if [ -n "${VAR_ATTACK_TYPE+x}" ]
 then
     # Resolve attack type name to id
-    if ! VAR_ATTACK_TYPE=$(GET -rf ".items[] | select(.name == \"$VAR_ATTACK_TYPE\") | .id" \
-        "/mgmt/tm/asm/attack-types?\$select=id,name")
+    if ! VAR_ATTACK_TYPE=$(GET -r "/mgmt/tm/asm/attack-types?\$select=id,name" \
+        | JQE -r ".items[] | select(.name == \"$VAR_ATTACK_TYPE\") | .id")
     then
         echo_err "Failure resolving attack type."
         exit 1
