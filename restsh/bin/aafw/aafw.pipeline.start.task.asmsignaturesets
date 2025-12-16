@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Starts the ASM settings task.
+# Shortdesc: Starts the ASM signature set task.
 # Desc:
-# Starts the ASM settings task.
+# Starts the ASM signature set task.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,13 +22,11 @@ fi
 
 # Get options
 TASK_HOST=""
-RESTART_ASM=1
 SYNC=0
 PIPELINE_OPTS=()
-while getopts ':nst:w' OPTION
+while getopts ':st:w' OPTION
 do
     case "$OPTION" in
-        n) RESTART_ASM=0 ;;
         s) SYNC=1 ;;
         t) TASK_HOST=$OPTARG ;;
         w) PIPELINE_OPTS+=("-w") ;;
@@ -43,7 +41,6 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <stage>"
     echo "Options:"
-    echo "    -n Do not restart ASM service"
     echo "    -s Sync Cluster"
     echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
     echo "    -w  Wait for finished pipeline."
@@ -54,6 +51,6 @@ PROJECT=$1
 BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK=asm_settings" -s "TASK_HOST=$TASK_HOST" \
-    -s "RESTART_ASM=$RESTART_ASM" -s "SYNC=$SYNC" \
+    -s "TASK=asm_signaturesets" -s "TASK_HOST=$TASK_HOST" \
+    -s "SYNC=$SYNC" \
     "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"

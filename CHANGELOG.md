@@ -10,6 +10,7 @@
     - Fix: `aafw.pipeline.start.task.asmsettings` - Do not default sync
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.f5custom`
+    - Feat: `aafw.pipeline.start.task.asmsignaturesets`
     - Upd: `aafw.art.new` - Add option to not rename variables.
     - Upd: `aafw.cert.new` - Add option for custom certificate settings.
     - Upd: `aafw.project.new` - Add option to define default project settings file.
