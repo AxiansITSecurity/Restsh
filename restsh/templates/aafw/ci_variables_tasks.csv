@@ -3,3 +3,4 @@
 TASK_BACKUP_CLEANUP,1,false,true,Cleanup F5 before backup.
 TASK_BACKUP_KEEP_DAYS,7,false,true,Maximum age for backup files in days.
 TASK_BACKUP_PASSPHRASE,,false,true,Passphrase for backup encryption.
+TASK_ASM_SIGNATURESET_CLEANUP,0,false,true,Remove all not declared user-defined signature sets.
