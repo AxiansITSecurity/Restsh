@@ -24,9 +24,11 @@ fi
 . "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
-while getopts ':h' OPTION
+TEMPLATE=""
+while getopts ':ht:' OPTION
 do
     case "$OPTION" in
+        t) TEMPLATE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -39,10 +41,17 @@ then
     echo "Usage: $(basename "$0") <signature set name>"
     echo "Pipe the list of signature ids to STDIN, one signature per line."
     echo "Ignores lines starting with #."
+    echo "Options:"
+    echo "    -t <template>        JSON Template, default: $RESTSH_PATH/templates/f5/asm/signatureset-manual.json"
     exit 2
 fi
 
 export VAR_NAME=$1
+
+if [ -z "$TEMPLATE" ]
+then
+    TEMPLATE="$RESTSH_PATH/templates/f5/asm/signatureset-manual.json"
+fi
 
 # Read signature ids from STDIN
 VAR_SIGNATURES=()
@@ -57,7 +66,7 @@ export VAR_SIGNATURES
 # Create
 if ID=$(f5.asm.signatureset.getid "$VAR_NAME")
 then
-    $RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/signatureset.json" \
+    $RESTSH_MO -- "$TEMPLATE" \
         | PATCH "/mgmt/tm/asm/signature-sets/$ID"
 else
     exit 1

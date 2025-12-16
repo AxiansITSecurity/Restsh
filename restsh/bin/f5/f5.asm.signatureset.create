@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a new manual signature set.
 # Desc:
@@ -23,9 +24,11 @@ fi
 . "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
-while getopts ':h' OPTION
+TEMPLATE=""
+while getopts ':ht:' OPTION
 do
     case "$OPTION" in
+        t) TEMPLATE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -38,10 +41,16 @@ then
     echo "Usage: $(basename "$0") <signature set name>"
     echo "Pipe the list of signature ids to STDIN, one signature per line."
     echo "Ignores lines starting with #."
+    echo "Options:"
+    echo "    -t <template>        JSON Template, default: $RESTSH_PATH/templates/f5/asm/signatureset-manual.json"
     exit 2
 fi
-
 export VAR_NAME=$1
+
+if [ -z "$TEMPLATE" ]
+then
+    TEMPLATE="$RESTSH_PATH/templates/f5/asm/signatureset-manual.json"
+fi
 
 # Read signature ids from STDIN
 VAR_SIGNATURES=()
@@ -54,5 +63,5 @@ done
 export VAR_SIGNATURES
 
 # Create
-$RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/signatureset-manual.json" \
+$RESTSH_MO -- "$TEMPLATE" \
     | POST /mgmt/tm/asm/signature-sets
