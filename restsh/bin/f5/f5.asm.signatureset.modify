@@ -55,7 +55,7 @@ done
 export VAR_SIGNATURES
 
 # Create
-if ID=$(f5.asm.signatureset.getid "$NAME")
+if ID=$(f5.asm.signatureset.getid "$VAR_NAME")
 then
     $RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/signatureset.json" \
         | PATCH "/mgmt/tm/asm/signature-sets/$ID"

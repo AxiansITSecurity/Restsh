@@ -81,8 +81,7 @@ then
     fi
 fi
 
-if ! ID=$(GET -r "/mgmt/tm/asm/signature-sets?\$select=id,name" \
-    | JQE -r ".items[] | select(.name == \"$VAR_NAME\") | .id")
+if ! ID=$(f5.asm.signatureset.getid "$VAR_NAME")
 then
     echo_err "Signature set not found"
     exit 1
