@@ -58,10 +58,15 @@ f5osa.auth.token.get() {
             return 0
         fi
     fi
+    local RC="${PIPESTATUS[0]}"
     export RESTSH_TOKEN_VALUE=""
     unset RESTSH_PASS
     unset RESTSH_USER
-    echo_err "Authentication failure"
+    echo_err "Failure retrieving token"
+    case "$RC" in
+        60) echo_err "Peer certificate cannot be authenticated with known CA certificates." ;;
+        *) echo_err "Curl exit code $RC"
+    esac
     return 1
 }
 
