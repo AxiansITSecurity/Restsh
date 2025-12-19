@@ -87,6 +87,34 @@ then
     exit 1
 fi
 
-# Create
-$RESTSH_MO -- "$TEMPLATE" \
-    | PATCH "/mgmt/tm/asm/signature-sets/$ID"
+# Create a new signature set and check if it has changed
+# This is a workaround. Patching with no change does not work.
+ORG_NAME="$VAR_NAME"
+VAR_NAME="$VAR_NAME-$(date +%s)"
+$RESTSH_MO -- "$TEMPLATE" | POST "/mgmt/tm/asm/signature-sets" > /dev/null
+
+# Get existing signature set
+GET "/mgmt/tm/asm/signature-sets/$ID" | JQ -r 'del(.name, .signatureCount, .selfLink, .id, .signatureReferences)' > "$RESTSH_TMP/existing.json"
+
+# Create new signature set, fetch and remove it
+NEW_ID=$(f5.asm.signatureset.getid "$VAR_NAME")
+GET "/mgmt/tm/asm/signature-sets/$NEW_ID" | JQ -r 'del(.name, .signatureCount, .selfLink, .id, .signatureReferences)' > "$RESTSH_TMP/new.json"
+DELETE "/mgmt/tm/asm/signature-sets/$NEW_ID" > /dev/null
+
+# Check for changes and remove tmp files
+CHANGED=0
+if ! cmp "$RESTSH_TMP/existing.json" "$RESTSH_TMP/new.json" > /dev/null
+then
+    CHANGED=1
+fi
+rm -f "$RESTSH_TMP/existing.json"
+rm -f "$RESTSH_TMP/new.json"
+
+if [ "$CHANGED" -eq 1 ]
+then
+    # Restore the signature set id name and patch it
+    VAR_NAME="$ORG_NAME"
+    $RESTSH_MO -- "$TEMPLATE" | PATCH "/mgmt/tm/asm/signature-sets/$ID"
+else
+    echo "Not changed"
+fi
