@@ -59,7 +59,22 @@ sample.func() {
 export -f sample.func
 ```
 
-## Some hints
+## Temporary files
+
+Create temporary files always in `$RESTSH_TMP`. This is a uniq temporary directory created at startup and cleaned up on exit.
+
+Each script should clean up its own temporary files. Use a cleanup trap to do this.
+
+```sh
+# Cleanup tmp files on exit
+_cleanup() {
+    rm -f "$RESTSH_TMP/existing.json"
+    rm -f "$RESTSH_TMP/new.json"
+}
+trap _cleanup EXIT
+```
+
+## Some further hints
 
 - The header enables strict error checking. Handle each command that can fail and return an appropriated error code: `0` for success, else `1`
 - Use `echo_err` or `echo_warn` to print errors and warnings to STDERR.
