@@ -242,7 +242,11 @@ export RESTSH_TMP
 # Remove it on exit
 _restsh_cleanup() {
     rm -rf "$RESTSH_TMP"
-    printf "\e]2;\a"
+    if [ -n "${RESTSH_INTERACTIVE+x}" ]
+    then
+        # Reset terminal title
+        printf "\e]2;\a"
+    fi
 }
 trap _restsh_cleanup EXIT
 
