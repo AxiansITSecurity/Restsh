@@ -87,6 +87,13 @@ then
     exit 1
 fi
 
+# Cleanup tmp files on exit
+_cleanup() {
+    rm -f "$RESTSH_TMP/existing.json"
+    rm -f "$RESTSH_TMP/new.json"
+}
+trap _cleanup EXIT
+
 # Create a new signature set and check if it has changed
 # This is a workaround. Patching with no change does not work.
 ORG_NAME="$VAR_NAME"
@@ -107,8 +114,6 @@ if ! cmp "$RESTSH_TMP/existing.json" "$RESTSH_TMP/new.json" > /dev/null
 then
     CHANGED=1
 fi
-rm -f "$RESTSH_TMP/existing.json"
-rm -f "$RESTSH_TMP/new.json"
 
 if [ "$CHANGED" -eq 1 ]
 then
