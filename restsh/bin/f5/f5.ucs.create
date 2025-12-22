@@ -98,7 +98,7 @@ do
         continue
     fi
     case "$STATUS" in
-        STARTED|NEW|"")
+        STARTED|NEW|VALIDATING|"")
             continue
             ;;
         COMPLETED)

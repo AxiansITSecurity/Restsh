@@ -24,6 +24,7 @@
     - Upd: `f5.sys.datagroup.external.download` - Use options=-hidden to get the cache path for the file
     - Fix: `f5.run` - Quoting issues
     - Fix: `f5.asm.template.export` - Allow filepath for export
+    - Fix: f5.ucs.create - Handle VALIDATING status
 - GitLab Module
     - Feat: `gitlab.group.projects.recursive` - Recursive project list
     - Upd: `gitlab.project.create` - Add option for default branch
