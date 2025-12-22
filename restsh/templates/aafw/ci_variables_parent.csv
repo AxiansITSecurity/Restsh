@@ -1,6 +1,7 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
-CI_PUSH_TOKEN,access-token-value,true,true,Access Token with write repository permissions to push artifacts.
+CI_PUSH_TOKEN,access-token-value,true,true,Access Token with write repository permissions.
+CI_PUSH_USER,,false,true,Optional user for the CI_PUSH_TOKEN access token.
 SKIP_MERGE_PIPELINE,0,false,true,Set to 1 to skip merge request pipelines.
 
 # Runner tag

@@ -3,5 +3,7 @@
 TASK_BACKUP_CLEANUP,1,false,true,Cleanup F5 before backup.
 TASK_BACKUP_KEEP_DAYS,7,false,true,Maximum age for backup files in days.
 TASK_BACKUP_PASSPHRASE,,false,true,Passphrase for backup encryption.
+TASK_BACKUP_CONF_ONLY,0,false,true,1=Backup only config files and do not create an ucs archive.
+TASK_BACKUP_REPO,,false,true,Repository for config backup (not for ucs).
 TASK_ASM_SIGNATURESET_CLEANUP,1,false,true,Remove all not declared user-defined signature sets.
 TASK_ASM_SIGNATURESET_PREFIX,aafw-,false,true,Prefix for AAFW managed ASM signature sets.
