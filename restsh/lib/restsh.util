@@ -434,7 +434,11 @@ restsh.util.eval_stage_var() {
     local VAR_NAME_STAGE="${VAR_NAME}_${2}"
     set +u
     local VAR_VALUE=${!VAR_NAME_STAGE}
-    [ -z "$VAR_VALUE" ] || declare -g "$VAR_NAME"="$VAR_VALUE"
+    if [ -n "$VAR_VALUE" ]
+    then
+        echo "Declaring $VAR_NAME"
+        declare -g "$VAR_NAME"="$VAR_VALUE"
+    fi
     set -u
 }
 
