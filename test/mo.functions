@@ -7,7 +7,7 @@
 # Desc:
 # Test suite for mo.functions library.
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # Array is used in test.sh
 
 # Strict error handling
 set -eEuo pipefail

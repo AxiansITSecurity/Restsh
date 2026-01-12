@@ -57,8 +57,7 @@ else
     {
         for COMPONENT in "${COMPONENTS[@]}"
         do
-            # shellcheck disable=SC2034
-            while IFS=$'\t' read -r FREQ START END ALLTIMES ALLDAYS SUN MON TUE WED THU FRI SAT KIND SELF
+            while IFS=$'\t' read -r FREQ START END ALLTIMES ALLDAYS SUN MON TUE WED THU FRI SAT
             do
                 printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" \
                     "$COMPONENT" "$FREQ" "$START" "$END" "$ALLTIMES" "$ALLDAYS" "$SUN" "$MON" "$TUE" "$WED" "$THU" "$FRI" "$SAT"

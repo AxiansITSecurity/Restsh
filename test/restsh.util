@@ -160,7 +160,7 @@ test.restsh.util.check.varnotempty() {
     if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
     VAR1=" "
     if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
-    # shellcheck disable=SC2034
+    # shellcheck disable=SC2034 # Variable is used as reference
     VAR1="null"
     if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
     # not defined variable
@@ -251,7 +251,7 @@ test.restsh.util.base64url() {
     [ "$OUTPUT" = "dGVzdA" ] || return 1
 }
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # Array is used in test.sh
 TESTS_RESTSH_UTIL=(
     test.restsh.util.echo_ok
     test.restsh.util.print_json_ok

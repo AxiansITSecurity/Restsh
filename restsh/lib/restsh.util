@@ -525,7 +525,6 @@ restsh.util.setvar() {
             mapfile -t "$VAR" <<< "$LINES"
             echo "Declaring array: $VAR"
         else
-            #shellcheck disable=SC2140
             declare -g -a "$VAR=()"
             echo "Declaring empty array: $VAR"
         fi

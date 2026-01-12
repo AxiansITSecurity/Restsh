@@ -7,8 +7,6 @@
 # Desc:
 # Some helper functions for mustache.
 
-#shellcheck disable=SC2154
-
 # Returns a comma if it is not the first item in a loop.
 # Usage: {{MO_COMMA_IF_NOT_FIRST}}
 MO_COMMA_IF_NOT_FIRST() {

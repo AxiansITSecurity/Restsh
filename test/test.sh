@@ -7,7 +7,7 @@
 # Desc:
 # Test suite for restsh.
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # Variable references are used
 
 SCRIPTPATH=$(dirname "$0")
 
@@ -33,8 +33,8 @@ declare -A ALL_GROUPS
 ALL_GROUPS["aafw"]="TESTS_AAFW"
 ALL_GROUPS["cert"]="TESTS_CERT"
 ALL_GROUPS["f5"]="TESTS_F5"
+ALL_GROUPS["f5os"]="TESTS_F5"
 ALL_GROUPS["gitlab"]="TESTS_GITLAB"
-ALL_GROUPS["next"]="TESTS_NEXT"
 ALL_GROUPS["restsh"]="TESTS_RESTSH"
 
 . "$SCRIPTPATH/restsh.util"
@@ -45,8 +45,8 @@ ALL_GROUPS["restsh"]="TESTS_RESTSH"
 TESTS_AAFW=()
 TESTS_CERT=()
 TESTS_F5=()
+TESTS_F5OS=()
 TESTS_GITLAB=()
-TESTS_NEXT=()
 TESTS_RESTSH=(
     "restsh/bin/restsh/restsh".*
     "${TESTS_RESTSH_UTIL[@]}"

@@ -52,7 +52,7 @@ test.f5.common.fullPathJoin() {
     [ "$FP" = "~tenant1~name1" ] || return 1
 }
 
-# shellcheck disable=SC2034
+# shellcheck disable=SC2034 # Array is used in test.sh
 TESTS_F5_COMMON=(
     test.f5.common.fullPathSplit
     test.f5.common.fullPathSplit2
