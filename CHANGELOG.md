@@ -1,5 +1,7 @@
 # Changelog
 
+This is the changelog for Restsh.
+
 ***
 
 ## v4.4.0 - not yet released
