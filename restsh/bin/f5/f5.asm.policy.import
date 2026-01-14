@@ -42,7 +42,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <filename> <policy full path>"
     echo "    -e                 Enforce all signatures"
-    echo "    -i                 Overwrite policy name in import file"
+    echo "    -i                 Enforce given policy path (Overwrite fullPath in import file)"
     echo "    -n                 Do not apply policy after import"
     echo "    -o <openapi file>  Specify OpenApi File"
     exit 2
