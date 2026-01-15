@@ -4,9 +4,10 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Installs a device certificate, restarts httpd.
+# Shortdesc: Uploads and installs a device certificate, restarts httpd.
 # Desc:
-# Installs a device certificate, restarts httpd.
+# Uploads and installs a device certificate, restarts httpd.
+# A key with the same name must already exist on the F5.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -52,14 +53,18 @@ then
     exit 1
 fi
 
-JQ -n --arg cert "$CERT_FILE" --arg key "$KEY_FILE" \
+if ! JQ -n --arg cert "$CERT_FILE" --arg key "$KEY_FILE" \
     '{
         "sslCertfile": $cert,
         "sslCertkeyfile": $key
     }' | PUT /mgmt/tm/sys/httpd
-
-# Ignore error from httpd restart
-f5.sys.service.restart httpd > /dev/null 2>&1 || true
+then
+    echo_warn "API call failed, this is expected because of the httpd daemon restart."
+else
+    # httpd not automatically restarted but it should be restarted.
+    # Restart it and ignore errors.
+    f5.sys.service.restart httpd > /dev/null 2>&1 || true
+fi
 
 # Wait for httpd restart
 I=0
