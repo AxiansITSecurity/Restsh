@@ -21,6 +21,7 @@ This is the changelog for Restsh.
     - Feat: `f5.cluster.device-groups.sync-failover`
     - Feat: `f5.ucs.create` - Add option to encrypt backup
     - Feat: `f5.cert.pkcs12.import` - Import a PKCS12 file
+    - Feat: `f5.device.cert.reset`
     - Upd: `f5.asm.signatureset.create`, `f5.asm.signatureset.modify` - Add option for template
     - Upd: `f5.device.cert.install` - Wait for httpd restart
     - Upd: `f5.sys.datagroup.external.download` - Use options=-hidden to get the cache path for the file

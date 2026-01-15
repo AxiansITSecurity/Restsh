@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Resets the device certificate and key  to server.crt and server.key.
+# Desc:
+# Resets the device certificate and key to server.crt and server.key.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+if [ $# -ne 0 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0")"
+    exit 2
+fi
+
+if ! f5.file.size "/config/httpd/conf/ssl.crt/server.crt" > /dev/null
+then
+    echo_err "Default certificate not found."
+    exit 1
+fi
+
+if ! f5.file.size "/config/httpd/conf/ssl.key/server.key" > /dev/null
+then
+    echo_err "Default key not found."
+    exit 1
+fi
+
+if ! JQ -n \
+    '{
+        "sslCertfile": "/config/httpd/conf/ssl.crt/server.crt",
+        "sslCertkeyfile": "/config/httpd/conf/ssl.key/server.key"
+    }' | PUT /mgmt/tm/sys/httpd
+then
+    echo_warn "API call failed, this is expected because of the httpd daemon restart."
+else
+    # httpd not automatically restarted but it should be restarted.
+    # Restart it and ignore errors.
+    f5.sys.service.restart httpd > /dev/null 2>&1 || true
+fi
+
+# Wait for httpd restart
+I=0
+while ! f5.version >/dev/null 2>&1
+do
+    sleep 2
+    I=$((I+1))
+    if [ "$I" -eq 10 ]
+    then
+        echo_err "Timeout waiting for httpd"
+        exit 1
+    fi
+done
