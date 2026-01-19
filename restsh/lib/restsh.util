@@ -153,9 +153,9 @@ echo_warn() {
         echo "Usage: echo_warn [echo options] <message>" 1>&2
         return 2
     fi
-    echo -ne "${COLOR_YELLOW}WARN: " 1>&2
-    echo "$@" 1>&2
-    echo -ne "$COLOR_RESET" 1>&2
+    stdbuf -e0 -o0 echo -ne "${COLOR_YELLOW}WARN: " 1>&2
+    stdbuf -e0 -o0 echo "$@" 1>&2
+    stdbuf -e0 -o0 echo -ne "$COLOR_RESET" 1>&2
 }
 
 # Prints yellow warning message in JSON format to STDOUT.
@@ -168,7 +168,7 @@ print_json_warn() {
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
-    $RESTSH_JQ -n --arg message "$1" \
+    stdbuf -e0 -o0 $RESTSH_JQ -n --arg message "$1" \
     '{
         warn: {
             message: $message
@@ -187,7 +187,7 @@ print_json_warn_curl() {
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
-    $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
+    stdbuf -e0 -o0 $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
     '{
         warn: {
             request: $request,
