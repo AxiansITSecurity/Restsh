@@ -38,9 +38,9 @@ echo_ok() {
         echo "Usage: echo_ok [echo options] <message>" 1>&2
         return 2
     fi
-    echo -ne "$COLOR_GREEN"
-    echo "$@"
-    echo -ne "$COLOR_RESET"
+    stdbuf -e0 -o0 echo -ne "$COLOR_GREEN"
+    stdbuf -e0 -o0 echo "$@"
+    stdbuf -e0 -o0 echo -ne "$COLOR_RESET"
 }
 
 # Prints green ok message in JSON format to STDOUT.
@@ -87,9 +87,9 @@ echo_err() {
         echo "Usage: echo_err [echo options] <message>" 1>&2
         return 2
     fi
-    echo -ne "${COLOR_RED}ERROR: " 1>&2
-    echo "$@" 1>&2
-    echo -ne "$COLOR_RESET" 1>&2
+    stdbuf -e0 -o0 echo -ne "${COLOR_RED}ERROR: " 1>&2
+    stdbuf -e0 -o0 echo "$@" 1>&2
+    stdbuf -e0 -o0 echo -ne "$COLOR_RESET" 1>&2
 }
 
 # Prints red error message in JSON format to STDERR.
@@ -102,7 +102,7 @@ print_json_err() {
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
-    $RESTSH_JQ -n --arg message "$1" \
+    stdbuf -e0 -o0 $RESTSH_JQ -n --arg message "$1" \
     '{
         error: {
             message: $message
@@ -133,7 +133,7 @@ print_json_err_curl() {
         # Not an JSON object, escape it
         OUTPUT=$(JQ -R -s '.' <<< "$OUTPUT")
     fi
-    $RESTSH_JQ -n --arg message "$MESSAGE" --argjson output "$OUTPUT" --arg request "$REQUEST" \
+    stdbuf -e0 -o0 $RESTSH_JQ -n --arg message "$MESSAGE" --argjson output "$OUTPUT" --arg request "$REQUEST" \
     '{
         error: {
             request: $request,
