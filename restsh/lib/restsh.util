@@ -38,9 +38,9 @@ echo_ok() {
         echo "Usage: echo_ok [echo options] <message>" 1>&2
         return 2
     fi
-    stdbuf -e0 -o0 echo -ne "$COLOR_GREEN"
+    [ -z "${RESTSH_INTERACTIVE+x}" ] || stdbuf -e0 -o0 echo -ne "$COLOR_GREEN"
     stdbuf -e0 -o0 echo "$@"
-    stdbuf -e0 -o0 echo -ne "$COLOR_RESET"
+    [ -z "${RESTSH_INTERACTIVE+x}" ] || stdbuf -e0 -o0 echo -ne "$COLOR_RESET"
 }
 
 # Prints green ok message in JSON format to STDOUT.
@@ -87,9 +87,12 @@ echo_err() {
         echo "Usage: echo_err [echo options] <message>" 1>&2
         return 2
     fi
-    stdbuf -e0 -o0 echo -ne "${COLOR_RED}ERROR: " 1>&2
-    stdbuf -e0 -o0 echo "$@" 1>&2
-    stdbuf -e0 -o0 echo -ne "$COLOR_RESET" 1>&2
+    {
+        [ -z "${RESTSH_INTERACTIVE+x}" ] || stdbuf -e0 -o0 echo -ne "${COLOR_RED}"
+        stdbuf -e0 -o0 echo -n "ERROR: "
+        stdbuf -e0 -o0 echo "$@"
+        [ -z "${RESTSH_INTERACTIVE+x}" ] || stdbuf -e0 -o0 echo -ne "$COLOR_RESET"
+    } 1>&2
 }
 
 # Prints red error message in JSON format to STDERR.
@@ -153,9 +156,12 @@ echo_warn() {
         echo "Usage: echo_warn [echo options] <message>" 1>&2
         return 2
     fi
-    stdbuf -e0 -o0 echo -ne "${COLOR_YELLOW}WARN: " 1>&2
-    stdbuf -e0 -o0 echo "$@" 1>&2
-    stdbuf -e0 -o0 echo -ne "$COLOR_RESET" 1>&2
+    {
+        [ -z "${RESTSH_INTERACTIVE+x}" ] || stdbuf -e0 -o0 echo -ne "${COLOR_YELLOW}"
+        stdbuf -e0 -o0 echo -n "WARN: "
+        stdbuf -e0 -o0 echo "$@"
+        [ -z "${RESTSH_INTERACTIVE+x}" ] || stdbuf -e0 -o0 echo -ne "$COLOR_RESET"
+    } 1>&2
 }
 
 # Prints yellow warning message in JSON format to STDOUT.
