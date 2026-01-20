@@ -72,6 +72,11 @@ then
         do
             STATUS=$(GET -r -f ".status" "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipelines/$ID")
             case "$STATUS" in
+                canceled)
+                    echo ""
+                    echo_err "Pipeline $ID canceled"
+                    exit 1
+                    ;;
                 failed)
                     echo ""
                     echo_err "Pipeline $ID failed"
