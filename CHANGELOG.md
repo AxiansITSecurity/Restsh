@@ -29,6 +29,7 @@ This is the changelog for Restsh.
     - Fix: `f5.asm.template.export` - Allow filepath for export
     - Fix: `f5.ucs.create` - Handle VALIDATING status
 - GitLab Module
+    - Feat: `gitlab.group.variable.export`, `gitlab.group.variable.import`, `gitlab.project.variable.export`, `gitlab.project.variable.import`
     - Feat: `gitlab.group.projects.recursive` - Recursive project list
     - Upd: `gitlab.project.create` - Add option for default branch
 
