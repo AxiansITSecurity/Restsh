@@ -61,7 +61,7 @@ then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch> <certificate name>"
-    echo "The common name is set to certificate name if not specified by the \"--cn\" option."
+    echo "The common name is set to the certificate name if not specified by the \"--cn\" option."
     echo "Options:"
     echo "    -a <dns alternative name>"
     echo "    -i <ip alternative name>"
