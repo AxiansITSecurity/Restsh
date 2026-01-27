@@ -61,7 +61,7 @@ then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch> <certificate name>"
-    echo "The certificate name is usually the common name."
+    echo "The common name is set to certificate name if not specified by the \"--cn\" option."
     echo "Options:"
     echo "    -a <dns alternative name>"
     echo "    -i <ip alternative name>"
@@ -93,6 +93,17 @@ then
             exit 1
             ;;
     esac
+fi
+
+# Set the CN to certificate name as default
+if [ -z "$CN" ]
+then
+    CN="$CERT"
+fi
+
+if ! restsh.util.array.includes "$CN" "${ALT_NAMES[@]}"
+then
+    ALT_NAMES+=("$CN")
 fi
 
 ALT_NAMES_STR=$(restsh.util.array.string -q'"' "${ALT_NAMES[@]}")
