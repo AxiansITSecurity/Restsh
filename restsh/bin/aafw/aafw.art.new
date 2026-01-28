@@ -52,7 +52,8 @@ then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <app name> <template>"
-    echo "Project path:  GitLab Project or local Git folder"
+    echo "Project path:  GitLab project path or already cloned local tenant folder path."
+    echo "               Use \"-p\" if it is a GitLab project path."
     echo "Options:"
     echo "    -a         ART Project, default: $RESTSH_AAFW_ART"
     echo "    -f         Overwrite application"
@@ -151,6 +152,11 @@ then
     cd "$TENANT_FOLDER" || exit 1
     git pull
 else
+    if [ "$PUSH" -eq 0 ]
+    then
+        echo_err "Project path must be a local folder if commit and push is not enabled."
+        exit 1
+    fi
     TENANT_FOLDER="$ART_TMP/tenant"
     git clone "${RESTSH_AAFW_URI}${PROJECT_PATH}" "$TENANT_FOLDER"
 fi
@@ -164,7 +170,7 @@ then
     exit 1
 fi
 
-if [ "$OVERWRITE" -eq 0 ] && [ -d "$TENANT_FOLDER/config/$APP_NAME" ]
+if [ "$OVERWRITE" -eq 0 ] && [ -d "$TENANT_FOLDER/applications/$APP_NAME" ]
 then
     echo_err "Application already exists"
     exit 1
@@ -244,6 +250,8 @@ if [ "$PUSH" -eq 1 ]
 then
     cd "$TENANT_FOLDER" || exit 1
     git add .
-    git commit -m "Add application $APP_NAME from ART $TEMPLATE"
-    git push
+    if git commit -m "Add application $APP_NAME from ART $TEMPLATE"
+    then
+        git push
+    fi
 fi
