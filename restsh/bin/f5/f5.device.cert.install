@@ -67,8 +67,9 @@ else
 fi
 
 # Wait for httpd restart
+sleep 2
 I=0
-while ! f5.version >/dev/null 2>&1
+while ! GET "/mgmt/tm/sys/httpd" > /dev/null 2>&1
 do
     sleep 2
     I=$((I+1))
