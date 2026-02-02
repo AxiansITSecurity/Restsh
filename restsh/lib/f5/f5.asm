@@ -57,14 +57,15 @@ f5.asm.signatureset.getid() {
         return 2
     fi
     local SIGNATURESETID
-    if ! SIGNATURESETID=$(GET /mgmt/tm/asm/signature-sets?\$select=name,id | jq -r ".items[] | select(.name == \"$1\") | .id")
+    local NAME=$1
+    if ! SIGNATURESETID=$(GET /mgmt/tm/asm/signature-sets?\$select=name,id | jq -r ".items[] | select(.name == \"$NAME\") | .id")
     then
-        echo_err "Failure getting signatureset id"
+        echo_err "Failure getting signatureset id for $NAME"
         return 1
     fi
     if [ -z "$SIGNATURESETID" ] || [ "$SIGNATURESETID" = "null" ]
     then
-        echo_err "Failure getting signatureset id"
+        echo_err "Failure getting signatureset id for $NAME"
         return 1
     fi
     printf "%s" "$SIGNATURESETID"
