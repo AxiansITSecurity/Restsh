@@ -253,7 +253,7 @@ test.restsh.util.base64url() {
 
 test.restsh.pwgen() {
     local OUTPUT
-    if ! restsh.util.pwgen "test"
+    if ! restsh.pwgen "test"
     then
         return 1
     fi
@@ -261,7 +261,7 @@ test.restsh.pwgen() {
 
 test.restsh.passphrase() {
     local OUTPUT
-    if ! restsh.util.passphrase "test"
+    if ! restsh.passphrase "test"
     then
         return 1
     fi
