@@ -102,14 +102,14 @@ then
     DELIMITER=${DELIMITERS:$(shuf -i 0-$((DELIMITERS_LEN-1)) -n1):1}
 fi
 
-# Generate phrase array
-mapfile -t PHRASE < <(shuf -n "$WORDS" "$DICT_FILE" \
+# Get random words
+mapfile -t WORDS < <(shuf -n "$WORDS" "$DICT_FILE" \
     | sed 's|/.*||' \
     | tr -cd '[:alnum:]\n')
 
 # Randomize
-RAND_PHRASE=()
-for WORD in "${PHRASE[@]}"
+PHRASE=()
+for WORD in "${WORDS[@]}"
 do
     if [ "$RAND_CASE" -eq 1 ]
     then
@@ -137,8 +137,8 @@ do
             WORD="${NR}${WORD}"
         fi
     fi
-    RAND_PHRASE+=("$WORD")
+    PHRASE+=("$WORD")
 done
 
-restsh.util.array.string -s "$DELIMITER" "${RAND_PHRASE[@]}"
+restsh.util.array.string -s "$DELIMITER" "${PHRASE[@]}"
 echo ""
