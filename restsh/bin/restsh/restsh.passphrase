@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Generates a passphrase.
+# Desc:
+# Generates a passphrase.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# test suite
+run_test() {
+    local RESULT
+    RESULT=$(restsh.passphrase -w 8 -d "-")
+    [ "${#RESULT}" -gt 15 ]
+}
+
+if [ "${1:-}" = "test" ]
+then
+    run_test && exit 0
+    exit 1
+fi
+
+# Get options
+WORDS=4
+DELIMITER=""
+DICT_FILE=""
+RAND_CASE=0
+while getopts ':hf:d:rw:' OPTION
+do
+    case "$OPTION" in
+        d) DELIMITER="$OPTARG" ;;
+        f) DICT_FILE="$OPTARG" ;;
+        r) RAND_CASE=1 ;;
+        w) WORDS="$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&1
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -d Delimiter for chunks, default: random"
+    echo "    -f Dictionary file"
+    echo "    -r Randomize case"
+    echo "    -w Number of words, default: 4"
+    exit 2
+fi
+
+# Search for default dictionary file
+if [ -z "$DICT_FILE" ]
+then
+    DICT_FILES=(
+        /usr/share/dict/words
+        /usr/share/hunspell/en_US.dic
+    )
+    for F in "${DICT_FILES[@]}"
+    do
+        if [ -s "$F" ]
+        then
+            DICT_FILE="$F"
+            break;
+        fi
+    done
+fi
+
+# Fallback to filenames for dictionary
+if [ -z "$DICT_FILE" ]
+then
+    DICT_FILE="$RESTSH_TMP/restsh.passphrase.dict"
+    if [ ! -s "$DICT_FILE" ]
+    then
+        find /usr -type f -printf "%f\n" \
+            | sed -E -e 's/\..*//' > "$DICT_FILE"
+    fi
+fi
+
+# Set delimiter
+if [ -z "$DELIMITER" ]
+then
+    DELIMITERS="-+:."
+    DELIMITERS_LEN=${#DELIMITERS}
+    DELIMITER=${DELIMITERS:$(shuf -i 0-$((DELIMITERS_LEN-1)) -n1):1}
+fi
+
+# Generate phrase
+PHRASE=$(shuf -n "$WORDS" "$DICT_FILE" \
+    | sed 's|/.*||' \
+    | tr -cd '[:alnum:]\n' \
+    | tr '\n' "$DELIMITER")
+
+# Shuffle the case
+if [ "$RAND_CASE" -eq 1 ]
+then
+    PHRASE_ORG="$PHRASE"
+    PHRASE=""
+    for (( I=0; I<${#PHRASE_ORG}; I++ )); do
+        CHAR="${PHRASE_ORG:$I:1}"
+        FLIP=$(($(($RANDOM%10))%2))
+        if [ $FLIP -eq 1 ]
+        then
+            PHRASE="${PHRASE}${CHAR^^}"
+        else
+            PHRASE="${PHRASE}${CHAR,,}"
+        fi
+    done
+fi
+
+echo "${PHRASE:0:-1}"

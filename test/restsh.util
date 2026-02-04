@@ -251,6 +251,22 @@ test.restsh.util.base64url() {
     [ "$OUTPUT" = "dGVzdA" ] || return 1
 }
 
+test.restsh.pwgen() {
+    local OUTPUT
+    if ! restsh.util.pwgen "test"
+    then
+        return 1
+    fi
+}
+
+test.restsh.passphrase() {
+    local OUTPUT
+    if ! restsh.util.passphrase "test"
+    then
+        return 1
+    fi
+}
+
 # shellcheck disable=SC2034 # Array is used in test.sh
 TESTS_RESTSH_UTIL=(
     test.restsh.util.echo_ok
@@ -290,4 +306,6 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.var.decrypt
     test.restsh.util.trim
     test.restsh.util.base64url
+    test.restsh.pwgen
+    test.restsh.passphrase
 )

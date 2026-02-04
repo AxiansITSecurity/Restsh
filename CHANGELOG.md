@@ -6,6 +6,9 @@ This is the changelog for Restsh.
 
 ## v4.5.0 - not yet released
 
+- General
+    - Feat: `restsh.passphrase`
+
 ***
 
 ## v4.4.0 - 2026-02-04
