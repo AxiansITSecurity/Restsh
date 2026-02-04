@@ -4,7 +4,7 @@ This is the changelog for Restsh.
 
 ***
 
-## v4.4.0 - not yet released
+## v4.4.0 - 2026-02-04
 
 - General
     - Feat: `restsh.util.var.decrypt` - Decrypts a variable or fetches it from HashiCorp Vault in place.
