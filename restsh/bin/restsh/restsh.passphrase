@@ -38,12 +38,14 @@ WORDS=4
 DELIMITER=""
 DICT_FILE=""
 RAND_CASE=0
-while getopts ':hf:d:rw:' OPTION
+RAND_NR=0
+while getopts ':cd:f:hnw:' OPTION
 do
     case "$OPTION" in
+        c) RAND_CASE=1 ;;
         d) DELIMITER="$OPTARG" ;;
         f) DICT_FILE="$OPTARG" ;;
-        r) RAND_CASE=1 ;;
+        n) RAND_NR=1 ;;
         w) WORDS="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -56,9 +58,10 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...]"
     echo "Options:"
-    echo "    -d Delimiter for chunks, default: random"
+    echo "    -c Randomize case"
+    echo "    -d Delimiter for words, default: random"
     echo "    -f Dictionary file"
-    echo "    -r Randomize case"
+    echo "    -n Add random numbers"
     echo "    -w Number of words, default: 4"
     exit 2
 fi
@@ -99,27 +102,43 @@ then
     DELIMITER=${DELIMITERS:$(shuf -i 0-$((DELIMITERS_LEN-1)) -n1):1}
 fi
 
-# Generate phrase
-PHRASE=$(shuf -n "$WORDS" "$DICT_FILE" \
+# Generate phrase array
+mapfile -t PHRASE < <(shuf -n "$WORDS" "$DICT_FILE" \
     | sed 's|/.*||' \
-    | tr -cd '[:alnum:]\n' \
-    | tr '\n' "$DELIMITER")
+    | tr -cd '[:alnum:]\n')
 
-# Shuffle the case
-if [ "$RAND_CASE" -eq 1 ]
-then
-    PHRASE_ORG="$PHRASE"
-    PHRASE=""
-    for (( I=0; I<${#PHRASE_ORG}; I++ )); do
-        CHAR="${PHRASE_ORG:$I:1}"
+# Randomize
+RAND_PHRASE=()
+for WORD in "${PHRASE[@]}"
+do
+    if [ "$RAND_CASE" -eq 1 ]
+    then
+        WORD_ORG="$WORD"
+        WORD=""
+        for (( I=0; I<${#WORD_ORG}; I++ )); do
+            CHAR="${WORD_ORG:$I:1}"
+            FLIP=$(($(($RANDOM%10))%2))
+            if [ $FLIP -eq 1 ]
+            then
+                WORD="${WORD}${CHAR^^}"
+            else
+                WORD="${WORD}${CHAR,,}"
+            fi
+        done
+    fi
+    if [ "$RAND_NR" -eq 1 ]
+    then
+        NR=$(($RANDOM%10))
         FLIP=$(($(($RANDOM%10))%2))
         if [ $FLIP -eq 1 ]
         then
-            PHRASE="${PHRASE}${CHAR^^}"
+            WORD="${WORD}${NR}"
         else
-            PHRASE="${PHRASE}${CHAR,,}"
+            WORD="${NR}${WORD}"
         fi
-    done
-fi
+    fi
+    RAND_PHRASE+=("$WORD")
+done
 
-echo "${PHRASE:0:-1}"
+restsh.util.array.string -s "$DELIMITER" "${RAND_PHRASE[@]}"
+echo ""
