@@ -4,10 +4,11 @@ WAF_PUSH_DECLARATION,0,false,true,Push declaration in repository.
 
 # WAF policy defaults
 WAF_POLICY_PARTITION,Common,false,true,F5 Partition for the WAF-Policies.
-WAF_POLICY_DEFAULT_DIR,default-policy-v17,false,true,Default configuration directory.
+WAF_POLICY_DEFAULT_DIR,default-policy-v17.5,false,true,Default configuration directory.
+WAF_POLICY_DEFAULT_TYPE,,false,true,Subfolder in the default configuration directory.
 WAF_POLICY_ENFORCE_SIGNATURES,0,false,true,1=Enforce all signatures,0=Do not enforce signatures
-WAF_POLICY_RETAIN_SIGNATURE_ENFORCE,1,false,true,1=Retain signature enforcment status
-WAF_POLICY_LINT_SCRIPT,lint.sh,false,true,Lint script name in the wafcustom repo.
+WAF_POLICY_RETAIN_SIGNATURE_ENFORCE,1,false,true,1=Retain signature enforcement status
+WAF_POLICY_LINT_SCRIPT,lint.sh,false,true,Lint script name in the wafcustom repository.
 WAF_RESTRICT_MERGE,1,false,true,Enforce merge request rules.
 
 # Bot Defense
