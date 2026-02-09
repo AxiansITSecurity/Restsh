@@ -6,6 +6,9 @@ This is the changelog for Restsh.
 
 ## v4.4.1 - not yet released
 
+- F5 TMOS Module
+    - Fix: `f5.asm.policy.audit` - fail if policy does not exists
+
 ***
 
 ## v4.4.0 - 2026-02-04
