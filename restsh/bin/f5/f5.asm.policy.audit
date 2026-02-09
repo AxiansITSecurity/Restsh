@@ -40,6 +40,8 @@ else
      else
         POLICY_HASH=$1
      fi
+     AUDITLOGS=$(GET "/mgmt/tm/asm/policies/$POLICY_HASH/audit-logs" \
+        | JQ -c '.items[] | [.lastUpdateMicros, .eventType, .description, .entityName]')
      while read -r LINE
      do
         TS_US=$(JQ -r '.[0]' <<< "$LINE")
@@ -49,6 +51,5 @@ else
         TS=$(awk "BEGIN { print $TS_US / 1000000 }")
         TS=$(date -d@"$TS")
         printf "\nPolicy change info (%s):\nEntity: %s\nChange Detail: %s\nOn: %s\n" "$EVENT_TYPE" "$ENTITY_NAME" "$DESCRIPTION" "$TS"
-     done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/audit-logs" \
-        | JQ -c '.items[] | [.lastUpdateMicros, .eventType, .description, .entityName]')
+     done <<< "$AUDITLOGS"
 fi
