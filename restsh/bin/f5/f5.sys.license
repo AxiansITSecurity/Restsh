@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Shows the service check date.
+# Shortdesc: Shows some basic license and service information.
 # Desc:
-# Shows the service check date.
+# Shows some basic license and service information.
 
 # Strict error handling
 set -eEu -o pipefail
