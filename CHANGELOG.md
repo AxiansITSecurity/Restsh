@@ -8,6 +8,9 @@ This is the changelog for Restsh.
 
 - General
     - Feat: `restsh.passphrase`
+- F5 TMOS Module
+    - Feat: `f5.asm.policy.exists`
+    - Fix: `f5.asm.policy.audit` - fail if policy does not exists
 
 ***
 
