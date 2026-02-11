@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Deletes a group (marks it for deletion).
+# Shortdesc: Gets a group path by id.
 # Desc:
-# Deletes a group (marks it for deletion).
+# Gets a group path by id.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -21,34 +21,23 @@ then
 fi
 
 # Get options
-FORCE=0
-while getopts ':f' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <group>"
-    echo "Options:"
-    echo "    -f Immediately deletes a subgroup if it is marked for deletion."
+    echo "Usage: $(basename "$0") [-r] <group>"
     exit 2
 fi
 
-OPTS=""
 GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-if [ "$FORCE" -eq 1 ]
-then
-    GROUP_PATH=$(gitlab.group.path "$GROUP")
-    OPTS="?permanently_remove=true&full_path=${GROUP_PATH}"
-fi
-
-DELETE "$GITLAB_API_PREFIX/groups/${GROUP}$OPTS"
+GET -r -f '.full_path' "$GITLAB_API_PREFIX/groups/$GROUP"

@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Deletes a project.
+# Shortdesc: Purges a project - deletes it permanently
 # Desc:
-# Deletes a project.
+# Purges a project - deletes it permanently
 
 # Strict error handling
 set -eEu -o pipefail
@@ -21,11 +21,9 @@ then
 fi
 
 # Get options
-FORCE=0
-while getopts ':f' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,18 +34,15 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <project>"
-    echo "    -f Immediately deletes a project if it is marked for deletion."
     exit 2
 fi
 
-OPTS=""
 PROJECT=$1
-restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+# We must use the project id
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(gitlab.project.id "$PROJECT")
 
-if [ "$FORCE" -eq 1 ]
-then
-    PROJECT_PATH=$(gitlab.project.path "$PROJECT")
-    OPTS="?permanently_remove=true&full_path=${PROJECT_PATH}"
-fi
-
-DELETE "$GITLAB_API_PREFIX/projects/${PROJECT}$OPTS"
+# Delete project
+DELETE "$GITLAB_API_PREFIX/projects/${PROJECT}"
+# Permanently delete project
+PROJECT_PATH=$(gitlab.project.path "$PROJECT")
+DELETE "$GITLAB_API_PREFIX/projects/${PROJECT}?permanently_remove=true&full_path=${PROJECT_PATH}"

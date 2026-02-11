@@ -11,6 +11,10 @@ This is the changelog for Restsh.
 - F5 TMOS Module
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`
+- GitLab Module
+    - Feat: `gitlab.group.path`, `gitlab.project.path`
+    - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
+    - Upd: `gitlab.group.delete`, `gitlab.project.delete` - Support id's
 
 ***
 

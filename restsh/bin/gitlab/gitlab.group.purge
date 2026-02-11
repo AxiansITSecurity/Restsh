@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Deletes a project.
+# Shortdesc: Purges a group - deletes it permanently
 # Desc:
-# Deletes a project.
+# Purges a group - deletes it permanently
 
 # Strict error handling
 set -eEu -o pipefail
@@ -21,11 +21,9 @@ then
 fi
 
 # Get options
-FORCE=0
-while getopts ':f' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,19 +33,16 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project>"
-    echo "    -f Immediately deletes a project if it is marked for deletion."
+    echo "Usage: $(basename "$0") <group>"
     exit 2
 fi
 
-OPTS=""
-PROJECT=$1
-restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+GROUP=$1
+# We must use the group id
+restsh.util.check.isnumber "$GROUP" || GROUP=$(gitlab.group.id "$GROUP")
 
-if [ "$FORCE" -eq 1 ]
-then
-    PROJECT_PATH=$(gitlab.project.path "$PROJECT")
-    OPTS="?permanently_remove=true&full_path=${PROJECT_PATH}"
-fi
-
-DELETE "$GITLAB_API_PREFIX/projects/${PROJECT}$OPTS"
+# Delete group
+DELETE "$GITLAB_API_PREFIX/groups/${GROUP}"
+# Permanently delete project
+GROUP_PATH=$(gitlab.group.path "$GROUP")
+DELETE "$GITLAB_API_PREFIX/groups/${GROUP}?permanently_remove=true&full_path=${GROUP_PATH}"
