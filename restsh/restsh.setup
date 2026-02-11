@@ -63,6 +63,7 @@ restsh.setup.init() {
 # Restsh
 export RESTSH_CONFIG_PATH="${RESTSH_CONFIG_PATH}"
 alias restsh="${RESTSH_PATH}/restsh.start"
+alias restsh.setup="${RESTSH_PATH}/restsh.setup"
 
 EOL
 }

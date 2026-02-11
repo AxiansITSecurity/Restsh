@@ -7,6 +7,7 @@ This is the changelog for Restsh.
 ## v4.5.0 - not yet released
 
 - General
+    - Upd: Add restsh.setup alias
     - Feat: `restsh.passphrase`
 - F5 TMOS Module
     - Feat: `f5.sys.license`
