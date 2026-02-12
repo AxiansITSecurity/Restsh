@@ -12,6 +12,7 @@ This is the changelog for Restsh.
 - F5 TMOS Module
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`
+    - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
 - GitLab Module
     - Feat: `gitlab.group.path`, `gitlab.project.path`
     - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
