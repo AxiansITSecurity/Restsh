@@ -73,7 +73,10 @@ case "$PIPELINE_TYPE" in
     f5-device-certbot) PIPELINE_FILE="pipelines/f5-device-certbot.yml" ;;
     f5-device-scep) PIPELINE_FILE="pipelines/f5-device-scep.yml" ;;
     f5-device-vault) PIPELINE_FILE="pipelines/f5-device-vault.yml" ;;
-    *) PIPELINE_FILE="certificates.yml" ;;
+    *)
+        echo_warn "No CLM type configured, using default."
+        PIPELINE_FILE="certificates.yml"
+        ;;
 esac
 
 cat > .gitlab-ci.yml << EOL
