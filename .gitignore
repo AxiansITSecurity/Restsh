@@ -1,8 +1,7 @@
+.DS_Store
 *~
 .restsh-secret
 .restsh-config
 .restsh-config-*
 *.tgz
-/tmp
 /restsh/tmp
-.DS_Store
