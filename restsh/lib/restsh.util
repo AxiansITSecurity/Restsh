@@ -480,7 +480,7 @@ restsh.util.setvars() {
     done < <(find "$DIR" "${FIND_OPTS[@]}" -type f -name \*.txt -or -name \*.array)
     # Warn for invalid files
     local INVALID
-    INVALID=$(find "$DIR" -type f -printf "%f\n" | grep -Pv '^(\w+)\.(array|txt|inc)$')
+    INVALID=$(find "$DIR" -type f -printf "%f\n" | grep -Pv '^(\w+)\.(array|txt|inc)$' || true)
     if [ -n "$INVALID" ]
     then
         echo_warn "Invalid configuration files found in folder \"$DIR\":"
