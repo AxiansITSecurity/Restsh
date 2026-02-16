@@ -16,6 +16,7 @@ export RESTSH_CUSTOM_ENV="$SCRIPTPATH/test.env"
 RESTSH_PATH="$(realpath restsh)"
 export RESTSH_PATH
 export RESTSH_HOST="localhost"
+unset RESTSH_INTERACTIVE
 . "$RESTSH_PATH/restsh.init"
 
 if [ "$RESTSH_CUSTOM_TEST" -ne 1 ]
