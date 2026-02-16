@@ -134,6 +134,18 @@ test.restsh.util.setvar() {
     rm -r "$RESTSH_TMP/vars"
     [ -n "$VAR_TEST_STR" ] || return 1
     [ -n "$ARRAY_TEST_ARRAY" ] || return 1
+    # Invalid extension
+    touch "$RESTSH_TMP/vars/INVALID_EXT.txt "
+    if restsh.util.setvar "$RESTSH_TMP/vars/INVALID_EXT.txt "
+    then
+        return 1
+    fi
+    # Invalid filename
+    touch "$RESTSH_TMP/vars/INVALID-FILENAME.txt"
+    if restsh.util.setvar "$RESTSH_TMP/vars/INVALID-FILENAME.txt"
+    then
+        return 1
+    fi
 }
 
 test.restsh.util.urlencode() {

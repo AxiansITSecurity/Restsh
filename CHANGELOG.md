@@ -7,8 +7,10 @@ This is the changelog for Restsh.
 ## v4.5.0 - not yet released
 
 - General
-    - Upd: Add restsh.setup alias
     - Feat: `restsh.passphrase`
+    - Upd: Add restsh.setup alias
+    - Upd: `restsh.util.setvar` - Add check for valid filenames
+    - Upd: `restsh.util.setvars` - Add warning for invalid filenames
 - F5 TMOS Module
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`

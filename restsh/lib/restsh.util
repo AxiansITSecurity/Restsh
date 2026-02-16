@@ -478,6 +478,14 @@ restsh.util.setvars() {
     do
         restsh.util.setvar "$DEF"
     done < <(find "$DIR" "${FIND_OPTS[@]}" -type f -name \*.txt -or -name \*.array)
+    # Warn for invalid files
+    local INVALID
+    INVALID=$(find "$DIR" -type f -printf "%f\n" | grep -Pv '^(\w+)\.(array|txt|inc)$')
+    if [ -n "$INVALID" ]
+    then
+        echo_warn "Invalid configuration files found in folder \"$DIR\":"
+        echo_warn "$INVALID"
+    fi
 }
 
 # Declares a variable from a file. .txt extension for simple variable, .array for array.
@@ -493,13 +501,28 @@ restsh.util.setvar() {
         return 2
     fi
     local FILE=$1
-    local EXT="${FILE##*.}"
+    # Check if file exists
+    if [ ! -f "$FILE" ]
+    then
+        echo_err "File does not exist: \"$FILE\""
+        return 1
+    fi
+    # Extract filename and extension
+    local FILENAME="${FILE##*/}"
+    local BASENAME="${FILENAME%.*}"
+    local EXT="${FILENAME##*.}"
+    local REGEXP_VARNAME='^[_[:alnum:]][_[:alnum:]]*$';
+    if ! [[ "$BASENAME" =~ $REGEXP_VARNAME ]]
+    then
+        echo_err "Invalid characters in filename."
+        echo_err "Must contain only alphanumeric characters and underscores."
+        return 1
+    fi
     # strings, concatenates multiple lines
     if [ "$EXT" == "txt" ]
     then
         # construct variable name
-        local VAR
-        VAR="VAR_$(basename "$FILE" .txt)"
+        local VAR="VAR_${BASENAME}"
         # set variable from config file
         local VALUE
         VALUE="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n' || true)"
@@ -516,27 +539,24 @@ restsh.util.setvar() {
             fi
         fi
         declare -g -x "$VAR"="$VALUE"
-        echo "Declaring variable: $VAR"
+        echo "Declaring variable: \"$VAR\""
     elif [ "$EXT" == "array" ]
     then
         # construct array name
-        local FILENAME
-        FILENAME=$(basename "$FILE" .array)
-        local VAR
-        VAR="ARRAY_$FILENAME"
+        local VAR="ARRAY_${BASENAME}"
         # set array from config file
         local LINES
         LINES=$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r' || true)
         if [ -n "$LINES" ]
         then
             mapfile -t "$VAR" <<< "$LINES"
-            echo "Declaring array: $VAR"
+            echo "Declaring array: \"$VAR\""
         else
             declare -g -a "$VAR=()"
-            echo "Declaring empty array: $VAR"
+            echo "Declaring empty array: \"$VAR\""
         fi
     else
-        echo_err "Invalid file type: $EXT"
+        echo_err "Invalid file type: \"$EXT\""
         return 1
     fi
 }
