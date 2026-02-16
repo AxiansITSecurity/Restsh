@@ -235,6 +235,12 @@ do
     install "$F" "${TENANT_FOLDER}/applications/${APP_NAME}/${SUBDIR}/${FILE}"
 done < <(find "${ART_TMP}/art/${TEMPLATE}/"{ifiles,irules} -type f ! -name .\*)
 
+# iRule Framework configuration
+while read -r FILE
+do
+    cp -v "$FILE" "${TENANT_FOLDER}/"
+done < <(find "${ART_TMP}/art/${TEMPLATE}/" -name config-irulefw\*.h)
+
 # Run deploy script from ART repository
 if [ -s "${ART_TMP}/art/${TEMPLATE}/deploy.sh" ]
 then
