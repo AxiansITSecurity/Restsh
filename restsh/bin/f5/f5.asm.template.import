@@ -44,12 +44,14 @@ f5.file-transfer.upload "$FILENAME"
 
 # Move to the correct location for import
 FILENAME=$(basename "$FILENAME")
-f5.run "mv" "/var/config/rest/downloads/$FILENAME" "/ts/var/rest/${RESTSH_USER}~$NAME"
+IMPORT_FILE="/ts/var/rest/${RESTSH_USER}~$NAME"
+f5.run "mv" "/var/config/rest/downloads/$FILENAME" "$IMPORT_FILE"
+
 
 # Start import task
 TASK_ID=$($RESTSH_JQ -n --arg filename "$NAME" \
     --arg name "$NAME" \
-    --arg filename "/var/config/rest/downloads/$FILENAME" \
+    --arg filename "$IMPORT_FILE" \
     '{
         "name": $name,
         "filename": $filename
@@ -59,6 +61,8 @@ TASK_ID=$($RESTSH_JQ -n --arg filename "$NAME" \
 if [ -z "${TASK_ID}" ]
 then
     echo_err "Import of policy template \"$NAME\" failed."
+    # Remove uploaded file
+    f5.run "rm" "-f" "$IMPORT_FILE"
     exit 1
 fi
 
@@ -66,5 +70,10 @@ fi
 if ! f5.asm.taskwait import-policy-template "$TASK_ID"
 then
     echo_err "Import of policy template failed."
+    # Remove uploaded file
+    f5.run "rm" "-f" "$IMPORT_FILE"
     exit 1
 fi
+
+# Remove uploaded file
+f5.run "rm" "-f" "$IMPORT_FILE"
