@@ -16,6 +16,7 @@ This is the changelog for Restsh.
 - F5 TMOS Module
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`
+    - Feat: `f5.asm.template.update`
     - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
     - Fix: `f5.asm.template.import` - Delete uploaded file after import
 - GitLab Module
