@@ -33,14 +33,14 @@ if [ -z "${RESTSH_CONFIG+x}" ]
 then
     # try config in current directory
     RESTSH_CONFIG=".restsh-config"
-    if [ ! -s "$RESTSH_CONFIG" ]
+    if [ ! -f "$RESTSH_CONFIG" ] || [ ! -s "$RESTSH_CONFIG" ]
     then
         # fall back to config in user home
         RESTSH_CONFIG="$HOME/.restsh-config"
     fi
 fi
-# Check for existing config file
-if [ -s "$RESTSH_CONFIG" ]
+# Check for existing and not empty config file
+if [ -f "$RESTSH_CONFIG" ] && [ -s "$RESTSH_CONFIG" ]
 then
     . "$RESTSH_CONFIG"
     export RESTSH_CONFIG="$RESTSH_CONFIG"
