@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists internal datagroups.
 # Desc:
@@ -19,9 +20,11 @@ then
   exit 1
 fi
 
-while getopts ':h' OPTION
+RAW="0"
+while getopts ':hr' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,4 +38,9 @@ then
     exit 2
 fi
 
-GET "/mgmt/tm/ltm/data-group/internal?\$select=fullPath" | JQ -r ".items[].fullPath"
+if [ "$RAW" -eq 1 ]
+then
+    GET "/mgmt/tm/ltm/data-group/internal?\$select=fullPath"
+else
+    GET "/mgmt/tm/ltm/data-group/internal?\$select=fullPath" | JQ -r ".items[].fullPath"
+fi

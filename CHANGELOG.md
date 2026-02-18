@@ -18,6 +18,8 @@ This is the changelog for Restsh.
     - Feat: `f5.asm.policy.exists`
     - Feat: `f5.asm.template.update`
     - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
+    - Upd: `f5.ltm.datagroup.internal.list` - Add option for raw json output
+    - Upd: `f5.ltm.datagroup.internal.create`, `f5.ltm.datagroup.internal.update` - Add option for CSV separator
     - Fix: `f5.asm.template.import` - Delete uploaded file after import
 - GitLab Module
     - Feat: `gitlab.group.path`, `gitlab.project.path`
