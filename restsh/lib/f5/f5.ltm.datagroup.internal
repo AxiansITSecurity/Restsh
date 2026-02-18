@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Helper functions for F5 internal datagroups.
 # Desc:
@@ -13,14 +14,26 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Returns the formated internal datagroup records from a file
+# Returns the formatted internal datagroup records from a file
 f5.ltm.datagroup.internal.get_records_from_file() {
-    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
+    local SEPARATOR=";"
+    local OPTION OPTIND
+    while getopts ':s:' OPTION
+    do
+        case "$OPTION" in
+            s) SEPARATOR="$OPTARG" ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+
+    if [ "$OPTION" = "invalid" ]
     then
-        echo "Returns the formated internal datagroup records from a file" 1>&2
+        echo "Returns the formatted internal datagroup records from a file" 1>&2
         echo "Usage: f5.ltm.datagroup.internal.get_records_from_file <file>" 1>&2
         return 2
     fi
+
     local INFILE=$1
     if JQ -r ".records" < "$INFILE" 2> /dev/null
     then
@@ -35,7 +48,7 @@ f5.ltm.datagroup.internal.get_records_from_file() {
         # Assume csv
         printf "%s" "["
         local I=0
-        while IFS=";" read -r NAME DATA
+        while IFS="$SEPARATOR" read -r NAME DATA
         do
             [ -z "$NAME" ] && continue
             [ "$I" -gt 0 ] && printf ","

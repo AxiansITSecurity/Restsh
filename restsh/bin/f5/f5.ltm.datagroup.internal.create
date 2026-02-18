@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates an internal datagroup.
 # Desc:
@@ -19,9 +20,11 @@ then
   exit 1
 fi
 
-while getopts ':h' OPTION
+PARSE_OPTS=()
+while getopts ':hs:' OPTION
 do
     case "$OPTION" in
+        s) PARSE_OPTS+=("-s" "$OPTARG") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -31,9 +34,11 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <fullPath> <type> <input file>"
-    echo -e "\tValid types: string, integer, ip"
-    echo -e "\rValid input file types: json, csv"
+    echo "Usage: $(basename "$0") [options...] <fullPath> <type> <input file>"
+    echo "    Valid types: string, integer, ip"
+    echo "    Valid input file types: json, csv"
+    echo "Options:"
+    echo "    -s <char>  Separator for CSV, default \";\""
     exit 2
 fi
 
@@ -42,7 +47,7 @@ TYPE=$2
 INFILE=$3
 read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
 
-RECORDS=$(f5.ltm.datagroup.internal.get_records_from_file "$INFILE")
+RECORDS=$(f5.ltm.datagroup.internal.get_records_from_file "${PARSE_OPTS[@]}" "$INFILE")
 if [ -z "$RECORDS" ]
 then
     echo_err "Invalid input file"
