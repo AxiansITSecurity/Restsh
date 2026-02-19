@@ -8,6 +8,7 @@ This is the changelog for Restsh.
 
 - F5 TMOS Module
     - Fix: `f5.asm.policy.audit` - fail if policy does not exists
+    - Fix: `f5.asm.event.list` - Always define filter
 
 ***
 
