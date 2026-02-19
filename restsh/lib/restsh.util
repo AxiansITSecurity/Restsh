@@ -24,6 +24,13 @@ export COLOR_RESET="\033[0m"
 
 # Prints message only if VERBOSE is set to 1
 echo_verbose() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        echo "Prints a verbose message, the environment variable \"VERBOSE\" must be set to \"1\"." 1>&2
+        echo "" 1>&2
+        echo "Usage: echo_verbose [echo options] <message>" 1>&2
+        return 2
+    fi
     if [ -n "${VERBOSE+x}" ] && [ "$VERBOSE" -eq 1 ]
     then
         echo "$@"
