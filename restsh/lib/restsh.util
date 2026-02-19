@@ -39,9 +39,9 @@ echo_ok() {
         echo "Usage: echo_ok [echo options] <message>" 1>&2
         return 2
     fi
-    [ -z "${RESTSH_INTERACTIVE+x}" ] || echo -ne "${COLOR_GREEN}"
+    echo -ne "${COLOR_GREEN}"
     echo "$@"
-    [ -z "${RESTSH_INTERACTIVE+x}" ] || echo -ne "${COLOR_RESET}"
+    echo -ne "${COLOR_RESET}"
 }
 
 # Prints green ok message in JSON format to STDOUT.
@@ -89,10 +89,10 @@ echo_err() {
         return 2
     fi
     {
-        [ -z "${RESTSH_INTERACTIVE+x}" ] || echo -ne "${COLOR_RED}"
+        echo -ne "${COLOR_RED}"
         echo -n "ERROR: "
         echo "$@"
-        [ -z "${RESTSH_INTERACTIVE+x}" ] || echo -ne "${COLOR_RESET}"
+        echo -ne "${COLOR_RESET}"
     } 1>&2
 }
 
@@ -158,10 +158,10 @@ echo_warn() {
         return 2
     fi
     {
-        [ -z "${RESTSH_INTERACTIVE+x}" ] || echo -ne "${COLOR_YELLOW}"
+        echo -ne "${COLOR_YELLOW}"
         echo -n "WARN: "
         echo "$@"
-        [ -z "${RESTSH_INTERACTIVE+x}" ] || echo -ne "${COLOR_RESET}"
+        echo -ne "${COLOR_RESET}"
     } 1>&2
 }
 
