@@ -35,9 +35,10 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
-    exit 1
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output."
+    exit 2
 fi
 
 if [ "$RAW" -eq 1 ]

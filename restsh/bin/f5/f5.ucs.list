@@ -37,7 +37,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-r]"
     echo -e "\tUse -r for raw output."
-    exit 1
+    exit 2
 fi
 
 if [ "$RAW" -eq 1 ]

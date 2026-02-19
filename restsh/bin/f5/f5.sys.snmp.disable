@@ -19,6 +19,23 @@ then
     exit 1
 fi
 
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0")"
+    exit 2
+fi
+
 echo "Disabling snmpv1 and snmpv2c"
 PATCH /mgmt/tm/sys/snmp <<< '{"snmpv1": "disable", "snmpv2c": "disable"}' > /dev/null
 

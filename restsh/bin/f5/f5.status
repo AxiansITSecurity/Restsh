@@ -20,6 +20,23 @@ then
     exit 1
 fi
 
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0")"
+    exit 2
+fi
+
 mapfile -d $'\t' -t DEVICE_INFO < <(GET "/mgmt/tm/cm/device?\$select=selfDevice,failoverState,version" \
     | JQ -r '.items[] | select(.selfDevice=="true") | [.failoverState, .version] | @tsv' | tr -d '\n')
 
