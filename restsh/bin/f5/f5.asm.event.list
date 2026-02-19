@@ -54,8 +54,8 @@ then
     then
          JQ "." <<< "$RESULT"
     else
-        JQ -r "[.id,.url,.requestDatetime] | @tsv" <<< "$RESULT" \
-            | COLUMN -o "|" -N "id,url,requestDatetime"
+        JQ -r ".items[] | [.id,.requestDatetime,.url] | @tsv" <<< "$RESULT" \
+            | COLUMN -o "|" -N "id,requestDatetime,url"
     fi
     exit 0
 fi
