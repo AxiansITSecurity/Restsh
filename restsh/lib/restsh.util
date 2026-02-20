@@ -26,9 +26,11 @@ export COLOR_RESET="\033[0m"
 echo_verbose() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints a verbose message, the environment variable \"VERBOSE\" must be set to \"1\"." 1>&2
-        echo "" 1>&2
-        echo "Usage: echo_verbose [echo options] <message>" 1>&2
+        {
+            echo "Prints a verbose message, the environment variable \"VERBOSE\" must be set to \"1\"."
+            echo ""
+            echo "Usage: echo_verbose [echo options] <message>"
+        } 1>&2
         return 2
     fi
     if [ -n "${VERBOSE+x}" ] && [ "$VERBOSE" -eq 1 ]
@@ -41,9 +43,11 @@ echo_verbose() {
 echo_ok() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints green ok messages to STDOUT." 1>&2
-        echo "" 1>&2
-        echo "Usage: echo_ok [echo options] <message>" 1>&2
+        {
+            echo "Prints green ok messages to STDOUT."
+            echo ""
+            echo "Usage: echo_ok [echo options] <message>"
+        } 1>&2
         return 2
     fi
     echo -ne "${COLOR_GREEN}"
@@ -55,9 +59,11 @@ echo_ok() {
 print_json_ok() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints green ok message in JSON format to STDOUT." 1>&2
-        echo "" 1>&2
-        echo "Usage: print_json_ok <message>" 1>&2
+        {
+            echo "Prints green ok message in JSON format to STDOUT."
+            echo ""
+            echo "Usage: print_json_ok <message>"
+        } 1>&2
         return 2
     fi
     $RESTSH_JQ -n --arg message "$1" \
@@ -72,9 +78,11 @@ print_json_ok() {
 print_json_ok_curl() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints green ok message in JSON format to STDOUT for curl." 1>&2
-        echo "" 1>&2
-        echo "Usage: print_json_ok_curl <message> <request>" 1>&2
+        {
+            echo "Prints green ok message in JSON format to STDOUT for curl."
+            echo ""
+            echo "Usage: print_json_ok_curl <message> <request>"
+        } 1>&2
         return 2
     fi
     $RESTSH_JQ -n --arg message "$1" --arg request "$2" \
@@ -90,9 +98,11 @@ print_json_ok_curl() {
 echo_err() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints red error messages to STDERR." 1>&2
-        echo "" 1>&2
-        echo "Usage: echo_err [echo options] <message>" 1>&2
+        {
+            echo "Prints red error messages to STDERR."
+            echo ""
+            echo "Usage: echo_err [echo options] <message>"
+        } 1>&2
         return 2
     fi
     {
@@ -107,9 +117,11 @@ echo_err() {
 print_json_err() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints red error message in JSON format to STDOUT." 1>&2
-        echo "" 1>&2
-        echo "Usage: print_json_err <message>" 1>&2
+        {
+            echo "Prints red error message in JSON format to STDOUT."
+            echo ""
+            echo "Usage: print_json_err <message>"
+        } 1>&2
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
@@ -126,9 +138,11 @@ print_json_err() {
 print_json_err_curl() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints red error message in JSON format to STDOUT for curl." 1>&2
-        echo "" 1>&2
-        echo "Usage: print_json_err_curl <message> <output> <request>" 1>&2
+        {
+            echo "Prints red error message in JSON format to STDOUT for curl."
+            echo ""
+            echo "Usage: print_json_err_curl <message> <output> <request>"
+        } 1>&2
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
@@ -159,9 +173,11 @@ print_json_err_curl() {
 echo_warn() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints yellow warning messages to STDERR." 1>&2
-        echo "" 1>&2
-        echo "Usage: echo_warn [echo options] <message>" 1>&2
+        {
+            echo "Prints yellow warning messages to STDERR."
+            echo ""
+            echo "Usage: echo_warn [echo options] <message>"
+        } 1>&2
         return 2
     fi
     {
@@ -176,9 +192,11 @@ echo_warn() {
 print_json_warn() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints yellow warning message in JSON format to STDOUT." 1>&2
-        echo "" 1>&2
-        echo "Usage: print_json_warn <message>" 1>&2
+        {
+            echo "Prints yellow warning message in JSON format to STDOUT."
+            echo ""
+            echo "Usage: print_json_warn <message>"
+        }  1>&2
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
@@ -195,9 +213,11 @@ print_json_warn() {
 print_json_warn_curl() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Prints yellow warning message in JSON format to STDOUT for curl." 1>&2
-        echo "" 1>&2
-        echo "Usage: print_json_warn_curl <message> <request>" 1>&2
+        {
+            echo "Prints yellow warning message in JSON format to STDOUT for curl."
+            echo ""
+            echo "Usage: print_json_warn_curl <message> <request>"
+        } 1>&2
         return 2
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;33:1;39:1;39:1;34"
@@ -215,9 +235,11 @@ print_json_warn_curl() {
 MO() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Shortcut to call the mustache template engine." 1>&2
-        echo "" 1>&2
-        $RESTSH_MO -h 1>&2
+        {
+            echo "Shortcut to call the mustache template engine."
+            echo ""
+            $RESTSH_MO -h
+        } 1>&2
         return 2
     fi
     $RESTSH_MO "$@"
@@ -227,9 +249,11 @@ MO() {
 JQ() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Shortcut to call jq." 1>&2
-        echo "" 1>&2
-        jq -h 1>&2
+        {
+            echo "Shortcut to call jq."
+            echo ""
+            jq -h
+        } 1>&2
         return 2
     fi
     $RESTSH_JQ "$@"
@@ -239,9 +263,11 @@ JQ() {
 JQE() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Shortcut to call jq, exits with 1 on null or false." 1>&2
-        echo "" 1>&2
-        jq -h 1>&2
+        {
+            echo "Shortcut to call jq, exits with 1 on null or false."
+            echo ""
+            jq -h
+        }  1>&2
         return 2
     fi
     $RESTSH_JQ -e "$@"
@@ -251,9 +277,11 @@ JQE() {
 XARGS() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Shortcut for xargs, running the command sequentially and only with one parameter." 1>&2
-        echo "" 1>&2
-        xargs --help 1>&2
+        {
+            echo "Shortcut for xargs, running the command sequentially and only with one parameter."
+            echo ""
+            xargs --help
+        } 1>&2
         return 2
     fi
     xargs -n1 -P1 "$@"
@@ -263,9 +291,11 @@ XARGS() {
 KV() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Print Key/Value pairs from STDIN separated by tab and newline" 1>&2
-        echo "" 1>&2
-        echo "Usage: KV" 1>&2
+        {
+            echo "Print Key/Value pairs from STDIN separated by tab and newline"
+            echo ""
+            echo "Usage: KV"
+        }  1>&2
         return 2
     fi
     while IFS=$'\t' read -r KEY VALUE
@@ -279,9 +309,11 @@ KV() {
 COLUMN() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Replacement for the column command that reads input from stdin, separator is tab." 1>&2
-        echo "" 1>&2
-        echo "Usage: COLUMN [-N <comma separated column names>] [-o <output separator>]" 1>&2
+        {
+            echo "Replacement for the column command that reads input from stdin, separator is tab."
+            echo ""
+            echo "Usage: COLUMN [-N <comma separated column names>] [-o <output separator>]"
+        } 1>&2
         return 2
     fi
     local COLUMN_NAMES=""
@@ -333,9 +365,11 @@ COLUMN() {
 restsh.util.setcurloptions() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Sets the RESTSH_CURL_OPTIONS environment variable." 1>&2
-        echo "" 1>&2
-        echo "Usage: restsh.util.setcurloptions" 1>&2
+        {
+            echo "Sets the RESTSH_CURL_OPTIONS environment variable."
+            echo ""
+            echo "Usage: restsh.util.setcurloptions"
+        } 1>&2
         return 2
     fi
     RESTSH_CURL_OPTS=("$RESTSH_CURL_OPT_FAIL" "--show-error")
@@ -417,8 +451,10 @@ restsh.util.parseoutput() {
 restsh.util.declare.var() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Declares a variable KEY=VALUE" 1>&2
-        echo "Usage: restsh.util.declare.var KEY=VALUE" 1>&2
+        {
+            echo "Declares a variable KEY=VALUE"
+            echo "Usage: restsh.util.declare.var KEY=VALUE"
+        } 1>&2
         return 2
     fi
     local DEF=$1
@@ -470,12 +506,14 @@ restsh.util.setvars() {
     shift "$((OPTIND -1))"
     if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
     then
-        echo "Declares variables from a directory. .txt extension for simple variables, .array for arrays." 1>&2
-        echo "See restsh.util.setvar -h for further details" 1>&2
-        echo "" 1>&2
-        echo "Usage: restsh.util.setvars [options...] <directory>" 1>&2
-        echo "Options:" 1>&2
-        echo "    -r Recurse into directories" 1>&2
+        {
+            echo "Declares variables from a directory. .txt extension for simple variables, .array for arrays."
+            echo "See restsh.util.setvar -h for further details"
+            echo ""
+            echo "Usage: restsh.util.setvars [options...] <directory>"
+            echo "Options:"
+            echo "    -r Recurse into directories"
+        } 1>&2
         return 2
     fi
     local DIR=$1
@@ -499,12 +537,14 @@ restsh.util.setvars() {
 restsh.util.setvar() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Declares a variable from a file. .txt extension for simple variable, .array for array." 1>&2
-        echo "  .txt files are treated as variable and declared as VAR_<file basename>" 1>&2
-        echo "  .array files are treated as array and declared as ARRAY_<file basename>" 1>&2
-        echo "Blank lines and lines starting with # are ignored." 1>&2
-        echo "" 1>&2
-        echo "Usage: restsh.util.setvar <file>" 1>&2
+        {
+            echo "Declares a variable from a file. .txt extension for simple variable, .array for array."
+            echo "  .txt files are treated as variable and declared as VAR_<file basename>"
+            echo "  .array files are treated as array and declared as ARRAY_<file basename>"
+            echo "Blank lines and lines starting with # are ignored."
+            echo ""
+            echo "Usage: restsh.util.setvar <file>"
+        } 1>&2
         return 2
     fi
     local FILE=$1
@@ -572,8 +612,10 @@ restsh.util.setvar() {
 restsh.util.urlencode() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "URL encoding" 1>&2
-        echo "Usage: restsh.util.urlencode <string>" 1>&2
+        {
+            echo "URL encoding"
+            echo "Usage: restsh.util.urlencode <string>"
+        } 1>&2
         return 2
     fi
     $RESTSH_JQ -rn --arg x "$1" '$x | @uri' | tr -d "\n"
@@ -583,8 +625,10 @@ restsh.util.urlencode() {
 restsh.util.json_validate() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "JSON validation, pipe string to stdin" 1>&2
-        echo "Usage: restsh.util.json_validate" 1>&2
+        {
+            echo "JSON validation, pipe string to stdin"
+            echo "Usage: restsh.util.json_validate"
+        } 1>&2
         return 2
     fi
     local JSON
@@ -625,8 +669,10 @@ restsh.util.json_validate() {
 restsh.util.check.notempty() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null" 1>&2
-        echo "Usage: restsh.util.check.notempty <value>" 1>&2
+        {
+            echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null"
+            echo "Usage: restsh.util.check.notempty <value>"
+        } 1>&2
         return 2
     fi
     if [ -z "${1+x}" ] || [ -z "${1//[[:blank:]]/}" ] || [ "${1}" = "null" ]
@@ -639,8 +685,10 @@ restsh.util.check.notempty() {
 restsh.util.check.varnotempty() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Returns 1 if variable reference is undefined, length is zero, contains only whitespaces or is null" 1>&2
-        echo "Usage: restsh.util.check.varnotempty <variable>" 1>&2
+        {
+            echo "Returns 1 if variable reference is undefined, length is zero, contains only whitespaces or is null"
+            echo "Usage: restsh.util.check.varnotempty <variable>"
+        } 1>&2
         return 2
     fi
     set +u # Do not fail if not defined
@@ -657,8 +705,10 @@ restsh.util.check.varnotempty() {
 restsh.util.check.isnumber() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Returns 1 if value is not a number" 1>&2
-        echo "Usage: restsh.util.check.isnumber <value>" 1>&2
+        {
+            echo "Returns 1 if value is not a number"
+            echo "Usage: restsh.util.check.isnumber <value>"
+        } 1>&2
         return 2
     fi
     local REGEX_NUM='^[0-9]+$'
@@ -673,8 +723,10 @@ restsh.util.check.isnumber() {
 restsh.util.check.isvarname() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
-        echo "Returns 1 if value is not a valid variable name" 1>&2
-        echo "Usage: restsh.util.check.isvarname <value>" 1>&2
+        {
+            echo "Returns 1 if value is not a valid variable name"
+            echo "Usage: restsh.util.check.isvarname <value>"
+        } 1>&2
         return 2
     fi
     local VALUE=$1
@@ -694,8 +746,10 @@ restsh.util.check.isvarname() {
 restsh.util.filesize() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Get file size" 1>&2
-        echo "Usage: restsh.util.filesize <filename>" 1>&2
+        {
+            echo "Get file size"
+            echo "Usage: restsh.util.filesize <filename>"
+        } 1>&2
         return 2
     fi
     if SIZE=$($RESTSH_STAT -c%s "$1")
@@ -710,8 +764,10 @@ restsh.util.filesize() {
 restsh.util.array.includes() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Check if first argument is in array (following arguments)" 1>&2
-        echo "Usage: restsh.util.array.includes <needle> <haystack>" 1>&2
+        {
+            echo "Check if first argument is in array (following arguments)"
+            echo "Usage: restsh.util.array.includes <needle> <haystack>"
+        } 1>&2
         return 2
     fi
     local NEEDLE=$1
@@ -743,12 +799,14 @@ restsh.util.array.string() {
     shift "$((OPTIND -1))"
     if [ "$OPTION" = "invalid" ]
     then
-        echo "Converts an array to a quoted string" 1>&2
-        echo "Usage: restsh.util.array.string <array>" 1>&2
-        echo "Options:" 1>&2
-        echo "    -p <prefix>     Prefix element with, default: blank" 1>&2
-        echo "    -s <separator>  Separator, default: blank" 1>&2
-        echo "    -q <quote>      Quoting character, default: none" 1>&2
+        {
+            echo "Converts an array to a quoted string"
+            echo "Usage: restsh.util.array.string <array>"
+            echo "Options:"
+            echo "    -p <prefix>     Prefix element with, default: blank"
+            echo "    -s <separator>  Separator, default: blank"
+            echo "    -q <quote>      Quoting character, default: none"
+        } 1>&2
         return 2
     fi
     local A
@@ -764,8 +822,10 @@ restsh.util.array.string() {
 restsh.util.uc() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Convert string to upper case." 1>&2
-        echo "Usage: restsh.util.uc <string>" 1>&2
+        {
+            echo "Convert string to upper case."
+            echo "Usage: restsh.util.uc <string>"
+        } 1>&2
         return 2
     fi
     local STR="$*"
@@ -776,8 +836,10 @@ restsh.util.uc() {
 restsh.util.lc() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Convert string to lower case." 1>&2
-        echo "Usage: restsh.util.lc <string>" 1>&2
+        {
+            echo "Convert string to lower case."
+            echo "Usage: restsh.util.lc <string>"
+        } 1>&2
         return 2
     fi
     local STR="$*"
@@ -788,8 +850,10 @@ restsh.util.lc() {
 restsh.util.askpass() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Asks for a secret string." 1>&2
-        echo "Usage: restsh.util.askpass <prompt>" 1>&2
+        {
+            echo "Asks for a secret string."
+            echo "Usage: restsh.util.askpass <prompt>"
+        } 1>&2
         return 2
     fi
     local PROMPT="$1: "
@@ -827,8 +891,10 @@ restsh.util.askpass() {
 restsh.util.isencrypted() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Checks for AES256: prefix of provided string." 1>&2
-        echo "Usage: restsh.util.isencrypted <string>" 1>&2
+        {
+            echo "Checks for AES256: prefix of provided string."
+            echo "Usage: restsh.util.isencrypted <string>"
+        } 1>&2
         return 2
     fi
     if [ "${1:0:7}" = "AES256:" ]
@@ -842,8 +908,10 @@ restsh.util.isencrypted() {
 restsh.util.var.decrypt() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Decrypts a variable or fetches it from HashiCorp Vault." 1>&2
-        echo "Usage: restsh.util.var.decrypt <variable reference>" 1>&2
+        {
+            echo "Decrypts a variable or fetches it from HashiCorp Vault."
+            echo "Usage: restsh.util.var.decrypt <variable reference>"
+        } 1>&2
         return 2
     fi
     local VAR=$1
@@ -869,8 +937,10 @@ restsh.util.var.decrypt() {
 restsh.util.trim() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Trim leading and trailing whitespaces." 1>&2
-        echo "Usage: restsh.util.trim <string>" 1>&2
+        {
+            echo "Trim leading and trailing whitespaces."
+            echo "Usage: restsh.util.trim <string>"
+        } 1>&2
         return 2
     fi
     local STR="$*"
@@ -885,120 +955,13 @@ restsh.util.trim() {
 restsh.util.base64url() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
-        echo "Encodes string as Base64URL." 1>&2
-        echo "Usage: restsh.util.base64url <string>" 1>&2
+        {
+            echo "Encodes string as Base64URL."
+            echo "Usage: restsh.util.base64url <string>"
+        } 1>&2
         return 2
     fi
     echo -n "$1" | base64 -w0 | tr '+/' '-_' | tr -d '='
-}
-
-# Detect Vault login method and login into Vault
-vault.login() {
-    if [ -n "${1+x}" ]
-    then
-        echo "Detect Vault login method and login into Vault" 1>&2
-        echo "Usage: vault.login" 1>&2
-        return 2
-    fi
-    if restsh.util.check.varnotempty VAULT_TOKEN
-    then
-        # Already logged in
-        return 0
-    fi
-    if restsh.util.check.varnotempty VAULT_ID_TOKEN
-    then
-        vault.login.jwt
-    else
-        echo_err "Only Vault JWT authentication is implemented."
-        echo_err "Variable VAULT_ID_TOKEN is not set."
-        return 1
-    fi
-}
-
-# Login into Vault with VAULT_ID_TOKEN
-vault.login.jwt() {
-    if [ -n "${1+x}" ]
-    then
-        echo "Login into Vault with VAULT_ID_TOKEN." 1>&2
-        echo "Usage: vault.login.jwt" 1>&2
-        return 2
-    fi
-    if ! restsh.util.check.varnotempty VAULT_HOST
-    then
-        echo_err "Vault integration enabled, but VAULT_HOST not set."
-        return 1
-    fi
-    export VAULT_TOKEN=""
-    if [ -z "${VAULT_AUTH_ROLE+x}" ]
-    then
-        echo_err "Vault integration enabled, but VAULT_AUTH_ROLE not set."
-        return 1
-    fi
-    if [ -z "${VAULT_ID_TOKEN+x}" ]
-    then
-        echo_err "Vault integration enabled, but VAULT_ID_TOKEN not set."
-        return 1
-    fi
-    local VAULT_LOGIN_DATA="{\"role\": \"${VAULT_AUTH_ROLE}\", \"jwt\": \"${VAULT_ID_TOKEN}\"}"
-    local VAULT_LOGIN_OUTPUT
-    if ! VAULT_LOGIN_OUTPUT=$(curl -s --fail-with-body --show-error --data "${VAULT_LOGIN_DATA}" "${VAULT_HOST}/v1/auth/jwt/login")
-    then
-        JQ "." <<< "$VAULT_LOGIN_OUTPUT"
-        return 1
-    fi
-    echo "Authenticated by Vault with role $VAULT_AUTH_ROLE"
-    VAULT_TOKEN=$(JQE -r ".auth.client_token" <<< "$VAULT_LOGIN_OUTPUT")
-    if [ -z "$VAULT_TOKEN" ]
-    then
-        return 1
-    fi
-    export VAULT_TOKEN
-    return 0
-}
-
-# Get value from Vault
-vault.get() {
-    if [ $# -ne 2 ] || [ "${1}" = "-h" ]
-    then
-        echo "Get value from Vault." 1>&2
-        echo "Usage: vault.get <VAULT_PATH> <VAULT_KEY>" 1>&2
-        return 2
-    fi
-    local VAULT_PATH="$1"
-    local VAULT_KEY=$2
-    if ! restsh.util.check.varnotempty VAULT_TOKEN
-    then
-        echo_err "VAULT_TOKEN not set."
-        return 1
-    fi
-    if ! restsh.util.check.varnotempty VAULT_HOST
-    then
-        echo_err "VAULT_HOST not set."
-        return 1
-    fi
-    local VAULT_DATA
-    if ! VAULT_DATA=$(curl -s --fail-with-body --show-error -H "X-Vault-Token: ${VAULT_TOKEN}" "${VAULT_HOST}${VAULT_PATH}")
-    then
-        JQ "." <<< "$VAULT_DATA"
-        return 1
-    fi
-    if ! JQE -r ".data.data.$VAULT_KEY" <<< "$VAULT_DATA"
-    then
-        echo_err "$VAULT_DATA"
-        return 1
-    fi
-    return 0
-}
-
-# Logout from Vault
-vault.logout() {
-    if [ -n "${1+x}" ]
-    then
-        echo "Logout from Vault" 1>&2
-        echo "Usage: vault.logout" 1>&2
-        return 2
-    fi
-    export VAULT_TOKEN=""
 }
 
 # Export all functions
@@ -1038,7 +1001,3 @@ export -f restsh.util.askpass
 export -f restsh.util.isencrypted
 export -f restsh.util.trim
 export -f restsh.util.base64url
-export -f vault.login
-export -f vault.login.jwt
-export -f vault.get
-export -f vault.logout

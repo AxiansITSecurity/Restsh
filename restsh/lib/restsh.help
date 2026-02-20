@@ -151,6 +151,11 @@ restsh.help() {
     _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.http"
     _restsh.help.print
     echo ""
+    echo "Vault commands:"
+    declare -A CMDS
+    _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.vault"
+    _restsh.help.print
+    echo ""
     echo "Utility commands:"
     declare -A CMDS
     _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.util"

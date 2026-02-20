@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+#shellcheck disable=SC2120
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Vault integration functions.
+# Desc:
+# Vault integration functions.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Detect Vault login method and login into Vault
+vault.login() {
+    if [ -n "${1+x}" ]
+    then
+        {
+            echo "Detect Vault login method and login into Vault"
+            echo "Usage: vault.login"
+        } 1>&2
+        return 2
+    fi
+    if restsh.util.check.varnotempty VAULT_TOKEN
+    then
+        # Already logged in
+        return 0
+    fi
+    if restsh.util.check.varnotempty VAULT_ID_TOKEN
+    then
+        vault.login.jwt
+    else
+        echo_err "Only Vault JWT authentication is implemented."
+        echo_err "Variable VAULT_ID_TOKEN is not set."
+        return 1
+    fi
+}
+
+# Login into Vault with VAULT_ID_TOKEN
+vault.login.jwt() {
+    if [ -n "${1+x}" ]
+    then
+        {
+            echo "Login into Vault with VAULT_ID_TOKEN."
+            echo "Usage: vault.login.jwt"
+        } 1>&2
+        return 2
+    fi
+    if ! restsh.util.check.varnotempty VAULT_HOST
+    then
+        echo_err "Vault integration enabled, but VAULT_HOST not set."
+        return 1
+    fi
+    export VAULT_TOKEN=""
+    if [ -z "${VAULT_AUTH_ROLE+x}" ]
+    then
+        echo_err "Vault integration enabled, but VAULT_AUTH_ROLE not set."
+        return 1
+    fi
+    if [ -z "${VAULT_ID_TOKEN+x}" ]
+    then
+        echo_err "Vault integration enabled, but VAULT_ID_TOKEN not set."
+        return 1
+    fi
+    local VAULT_LOGIN_DATA="{\"role\": \"${VAULT_AUTH_ROLE}\", \"jwt\": \"${VAULT_ID_TOKEN}\"}"
+    local VAULT_LOGIN_OUTPUT
+    if ! VAULT_LOGIN_OUTPUT=$(curl -s --fail-with-body --show-error --data "${VAULT_LOGIN_DATA}" "${VAULT_HOST}/v1/auth/jwt/login")
+    then
+        JQ "." <<< "$VAULT_LOGIN_OUTPUT"
+        return 1
+    fi
+    echo "Authenticated by Vault with role $VAULT_AUTH_ROLE"
+    VAULT_TOKEN=$(JQE -r ".auth.client_token" <<< "$VAULT_LOGIN_OUTPUT")
+    if [ -z "$VAULT_TOKEN" ]
+    then
+        return 1
+    fi
+    export VAULT_TOKEN
+    return 0
+}
+
+# Get value from Vault
+vault.get() {
+    if [ $# -ne 2 ] || [ "${1}" = "-h" ]
+    then
+        {
+            echo "Get value from Vault."
+            echo "Usage: vault.get <VAULT_PATH> <VAULT_KEY>"
+        } 1>&2
+        return 2
+    fi
+    local VAULT_PATH="$1"
+    local VAULT_KEY=$2
+    if ! restsh.util.check.varnotempty VAULT_TOKEN
+    then
+        echo_err "VAULT_TOKEN not set."
+        return 1
+    fi
+    if ! restsh.util.check.varnotempty VAULT_HOST
+    then
+        echo_err "VAULT_HOST not set."
+        return 1
+    fi
+    local VAULT_DATA
+    if ! VAULT_DATA=$(curl -s --fail-with-body --show-error -H "X-Vault-Token: ${VAULT_TOKEN}" "${VAULT_HOST}${VAULT_PATH}")
+    then
+        JQ "." <<< "$VAULT_DATA"
+        return 1
+    fi
+    if ! JQE -r ".data.data.$VAULT_KEY" <<< "$VAULT_DATA"
+    then
+        echo_err "$VAULT_DATA"
+        return 1
+    fi
+    return 0
+}
+
+# Logout from Vault
+vault.logout() {
+    if [ -n "${1+x}" ]
+    then
+        {
+            echo "Logout from Vault"
+            echo "Usage: vault.logout"
+        } 1>&2
+        return 2
+    fi
+    export VAULT_TOKEN=""
+}
+
+# Export all functions
+export -f vault.login
+export -f vault.login.jwt
+export -f vault.get
+export -f vault.logout
