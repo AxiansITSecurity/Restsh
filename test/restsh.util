@@ -250,13 +250,42 @@ test.restsh.util.isencrypted() {
     if ! restsh.util.isencrypted "test"; then true; else false; fi
 }
 
+test.restsh.util.encrypt() {
+    local ENCRYPTED
+    local DECRYPTED
+    local STR
+    STR=$(restsh.pwgen)
+    ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
+    restsh.util.isencrypted "$ENCRYPTED"
+    DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")
+    [ "$STR" = "$DECRYPTED" ] || return 1
+    return 0
+}
+
 test.restsh.util.var.decrypt() {
     local ENCRYPTED
     local STR
     STR=$(restsh.pwgen)
     ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
     restsh.util.var.decrypt ENCRYPTED
-    [ "$STR" = "$ENCRYPTED" ]
+    [ "$STR" = "$ENCRYPTED" ] || return 1
+    return 0
+}
+
+test.restsh.util.decrypt() {
+    local ENCRYPTED
+    local DECRYPTED
+    local STR
+    STR=$(restsh.pwgen)
+    ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
+    restsh.util.isencrypted "$ENCRYPTED"
+    DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")
+    [ "$STR" = "$DECRYPTED" ] || return 1
+    # Negative test
+    if restsh.util.decrypt "abc" > /dev/null 2>&1
+    then
+        return 1
+    fi
 }
 
 test.restsh.util.trim() {
@@ -271,27 +300,25 @@ test.restsh.util.base64url() {
     [ "$OUTPUT" = "dGVzdA" ] || return 1
 }
 
-test.restsh.pwgen() {
-    local OUTPUT
-    if ! restsh.pwgen "test"
-    then
-        return 1
-    fi
-}
-
-test.restsh.passphrase() {
-    local OUTPUT
-    if ! restsh.passphrase "test"
-    then
-        return 1
-    fi
-}
-
 test.restsh.help() {
     if ! restsh.help > /dev/null
     then
         return 1
     fi
+}
+
+test.restsh.pwgen() {
+    local RESULT
+    RESULT=$(restsh.pwgen -c 6 -d "-" -l 20)
+    [ "${#RESULT}" -eq 20 ] || return 1
+    return 0
+}
+
+test.restsh.passphrase() {
+    local RESULT
+    RESULT=$(restsh.passphrase -c -n -w 8 -d "-")
+    [ "${#RESULT}" -gt 15 ] || return 1
+    return 0
 }
 
 # shellcheck disable=SC2034 # Array is used in test.sh
@@ -331,6 +358,8 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.lc
     test.restsh.util.askpass
     test.restsh.util.isencrypted
+    test.restsh.util.encrypt
+    test.restsh.util.decrypt
     test.restsh.util.var.decrypt
     test.restsh.util.trim
     test.restsh.util.base64url

@@ -49,7 +49,6 @@ TESTS_F5=()
 TESTS_F5OS=()
 TESTS_GITLAB=()
 TESTS_RESTSH=(
-    "restsh/bin/restsh/restsh".*
     "${TESTS_RESTSH_UTIL[@]}"
     "${TESTS_F5_COMMON[@]}"
     "${TESTS_MO_F5_AS3[@]}"

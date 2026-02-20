@@ -20,29 +20,6 @@ then
     exit 1
 fi
 
-# test suite
-run_test() {
-    local ENCRYPTED
-    local DECRYPTED
-    local STR
-    STR=$(restsh.pwgen)
-    ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
-    restsh.util.isencrypted "$ENCRYPTED"
-    DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")
-    [ "$STR" = "$DECRYPTED" ] || return 1
-    # Negative test
-    if restsh.util.decrypt "abc" > /dev/null 2>&1
-    then
-        return 1
-    fi
-}
-
-if [ "${1:-}" = "test" ]
-then
-    run_test || exit 1
-    exit 0
-fi
-
 # Get options
 if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
 then

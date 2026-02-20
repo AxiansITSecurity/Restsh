@@ -20,17 +20,6 @@ then
     exit 1
 fi
 
-# no test suite
-run_test() {
-    return 0
-}
-
-if [ "${1:-}" = "test" ]
-then
-    run_test || exit 1
-    exit 0
-fi
-
 # Get options
 POLICY_DIR="$RESTSH_PATH/templates/check/http-header"
 CURL_OPTS=()

@@ -20,19 +20,6 @@ then
     exit 1
 fi
 
-# test suite
-run_test() {
-    local RESULT
-    RESULT=$(restsh.passphrase -c -n -w 8 -d "-")
-    [ "${#RESULT}" -gt 15 ]
-}
-
-if [ "${1:-}" = "test" ]
-then
-    run_test || exit 1
-    exit 0
-fi
-
 # Get options
 WORDS=4
 DELIMITER=""
