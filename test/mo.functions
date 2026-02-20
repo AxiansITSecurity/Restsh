@@ -492,7 +492,34 @@ EOL
     [ "$RECORD_LAST" = "abc" ] || return 1
 }
 
-test.mo.functions.MO_INCLUDE_JSON_ENCODE() {
+test.mo.functions.MO_INCLUDE_JSON_ENCODE.arg1() {
+    local TMP
+    TMP=$(mktemp -d)
+    echo -n "abc" > "$TMP/test"
+    local MO_FUNCTION_ARGS=("$TMP/test")
+    local OUT
+    OUT=$(MO_INCLUDE_JSON_ENCODE)
+    rm -rf "$TMP"
+    [ "$OUT" = '"abc"' ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_INCLUDE_JSON_ENCODE.arg2() {
+    local TMP
+    TMP=$(mktemp -d)
+    echo -n "abc" > "$TMP/test"
+
+    local MO_FUNCTION_ARGS=("test" "$TMP")
+    local OUT
+    OUT=$(MO_INCLUDE_JSON_ENCODE)
+    rm -rf "$TMP"
+    [ "$OUT" = '"abc"' ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_INCLUDE_JSON_ENCODE.json() {
     local TMP
     TMP=$(mktemp -d)
     echo 'a"bc' > "$TMP/test"
@@ -702,7 +729,9 @@ TESTS_MO_FUNCTIONS=(
     test.mo.functions.MO_INCLUDE_PLAIN.arg1
     test.mo.functions.MO_INCLUDE_PLAIN.arg2
     test.mo.functions.MO_INCLUDE_PLAIN.json
-    test.mo.functions.MO_INCLUDE_JSON_ENCODE
+    test.mo.functions.MO_INCLUDE_JSON_ENCODE.arg1
+    test.mo.functions.MO_INCLUDE_JSON_ENCODE.arg2
+    test.mo.functions.MO_INCLUDE_JSON_ENCODE.json
     test.mo.functions.MO_INCLUDE_PARSE.arg1
     test.mo.functions.MO_INCLUDE_PARSE.arg2
     test.mo.functions.MO_INCLUDE_PARSE.json
