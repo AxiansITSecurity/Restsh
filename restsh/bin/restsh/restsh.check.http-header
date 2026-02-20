@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-02-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Checks HTTP headers against defined policy.
 # Desc:
@@ -26,8 +27,8 @@ run_test() {
 
 if [ "${1:-}" = "test" ]
 then
-    run_test && exit 0
-    exit 1
+    run_test || exit 1
+    exit 0
 fi
 
 # Get options

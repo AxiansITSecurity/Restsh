@@ -29,8 +29,8 @@ run_test() {
 
 if [ "${1:-}" = "test" ]
 then
-    run_test && exit 0
-    exit 1
+    run_test || exit 1
+    exit 0
 fi
 
 # Get options

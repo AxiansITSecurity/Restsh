@@ -94,7 +94,26 @@ EOL
     [ "$RECORD_LAST" = "test8" ] || return 1
 }
 
-test.mo.functions.MO_VALUE_OR_DEFAULT() {
+test.mo.functions.MO_VALUE_OR_DEFAULT.default() {
+    local MO_FUNCTION_ARGS=("VALUE1" "default_value")
+    local OUT
+    OUT=$(MO_VALUE_OR_DEFAULT)
+    [ "$OUT" = "default_value" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_VALUE_OR_DEFAULT.value() {
+    local MO_FUNCTION_ARGS=("VALUE1" "default_value")
+    local OUT
+    local VALUE1="test"
+    OUT=$(MO_VALUE_OR_DEFAULT)
+    [ "$OUT" = "test" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_VALUE_OR_DEFAULT.json() {
     local TMP
     TMP=$(mktemp -d)
     export VALUE1="test1"
@@ -411,7 +430,9 @@ EOL
 TESTS_MO_FUNCTIONS=(
     test.mo.functions.MO_COMMA_IF_NOT_FIRST
     test.mo.functions.MO_COMMA_IF_NOT_EMPTY
-    test.mo.functions.MO_VALUE_OR_DEFAULT
+    test.mo.functions.MO_VALUE_OR_DEFAULT.default
+    test.mo.functions.MO_VALUE_OR_DEFAULT.value
+    test.mo.functions.MO_VALUE_OR_DEFAULT.json
     test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT
     test.mo.functions.MO_TRUE_IF_NOT_EMPTY
     test.mo.functions.MO_CSV_GET
