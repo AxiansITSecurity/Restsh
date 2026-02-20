@@ -178,7 +178,27 @@ EOL
     [ "$RECORD_LAST" = "default_value" ] || return 1
 }
 
-test.mo.functions.MO_TRUE_IF_NOT_EMPTY() {
+test.mo.functions.MO_TRUE_IF_NOT_EMPTY.true() {
+    local KEY1="test"
+    local MO_FUNCTION_ARGS=("KEY1")
+    local OUT
+    OUT=$(MO_TRUE_IF_NOT_EMPTY)
+    [ "$OUT" = "true" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_TRUE_IF_NOT_EMPTY.false() {
+    local KEY1=""
+    local MO_FUNCTION_ARGS=("KEY1")
+    local OUT
+    OUT=$(MO_TRUE_IF_NOT_EMPTY)
+    [ "$OUT" = "false" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_TRUE_IF_NOT_EMPTY.json() {
     local TMP
     TMP=$(mktemp -d)
     local VALUE1="test1"
@@ -231,6 +251,15 @@ EOL
     [ "$RECORD_DEFAULT" = "default" ] || return 1
 }
 
+test.mo.functions.MO_CSV_GET_ENTRY() {
+    local MO_FUNCTION_ARGS=("test0,test1,test2" "1")
+    local OUT
+    OUT=$(MO_CSV_GET_ENTRY)
+    [ "$OUT" = "test1" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
 test.mo.functions.MO_CSV_GET_ENTRY_OR_DEFAULT.default() {
     local MO_FUNCTION_ARGS=("test0,test1,test2" "3" "default_value")
     local OUT
@@ -249,25 +278,35 @@ test.mo.functions.MO_CSV_GET_ENTRY_OR_DEFAULT.value() {
     unset OUT
 }
 
-test.mo.functions.MO_BASE64URL.json() {
+test.mo.functions.MO_INCLUDE_BASE64.arg1() {
     local TMP
     TMP=$(mktemp -d)
-    cat > "$TMP/parent.json" << EOL
-{
-    "Common": {
-        "key1": "{{MO_BASE64URL 'abc'}}"
-    }
-}
-EOL
-    JSON=$($RESTSH_MO -- "$TMP/parent.json")
-    echo "$JSON"
+    echo "abc" > "$TMP/test"
+
+    local MO_FUNCTION_ARGS=("$TMP/test")
+    local OUT
+    OUT=$(MO_INCLUDE_BASE64)
     rm -rf "$TMP"
-    local RECORD_FIRST
-    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
-    [ "$RECORD_FIRST" = "YWJj" ] || return 1
+    [ "$OUT" = "YWJjCg==" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
 }
 
-test.mo.functions.MO_INCLUDE_BASE64() {
+test.mo.functions.MO_INCLUDE_BASE64.arg2() {
+    local TMP
+    TMP=$(mktemp -d)
+    echo "abc" > "$TMP/test"
+
+    local MO_FUNCTION_ARGS=("test" "$TMP")
+    local OUT
+    OUT=$(MO_INCLUDE_BASE64)
+    rm -rf "$TMP"
+    [ "$OUT" = "YWJjCg==" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_INCLUDE_BASE64.json() {
     local TMP
     TMP=$(mktemp -d)
     echo "abc" > "$TMP/test"
@@ -287,6 +326,24 @@ EOL
     RECORD_LAST=$(JQ -r '.Common.key2' <<< "$JSON")
     [ "$RECORD_FIRST" = "YWJjCg==" ] || return 1
     [ "$RECORD_LAST" = "YWJjCg==" ] || return 1
+}
+
+test.mo.functions.MO_BASE64URL.json() {
+    local TMP
+    TMP=$(mktemp -d)
+    cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "key1": "{{MO_BASE64URL 'abc'}}"
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    rm -rf "$TMP"
+    local RECORD_FIRST
+    RECORD_FIRST=$(JQ -r '.Common.key1' <<< "$JSON")
+    [ "$RECORD_FIRST" = "YWJj" ] || return 1
 }
 
 test.mo.functions.MO_INCLUDE_BASE64URL.arg1() {
@@ -414,45 +471,39 @@ EOL
     [ "$RECORD_LAST" = "$VALUE" ] || return 1
 }
 
-test.mo.functions.MO_INCLUDE_PARSE.arg.file() {
+test.mo.functions.MO_INCLUDE_PARSE.arg1() {
+    local TMP
+    TMP=$(mktemp -d)
+    local KEY1="VALUE1"
+    echo "{{KEY1}}" > "$TMP/test"
+    local MO_FUNCTION_ARGS=("$TMP/test")
+    local OUT
+    OUT=$(MO_INCLUDE_PARSE)
+    [ "$OUT" = "VALUE1" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_INCLUDE_PARSE.arg2() {
+    local TMP
+    TMP=$(mktemp -d)
+    local KEY1="VALUE1"
+    echo "{{KEY1}}" > "$TMP/test"
+    local MO_FUNCTION_ARGS=("test" "$TMP")
+    local OUT
+    OUT=$(MO_INCLUDE_PARSE)
+    [ "$OUT" = "VALUE1" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_INCLUDE_PARSE.json() {
     local TMP
     TMP=$(mktemp -d)
     local VAR_TEST=("test1" "test2")
     cat > "$TMP/parent.json" << EOL
 {
     "Tenant": {{MO_INCLUDE_PARSE '$TMP/include.json'}}
-}
-EOL
-    cat > "$TMP/include.json" << EOL
-{
-    "Common": {
-        "records": [
-            {{#VAR_TEST}}
-                {{MO_COMMA_IF_NOT_FIRST}}
-                "{{.}}"
-            {{/VAR_TEST}}
-        ]
-    }
-}
-EOL
-    JSON=$($RESTSH_MO -- "$TMP/parent.json")
-    echo "$JSON"
-    rm -rf "$TMP"
-    local RECORD0 RECORD1 STR
-    RECORD0=$(JQ -r '.Tenant.Common.records[0]' <<< "$JSON")
-    RECORD1=$(JQ -r '.Tenant.Common.records[1]' <<< "$JSON")
-    STR=$(JQ -r '.string' <<< "$JSON")
-    [ "$RECORD0" = "test1" ] || return 1
-    [ "$RECORD1" = "test2" ] || return 1
-}
-
-test.mo.functions.MO_INCLUDE_PARSE.arg.file.folder() {
-    local TMP
-    TMP=$(mktemp -d)
-    local VAR_TEST=("test1" "test2")
-    cat > "$TMP/parent.json" << EOL
-{
-    "Tenant": {{MO_INCLUDE_PARSE 'include.json' '$TMP'}}
 }
 EOL
     cat > "$TMP/include.json" << EOL
@@ -584,11 +635,17 @@ TESTS_MO_FUNCTIONS=(
     test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT.default
     test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT.value
     test.mo.functions.MO_VALUE_EXPAND_OR_DEFAULT.json
-    test.mo.functions.MO_TRUE_IF_NOT_EMPTY
+    test.mo.functions.MO_TRUE_IF_NOT_EMPTY.true
+    test.mo.functions.MO_TRUE_IF_NOT_EMPTY.false
+    test.mo.functions.MO_TRUE_IF_NOT_EMPTY.json
     test.mo.functions.MO_CSV_GET
+    test.mo.functions.MO_CSV_GET_ENTRY
     test.mo.functions.MO_CSV_GET_ENTRY_OR_DEFAULT.default
     test.mo.functions.MO_CSV_GET_ENTRY_OR_DEFAULT.value
     test.mo.functions.MO_BASE64URL.json
+    test.mo.functions.MO_INCLUDE_BASE64.json
+    test.mo.functions.MO_INCLUDE_BASE64.arg1
+    test.mo.functions.MO_INCLUDE_BASE64.arg2
     test.mo.functions.MO_INCLUDE_BASE64URL.arg1
     test.mo.functions.MO_INCLUDE_BASE64URL.arg2
     test.mo.functions.MO_INCLUDE_BASE64URL.json
@@ -596,8 +653,9 @@ TESTS_MO_FUNCTIONS=(
     test.mo.functions.MO_INCLUDE_PLAIN.arg2
     test.mo.functions.MO_INCLUDE_PLAIN.json
     test.mo.functions.MO_INCLUDE_JSON_ENCODE
-    test.mo.functions.MO_INCLUDE_PARSE.arg.file
-    test.mo.functions.MO_INCLUDE_PARSE.arg.file.folder
+    test.mo.functions.MO_INCLUDE_PARSE.arg1
+    test.mo.functions.MO_INCLUDE_PARSE.arg2
+    test.mo.functions.MO_INCLUDE_PARSE.json
     test.mo.functions.MO_VAR_PARSE
     test.mo.functions.MO_VAR_PARSE.json
     test.mo.functions.MO_VAR_PARSE_IF
