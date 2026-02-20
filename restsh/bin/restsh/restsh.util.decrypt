@@ -29,7 +29,12 @@ run_test() {
     ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
     restsh.util.isencrypted "$ENCRYPTED"
     DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")
-    [ "$STR" = "$DECRYPTED" ]
+    [ "$STR" = "$DECRYPTED" ] || return 1
+    # Negative test
+    if restsh.util.decrypt "abc" > /dev/null 2>&1
+    then
+        return 1
+    fi
 }
 
 if [ "${1:-}" = "test" ]

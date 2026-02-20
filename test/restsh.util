@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-03
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Test suite for restsh.util library.
 # Desc:
@@ -9,6 +10,13 @@
 
 # Strict error handling
 set -eEuo pipefail
+
+test.restsh.util.echo_verbose() {
+    echo_verbose "test"
+    export VERBOSE=1
+    echo_verbose "test"
+    unset VERBOSE
+}
 
 test.restsh.util.echo_ok() {
     echo_ok "test"
@@ -279,9 +287,17 @@ test.restsh.passphrase() {
     fi
 }
 
+test.restsh.help() {
+    if ! restsh.help > /dev/null
+    then
+        return 1
+    fi
+}
+
 # shellcheck disable=SC2034 # Array is used in test.sh
 TESTS_RESTSH_UTIL=(
     test.restsh.util.echo_ok
+    test.restsh.util.echo_verbose
     test.restsh.util.print_json_ok
     test.restsh.util.print_json_ok_curl
     test.restsh.util.echo_err
@@ -320,4 +336,5 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.base64url
     test.restsh.pwgen
     test.restsh.passphrase
+    test.restsh.help
 )
