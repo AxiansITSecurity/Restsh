@@ -12,6 +12,9 @@
 set -eEuo pipefail
 
 test.restsh.util.echo_verbose() {
+    # Usage info
+    echo_verbose -h || true
+    # Test
     echo_verbose "test"
     export VERBOSE=1
     echo_verbose "test"
@@ -19,42 +22,72 @@ test.restsh.util.echo_verbose() {
 }
 
 test.restsh.util.echo_ok() {
+    # Usage info
+    echo_ok -h || true
+    # Test
     echo_ok "test"
 }
 
 test.restsh.util.print_json_ok() {
+    # Usage info
+    print_json_ok -h || true
+    # Test
     print_json_ok "test" | JQE ".ok.message"
 }
 
 test.restsh.util.print_json_ok_curl() {
+    # Usage info
+    print_json_ok_curl -h || true
+    # Test
     print_json_ok_curl "test" "GET /"  | JQE ".ok | [.request, .message]"
 }
 
 test.restsh.util.echo_err() {
+    # Usage info
+    echo_err -h || true
+    # Test
     echo_err "test"
 }
 
 test.restsh.util.print_json_err() {
+    # Usage info
+    print_json_err -h || true
+    # Test
     print_json_err "test" 2>&1 | JQE ".error.message"
 }
 
 test.restsh.util.print_json_err_curl() {
+    # Usage info
+    print_json_err_curl -h || true
+    # Test
     print_json_err_curl "test" "GET /" "error output" 2>&1 | JQE ".error | [.request, .message, .output]"
 }
 
 test.restsh.util.echo_warn() {
+    # Usage info
+    echo_warn -h || true
+    # Test
     echo_warn "test"
 }
 
 test.restsh.util.print_json_warn() {
+    # Usage info
+    print_json_warn -h || true
+    # Test
     print_json_warn "test" 2>&1 | JQE ".warn.message"
 }
 
 test.restsh.util.print_json_warn_curl() {
+    # Usage info
+    print_json_warn_curl -h || true
+    # Test
     print_json_warn_curl "test" "GET /" 2>&1 | JQE ".warn | [.request, .message]"
 }
 
 test.restsh.util.MO() {
+    # Usage info
+    MO -h || true
+    # Test
     local OUTPUT
     VAR_TEST="test"
     OUTPUT=$(MO <<< '{{VAR_TEST}}')
@@ -62,23 +95,38 @@ test.restsh.util.MO() {
 }
 
 test.restsh.util.JQ() {
+    # Usage info
+    JQ -h || true
+    # Test
     JQ "." <<< '{"test": "test"}'
 }
 
 test.restsh.util.JQE() {
+    # Usage info
+    JQE -h || true
+    # Test
     JQE ".test" <<< '{"test": "test"}'
     if ! JQE ".test2" <<< '{"test": "test"}'; then true; else false; fi
 }
 
 test.restsh.util.XARGS() {
+    # Usage info
+    XARGS -h || true
+    # Test
     echo "test1 test2" | XARGS "echo"
 }
 
 test.restsh.util.COLUMN() {
+    # Usage info
+    COLUMN -h || true
+    # Test
     echo -e "v1\tv2\tv3\n" | COLUMN
 }
 
 test.restsh.util.KV() {
+    # Usage info
+    KV -h || true
+    # Test
     echo -e "k1\tv2\nk2\tv2" | KV
 }
 
@@ -88,21 +136,33 @@ test.restsh.util.setcurloptions() {
 }
 
 test.restsh.util.parseoutput() {
+    # Usage info
+    restsh.util.parseoutput -h || true
+    # Test
     restsh.util.parseoutput -f ".test" -r '{"test":"test"}'
 }
 
 test.restsh.util.declare.var() {
+    # Usage info
+    restsh.util.declare.var -h || true
+    # Test
     restsh.util.declare.var "KEY1=wert"
     [ "$KEY1" = "wert" ] || return 1
 }
 
 test.restsh.util.eval_stage_var() {
+    # Usage info
+    restsh.util.eval_stage_var -h || true
+    # Test
     EXAMPLE_DEV="test"
     restsh.util.eval_stage_var "EXAMPLE" "DEV"
     [ "$EXAMPLE" = "$EXAMPLE_DEV" ] || return 1
 }
 
 test.restsh.util.setvars() {
+    # Usage info
+    restsh.util.setvars -h || true
+    # Test
     mkdir "$RESTSH_TMP/vars"
     echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
     echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
@@ -118,6 +178,9 @@ test.restsh.util.setvars() {
 }
 
 test.restsh.util.setvars.recursive() {
+    # Usage info
+    restsh.util.setvars -h || true
+    # Test
     mkdir "$RESTSH_TMP/vars"
     echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
     echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
@@ -134,6 +197,9 @@ test.restsh.util.setvars.recursive() {
 }
 
 test.restsh.util.setvar() {
+    # Usage info
+    restsh.util.setvar -h || true
+    # Test
     mkdir "$RESTSH_TMP/vars"
     echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
     echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
@@ -157,23 +223,35 @@ test.restsh.util.setvar() {
 }
 
 test.restsh.util.urlencode() {
+    # Usage info
+    restsh.util.urlencode -h || true
+    # Test
     local OUTPUT
     OUTPUT=$(restsh.util.urlencode "test test")
     [ "$OUTPUT" = "test%20test" ] || return 1
 }
 
 test.restsh.util.json_validate() {
+    # Usage info
+    restsh.util.json_validate -h || true
+    # Test
     restsh.util.json_validate < test/files/valid.json
     if ! restsh.util.json_validate < test/files/invalid.json; then true; else false; fi
 }
 
 test.restsh.util.check.notempty() {
+    # Usage info
+    restsh.util.check.notempty -h || true
+    # Test
     restsh.util.check.notempty "test"
     if ! restsh.util.check.notempty " "; then true; else false; fi
     if ! restsh.util.check.notempty "null"; then true; else false; fi
 }
 
 test.restsh.util.check.varnotempty() {
+    # Usage info
+    restsh.util.check.varnotempty -h || true
+    # Test
     VAR1="test"
     restsh.util.check.varnotempty "VAR1"
     VAR1=""
@@ -188,12 +266,18 @@ test.restsh.util.check.varnotempty() {
 }
 
 test.restsh.util.check.isnumber() {
+    # Usage info
+    restsh.util.check.isnumber -h || true
+    # Test
     restsh.util.check.isnumber "10"
     if ! restsh.util.check.isnumber " 10"; then true; else false; fi
     if ! restsh.util.check.isnumber "test"; then true; else false; fi
 }
 
 test.restsh.util.check.isvarname() {
+    # Usage info
+    restsh.util.check.isvarname -h || true
+    # Test
     restsh.util.check.isvarname "testvar"
     restsh.util.check.isvarname "TEST_VAR"
     if ! restsh.util.check.isvarname "1abc"; then true; else false; fi
@@ -202,6 +286,9 @@ test.restsh.util.check.isvarname() {
 }
 
 test.restsh.util.filesize() {
+    # Usage info
+    restsh.util.filesize -h || true
+    # Test
     echo "test" > "$RESTSH_TMP/test"
     local OUTPUT
     OUTPUT=$(restsh.util.filesize "$RESTSH_TMP/test")
@@ -210,6 +297,9 @@ test.restsh.util.filesize() {
 }
 
 test.restsh.util.array.includes() {
+    # Usage info
+    restsh.util.array.includes -h || true
+    # Test
     restsh.util.array.includes "test" "test" "foo" "bar"
     restsh.util.array.includes "test" "foo" "test" "bar"
     restsh.util.array.includes "test" "foo" "bar" "test"
@@ -217,6 +307,9 @@ test.restsh.util.array.includes() {
 }
 
 test.restsh.util.array.string() {
+    # Usage info
+    restsh.util.array.string -h || true
+    # Test
     local ARRAY=("abc" "dfg" "hij" "x y")
     local STR
     STR=$(restsh.util.array.string -q'"' "${ARRAY[@]}")
@@ -228,29 +321,44 @@ test.restsh.util.array.string() {
 }
 
 test.restsh.util.uc() {
+    # Usage info
+    restsh.util.uc -h || true
+    # Test
     local OUTPUT
     OUTPUT=$(restsh.util.uc "test")
     [ "$OUTPUT" = "TEST" ] || return 1
 }
 
 test.restsh.util.lc() {
+    # Usage info
+    restsh.util.lc -h || true
+    # Test
     local OUTPUT
     OUTPUT=$(restsh.util.lc "TEST")
     [ "$OUTPUT" = "test" ] || return 1
 }
 
 test.restsh.util.askpass() {
+    # Usage info
+    restsh.util.askpass -h || true
+    # Test
     local OUTPUT
     OUTPUT=$(restsh.util.askpass "prompt" <<< "test")
     [ "$OUTPUT" = "test" ] || return 1
 }
 
 test.restsh.util.isencrypted() {
+    # Usage info
+    restsh.util.isencrypted -h || true
+    # Test
     restsh.util.isencrypted "AES256:test"
     if ! restsh.util.isencrypted "test"; then true; else false; fi
 }
 
 test.restsh.util.encrypt() {
+    # Usage info
+    restsh.util.encrypt -h || true
+    # Test
     local ENCRYPTED
     local DECRYPTED
     local STR
@@ -263,6 +371,9 @@ test.restsh.util.encrypt() {
 }
 
 test.restsh.util.var.decrypt() {
+    # Usage info
+    restsh.util.var.decrypt -h || true
+    # Test
     local ENCRYPTED
     local STR
     STR=$(restsh.pwgen)
@@ -273,6 +384,9 @@ test.restsh.util.var.decrypt() {
 }
 
 test.restsh.util.decrypt() {
+    # Usage info
+    restsh.util.decrypt -h || true
+    # Test
     local ENCRYPTED
     local DECRYPTED
     local STR
@@ -289,12 +403,18 @@ test.restsh.util.decrypt() {
 }
 
 test.restsh.util.trim() {
+    # Usage info
+    restsh.util.trim -h || true
+    # Test
     local OUTPUT
     OUTPUT=$(restsh.util.trim "  test ")
     [ "$OUTPUT" = "test" ] || return 1
 }
 
 test.restsh.util.base64url() {
+    # Usage info
+    restsh.util.base64url -h || true
+    # Test
     local OUTPUT
     OUTPUT=$(restsh.util.base64url "test")
     [ "$OUTPUT" = "dGVzdA" ] || return 1
@@ -308,6 +428,9 @@ test.restsh.help() {
 }
 
 test.restsh.pwgen() {
+    # Usage info
+    restsh.pwgen -h || true
+    # Test
     local RESULT
     RESULT=$(restsh.pwgen -c 6 -d "-" -l 20)
     [ "${#RESULT}" -eq 20 ] || return 1
@@ -315,6 +438,9 @@ test.restsh.pwgen() {
 }
 
 test.restsh.passphrase() {
+    # Usage info
+    restsh.passphrase -h || true
+    # Test
     local RESULT
     RESULT=$(restsh.passphrase -c -n -w 8 -d "-")
     [ "${#RESULT}" -gt 15 ] || return 1
