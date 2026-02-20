@@ -38,7 +38,53 @@ EOL
     [ "$RECORD_LAST" = "test2" ] || return 1
 }
 
-test.mo.functions.MO_COMMA_IF_NOT_EMPTY() {
+test.mo.functions.MO_COMMA_IF_NOT_EMPTY.comma2() {
+    local KEY1="VALUE1"
+    local KEY2="VALUE2"
+    local MO_FUNCTION_ARGS=("KEY1" "KEY2")
+    local OUT
+    OUT=$(MO_COMMA_IF_NOT_EMPTY)
+    [ "$OUT" = "," ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_COMMA_IF_NOT_EMPTY.empty2() {
+    local KEY1="VALUE1"
+    local KEY2=""
+    local MO_FUNCTION_ARGS=("KEY1" "KEY2")
+    local OUT
+    OUT=$(MO_COMMA_IF_NOT_EMPTY)
+    [ "$OUT" = "" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_COMMA_IF_NOT_EMPTY.comma3() {
+    local KEY1="VALUE1"
+    local KEY2="VALUE2"
+    local KEY3="VALUE3"
+    local MO_FUNCTION_ARGS=("KEY1" "KEY2" "KEY3")
+    local OUT
+    OUT=$(MO_COMMA_IF_NOT_EMPTY)
+    [ "$OUT" = "," ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_COMMA_IF_NOT_EMPTY.empty3() {
+    local KEY1="VALUE1"
+    local KEY2="VALUE2"
+    local KEY3=""
+    local MO_FUNCTION_ARGS=("KEY1" "KEY2" "KEY3")
+    local OUT
+    OUT=$(MO_COMMA_IF_NOT_EMPTY)
+    [ "$OUT" = "" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_COMMA_IF_NOT_EMPTY.json() {
     local TMP
     TMP=$(mktemp -d)
     local ARRAY1=("test0" "test1" "test2")
@@ -628,7 +674,11 @@ EOL
 
 TESTS_MO_FUNCTIONS=(
     test.mo.functions.MO_COMMA_IF_NOT_FIRST
-    test.mo.functions.MO_COMMA_IF_NOT_EMPTY
+    test.mo.functions.MO_COMMA_IF_NOT_EMPTY.comma2
+    test.mo.functions.MO_COMMA_IF_NOT_EMPTY.empty2
+    test.mo.functions.MO_COMMA_IF_NOT_EMPTY.comma3
+    test.mo.functions.MO_COMMA_IF_NOT_EMPTY.empty3
+    test.mo.functions.MO_COMMA_IF_NOT_EMPTY.json
     test.mo.functions.MO_VALUE_OR_DEFAULT.default
     test.mo.functions.MO_VALUE_OR_DEFAULT.value
     test.mo.functions.MO_VALUE_OR_DEFAULT.json
