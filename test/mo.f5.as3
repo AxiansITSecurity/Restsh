@@ -12,7 +12,29 @@
 # Strict error handling
 set -eEuo pipefail
 
-test.mo.f5.as3.MO_IP_RANGE() {
+test.mo.f5.as3.MO_IP_RANGE.single() {
+    # Test with start = end
+    local TMP
+    TMP=$(mktemp -d)
+        cat > "$TMP/parent.json" << EOL
+{
+    "Common": {
+        "records": [
+            {{MO_IP_RANGE '10.1.1.10' '10.1.1.10'}}
+        ]
+    }
+}
+EOL
+    JSON=$($RESTSH_MO -- "$TMP/parent.json")
+    echo "$JSON"
+    RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
+    RECORD_LAST=$(JQ -r '.Common.records[1]' <<< "$JSON")
+    [ "$RECORD_FIRST" = "10.1.1.10" ] || return 1
+    [ "$RECORD_LAST" = "null" ] || return 1
+    rm -rf "$TMP"
+}
+
+test.mo.f5.as3.MO_IP_RANGE.range() {
     local TMP
     TMP=$(mktemp -d)
     cat > "$TMP/parent.json" << EOL
@@ -31,23 +53,6 @@ EOL
     RECORD_LAST=$(JQ -r '.Common.records[10]' <<< "$JSON")
     [ "$RECORD_FIRST" = "10.1.1.10" ] || return 1
     [ "$RECORD_LAST" = "10.1.1.20" ] || return 1
-
-    # Test with start = end
-        cat > "$TMP/parent.json" << EOL
-{
-    "Common": {
-        "records": [
-            {{MO_IP_RANGE '10.1.1.10' '10.1.1.10'}}
-        ]
-    }
-}
-EOL
-    JSON=$($RESTSH_MO -- "$TMP/parent.json")
-    echo "$JSON"
-    RECORD_FIRST=$(JQ -r '.Common.records[0]' <<< "$JSON")
-    RECORD_LAST=$(JQ -r '.Common.records[1]' <<< "$JSON")
-    [ "$RECORD_FIRST" = "10.1.1.10" ] || return 1
-    [ "$RECORD_LAST" = "null" ] || return 1
     rm -rf "$TMP"
 }
 
@@ -149,7 +154,8 @@ EOL
 
 TESTS_MO_F5_AS3=(
     test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION
-    test.mo.f5.as3.MO_IP_RANGE
+    test.mo.f5.as3.MO_IP_RANGE.single
+    test.mo.f5.as3.MO_IP_RANGE.range
     test.mo.f5.as3.MO_F5_AS3_INCLUDE_IRULES_FROM_FOLDER
     test.mo.f5.as3.MO_F5_AS3_INCLUDE_IFILES_FROM_FOLDER
 )
