@@ -59,7 +59,7 @@ TESTS_RESTSH=(
 run_test() {
     echo -n "$(basename "$1") ... "
     local RESULT
-    if RESULT=$("$1" test 2>&1)
+    if RESULT=$("$1" 2>&1)
     then
         echo_ok "ok"
         return 0
@@ -68,6 +68,7 @@ run_test() {
     echo "--"
     echo "$RESULT"
     echo "--"
+    awk '{print} END {fflush()}'
     return 1
 }
 
