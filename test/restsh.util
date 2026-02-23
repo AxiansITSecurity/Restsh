@@ -61,6 +61,7 @@ test.restsh.util.print_json_err_curl() {
     print_json_err_curl -h > /dev/null 2>&1 || true
     # Test
     print_json_err_curl "test" "GET /" "error output" 2>&1 | JQE ".error | [.request, .message, .output]"
+    print_json_err_curl "" "GET /" "error output" 2>&1 | JQE ".error | [.request, .message, .output]"
 }
 
 test.restsh.util.echo_warn() {
