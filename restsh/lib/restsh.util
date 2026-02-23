@@ -238,7 +238,7 @@ MO() {
         {
             echo "Shortcut to call the mustache template engine."
             echo ""
-            $RESTSH_MO -h || true
+            $RESTSH_MO -h
         } 1>&2
         return 2
     fi
@@ -267,7 +267,7 @@ JQE() {
             echo "Shortcut to call jq, exits with 1 on null or false."
             echo ""
             jq -h
-        }  1>&2
+        } 1>&2
         return 2
     fi
     $RESTSH_JQ -e "$@"
@@ -295,7 +295,7 @@ KV() {
             echo "Print Key/Value pairs from STDIN separated by tab and newline"
             echo ""
             echo "Usage: KV"
-        }  1>&2
+        } 1>&2
         return 2
     fi
     while IFS=$'\t' read -r KEY VALUE
