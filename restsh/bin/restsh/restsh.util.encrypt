@@ -41,5 +41,11 @@ fi
 TOENCRYPT=$(restsh.util.askpass "String to encrypt")
 echo ""
 
+if [ -z "$TOENCRYPT" ]
+then
+    echo_err "Can not encrypt empty string."
+    exit 1
+fi
+
 ENCRYPTED=$(openssl enc -aes-256-cbc -pbkdf2 -k "$SECRET" -a <<< "$TOENCRYPT" | tr -d '\n')
 echo "AES256:$ENCRYPTED"
