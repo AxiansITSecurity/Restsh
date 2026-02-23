@@ -464,6 +464,7 @@ restsh.util.declare.var() {
     then
         return 1
     fi
+    echo_verbose "Declaring \"$KEY\"=\"$VALUE\""
     declare -g "$KEY"="$VALUE"
 }
 
