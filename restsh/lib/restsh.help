@@ -41,19 +41,8 @@ _restsh.help.parse.lib() {
     done < "$1"
 }
 
-# Prints the CMDS array with full description.
-_restsh.help.print.multiline() {
-    local K
-    for K in "${!CMDS[@]}"
-    do
-        echo -e "$K\n${CMDS["$K"]}"
-        echo ""
-    done
-    unset CMDS
-}
-
 # Prints the CMDS array and the first line of the description.
-# Output is formated in columns.
+# Output is formatted in columns.
 _restsh.help.print() {
     local K
     for K in "${!CMDS[@]}"
@@ -211,22 +200,9 @@ _restsh.help.desc.get() {
     echo ""
 }
 
-# Prints the reference description
-_restsh.help.reference.get() {
-    while read -r LINE
-    do
-        if [ "${LINE:0:12}" = "# Reference:" ]
-        then
-            echo "${LINE:13}"
-            break
-        fi
-    done < "$1"
-}
-
 export -f restsh.help
 export -f restsh.help.modules
 export -f _restsh.help.shortdesc.get
 export -f _restsh.help.desc.get
-export -f _restsh.help.reference.get
 export -f restsh.help.showenv
 export -f restsh.help.version

@@ -421,13 +421,14 @@ test.restsh.help() {
     then
         return 1
     fi
-    for F in cert f5 f5osa gitlab scm
+    for F in cert f5 f5osa gitlab scm all
     do
         if ! restsh.help "$F" > /dev/null
         then
             return 1
         fi
     done
+    _restsh.help.desc.get "$RESTSH_PATH/bin/restsh/restsh.pwgen"
 }
 
 test.restsh.pwgen() {
