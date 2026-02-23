@@ -322,6 +322,8 @@ test.restsh.util.array.string() {
     if [ "$STR" = '"abc","dfg","hij","x y"' ]; then true; else false; fi
     STR=$(restsh.util.array.string -s, "${ARRAY[@]}")
     if [ "$STR" = 'abc,dfg,hij,x y' ]; then true; else false; fi
+    STR=$(restsh.util.array.string -p "test-" "${ARRAY[@]}")
+    if [ "$STR" = 'test-abc test-dfg test-hij test-x y' ]; then true; else false; fi
 }
 
 test.restsh.util.uc() {
