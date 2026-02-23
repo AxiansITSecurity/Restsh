@@ -106,7 +106,11 @@ test.restsh.util.JQE() {
     JQE -h || true
     # Test
     JQE ".test" <<< '{"test": "test"}'
-    if ! JQE ".test2" <<< '{"test": "test"}'; then true; else false; fi
+    if ! JQE ".test2" <<< '{"test": "test"}'
+    then 
+        return 0
+    fi
+    return 1
 }
 
 test.restsh.util.XARGS() {
@@ -121,6 +125,7 @@ test.restsh.util.COLUMN() {
     COLUMN -h || true
     # Test
     echo -e "v1\tv2\tv3\n" | COLUMN
+    echo -e "v1\tv2\tv3\n" | COLUMN -N "c1,c2,c3" -o "|"
 }
 
 test.restsh.util.KV() {

@@ -112,7 +112,7 @@ test.mo.f5.as3.MO_F5_AS3_INCLUDE_DECLARATION() {
     local ARRAY_TEST3=()
     cat > "$TMP/parent.json" << EOL
 {
-    {{MO_F5_AS3_INCLUDE_DECLARATION '$TMP/include.json' '.Common' 'TEST1=VAR_TEST1' 'TEST2=ARRAY_TEST2' 'TEST3=ARRAY_TEST3'}}
+    {{MO_F5_AS3_INCLUDE_DECLARATION '$TMP/include.json' '.Common' 'TEST1=VAR_TEST1' 'TEST2=ARRAY_TEST2' 'TEST3=ARRAY_TEST3' 'TEST4=abc'}}
 }
 EOL
     cat > "$TMP/include.json" << EOL
@@ -134,22 +134,25 @@ EOL
                 }
             {{/ARG_TEST3}}
         ],
-        "string": "{{ARG_TEST1}}"
+        "string": "{{ARG_TEST1}}",
+        "fixed": "{{ARG_TEST4}}"
     }
 }
 EOL
     JSON=$($RESTSH_MO -- "$TMP/parent.json")
     echo "$JSON"
     rm -rf "$TMP"
-    local RECORD0 RECORD1 STR
+    local RECORD0 RECORD1 STR FIXED
     RECORD0=$(JQ -r '.records[0]."/ratelimit/test1"' <<< "$JSON")
     RECORD1=$(JQ -r '.records[1]."/ratelimit/test2"' <<< "$JSON")
     RECORD2=$(JQ -r '.records[2]."/ratelimit/test3"' <<< "$JSON")
     STR=$(JQ -r '.string' <<< "$JSON")
+    FIXED=$(JQ -r '.fixed' <<< "$JSON")
     [ "$RECORD0" = "5 30 60" ] || return 1
     [ "$RECORD1" = "10 60 120" ] || return 1
     [ "$RECORD2" = "\$foo" ] || return 1
     [ "$STR" = "test string" ] || return 1
+    [ "$FIXEDR" = "abc" ] || return 1
 }
 
 TESTS_MO_F5_AS3=(
