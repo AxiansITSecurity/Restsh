@@ -374,6 +374,11 @@ test.restsh.util.encrypt() {
     restsh.util.isencrypted "$ENCRYPTED"
     DECRYPTED=$(restsh.util.decrypt "$ENCRYPTED")
     [ "$STR" = "$DECRYPTED" ] || return 1
+    # Negative test
+    if ENCRYPTED=$(RESTSH_SECRET="" restsh.util.encrypt <<< "$STR" | tr -d '\n')
+    then
+        return 1
+    fi
     return 0
 }
 
