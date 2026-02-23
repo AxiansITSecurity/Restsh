@@ -575,7 +575,7 @@ restsh.util.setvar() {
         VALUE="$(grep -v -P '^(#|\s*$)' "$FILE" | tr -d '\r\n' || true)"
         if restsh.util.isencrypted "$VALUE"
         then
-            echo "Decrypting $VAR"
+            echo "Decrypting \"$VAR\""
             VALUE=$(restsh.util.decrypt "$VALUE")
         elif [ "${VALUE:0:6}" = "VAULT:" ]
         then
