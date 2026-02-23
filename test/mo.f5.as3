@@ -152,7 +152,7 @@ EOL
     [ "$RECORD1" = "10 60 120" ] || return 1
     [ "$RECORD2" = "\$foo" ] || return 1
     [ "$STR" = "test string" ] || return 1
-    [ "$FIXEDR" = "abc" ] || return 1
+    [ "$FIXED" = "abc" ] || return 1
 }
 
 TESTS_MO_F5_AS3=(
