@@ -127,6 +127,11 @@ test.restsh.util.COLUMN() {
     # Test
     echo -e "v1\tv2\tv3\n" | COLUMN
     echo -e "v1\tv2\tv3\n" | COLUMN -N "c1,c2,c3" -o "|"
+    # Negative test
+    if echo -e "v1\tv2\tv3\n" | COLUMN -l
+    then
+        return 1
+    fi
 }
 
 test.restsh.util.KV() {
@@ -155,7 +160,9 @@ test.restsh.util.declare.var() {
     # Usage info
     restsh.util.declare.var -h > /dev/null 2>&1 || true
     # Test
+    export VERBOSE=1
     restsh.util.declare.var "KEY1=wert"
+    unset VEROBOSE
     [ "$KEY1" = "wert" ] || return 1
 }
 
