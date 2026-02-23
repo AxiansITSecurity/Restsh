@@ -379,6 +379,10 @@ test.restsh.util.encrypt() {
     then
         return 1
     fi
+    if ENCRYPTED=$(RESTSH_SECRET="" restsh.util.encrypt <<< "" | tr -d '\n')
+    then
+        return 1
+    fi
     return 0
 }
 
