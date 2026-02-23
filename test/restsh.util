@@ -463,6 +463,16 @@ test.restsh.passphrase() {
     local RESULT
     RESULT=$(restsh.passphrase -c -n -w 8 -d "-")
     [ "${#RESULT}" -gt 15 ] || return 1
+    RESULT=$(restsh.passphrase -c -n -w 8)
+    [ "${#RESULT}" -gt 15 ] || return 1
+    local DICT_FILE="$RESTSH_TMP/restsh.passphrase.dict"
+    if [ ! -s "$DICT_FILE" ]
+    then
+        find /usr -type f -printf "%f\n" \
+            | sed -E -e 's/\..*//' > "$DICT_FILE"
+    fi
+    RESULT=$(restsh.passphrase -f "$DICT_FILE")
+    [ "${#RESULT}" -gt 15 ] || return 1
     return 0
 }
 
