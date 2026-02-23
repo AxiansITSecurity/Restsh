@@ -406,6 +406,11 @@ test.restsh.util.decrypt() {
     then
         return 1
     fi
+    unset RESTSH_SECRET
+    if restsh.util.decrypt "$ENCRYPTED" > /dev/null 2>&1
+    then
+        return 1
+    fi
 }
 
 test.restsh.util.trim() {
