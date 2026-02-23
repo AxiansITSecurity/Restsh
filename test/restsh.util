@@ -320,6 +320,11 @@ test.restsh.util.filesize() {
     OUTPUT=$(restsh.util.filesize "$RESTSH_TMP/test")
     rm -f "$RESTSH_TMP/test"
     [ "$OUTPUT" = "5" ] || return 1
+    # Negative test
+    if restsh.util.filesize "$RESTSH_TMP/not-existent"
+    then
+        return 1
+    fi
 }
 
 test.restsh.util.array.includes() {
