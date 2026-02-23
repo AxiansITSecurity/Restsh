@@ -150,15 +150,6 @@ test.restsh.util.declare.var() {
     [ "$KEY1" = "wert" ] || return 1
 }
 
-test.restsh.util.eval_stage_var() {
-    # Usage info
-    restsh.util.eval_stage_var -h || true
-    # Test
-    EXAMPLE_DEV="test"
-    restsh.util.eval_stage_var "EXAMPLE" "DEV"
-    [ "$EXAMPLE" = "$EXAMPLE_DEV" ] || return 1
-}
-
 test.restsh.util.setvars() {
     # Usage info
     restsh.util.setvars -h || true
@@ -456,12 +447,11 @@ test.restsh.passphrase() {
 
 test.restsh.util.eval_stage_var() {
     # Usage info
-    restsh.passphrase -h || true
+    restsh.util.eval_stage_var -h || true
     # Test
-    local EXAMPLE_DEV="value"
+    EXAMPLE_DEV="test"
     restsh.util.eval_stage_var "EXAMPLE" "DEV"
-    [ "$EXAMPLE_DEV" = "$EXAMPLE" ] || return 1
-    return 0
+    [ "$EXAMPLE" = "$EXAMPLE_DEV" ] || return 1
 }
 
 # shellcheck disable=SC2034 # Array is used in test.sh
