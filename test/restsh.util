@@ -142,8 +142,22 @@ test.restsh.util.KV() {
 }
 
 test.restsh.util.setcurloptions() {
-    # no test suite
-    return 0
+    # Usage info
+    restsh.util.setcurloptions -h > /dev/null 2>&1 || true
+    # Test - Variables used in restsh.util.setcurloptions
+    #shellcheck disable=SC2034
+    local RESTSH_USER="test"
+    #shellcheck disable=SC2034
+    local RESTSH_PASS="test"
+    #shellcheck disable=SC2034
+    local RESTSH_TOKEN_HEADER="Authorization"
+    #shellcheck disable=SC2034
+    local RESTSH_TOKEN_VALUE="test"
+    RESTSH_CURL_INSECURE=1 restsh.util.setcurloptions
+    RESTSH_DEBUG=1 restsh.util.setcurloptions
+    RESTSH_AUTH=basic restsh.util.setcurloptions
+    RESTSH_AUTH=token restsh.util.setcurloptions
+    RESTSH_AUTH=netrc restsh.util.setcurloptions
 }
 
 test.restsh.util.parseoutput() {
