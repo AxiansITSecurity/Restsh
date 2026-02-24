@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a GitLab structure for a new F5 environment.
 # Desc:
@@ -39,7 +40,7 @@ then
     exit 2
 fi
 
-GROUP_PATH=$1
+restsh.util.check.string "group path" "$1" && GROUP_PATH=$1
 GROUP_NAME="${GROUP_PATH##*/}"
 PARENT_GROUP_NAME=${GROUP_PATH%/*}
 if [ "$PARENT_GROUP_NAME" = "$GROUP_PATH" ]
