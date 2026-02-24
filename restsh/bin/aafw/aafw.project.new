@@ -20,10 +20,10 @@ then
     exit 1
 fi
 
-[ -n "${RESTSH_AAFW_GROUP+x}" ] || { echo_err "Variable RESTSH_AAFW_GROUP not set" ; exit 1; }
-[ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set" ; exit 1; }
-[ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set" ; exit 1; }
-[ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set" ; exit 1; }
+[ -n "${RESTSH_AAFW_GROUP+x}" ] || { echo_err "Variable RESTSH_AAFW_GROUP not set"; exit 1; }
+[ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set"; exit 1; }
+[ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set"; exit 1; }
+[ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set"; exit 1; }
 [ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/templates/aafw/project_settings_default.json"
 
 # Get options
@@ -46,11 +46,11 @@ do
                 INIT_OPTS+=("-d" "$OPTARG")
             fi
             ;;
-        e) restsh.util.check.string "Project settings json file" "$OPTARG" && RESTSH_AAFW_PROJECT_SETTINGS="$OPTARG" ;;
+        e) restsh.util.check.string "Project settings json file" "$OPTARG"; RESTSH_AAFW_PROJECT_SETTINGS="$OPTARG" ;;
         i) INIT_PROJECT=$OPTARG ;;
         l) mapfile -d, -t ACCESS_LEVEL <<< "$OPTARG" ;;
         p) mapfile -d, -t PROTECTED_BRANCHES <<< "$OPTARG" ;;
-        s) restsh.util.check.string "Skeleton path" "$OPTARG" && SKELETON_PATH=$OPTARG ;;
+        s) restsh.util.check.string "Skeleton path" "$OPTARG"; SKELETON_PATH=$OPTARG ;;
         t) CLM_TYPE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -83,7 +83,7 @@ then
     exit 2
 fi
 
-restsh.util.check.string "project path" "$1" && PROJECT_PATH=$1
+restsh.util.check.string "project path" "$1"; PROJECT_PATH=$1
 PROJECT_NAME="${PROJECT_PATH##*/}"
 GROUP_NAME=${PROJECT_PATH%/*}
 

@@ -25,7 +25,7 @@ TEMPLATE_DIR="$RESTSH_PATH/templates/aafw"
 while getopts ':ht:' OPTION
 do
     case "$OPTION" in
-        t) restsh.util.check.string "Template folder" "$OPTARG" && TEMPLATE_DIR=$OPTARG ;;
+        t) restsh.util.check.string "Template folder" "$OPTARG"; TEMPLATE_DIR=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -41,7 +41,7 @@ then
     exit 2
 fi
 
-restsh.util.check.string "group path" "$1" && GROUP_PATH=$1
+restsh.util.check.string "group path" "$1"; GROUP_PATH=$1
 GROUP_NAME="${GROUP_PATH##*/}"
 PARENT_GROUP_NAME=${GROUP_PATH%/*}
 if [ "$PARENT_GROUP_NAME" = "$GROUP_PATH" ]

@@ -37,5 +37,5 @@ then
     exit 2
 fi
 
-restsh.util.check.string "fullPath" "$1" && FULLPATH=$1
+restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
 DELETE "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}"

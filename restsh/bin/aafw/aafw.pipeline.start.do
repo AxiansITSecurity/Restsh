@@ -24,7 +24,7 @@ TASK_HOST=""
 while getopts ':t:' OPTION
 do
     case "$OPTION" in
-        t) restsh.util.check.string "Task host" "$OPTARG" && TASK_HOST=$OPTARG ;;
+        t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -41,8 +41,8 @@ then
     exit 2
 fi
 
-restsh.util.check.string "project" "$1" && PROJECT=$1
-restsh.util.check.string "branch" "$2" && BRANCH=$(restsh.util.lc "$2")
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
 if [ -n "$TASK_HOST" ]
 then

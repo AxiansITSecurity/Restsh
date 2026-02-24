@@ -41,7 +41,7 @@ do
         i) INTERACTIVE=1 ;;
         n) VARIABLES_REWRITE=0 ;;
         p) PUSH=1 ;;
-        v) restsh.util.check.string "Variables file" "$OPTARG" && VARIABLES_FILE="$OPTARG" ;;
+        v) restsh.util.check.string "Variables file" "$OPTARG"; VARIABLES_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -64,9 +64,9 @@ then
     exit 2
 fi
 
-restsh.util.check.string "project path" "$1" && PROJECT_PATH=$1
-restsh.util.check.string "app name" "$2" && APP_NAME=$2
-restsh.util.check.string "template" "$3" && TEMPLATE=$3
+restsh.util.check.string "project path" "$1"; PROJECT_PATH=$1
+restsh.util.check.string "app name" "$2"; APP_NAME=$2
+restsh.util.check.string "template" "$3"; TEMPLATE=$3
 
 if ! restsh.util.check.isvarname "$APP_NAME"
 then

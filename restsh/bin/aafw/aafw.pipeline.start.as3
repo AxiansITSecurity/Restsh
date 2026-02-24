@@ -25,7 +25,7 @@ PIPELINE_OPTS=()
 while getopts ':t:w' OPTION
 do
     case "$OPTION" in
-        t) restsh.util.check.string "Task host" "$OPTARG" && TASK_HOST=$OPTARG ;;
+        t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
         w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -43,8 +43,8 @@ then
     exit 2
 fi
 
-restsh.util.check.string "project" "$1" && PROJECT=$1
-restsh.util.check.string "branch" "$2" && BRANCH=$(restsh.util.lc "$2")
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=push" \
     -s "TASK_HOST=$TASK_HOST" "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"

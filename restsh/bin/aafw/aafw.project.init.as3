@@ -25,7 +25,7 @@ DST=""
 while getopts ':d:h' OPTION
 do
     case "$OPTION" in
-        d) restsh.util.check.string "Parent folder" "$OPTARG" && DST=$OPTARG ;;
+        d) restsh.util.check.string "Parent folder" "$OPTARG"; DST=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -40,8 +40,8 @@ then
     exit 2
 fi
 
-restsh.util.check.string "as3skeleton uri" "$1" && SKELETON_URI="$1"
-restsh.util.check.string "clone uri" "$2" && CLONE_URI="$2"
+restsh.util.check.string "as3skeleton uri" "$1"; SKELETON_URI="$1"
+restsh.util.check.string "clone uri" "$2"; CLONE_URI="$2"
 DIR=$(basename "$CLONE_URI" .git)
 [ -n "$DST" ] || DST="$RESTSH_TMP"
 

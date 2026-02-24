@@ -26,7 +26,7 @@ PIPELINE_TYPE=""
 while getopts ':d:ht:' OPTION
 do
     case "$OPTION" in
-        d) restsh.util.check.string "Parent folder" "$OPTARG" && DST=$OPTARG ;;
+        d) restsh.util.check.string "Parent folder" "$OPTARG"; DST=$OPTARG ;;
         t) PIPELINE_TYPE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -51,7 +51,7 @@ then
     exit 2
 fi
 
-restsh.util.check.string "clone uri" "$1" && CLONE_URI="$1"
+restsh.util.check.string "clone uri" "$1"; CLONE_URI="$1"
 DIR=$(basename "$CLONE_URI" .git)
 [ -n "$DST" ] || DST="$RESTSH_TMP"
 

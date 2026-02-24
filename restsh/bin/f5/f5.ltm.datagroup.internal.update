@@ -41,8 +41,8 @@ then
     exit 2
 fi
 
-restsh.util.check.string "fullPath" "$1" && FULLPATH=$1
-restsh.util.check.string "input file" "$2" && INFILE=$2
+restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
+restsh.util.check.string "input file" "$2"; INFILE=$2
 
 RECORDS=$(f5.ltm.datagroup.internal.get_records_from_file "${PARSE_OPTS[@]}" "$INFILE")
 if [ -z "$RECORDS" ]
