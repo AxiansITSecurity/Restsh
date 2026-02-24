@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Clones an empty repository and initializes it for DO.
 # Desc:
@@ -24,7 +25,7 @@ DST=""
 while getopts ':d:h' OPTION
 do
     case "$OPTION" in
-        d) DST=$OPTARG ;;
+        d) restsh.util.check.string "Parent folder" "$OPTARG" && DST=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -33,13 +34,14 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    echo "Usage: $(basename "$0") [-d <folder>] <doskeleton uri> <clone uri>"
-    echo -e "\t-d <folder>  Parent folder for cloned repository."
+    echo "Usage: $(basename "$0") [otions...] <doskeleton uri> <clone uri>"
+    echo "Options:"
+    echo "    -d <folder>  Parent folder for cloned repository."
     exit 2
 fi
 
-SKELETON_URI="$1"
-CLONE_URI="$2"
+restsh.util.check.string "doskeleton uri" "$1" && SKELETON_URI="$1"
+restsh.util.check.string "clone uri" "$2" && CLONE_URI="$2"
 DIR=$(basename "$CLONE_URI" .git)
 [ -n "$DST" ] || DST="$RESTSH_TMP"
 

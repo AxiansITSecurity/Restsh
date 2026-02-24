@@ -41,7 +41,7 @@ do
         i) INTERACTIVE=1 ;;
         n) VARIABLES_REWRITE=0 ;;
         p) PUSH=1 ;;
-        v) VARIABLES_FILE="$OPTARG" ;;
+        v) restsh.util.check.string "Variables file" "$OPTARG" && VARIABLES_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done

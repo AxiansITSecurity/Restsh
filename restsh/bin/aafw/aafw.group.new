@@ -25,7 +25,7 @@ TEMPLATE_DIR="$RESTSH_PATH/templates/aafw"
 while getopts ':ht:' OPTION
 do
     case "$OPTION" in
-        t) TEMPLATE_DIR=$OPTARG ;;
+        t) restsh.util.check.string "Template folder" "$OPTARG" && TEMPLATE_DIR=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,8 +35,9 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [-t <template folder>] <group path>"
-    echo -e "\t-t <template folder>, default: $RESTSH_PATH/templates/aafw"
+    echo "Usage: $(basename "$0") [options...] <group path>"
+    echo "Options:"
+    echo "    -t <template folder>, default: $RESTSH_PATH/templates/aafw"
     exit 2
 fi
 

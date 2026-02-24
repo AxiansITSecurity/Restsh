@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-29
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Clones an empty repository and initializes it for certificate lifecycle management.
 # Desc:
@@ -26,7 +26,7 @@ PIPELINE_TYPE=""
 while getopts ':d:ht:' OPTION
 do
     case "$OPTION" in
-        d) DST=$OPTARG ;;
+        d) restsh.util.check.string "Parent folder" "$OPTARG" && DST=$OPTARG ;;
         t) PIPELINE_TYPE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -51,7 +51,7 @@ then
     exit 2
 fi
 
-CLONE_URI="$1"
+restsh.util.check.string "clone uri" "$1" && CLONE_URI="$1"
 DIR=$(basename "$CLONE_URI" .git)
 [ -n "$DST" ] || DST="$RESTSH_TMP"
 

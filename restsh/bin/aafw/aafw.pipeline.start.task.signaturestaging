@@ -27,7 +27,7 @@ while getopts ':at:w' OPTION
 do
     case "$OPTION" in
         a) ENFORCE_ALL=1 ;;
-        t) TASK_HOST=$OPTARG ;;
+        t) restsh.util.check.string "Task host" "$OPTARG" && TASK_HOST=$OPTARG ;;
         w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -46,8 +46,8 @@ then
     exit 2
 fi
 
-PROJECT=$1
-BRANCH=$(restsh.util.lc "$2")
+restsh.util.check.string "project" "$1" && PROJECT=$1
+restsh.util.check.string "branch" "$2" && BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
     -s "TASK=signature_staging" -s "TASK_HOST=$TASK_HOST" \
