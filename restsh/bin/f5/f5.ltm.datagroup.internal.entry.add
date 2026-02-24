@@ -36,9 +36,9 @@ then
     exit 2
 fi
 
-FULLPATH=$1
-KEY=$2
-VALUE=$3
+restsh.util.check.string "fullPath" "$1" && FULLPATH=$1
+restsh.util.check.string "key" "$2" && KEY=$2
+restsh.util.check.string "value" "$3" && VALUE=$3
 OPTIONS=$(restsh.util.urlencode "records add { \"$KEY\" { data \"$VALUE\" } }")
 
 PATCH "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}?options=${OPTIONS}" <<< "{}"

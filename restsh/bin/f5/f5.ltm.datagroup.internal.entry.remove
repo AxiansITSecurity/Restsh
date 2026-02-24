@@ -36,8 +36,8 @@ then
     exit 2
 fi
 
-FULLPATH=$1
-KEY=$2
+restsh.util.check.string "fullPath" "$1" && FULLPATH=$1
+restsh.util.check.string "key" "$2" && KEY=$2
 OPTIONS=$(restsh.util.urlencode "records delete { \"$KEY\" }")
 
 PATCH "/mgmt/tm/ltm/data-group/internal/${FULLPATH//\//\~}?options=${OPTIONS}" <<< "{}"

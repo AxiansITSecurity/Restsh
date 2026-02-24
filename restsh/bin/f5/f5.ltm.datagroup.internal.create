@@ -42,9 +42,9 @@ then
     exit 2
 fi
 
-FULLPATH=$1
-TYPE=$2
-INFILE=$3
+restsh.util.check.string "fullPath" "$1" && FULLPATH=$1
+restsh.util.check.string "type" "$2" && TYPE=$2
+restsh.util.check.string "input file" "$3" && INFILE=$3
 read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
 
 RECORDS=$(f5.ltm.datagroup.internal.get_records_from_file "${PARSE_OPTS[@]}" "$INFILE")
