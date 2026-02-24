@@ -759,15 +759,19 @@ restsh.util.check.string() {
     fi
     local NAME="$1"
     local PARAM="$2"
+    if [[ -z "$PARAM" ]]
+    then
+        return 0
+    fi
     if [[ "${PARAM:0:1}" == "-" ]]
     then
-        echo_err "Invalid value for \"$NAME\": Must not start with hyphen."
+        echo_err "Invalid value for \"$NAME\": \"$PARAM\", must not start with hyphen."
         return 1
     fi
     local REGEX='^[a-zA-Z0-9_=.:/ ~+-]*$'
     if [[ ! "$PARAM" =~ $REGEX ]]
     then
-        echo_err "Invalid value for \"$NAME\": Must match: $REGEX"
+        echo_err "Invalid value for \"$NAME\": \"$PARAM\", must match: $REGEX"
         return 1
     fi
 }
