@@ -320,7 +320,7 @@ test.restsh.util.check.string() {
     # Usage info
     restsh.util.check.string -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.check.string "all special chars" "a-zA-Z0-9_=./ ~+-"
+    restsh.util.check.string "all special chars" "a-zA-Z0-9_=.:/ @~+-"
     # Negative test
     if restsh.util.check.string "invalid special chars" "sdf(asdf)"; then return 1; fi
     if restsh.util.check.string "start with hyphen" "-sdf"; then return 1; fi
