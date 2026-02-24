@@ -76,9 +76,9 @@ then
     exit 2
 fi
 
-PROJECT=$1
-BRANCH=$2
-CERT=$3
+restsh.util.check.string "project path" "$1" && PROJECT=$1
+restsh.util.check.string "branch" "$2" && BRANCH=$2
+restsh.util.check.string "certificate name" "$3" && CERT=$3
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 if [ -n "$KEY_ALG" ]
