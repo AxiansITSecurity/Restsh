@@ -64,9 +64,9 @@ then
     exit 2
 fi
 
-PROJECT_PATH=$1
-APP_NAME=$2
-TEMPLATE=$3
+restsh.util.check.string "project path" "$1" && PROJECT_PATH=$1
+restsh.util.check.string "app name" "$1" && APP_NAME=$2
+restsh.util.check.string "template" "$1" && TEMPLATE=$3
 
 if ! restsh.util.check.isvarname "$APP_NAME"
 then
