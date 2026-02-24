@@ -262,6 +262,7 @@ test.restsh.util.json_validate() {
     restsh.util.json_validate -h > /dev/null 2>&1 || true
     # Test
     restsh.util.json_validate < test/files/valid.json
+    # Negative test
     if ! restsh.util.json_validate < test/files/invalid.json; then true; else false; fi
 }
 
@@ -270,6 +271,7 @@ test.restsh.util.check.notempty() {
     restsh.util.check.notempty -h > /dev/null 2>&1 || true
     # Test
     restsh.util.check.notempty "test"
+    # Negative test
     if ! restsh.util.check.notempty " "; then true; else false; fi
     if ! restsh.util.check.notempty "null"; then true; else false; fi
 }
@@ -296,6 +298,7 @@ test.restsh.util.check.isnumber() {
     restsh.util.check.isnumber -h > /dev/null 2>&1 || true
     # Test
     restsh.util.check.isnumber "10"
+    # Negative test
     if ! restsh.util.check.isnumber " 10"; then true; else false; fi
     if ! restsh.util.check.isnumber "test"; then true; else false; fi
 }
@@ -306,9 +309,21 @@ test.restsh.util.check.isvarname() {
     # Test
     restsh.util.check.isvarname "testvar"
     restsh.util.check.isvarname "TEST_VAR"
+    # Negative test
     if ! restsh.util.check.isvarname "1abc"; then true; else false; fi
     if ! restsh.util.check.isvarname " 10"; then true; else false; fi
     if ! restsh.util.check.isvarname "te-st"; then true; else false; fi
+    if ! restsh.util.check.isvarname "1test"; then true; else false; fi
+}
+
+test.restsh.util.check.string() {
+    # Usage info
+    restsh.util.check.string -h > /dev/null 2>&1 || true
+    # Test
+    restsh.util.check.string "all special chars" "a-zA-Z0-9_=./ ~+-"
+    # Negative test
+    if restsh.util.check.string "invalid special chars" "sdf(asdf)"; then return 1; fi
+    if restsh.util.check.string "start with hyphen" "-sdf"; then return 1; fi
 }
 
 test.restsh.util.filesize() {
@@ -550,6 +565,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.check.varnotempty
     test.restsh.util.check.isnumber
     test.restsh.util.check.isvarname
+    test.restsh.util.check.string
     test.restsh.util.declare.var
     test.restsh.util.filesize
     test.restsh.util.array.includes

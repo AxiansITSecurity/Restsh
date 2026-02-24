@@ -735,12 +735,37 @@ restsh.util.check.isvarname() {
     then
         return 1
     fi
-    local REGEX='^[0-9a-zA-Z_]+$'
+    local REGEX='^[a-zA-Z][0-9a-zA-Z_]+$'
     if [[ "$VALUE" =~ $REGEX ]]
     then
         return 0
     fi
     return 1
+}
+
+# Validates a value.
+restsh.util.check.string() {
+    if [[ $# -ne 2 ]] || [[ "${1}" == "-h" ]]
+    then
+        {
+            echo "Validates a value."
+            echo "Usage: restsh.value.validate <name> <value>"
+        } 1>&2
+        return 2
+    fi
+    local NAME="$1"
+    local PARAM="$2"
+    if [[ "${PARAM:0:1}" == "-" ]]
+    then
+        echo_err "Invalid value for \"$NAME\": Must not start with hyphen."
+        return 1
+    fi
+    local REGEX='^[a-zA-Z0-9_=./ ~+-]*$'
+    if [[ ! "$PARAM" =~ $REGEX ]]
+    then
+        echo_err "Invalid value for \"$NAME\": Must match: $REGEX"
+        return 1
+    fi
 }
 
 # Get file size
@@ -992,6 +1017,7 @@ export -f restsh.util.check.notempty
 export -f restsh.util.check.varnotempty
 export -f restsh.util.check.isnumber
 export -f restsh.util.check.isvarname
+export -f restsh.util.check.string
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
 export -f restsh.util.array.includes

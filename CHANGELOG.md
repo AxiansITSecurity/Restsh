@@ -8,6 +8,7 @@ This is the changelog for Restsh.
 
 - General
     - Feat: `restsh.passphrase`
+    - Feat: Add `restsh.util.check.string` to validate values like filenames, paths, etc.
     - Upd: Add restsh.setup alias
     - Upd: `restsh.util.setvar` - Add check for valid filenames
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
