@@ -524,13 +524,17 @@ restsh.util.setvars() {
     do
         restsh.util.setvar "$DEF"
     done < <(find "$DIR" "${FIND_OPTS[@]}" -type f -name \*.txt -or -name \*.array)
-    # Warn for invalid files
+    # Warn for skipped files
     local INVALID
     INVALID=$(find "$DIR" -type f -printf "%f\n" | grep -Pv '^((\w+)\.(array|txt|inc)|\.gitkeep)$' || true)
     if [ -n "$INVALID" ]
     then
-        echo_warn "Invalid configuration files found in folder \"$DIR\":"
-        echo_warn "$INVALID"
+        echo_warn "Skipped files in folder \"$DIR\":"
+        local FILE
+        for FILE in "${INVALID[@]}"
+        do
+            echo_warn "- \"$FILE\""
+        done
     fi
 }
 
@@ -559,8 +563,8 @@ restsh.util.setvar() {
     local FILENAME="${FILE##*/}"
     local BASENAME="${FILENAME%.*}"
     local EXT="${FILENAME##*.}"
-    local REGEXP_VARNAME='^[_[:alnum:]][_[:alnum:]]*$';
-    if ! [[ "$BASENAME" =~ $REGEXP_VARNAME ]]
+    local REGEX='^[a-zA-Z][0-9a-zA-Z_]+$'
+    if ! [[ "$BASENAME" =~ $REGEX ]]
     then
         echo_err "Invalid characters in filename."
         echo_err "Must contain only alphanumeric characters and underscores."
