@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-03
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Test suite for restsh.
 # Desc:
@@ -31,11 +32,6 @@ export RESTSH_SECRET
 
 # Groups of tests
 declare -A ALL_GROUPS
-ALL_GROUPS["aafw"]="TESTS_AAFW"
-ALL_GROUPS["cert"]="TESTS_CERT"
-ALL_GROUPS["f5"]="TESTS_F5"
-ALL_GROUPS["f5os"]="TESTS_F5"
-ALL_GROUPS["gitlab"]="TESTS_GITLAB"
 ALL_GROUPS["restsh"]="TESTS_RESTSH"
 
 . "$SCRIPTPATH/restsh.util"
@@ -43,11 +39,6 @@ ALL_GROUPS["restsh"]="TESTS_RESTSH"
 . "$SCRIPTPATH/mo.f5.as3"
 . "$SCRIPTPATH/mo.functions"
 
-TESTS_AAFW=()
-TESTS_CERT=()
-TESTS_F5=()
-TESTS_F5OS=()
-TESTS_GITLAB=()
 TESTS_RESTSH=(
     "${TESTS_RESTSH_UTIL[@]}"
     "${TESTS_F5_COMMON[@]}"
