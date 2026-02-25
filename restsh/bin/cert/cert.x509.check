@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Checks if the certificate is issued for specific hostname and will not expire within 7 days.
+# Shortdesc: Checks if the certificate is issued for specific hostname and will not expire within next 7 days.
 # Desc:
-# Checks if the certificate is issued for specific hostname and will not expire within 7 days.
+# Checks if the certificate is issued for specific hostname and will not expire within next 7 days.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -34,7 +34,9 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <x509 cert file> <hostname>"
+    echo "Usage: $(basename "$0") [options...] <x509 cert file> <hostname>"
+    echo "Options":
+    echo "    -e <seconds> Remaining term in seconds"
     exit 2
 fi
 
