@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists the certificates in a cert bundle file.
 # Desc:
@@ -35,5 +36,5 @@ then
     exit 2
 fi
 
-CHAIN_FILE=$1
-openssl crl2pkcs7 -nocrl -certfile "$CHAIN_FILE" | openssl pkcs7 -print_certs -noout
+restsh.util.check.string "bundle path" "$1"; BUNDLE_FILE=$1
+openssl crl2pkcs7 -nocrl -certfile "$BUNDLE_FILE" | openssl pkcs7 -print_certs -noout

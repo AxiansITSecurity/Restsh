@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-08-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a CSR for a key pair.
 # Desc:
@@ -71,8 +72,8 @@ then
     usage
 fi
 
-KEY_FILE=$1
-CSR_FILE=$2
+restsh.util.check.string "key file" "$1"; KEY_FILE=$1
+restsh.util.check.string "csr file" "$2"; CSR_FILE=$2
 CSR_CONFIG="$RESTSH_TMP/csr.cnf"
 
 cat > "$CSR_CONFIG" << EOL

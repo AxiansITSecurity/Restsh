@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Shows the public key of a x509 certificate.
 # Desc:
@@ -35,5 +36,5 @@ then
     exit 2
 fi
 
-CERT_FILE=$1
+restsh.util.check.string "x509 cert file" "$1"; CERT_FILE=$1
 openssl x509 -in "$CERT_FILE" -noout -pubkey

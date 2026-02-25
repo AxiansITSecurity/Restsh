@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Splits a cert bundle file.
 # Desc:
@@ -39,9 +40,9 @@ then
     exit 2
 fi
 
-CHAIN_FILE=$1
+restsh.util.check.string "bundle path" "$1"; BUNDLE_FILE=$1
 TMP_DIR=$(mktemp -d -p "$RESTSH_TMP")
-csplit -k -z -f "${TMP_DIR}/cert" "${CHAIN_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>&1 || true
+csplit -k -z -f "${TMP_DIR}/cert" "${BUNDLE_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>&1 || true
 for CERT in "${TMP_DIR}"/cert*; do
     if CN=$(openssl x509 -in "$CERT" -noout -subject -nameopt compat \
         | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|' -e 's|/|_|g' -e 's| |_|g')

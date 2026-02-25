@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-29
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Shows details of a CSR.
 # Desc:
@@ -35,6 +36,6 @@ then
     exit 2
 fi
 
-CSR_FILE=$1
+restsh.util.check.string "csr file" "$1"; CSR_FILE=$1
 
 openssl req -in "$CSR_FILE" -text
