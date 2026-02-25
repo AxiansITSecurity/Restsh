@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a backup.
 # Desc:
@@ -35,7 +36,7 @@ then
     echo "Usage: $(basename "$0") <backup filename>"
     exit 2
 fi
-FILENAME=$1
+restsh.util.check.string "backup filename" "$1"; FILENAME=$1
 
 # Main
 JQ -n --arg filename "$FILENAME" \

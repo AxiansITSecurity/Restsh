@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Downloads a file.
 # Desc:
@@ -35,8 +36,8 @@ then
     echo "Usage: $(basename "$0") <remote filepath> <local filepath>"
     exit 2
 fi
-FILEPATH_REMOTE=$1
-FILEPATH_LOCAL=$2
+restsh.util.check.string "remote filepath" "$1"; FILEPATH_REMOTE=$1
+restsh.util.check.string "local filepath" "$1"; FILEPATH_LOCAL=$2
 
 FILENAME_REMOTE=$(basename "$FILEPATH_REMOTE")
 FILEPATH_REMOTE=$(dirname "$FILEPATH_REMOTE")

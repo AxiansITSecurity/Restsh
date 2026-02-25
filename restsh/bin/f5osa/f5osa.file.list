@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists files.
 # Desc:
@@ -45,7 +46,7 @@ then
     echo "    mibs"
     exit 2
 fi
-FILEPATH=$1
+restsh.util.check.string "path" "$1"; FILEPATH=$1
 
 # Main
 RESULT=$(JQ -n --arg filepath "$FILEPATH" \

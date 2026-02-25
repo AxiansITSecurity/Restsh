@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-17
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes a file.
 # Desc:
@@ -35,7 +36,7 @@ then
     echo "Usage: $(basename "$0") <remote filepath>"
     exit 2
 fi
-FILEPATH=$1
+restsh.util.check.string "remote filepath" "$1"; FILEPATH=$1
 
 # Main
 JQ -n --arg filepath "$FILEPATH" \
