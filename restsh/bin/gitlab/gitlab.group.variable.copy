@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Copies all group CI/CD variables from one group to another.
 # Desc:
@@ -36,8 +37,8 @@ then
     exit 2
 fi
 
-SRC=$1
-DST=$2
+restsh.util.check.string "src group" "$1"; SRC=$1
+restsh.util.check.string "dst group" "$2"; DST=$2
 restsh.util.check.isnumber "$SRC" || SRC=$(restsh.util.urlencode "$SRC")
 restsh.util.check.isnumber "$DST" || DST=$(restsh.util.urlencode "$DST")
 

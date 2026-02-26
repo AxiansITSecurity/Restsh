@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Clones or pulls a GitLab group recursively.
 # Desc:
@@ -36,7 +37,7 @@ then
     echo "Usage: $(basename "$0") <group path>"
     exit 2
 fi
-TOP_GROUP=$1
+restsh.util.check.string "group path" "$1"; TOP_GROUP=$1
 
 clone_group() {
     local FETCH_GROUP=$1

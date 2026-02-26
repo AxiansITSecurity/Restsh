@@ -35,12 +35,12 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options] <group path>"
+    echo "Usage: $(basename "$0") [options] <group>"
     echo "Options":
     echo "    -e  Print names url encoded"
     exit 2
 fi
-TOP_GROUP=$1
+restsh.util.check.string "group" "$1"; TOP_GROUP=$1
 
 read_group() {
     local FETCH_GROUP=$1

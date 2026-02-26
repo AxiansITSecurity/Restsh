@@ -42,7 +42,7 @@ then
 fi
 
 OPTS=""
-GROUP=$1
+restsh.util.check.string "group" "$1"; GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
 if [ "$FORCE" -eq 1 ]

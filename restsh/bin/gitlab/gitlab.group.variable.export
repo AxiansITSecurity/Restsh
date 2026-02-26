@@ -37,8 +37,8 @@ then
     exit 2
 fi
 
-PROJECT=$1
-FILENAME=$2
+restsh.util.check.string "group" "$1"; PROJECT=$1
+restsh.util.check.string "filename" "$2"; FILENAME=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 if [ -f "$FILENAME" ]

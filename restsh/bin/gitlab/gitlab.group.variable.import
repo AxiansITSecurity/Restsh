@@ -37,8 +37,8 @@ then
     exit 2
 fi
 
-GROUP=$1
-FILENAME=$2
+restsh.util.check.string "group" "$1"; GROUP=$1
+restsh.util.check.string "filename" "$2"; FILENAME=$2
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
 while read -r LINE

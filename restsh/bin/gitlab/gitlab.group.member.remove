@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-08-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Adds a user to a group.
 # Desc:
@@ -36,10 +37,10 @@ then
     exit 2
 fi
 
-GROUP=$1
+restsh.util.check.string "group" "$1"; GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-USERID=$2
+restsh.util.check.string "user id" "$2"; USERID=$2
 restsh.util.check.isnumber "$USERID" || USERID=$(GET -r -f '.[].id' "/api/v4/users?username=$USERID")
 
 DELETE "$GITLAB_API_PREFIX/groups/$GROUP/members/$USERID"
