@@ -49,4 +49,7 @@ then
 fi
 
 DOWNLOAD "$GITLAB_API_PREFIX/projects/$PROJECT/jobs/$ID/artifacts" "$FILENAME"
-unzip -l "$FILENAME"
+if command -v unzip > /dev/null
+then
+    unzip -l "$FILENAME"
+fi
