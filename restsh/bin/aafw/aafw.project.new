@@ -48,8 +48,8 @@ do
             ;;
         e) restsh.util.check.string "Project settings json file" "$OPTARG"; RESTSH_AAFW_PROJECT_SETTINGS="$OPTARG" ;;
         i) INIT_PROJECT=$OPTARG ;;
-        l) mapfile -d, -t ACCESS_LEVEL <<< "$OPTARG" ;;
-        p) mapfile -d, -t PROTECTED_BRANCHES <<< "$OPTARG" ;;
+        l) mapfile -d, -t ACCESS_LEVEL < <(printf "%s" "$OPTARG") ;;
+        p) mapfile -d, -t PROTECTED_BRANCHES < <(printf "%s" "$OPTARG") ;;
         s) restsh.util.check.string "Skeleton path" "$OPTARG"; SKELETON_PATH=$OPTARG ;;
         t) CLM_TYPE=$OPTARG ;;
         *) OPTION="invalid"; break ;;
