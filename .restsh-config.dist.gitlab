@@ -45,6 +45,8 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 #[ -n "${RESTSH_CHUNK_SIZE+x}" ] || export RESTSH_CHUNK_SIZE="524288"
 
 # GitLab specific settings
+#[ -n "${GITLAB_TASK_CHECK_INTERVAL+x}" ] || export GITLAB_TASK_CHECK_INTERVAL=10
+#[ -n "${GITLAB_TASK_TIMEOUT+x}" ] || export GITLAB_TASK_TIMEOUT=18
 [ -n "${GITLAB_ENABLE_AUTOCOMPLETE+x}" ] || export GITLAB_ENABLE_AUTOCOMPLETE=1
 [ -n "${GITLAB_PER_PAGE+x}" ] || export GITLAB_PER_PAGE=250
 
