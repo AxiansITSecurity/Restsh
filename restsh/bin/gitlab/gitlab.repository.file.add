@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Adds a file to a GitLab repository.
+# Desc:
+# Adds a file to a GitLab repository.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+while getopts ':h' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 4 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") <project> <branch> <local filename> <remote filename>"
+    exit 2
+fi
+
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "branch" "$2"; BRANCH=$2
+restsh.util.check.string "local file" "$3"; LOCAL_FILE=$3
+restsh.util.check.string "local file" "$4"; REMOTE_FILE=$(restsh.util.urlencode "$4")
+
+restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+base64 "$LOCAL_FILE" > "$RESTSH_TMP/$REMOTE_FILE"
+trap 'rm -f -- "$RESTSH_TMP/$REMOTE_FILE"' EXIT
+
+JQ -n --rawfile content "$RESTSH_TMP/$REMOTE_FILE" \
+    '{
+        "branch": "draft",
+        "commit_message": "Create file",
+        "encoding": "base64",
+        "content": $content
+    }' | POST "$GITLAB_API_PREFIX/projects/${PROJECT}/repository/files/$REMOTE_FILE"
