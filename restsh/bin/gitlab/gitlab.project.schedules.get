@@ -32,8 +32,7 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project> <pipeline schedule id>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") <project> <pipeline schedule id>"
     exit 2
 fi
 PROJECT=$1
