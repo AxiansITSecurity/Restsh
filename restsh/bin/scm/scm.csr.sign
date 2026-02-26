@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-29
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Requests a certificate from SCM.
 # Desc:
@@ -22,11 +23,12 @@ fi
 usage() {
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") -o <id> -p <id> [options...] <csr file>"
-    echo -e "\t-a\tDNS Alternative Name"
-    echo -e "\t-o\tOrganization ID: GET /api/organization/v1"
-    echo -e "\t-p\tCertificate Profile ID: GET /api/ssl/v1/types"
-    echo -e "\t-t\tTerm, default 30 days - must be configured in the certificate profile"
+    echo "Usage: $(basename "$0") -o <org id> -p <profile id> [options...] <csr file>"
+    echo "Options:"
+    echo "    -a <name>        DNS Alternative Name"
+    echo "    -o <org id>      Organization ID: GET /api/organization/v1"
+    echo "    -p <profile id>  Certificate Profile ID: GET /api/ssl/v1/types"
+    echo "    -t <term>        Term, default 30 days - must be configured in the certificate profile"
     exit 2
 }
 
