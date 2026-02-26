@@ -11,6 +11,7 @@ This is the changelog for Restsh.
     - Fix: `f5.asm.event.list` - Always define filter
 - GitLab Module
     - Fix: Define and use GITLAB_TASK_CHECK_INTERVAL and GITLAB_TASK_TIMEOUT
+    - Fix: Handle more pipeline states in `gitlab.project.pipeline.latest.wait` and `gitlab.project.pipeline.start`
 
 ***
 
