@@ -48,8 +48,10 @@ do
     COUNTER=$((COUNTER+5))
     STATUS=$(gitlab.project.pipeline.latest -r "$PROJECT" "$BRANCH" | JQ -r '.status')
     case "$STATUS" in
-        success) exit 0 ;;
-        failed)  exit 1 ;;
+        success)  exit 0 ;;
+        manual)   exit 0 ;;
+        canceled) exit 1 ;;
+        failed)   exit 1 ;;
     esac
     if [ "$COUNTER" -ge "$TIMEOUT" ]
     then

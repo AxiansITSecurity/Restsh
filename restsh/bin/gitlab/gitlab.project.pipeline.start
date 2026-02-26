@@ -82,6 +82,11 @@ then
                     echo_err "Pipeline $ID failed"
                     exit 1
                     ;;
+                manual)
+                    echo ""
+                    echo_ok "Manual job created."
+                    exit 0
+                    ;;
                 success)
                     echo ""
                     echo_ok "Pipeline succeeded"
