@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-12
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all variables for a project pipeline.
 # Desc:
@@ -39,11 +40,11 @@ then
     exit 2
 fi
 
-PROJECT=$1
-PIPELINE=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.uint "pipeline id" "$2"; PIPELINE_ID=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$PIPELINE/variables")
+if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$PIPELINE_ID/variables")
 then
     if [ "$RAW" -eq 1 ]
     then

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-04-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Gets a pipeline schedules from a project.
 # Desc:
@@ -32,11 +33,11 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project> <pipeline schedule id>"
+    echo "Usage: $(basename "$0") <project> <schedule id>"
     exit 2
 fi
-PROJECT=$1
-ID=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.uint "schedule id" "$2"; ID=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipeline_schedules/$ID"

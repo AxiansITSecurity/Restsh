@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-07-22
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Transfer a project to a new group (namespace).
 # Desc:
@@ -37,8 +38,8 @@ then
     exit 2
 fi
 
-PROJECT=$1
-GROUP=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "group" "$2"; GROUP=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 JQ -n --arg group "$GROUP" \

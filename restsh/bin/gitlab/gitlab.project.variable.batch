@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-10-01
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates GitLab CI/CD project variables from a csv.
 # Desc:
@@ -39,8 +40,8 @@ then
   exit 2
 fi
 
-PROJECT=$1
-CSV=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "csv" "$2"; CSV=$2
 
 while IFS="," read -r KEY VALUE MASKED RAW DESC
 do

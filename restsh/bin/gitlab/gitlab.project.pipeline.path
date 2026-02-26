@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-10-21
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Sets the pipeline file path.
 # Desc:
@@ -35,14 +35,14 @@ if [ "$OPTION" = "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project> <path>"
+    echo "Usage: $(basename "$0") [options...] <project> <pipeline file>"
     echo "Options:"
     echo "    -r Raw output."
     exit 2
 fi
 
-PROJECT=$1
-PIPELINE_FILE=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "pipeline file" "$2"; PIPELINE_FILE=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 RESULT=$(JQ -n --arg pipeline_file "$PIPELINE_FILE" \

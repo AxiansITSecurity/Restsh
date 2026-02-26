@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-04-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a schedule for a project pipeline.
 # Desc:
@@ -42,8 +43,9 @@ then
     echo "    -z <timezone>      Set the timezone for cron, default: Europe/Berlin"
     exit 2
 fi
-PROJECT=$1
-BRANCH=$2
+
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "branch" "$2"; BRANCH=$2
 CRON=$3
 DESC=$4
 

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-01-28
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all pipelines for a projects.
 # Desc:
@@ -40,14 +41,14 @@ then
     exit 2
 fi
 
-PROJECT=$1
-BRANCH=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "branch" "$2"; BRANCH=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 PAGE=0
 if [ -n "${3+x}" ]
 then
-    PAGE=$3
+    restsh.util.check.uint "page" "$3"; PAGE=$3
 fi
 
 if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/?ref=$BRANCH&page=$PAGE&per_page=${GITLAB_PER_PAGE}")

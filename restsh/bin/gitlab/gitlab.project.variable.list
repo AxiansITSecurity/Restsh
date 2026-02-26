@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-10-01
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all project CI/CD variables.
 # Desc:
@@ -40,13 +41,13 @@ then
     exit 2
 fi
 
-PROJECT=$1
+restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 PAGE=0
 if [ -n "${2+x}" ]
 then
-    PAGE=$2
+    restsh.util.check.uint "page" "$2"; PAGE=$2
 fi
 
 if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/variables?page=$PAGE&per_page=${GITLAB_PER_PAGE}")

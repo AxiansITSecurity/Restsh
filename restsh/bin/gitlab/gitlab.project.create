@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-08
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates an empty project.
 # Desc:
@@ -42,8 +43,8 @@ then
     exit 2
 fi
 
-NAMESPACE_ID=$1
-NAME=$2
+restsh.util.check.string "namespace id" "$1"; NAMESPACE_ID=$1
+restsh.util.check.string "name" "$2"; NAME=$2
 
 restsh.util.check.isnumber "$NAMESPACE_ID" || NAMESPACE_ID=$(gitlab.group.id "$NAMESPACE_ID")
 

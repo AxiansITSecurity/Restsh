@@ -47,7 +47,7 @@ restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 PAGE=0
 if [ -n "${2+x}" ]
 then
-    PAGE=$2
+    restsh.util.check.uint "page" "$2"; PAGE=$2
 fi
 
 if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/subgroups?page=$PAGE&per_page=${GITLAB_PER_PAGE}")

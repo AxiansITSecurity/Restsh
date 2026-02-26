@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-08-05
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Rename a project and it's path.
 # Desc:
@@ -37,8 +38,8 @@ then
     exit 2
 fi
 
-PROJECT=$1
-NAME=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "name" "$2"; NAME=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 JQ -n --arg name "$NAME" \

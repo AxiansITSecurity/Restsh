@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Gets a project id by path.
 # Desc:
@@ -35,7 +36,7 @@ then
     echo "Usage: $(basename "$0") <project path>"
     exit 2
 fi
-PROJECT=$1
+restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 GET -r -f '.id' "$GITLAB_API_PREFIX/projects/$PROJECT"

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Starts a manual job.
 # Desc:
@@ -39,8 +40,8 @@ then
     exit 2
 fi
 
-PROJECT=$1
-ID=$2
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.uint "job id" "$2"; ID=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 if [ "$RAW" -eq 1 ]

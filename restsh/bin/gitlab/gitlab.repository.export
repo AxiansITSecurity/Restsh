@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Exports a repository.
 # Desc:
@@ -35,8 +36,8 @@ then
     exit 2
 fi
 
-PROJECT=$(restsh.util.urlencode "$1")
-OUT_FILE="$2"
+restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+restsh.util.check.string "output filename" "$2"; OUT_FILE="$2"
 
 DOWNLOAD "$GITLAB_API_PREFIX/projects/$PROJECT/repository/archive.tar.gz" "$OUT_FILE"

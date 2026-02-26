@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-09-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists jobs for a runner.
 # Desc:
@@ -39,7 +40,7 @@ then
     echo "    -r Raw output."
     exit 2
 fi
-ID=$1
+restsh.util.check.uint "runner id" "$1"; RUNNER_ID=$1
 
 PAGE=0
 if [ -n "${1+x}" ]
@@ -47,7 +48,7 @@ then
     PAGE=$1
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/runners/$ID/jobs?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+if RESULT=$(GET "$GITLAB_API_PREFIX/runners/$RUNNER_ID/jobs?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
 then
     if [ "$RAW" -eq 1 ]
     then

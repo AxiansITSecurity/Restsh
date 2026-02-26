@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-08-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Adds a user to a project.
 # Desc:
@@ -45,10 +46,10 @@ then
     exit 2
 fi
 
-PROJECT=$1
+restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
-USERNAME=$2
-ACCESS_LEVEL=$3
+restsh.util.check.string "username" "$1"; USERNAME=$2
+restsh.util.check.uint "access level" "$3"; ACCESS_LEVEL=$3
 
 JQ -n --arg username "$USERNAME" \
     --argjson access_level "$ACCESS_LEVEL" \

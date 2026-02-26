@@ -36,6 +36,6 @@ then
     echo "Usage: $(basename "$0") <runner id>"
     exit 2
 fi
-restsh.util.check.uint "runner id" "$2"; RUNNER_ID=$1
+restsh.util.check.uint "runner id" "$1"; RUNNER_ID=$1
 
 DELETE "$GITLAB_API_PREFIX/runners/$RUNNER_ID"

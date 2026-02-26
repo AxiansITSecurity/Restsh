@@ -41,7 +41,7 @@ then
 fi
 
 OPTS=""
-PROJECT=$1
+restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 if [ "$FORCE" -eq 1 ]

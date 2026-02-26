@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-10-21
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Forks a project.
 # Desc:
@@ -36,15 +36,15 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <fork path>"
+    echo "Usage: $(basename "$0") [options...] <project> <fork>"
     echo "Options"
     echo "    -d Remove fork relationship"
     exit 2
 fi
 
-PROJECT=$1
+restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
-FORK=$2
+restsh.util.check.string "fork" "$2"; FORK=$2
 
 NAME=$(basename "$FORK")
 GROUP=$(dirname "$FORK")
