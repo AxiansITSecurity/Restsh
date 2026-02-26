@@ -47,8 +47,9 @@ base64 "$LOCAL_FILE" > "$RESTSH_TMP/$REMOTE_FILE"
 trap 'rm -f -- "$RESTSH_TMP/$REMOTE_FILE"' EXIT
 
 JQ -n --rawfile content "$RESTSH_TMP/$REMOTE_FILE" \
+    --arg branch "$BRANCH" \
     '{
-        "branch": "draft",
+        "branch": $branch,
         "commit_message": "Create file",
         "encoding": "base64",
         "content": $content
