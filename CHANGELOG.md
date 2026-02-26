@@ -9,6 +9,8 @@ This is the changelog for Restsh.
 - General
     - Feat: `restsh.passphrase`
     - Feat: Add `restsh.util.check.string` to validate values like filenames, paths, etc.
+    - Feat: Add `restsh.util.check.uint` to validate unsigned integer values
+    - Feat: Add `restsh.util.check.bool` to validate boolean values
     - Upd: Add restsh.setup alias
     - Upd: `restsh.util.setvar` - Add check for valid filenames
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
@@ -23,6 +25,7 @@ This is the changelog for Restsh.
     - Upd: `f5.ltm.datagroup.internal.create`, `f5.ltm.datagroup.internal.update` - Add option for CSV separator
     - Fix: `f5.asm.template.import` - Delete uploaded file after import
 - GitLab Module
+    - Feat: `gitlab.repository.file.add`
     - Feat: `gitlab.group.path`, `gitlab.project.path`
     - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
     - Upd: `gitlab.group.delete`, `gitlab.project.delete` - Support id's
