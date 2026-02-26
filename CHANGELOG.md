@@ -25,6 +25,7 @@ This is the changelog for Restsh.
     - Upd: `f5.ltm.datagroup.internal.create`, `f5.ltm.datagroup.internal.update` - Add option for CSV separator
     - Fix: `f5.asm.template.import` - Delete uploaded file after import
 - GitLab Module
+    - Feat: `gitlab.project.get`
     - Feat: `gitlab.repository.file.add`
     - Feat: `gitlab.group.path`, `gitlab.project.path`
     - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
