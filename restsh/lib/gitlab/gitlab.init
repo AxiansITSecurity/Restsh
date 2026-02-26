@@ -33,3 +33,7 @@ fi
 
 # Pagination
 [ -n "${GITLAB_PER_PAGE+x}" ] || export GITLAB_PER_PAGE=250
+
+# Task timeout
+[ -n "${GITLAB_TASK_CHECK_INTERVAL+x}" ] || export GITLAB_TASK_CHECK_INTERVAL=10
+[ -n "${GITLAB_TASK_TIMEOUT+x}" ] || export GITLAB_TASK_TIMEOUT=18
