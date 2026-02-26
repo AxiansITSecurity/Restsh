@@ -82,7 +82,7 @@ then
         if [ "$I" -eq 10 ]
         then
             echo_err "Timeout waiting for merge request $MRID to appear"
-            break
+            exit 1
         fi
         sleep "$I"
     done
