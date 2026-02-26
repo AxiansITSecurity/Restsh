@@ -79,7 +79,7 @@ then
     while ! gitlab.mr.automerge "$ORG_PROJECT" "$MRID" "$TITLE" 2>/dev/null
     do
         I=$((I+1))
-        if [ "$I" -eq 5 ]
+        if [ "$I" -eq 10 ]
         then
             echo_err "Timeout waiting for merge request $MRID to appear"
             break
