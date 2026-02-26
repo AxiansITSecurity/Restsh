@@ -724,6 +724,47 @@ restsh.util.check.isnumber() {
     return 1
 }
 
+# Returns 1 if value is not an unsigned integer
+restsh.util.check.uint() {
+    if [[ $# -ne 2 ]] || [[ "${1}" == "-h" ]]
+    then
+        {
+            echo "Returns 1 if value is not an unsigned integer"
+            echo "Usage: restsh.util.check.uint <name> <value>"
+        } 1>&2
+        return 2
+    fi
+    local NAME="$1"
+    local PARAM="$2"
+    local REGEX_NUM='^[0-9]+$'
+    if [[ "$PARAM" =~ $REGEX_NUM ]]
+    then
+        return 0
+    fi
+    echo_err "Invalid value for \"$NAME\": \"$PARAM\", must be a positive integer."
+    return 1
+}
+
+# Returns 1 if value is not a boolean
+restsh.util.check.bool() {
+    if [[ $# -ne 2 ]] || [[ "${1}" == "-h" ]]
+    then
+        {
+            echo "Returns 1 if value is not a boolean"
+            echo "Usage: restsh.util.check.bool <name> <value>"
+        } 1>&2
+        return 2
+    fi
+    local NAME="$1"
+    local PARAM="$2"
+    if [[ "$PARAM" = "true" ]] || [[ "$PARAM" = "false" ]]
+    then
+        return 0
+    fi
+    echo_err "Invalid value for \"$NAME\": \"$PARAM\", must be \"true\" or \"false\"."
+    return 1
+}
+
 # Returns 1 if value is not a valid variable name
 restsh.util.check.isvarname() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
@@ -1023,6 +1064,8 @@ export -f restsh.util.urlencode
 export -f restsh.util.json_validate
 export -f restsh.util.check.notempty
 export -f restsh.util.check.varnotempty
+export -f restsh.util.check.uint
+export -f restsh.util.check.bool
 export -f restsh.util.check.isnumber
 export -f restsh.util.check.isvarname
 export -f restsh.util.check.string

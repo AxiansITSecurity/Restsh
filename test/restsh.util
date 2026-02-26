@@ -326,6 +326,25 @@ test.restsh.util.check.string() {
     if restsh.util.check.string "start with hyphen" "-sdf"; then return 1; fi
 }
 
+test.restsh.util.check.uint() {
+    # Usage info
+    restsh.util.check.uint -h > /dev/null 2>&1 || true
+    # Test
+    restsh.util.check.uint "uint" "42"
+    # Negative test
+    if restsh.util.check.uint "invalid" "4iinvalid"; then return 1; fi
+}
+
+test.restsh.util.check.bool() {
+    # Usage info
+    restsh.util.check.bool -h > /dev/null 2>&1 || true
+    # Test
+    restsh.util.check.bool "bool1" "true"
+    restsh.util.check.bool "bool2" "false"
+    # Negative test
+    if restsh.util.check.bool "invalid" "-sdf"; then return 1; fi
+}
+
 test.restsh.util.filesize() {
     # Usage info
     restsh.util.filesize -h > /dev/null 2>&1 || true
@@ -566,6 +585,8 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.check.isnumber
     test.restsh.util.check.isvarname
     test.restsh.util.check.string
+    test.restsh.util.check.uint
+    test.restsh.util.check.bool
     test.restsh.util.declare.var
     test.restsh.util.filesize
     test.restsh.util.array.includes
