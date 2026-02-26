@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-02-19
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a merge request.
 # Desc:
@@ -36,16 +37,16 @@ if [ "$#" -ne 4 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project> <source_branch> <target_branch> <title>"
+    echo "Usage: $(basename "$0") [options...] <project> <source branch> <target branch> <title>"
     echo "Options:"
     echo "    -m Set automerge"
     echo "    -r Raw output"
     exit 2
 fi
 
-PROJECT=$1
-SRC=$2
-TARGET=$3
+restsh.util.check.string "project" "$1"; PROJECT=$1
+restsh.util.check.string "source branch" "$2"; SRC=$2
+restsh.util.check.string "target branch" "$3"; TARGET=$3
 TITLE=$4
 
 ORG_PROJECT=$PROJECT

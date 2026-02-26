@@ -47,9 +47,9 @@ fi
 
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$2
-PUSH=$3
-MERGE=$4
-FORCE=$5
+restsh.util.check.uint "push" "$3"; PUSH=$3
+restsh.util.check.uint "merge" "$4"; MERGE=$4
+restsh.util.check.bool "force" "$5"; FORCE=$5
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
 JQ -n --arg branch "$BRANCH" \
