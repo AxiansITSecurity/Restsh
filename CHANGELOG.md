@@ -20,6 +20,7 @@ This is the changelog for Restsh.
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`
     - Feat: `f5.asm.template.update`
+    - Feat: `f5.asm.entity.filetypes-disallowed.remove`, `f5.asm.entity.urls-disallowed.remove`
     - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
     - Upd: `f5.ltm.datagroup.internal.list` - Add option for raw json output
     - Upd: `f5.ltm.datagroup.internal.create`, `f5.ltm.datagroup.internal.update` - Add option for CSV separator
