@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Removes an AS3 Tenant by posting an empty declaration.
 # Desc:
@@ -37,7 +38,7 @@ then
 fi
 
 # Mustache template definitions
-export TENANT_NAME=$1
+restsh.util.check.string "tenant name" "$1"; export TENANT_NAME=$1
 TEMPLATE="$RESTSH_PATH/templates/f5/as3/tenant.remove.json"
 
 # Include mustache
@@ -45,8 +46,8 @@ TEMPLATE="$RESTSH_PATH/templates/f5/as3/tenant.remove.json"
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
 # Main
-if ! TASK_ID=$($RESTSH_MO -- "$TEMPLATE" | POST "/mgmt/shared/appsvcs/declare?async=true" | \
-        jq -r ".id")
+if ! TASK_ID=$($RESTSH_MO -- "$TEMPLATE" | POST "/mgmt/shared/appsvcs/declare?async=true" \
+        | JQE -r ".id")
 then
     echo_err "Posting the declaration failed."
     exit 1

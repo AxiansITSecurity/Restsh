@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-03
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all applications in an AS3 tenant.
 # Desc:
@@ -34,20 +35,21 @@ if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <tenant>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...] <tenant name>"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
-TENANT=$1
+restsh.util.check.string "tenant name" "$1"; TENANT=$1
 
 # Main
 if RESULT=$(GET "/mgmt/shared/appsvcs/declare/${TENANT}/applications")
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ '.' <<< "$RESULT"
     else
-        $RESTSH_JQ -r 'keys[]' <<< "$RESULT" | grep -v schemaVersion
+        JQ -r 'keys[]' <<< "$RESULT" | grep -v schemaVersion
     fi
     exit 0
 fi

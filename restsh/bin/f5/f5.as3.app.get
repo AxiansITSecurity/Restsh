@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Gets an AS3 Application from a Tenant.
 # Desc:
@@ -34,11 +35,13 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-o <as3 declaration file>] <tenant> <app>"
+    echo "Usage: $(basename "$0") <tenant name> <app name>"
+    echo "Options:"
+    echo "    -o <AS3 declaration file>  Write declaration to file instead of STDOUT."
     exit 2
 fi
-TENANT=$1
-APP=$2
+restsh.util.check.string "tenant name" "$1"; TENANT=$1
+restsh.util.check.string "app name" "$2"; APP=$2
 
 # Main
 if RESULT=$(GET "/mgmt/shared/appsvcs/declare/${TENANT}/applications/${APP}")

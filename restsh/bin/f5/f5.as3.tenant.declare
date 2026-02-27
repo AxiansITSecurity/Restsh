@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Posts an AS3 declaration to declare a complete tenant, optionally runs mustache before.
 # Desc:
@@ -26,7 +27,7 @@ KEEP_TMP=0
 while getopts ':d:ks:tv' OPTION
 do
     case "$OPTION" in
-        d) DEFAULTS=$OPTARG ;;
+        d) restsh.util.check.string "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
         k) KEEP_TMP=1 ;;
         t) IS_TEMPLATE=1 ;;
         s) restsh.util.declare.var "$OPTARG" ;;
@@ -40,19 +41,21 @@ if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] [-sVAR=VALUE] <as3 declaration file>"
-    echo -e "\t-d\tDefine a custom variable file. Default is <as3 declaration file>.var."
-    echo -e "\t-k\tKeeps the temporary files."
-    echo -e "\t-s\tDefine a custom variable."
-    echo -e "\t-t\tProcess the as3 declaration file with mustache."
-    echo -e "\t-v\tValidate the declaration by the dry-run action."
+    echo "Usage: $(basename "$0") [options...] <AS3 declaration file>"
+    echo "Options:"
+    echo "    -d <defaults file>  Define a custom variable file. Default is <AS3 declaration file>.var."
+    echo "    -k                  Keeps the temporary files."
+    echo "    -sVAR=VALUE         Define a custom variable."
+    echo "    -t                  Process the AS3 declaration file with mustache."
+    echo "    -v                  Validate the declaration by the dry-run action."
     exit 2
 fi
-AS3_FILE=$1
+
+restsh.util.check.string "AS3 declaration file" "$1"; AS3_FILE=$1
 AS3_FILE_PARSED="$RESTSH_TMP/$(basename "$AS3_FILE")"
 
 # Cleanup tmp files
-[ "$KEEP_TMP" -eq 0 ] && trap 'rm -f -- "$AS3_FILE_PARSED"' EXIT
+[ "$KEEP_TMP" -eq 1 ] || trap 'rm -f -- "$AS3_FILE_PARSED"' EXIT
 
 # Main
 
@@ -88,8 +91,8 @@ fi
 
 # Post the declaration
 echo "Posting declaration"
-if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE_PARSED" | \
-        JQ -r ".id")
+if ! TASK_ID=$(POST -r "/mgmt/shared/appsvcs/declare?async=true" < "$AS3_FILE_PARSED" \
+       | JQE -r ".id")
 then
     echo_err "Posting the declaration failed."
     exit 1
@@ -98,7 +101,12 @@ fi
 # Wait for completed task
 if f5.as3.taskwait "$TASK_ID"
 then
-    echo_ok "AS3 Tenant declared successfully."
+    if [ "$DRY" -eq 1 ]
+    then
+        echo_ok "AS3 Tenant validated successfully."
+    else
+        echo_ok "AS3 Tenant declared successfully."
+    fi
     exit 0
 fi
 

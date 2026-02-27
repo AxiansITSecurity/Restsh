@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all AS3 Tenants.
 # Desc:
@@ -34,8 +35,9 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
 
@@ -44,9 +46,9 @@ if RESULT=$(GET "/mgmt/shared/appsvcs/declare/?filterClass=Tenant")
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ '.' <<< "$RESULT"
     else
-        $RESTSH_JQ -r 'keys[]' <<< "$RESULT"
+        JQ -r 'keys[]' <<< "$RESULT"
     fi
     exit 0
 fi
