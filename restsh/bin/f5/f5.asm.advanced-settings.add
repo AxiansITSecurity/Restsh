@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-09-03
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a new F5 ASM Advanced Setting (System Variable).
 # Desc:
@@ -38,7 +39,7 @@ then
     echo "-r  Raw output"
     exit 2
 fi
-NAME=$1
+restsh.util.check.string "name" "$1"; NAME=$1
 VALUE=$2
 
 # Main

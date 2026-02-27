@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-09-03
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all F5 ASM Advanced Settings (System Variables).
 # Desc:
@@ -34,8 +35,9 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
 
@@ -44,7 +46,7 @@ if RESULT=$(GET "/mgmt/tm/asm/advanced-settings?\$select=id,name,value,defaultVa
 then
     if [ "$RAW" -eq 1 ]
     then
-        echo "$RESULT"
+        JQ '.' <<< "$RESULT"
     else
         $RESTSH_JQ -r '.items[] | [.id,.name,.value,.defaultValue] | @tsv' <<< "$RESULT" | \
             COLUMN -o "|" -N "Id,Name,Value,DefaultValue"
