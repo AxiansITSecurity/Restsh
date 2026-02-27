@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
 # Shortdesc: Removes an entity from a F5 ASM Policy.
 # Desc:
 # Removes an entity from a F5 ASM Policy.
@@ -34,8 +36,8 @@ then
     exit 2
 fi
 
-POLICY=$1
-ENTITY=$2
+restsh.util.check.string "policy full path" "$1"; POLICY=$1
+restsh.util.check.string "entity" "$2"; ENTITY=$2
 FILTER=$3
 
 # Get the policy hash

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-09-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Adds an entity to a F5 ASM Policy.
 # Desc:
 # Adds an entity to a F5 ASM Policy.
+# Entities are: filetypes, urls, whitelist-ips, ...
 
 # Strict error handling
 set -eEu -o pipefail
@@ -24,8 +26,8 @@ DEFAULTS=""
 while getopts ':d:t:s:' OPTION
 do
     case "$OPTION" in
-        d) DEFAULTS=$OPTARG ;;
-        t) TEMPLATE=$OPTARG ;;
+        d) restsh.util.check.string "variables file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        t) restsh.util.check.string "template" "$OPTARG"; TEMPLATE=$OPTARG ;;
         s) restsh.util.declare.var "$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -36,12 +38,23 @@ if [ "$#" -lt 2 ] || [ "$OPTION" = "invalid" ] || [ -z "$TEMPLATE" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") -t <modify template> [-sVAR=VALUE] [-d variables file] <policy full path> <entity>"
+    echo "Usage: $(basename "$0") [options...] <policy full path> <entity>"
+    echo "Options:"
+    echo "    -t <template>         Template to use."
+    echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."
+    echo "    -sVAR=VALUE           Define a custom variable."
+    echo ""
     exit 2
 fi
 
-POLICY=$1
-ENTITY=$2
+restsh.util.check.string "policy full path" "$1"; POLICY=$1
+restsh.util.check.string "entity" "$2"; ENTITY=$2
+
+if [ -z "$TEMPLATE" ]
+then
+    echo_err "Mandatory option \"-t\" not specified."
+    exit 1
+fi
 
 if [ ! -f "$TEMPLATE" ]
 then

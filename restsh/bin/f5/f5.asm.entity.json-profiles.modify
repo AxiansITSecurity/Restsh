@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-01
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Sets the defense attributes of all json content profiles for specified ASM policy.
 # Desc:
@@ -23,12 +24,13 @@ TEMPLATE="$RESTSH_PATH/templates/f5/asm/json-profiles.defense-attributes.json"
 DEFAULTS="$RESTSH_PATH/templates/f5/asm/json-profiles.defense-attributes.var"
 ENTITY="json-profiles"
 
+OPTS=()
 while getopts ':d:t:s:' OPTION
 do
     case "$OPTION" in
-        d) DEFAULTS=$OPTARG ;;
-        t) TEMPLATE=$OPTARG ;;
-        s) restsh.util.declare.var "$OPTARG" ;;
+        d) restsh.util.check.string "variables file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        t) restsh.util.check.string "modify template" "$OPTARG"; TEMPLATE=$OPTARG ;;
+        s) OPTS+=("-s" "$OPTARG") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -40,20 +42,23 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") [-t <modify template>] [-d variables file] [-sVAR=VALUE] <policy full path>"
+    echo "$(basename "$0") [options...] <policy full path>"
+    echo "Options:"
+    echo "    -t <template>         Template to use, default is: $TEMPLATE"
+    echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."
+    echo "    -sVAR=VALUE           Define a custom variable."
     echo ""
-    echo "Template is: $TEMPLATE"
     echo "Defaults are:"
     sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
     exit 2
 fi
 
 # Main
-POLICY_NAME=$1
+restsh.util.check.string "policy full path" "$1"; POLICY_NAME=$1
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY_NAME")
 
 while read -r PROFILE
 do
-    f5.asm.entity.modify -t "$TEMPLATE" -d "$DEFAULTS" "$POLICY_NAME" "$ENTITY" "$PROFILE" \
+    f5.asm.entity.modify -t "$TEMPLATE" -d "$DEFAULTS" "${OPTS[@]}" "$POLICY_NAME" "$ENTITY" "$PROFILE" \
         | JQ -r ".name"
 done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY" | JQ -r ".items[] | .name")
