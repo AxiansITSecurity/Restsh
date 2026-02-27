@@ -36,6 +36,7 @@ then
     echo "Usage: $(basename "$0") <package full path>"
     exit 2
 fi
-PACKAGE=$1
+
+restsh.util.check.string "package full path" "$1"; PACKAGE=$1
 
 DELETE "/mgmt/tm/apm/client/image/${PACKAGE//\//\~}"
