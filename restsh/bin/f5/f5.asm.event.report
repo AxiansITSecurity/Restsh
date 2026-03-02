@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-19
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Export ASM Event Report in html.
 # Desc:
@@ -35,7 +36,7 @@ then
     exit 2
 fi
 
-SUPPORTID=$1
+restsh.util.check.string "support id" "$1"; SUPPORTID=$1
 FILENAME="ASM_security_event_report_${SUPPORTID}.html"
 
 TASK_ID=$($RESTSH_JQ -n --arg filename "$FILENAME" \
