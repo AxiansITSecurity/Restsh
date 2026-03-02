@@ -36,8 +36,8 @@ then
     exit 2
 fi
 
-TEMPLATE=$1
-FILENAME=$2
+restsh.util.check.string "template name" "$1"; TEMPLATE=$1
+restsh.util.check.string "filename" "$2"; FILENAME=$2
 BASENAME=$(basename "$2")
 
 if ! TEMPLATEID=$(f5.asm.template.getid "$TEMPLATE")

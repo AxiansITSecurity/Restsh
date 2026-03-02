@@ -33,12 +33,14 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <name>"
+    echo "Usage: $(basename "$0") <template name>"
     exit 2
 fi
 
+restsh.util.check.string "template name" "$1"; NAME=$1
+
 if ! TEMPLATE_ID=$(GET /mgmt/tm/asm/policy-templates \
-    | JQE -r '.items[] | select(.name == "'"$1"'") | .id')
+    | JQE -r '.items[] | select(.name == "'"$NAME"'") | .id')
 then
     echo_err "Failure getting template id"
     exit 1

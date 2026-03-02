@@ -36,8 +36,8 @@ then
     exit 2
 fi
 
-FILENAME=$1
-NAME=$2
+restsh.util.check.string "filename" "$1"; FILENAME=$1
+restsh.util.check.string "template name" "$2"; NAME=$2
 
 # Upload the policy file
 f5.file-transfer.upload "$FILENAME"
@@ -46,7 +46,6 @@ f5.file-transfer.upload "$FILENAME"
 FILENAME=$(basename "$FILENAME")
 IMPORT_FILE="/ts/var/rest/${RESTSH_USER}~$NAME"
 f5.run "mv" "/var/config/rest/downloads/$FILENAME" "$IMPORT_FILE"
-
 
 # Start import task
 TASK_ID=$($RESTSH_JQ -n --arg filename "$NAME" \
