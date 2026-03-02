@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Removes disallowed filetype from a F5 ASM Policy.
+# Shortdesc: Removes a filetype from a F5 ASM Policy.
 # Desc:
-# Removes disallowed filetype from a F5 ASM Policy.
+# Removes a filetype from a F5 ASM Policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -40,4 +40,4 @@ fi
 restsh.util.check.string "policy full path" "$1"; POLICY=$1
 restsh.util.check.string "filetype" "$2"; FILETYPE=$2
 
-f5.asm.entity.remove "$POLICY" "filetypes" ".items[] | select(.name==\"$FILETYPE\" and .allowed == false) | .id"
+f5.asm.entity.remove "$POLICY" "filetypes" ".items[] | select(.name==\"$FILETYPE\") | .id"
