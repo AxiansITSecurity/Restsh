@@ -49,8 +49,8 @@ then
     done
     exit 2
 fi
-COMPONENT=$1
-FILE=$2
+restsh.util.check.string "component" "$1"; COMPONENT=$1
+restsh.util.check.string "file" "$2"; FILE=$2
 FILENAME=$(basename "$FILE")
 
 # Upload file and move it to the correct location

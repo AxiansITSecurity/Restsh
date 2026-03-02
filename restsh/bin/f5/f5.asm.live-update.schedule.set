@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-07-29
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists live-update schedules for all components.
 # Desc:
@@ -51,15 +52,15 @@ do
     case "$OPTION" in
         startTime)         STARTTIME=$OPTARG ;;
         endTime)           ENDTIME=$OPTARG ;;
-        applyAtAllTimes)   APPLYATALLTIMES=$OPTARG ;;
-        applyOnAllDays)    APPLYONALLDAYS=$OPTARG ;;
-        applyOnSundays)    APPLYONSUNDAYS=$OPTARG ;;
-        applyOnMondays)    APPLYONMONDAYS=$OPTARG ;;
-        applyOnTuesdays)   APPLYONTUESDAYS=$OPTARG ;;
-        applyOnWednesdays) APPLYONWEDNESDAYS=$OPTARG ;;
-        applyOnThursdays)  APPLYONTHURSDAYS=$OPTARG ;;
-        applyOnFridays)    APPLYONFRIDAYS=$OPTARG ;;
-        applyOnSaturdays)  APPLYONSATURDAYS=$OPTARG ;;
+        applyAtAllTimes)   restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYATALLTIMES=$OPTARG ;;
+        applyOnAllDays)    restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONALLDAYS=$OPTARG ;;
+        applyOnSundays)    restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONSUNDAYS=$OPTARG ;;
+        applyOnMondays)    restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONMONDAYS=$OPTARG ;;
+        applyOnTuesdays)   restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONTUESDAYS=$OPTARG ;;
+        applyOnWednesdays) restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONWEDNESDAYS=$OPTARG ;;
+        applyOnThursdays)  restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONTHURSDAYS=$OPTARG ;;
+        applyOnFridays)    restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONFRIDAYS=$OPTARG ;;
+        applyOnSaturdays)  restsh.util.check.bool "$OPTION" "$OPTARG"; APPLYONSATURDAYS=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -90,7 +91,7 @@ then
     echo "    --applyOnSaturdays=false"
     exit 2
 fi
-COMPONENT=$1
+restsh.util.check.string "component" "$1"; COMPONENT=$1
 FREQUENCY=$2
 
 # Main

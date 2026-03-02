@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-21
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Removes a live-update file.
 # Desc:
@@ -48,8 +49,8 @@ then
     done
     exit 2
 fi
-COMPONENT=$1
-FILEID=$2
+restsh.util.check.string "component" "$1"; COMPONENT=$1
+restsh.util.check.string "file id" "$2"; FILEID=$2
 
 # Main
 DELETE "/mgmt/tm/live-update/$COMPONENT/update-files/$FILEID"
