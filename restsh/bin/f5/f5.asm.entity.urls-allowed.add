@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Adds an allowed url to a F5 ASM Policy.
+# Desc:
+# Adds an allowed url to a F5 ASM Policy.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.urls-allowed.json"
+DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.urls-allowed.var"
+ENTITY="urls"
+
+OPTS=()
+while getopts ':d:t:s:' OPTION
+do
+    case "$OPTION" in
+        d) restsh.util.check.string "variables file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        t) restsh.util.check.string "template" "$OPTARG"; TEMPLATE=$OPTARG ;;
+        s) OPTS+=("-s" "$OPTARG") ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage:"
+    echo "$(basename "$0") [options...] <policy full path> <url>"
+    echo "Options:"
+    echo "    -t <template>         Template to use, default is: $TEMPLATE"
+    echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."
+    echo "    -sVAR=VALUE           Define a custom variable."
+    echo ""
+    echo "Defaults for add are:"
+    sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
+    exit 2
+fi
+
+restsh.util.check.string "policy full path" "$1"; POLICY=$1
+URL=$2
+
+export VAR_ALLOWED_URL=$URL
+f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "${OPTS[@]}" "$POLICY" "$ENTITY"
