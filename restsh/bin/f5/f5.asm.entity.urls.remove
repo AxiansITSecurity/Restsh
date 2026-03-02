@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Removes a disallowed url from a F5 ASM Policy.
+# Shortdesc: Removes a url from a F5 ASM Policy.
 # Desc:
-# Removes a disallowed url from a F5 ASM Policy.
+# Removes a url from a F5 ASM Policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -38,6 +38,6 @@ then
 fi
 
 restsh.util.check.string "policy full path" "$1"; POLICY=$1
-restsh.util.check.string "url" "$2"; FILETYPE=$2
+restsh.util.check.string "url" "$2"; URL=$2
 
-f5.asm.entity.remove "$POLICY" "urls" ".items[] | select(.name==\"$FILETYPE\" and .isAllowed == false) | .id"
+f5.asm.entity.remove "$POLICY" "urls" ".items[] | select(.name==\"$URL\") | .id"
