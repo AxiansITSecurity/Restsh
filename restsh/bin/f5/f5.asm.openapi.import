@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
-# Shortdesc: Imports a OpenAPI File into a F5 ASM Policy.
+# Shortdesc: Imports an OpenAPI file into a F5 ASM policy.
 # Desc:
-# Imports a OpenAPI File into a F5 ASM Policy.
+# Imports an OpenAPI file into a F5 ASM policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -37,10 +38,10 @@ then
     echo "Options:"
     echo "    -n  Do not apply policy after import"
     exit 2
-else
-    FILENAME=$1
-    POLICY=$2
 fi
+
+restsh.util.check.string "filename" "$1"; FILENAME=$1
+restsh.util.check.string "policy" "$2"; POLICY=$2
 
 # Upload the openapi file
 f5.file.upload "/mgmt/tm/asm/file-transfer/uploads" "$FILENAME"
@@ -71,7 +72,7 @@ fi
 if ! f5.asm.taskwait import-open-api "$TASK_ID"
 then
     echo_err "Import of policy failed."
-    f5.file.remove "/var/ts/var/rest/$FILENAME"
+    f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~$FILENAME"
     exit 1
 fi
 
