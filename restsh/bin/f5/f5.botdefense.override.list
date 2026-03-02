@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all Overrides for a F5 Bot Defense Profile.
 # Desc:
@@ -32,16 +33,18 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <full path> [override]"
+    echo "Usage: $(basename "$0") [options...] <fullPath> [override]"
     echo "    -r  Raw output."
     echo ""
     echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
     echo "    signatureCategoryOverrides, signatureOverrides"
     exit 2
 fi
-FULLPATH=${1//\//\~}
+
+restsh.util.check.string "fullPath" "$1"; FULLPATH=${1//\//\~}
 if [ -n "${2+x}" ]
 then
+    restsh.util.check.string "override" "$2"; 
     OVERRIDES=("$2")
 else
     OVERRIDES=("anomalyCategoryOverrides" "anomalyOverrides" "signatureCategoryOverrides" "signatureOverrides")

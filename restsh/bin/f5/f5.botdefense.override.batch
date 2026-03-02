@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Replaces Override Entries for a F5 Bot Defense Profile with the content of a CSV.
 # Desc:
@@ -32,15 +33,16 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <full path> <folder>"
+    echo "Usage: $(basename "$0") [options...] <fullPath> <folder>"
     echo "    Folder structure: <override>/name.json"
     echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
     echo "    signatureCategoryOverrides, signatureOverrides"
     exit 2
 fi
-FULLPATH_ORG=$1
+
+restsh.util.check.string "fullPath" "$1"; FULLPATH_ORG=$1
 FULLPATH=${FULLPATH_ORG//\//\~}
-FOLDER=$2
+restsh.util.check.string "folder" "$2"; FOLDER=$2
 
 OVERRIDES=(
     "anomalyCategoryOverrides"

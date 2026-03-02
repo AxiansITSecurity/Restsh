@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Replaces Whitelist Entries for a F5 Bot Defense Profile with the content of a CSV.
 # Desc:
@@ -32,13 +33,14 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <full path> <whitelist entries csv>"
+    echo "Usage: $(basename "$0") [options...] <fullPath> <whitelist entries csv>"
     echo "CSV format: Name,sourceAddress,url"
     exit 2
 fi
-FULLPATH_ORG=$1
+
+restsh.util.check.string "fullPath" "$1"; FULLPATH_ORG=$1
 FULLPATH=${FULLPATH_ORG//\//\~}
-CSV=$2
+restsh.util.check.string "ehitelist entries csv" "$2"; CSV=$2
 
 # Get existing entries
 mapfile -t EXISTING_ENTRIES < <(GET -rf '.items[].name' "/mgmt/tm/security/bot-defense/profile/$FULLPATH/whitelist")

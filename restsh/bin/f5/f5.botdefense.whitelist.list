@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all Whitelist Entries for a F5 Bot Defense Profile.
 # Desc:
@@ -35,11 +36,12 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <full path>"
+    echo "Usage: $(basename "$0") [options...] <fullPath>"
     echo "    -r  Raw output."
     exit 2
 fi
-FULLPATH=${1//\//\~}
+
+restsh.util.check.string "fullPath" "$1"; FULLPATH=${1//\//\~}
 
 # Main
 if RESULT=$(GET "${GET_OPTS[@]}" "/mgmt/tm/security/bot-defense/profile/$FULLPATH/whitelist")

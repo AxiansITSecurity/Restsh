@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-15
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Removes an entry from the F5 Bot Defense Profile Whitelist.
 # Desc:
@@ -33,10 +34,10 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <full path> <name>"
+    echo "Usage: $(basename "$0") <fullPath> <name>"
     exit 2
 fi
-FULLPATH=${1//\//\~}
-NAME=$2
+restsh.util.check.string "fullPath" "$1"; FULLPATH=${1//\//\~}
+restsh.util.check.string "name" "$2"; NAME=$2
 
 DELETE "${DELETE_OPTS[@]}" "/mgmt/tm/security/bot-defense/profile/$FULLPATH/whitelist/$NAME"

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a F5 Bot Defense Profile.
 # Desc:
@@ -36,7 +37,8 @@ then
     echo "Usage: $(basename "$0") <json configuration file>"
     exit 2
 fi
-CONFIG=$1
+
+restsh.util.check.string "json configuration file" "$1"; CONFIG=$1
 
 # Main
 POST "${POST_OPTS[@]}" "/mgmt/tm/security/bot-defense/profile" < "$CONFIG"

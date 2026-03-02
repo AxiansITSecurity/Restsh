@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-05-16
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Updates an entry in the F5 Bot Defense Profile Overrides.
 # Desc:
@@ -33,14 +34,15 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 4 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <full path> <override> <name> <json file>"
+    echo "Usage: $(basename "$0") <fullPath> <override> <name> <json file>"
     echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
     echo "    signatureCategoryOverrides, signatureOverrides"
     exit 2
 fi
-FULLPATH=${1//\//\~}
-OVERRIDE=$2
-NAME=$(restsh.util.urlencode "$3")
-FILE=$4
+
+restsh.util.check.string "fullPath" "$1"; FULLPATH=${1//\//\~}
+restsh.util.check.string "override" "$2"; OVERRIDE=$2
+restsh.util.check.string "name" "$3"; NAME=$(restsh.util.urlencode "$3")
+restsh.util.check.string "json file" "$4"; FILE=$4
 
 PATCH "${POST_OPTS[@]}" "/mgmt/tm/security/bot-defense/profile/$FULLPATH/$OVERRIDE/$NAME" < "$FILE"
