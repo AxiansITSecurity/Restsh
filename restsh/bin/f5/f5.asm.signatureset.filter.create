@@ -52,7 +52,9 @@ then
     echo "    VAR_RISK=all"
     exit 2
 fi
-export VAR_NAME=$1
+
+restsh.util.check.string "signature set name" "$1"; export VAR_NAME=$1
+
 if [ -z "${VAR_ATTACK_TYPE+x}" ] && [ -z "$TEMPLATE" ] && [ -z "$DEFAULTS" ]
 then
     echo_err "VAR_ATTACK_TYPE must be specified for the default template"
@@ -63,10 +65,11 @@ then
     . "$DEFAULTS"
 fi
 
+[ -n "${VAR_ACCURACY+x}" ] || export VAR_ACCURACY=high
+[ -n "${VAR_RISK+x}" ] || export VAR_RISK=all
+
 if [ -z "$TEMPLATE" ]
 then
-    [ -n "${VAR_ACCURACY+x}" ] || export VAR_ACCURACY=high
-    [ -n "${VAR_RISK+x}" ] || export VAR_RISK=all
     TEMPLATE="$RESTSH_PATH/templates/f5/asm/signatureset-filter.json"
 fi
 

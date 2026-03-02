@@ -36,7 +36,8 @@ then
     echo "Usage: $(basename "$0") <signature set name>"
     exit 2
 fi
-NAME=$1
+
+restsh.util.check.string "signature set name" "$1"; NAME=$1
 
 if ! SIGNATURESET_ID=$(GET -r /mgmt/tm/asm/signature-sets?\$select=name,id \
     | JQE -r ".items[] | select(.name == \"$NAME\") | .id")

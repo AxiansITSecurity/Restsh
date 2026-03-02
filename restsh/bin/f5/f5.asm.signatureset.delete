@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes a signature set and removes it from any referencing policy.
 # Desc:
@@ -34,7 +35,8 @@ then
     echo "Usage: $(basename "$0") <signature set name>"
     exit 2
 fi
-NAME=$1
+
+restsh.util.check.string "signature set name" "$1"; NAME=$1
 
 if ID=$(f5.asm.signatureset.getid "$NAME")
 then

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-01-09
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
-# Shortdesc: Gets a signature sets.
+# Shortdesc: Gets a signature set.
 # Desc:
-# Gets a signature sets.
+# Gets a signature set.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -34,23 +35,28 @@ if [ "$OPTION" == "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <signature set id>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...] <signature set name>"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
-SIGNATURE_SET=$1
+
+restsh.util.check.string "signature set name" "$1"; NAME=$1
 
 # Main
-if RESULT=$(GET "/mgmt/tm/asm/signature-sets/$SIGNATURE_SET")
+if SIGNATURE_SET_ID=$(f5.asm.signatureset.getid "$NAME")
 then
-    if [ "$RAW" -eq 1 ]
+    if RESULT=$(GET "/mgmt/tm/asm/signature-sets/$SIGNATURE_SET_ID")
     then
-        echo "$RESULT"
-    else
-        JQ -r '.signatureReferences[] | [.signatureId, .name] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "Id,Name"
+        if [ "$RAW" -eq 1 ]
+        then
+            JQ "." <<< "$RESULT"
+        else
+            JQ -r '.signatureReferences[] | [.signatureId, .name] | @tsv' <<< "$RESULT" | \
+                COLUMN -o "|" -N "Id,Name"
+        fi
+        exit 0
     fi
-    exit 0
 fi
 
 exit 1
