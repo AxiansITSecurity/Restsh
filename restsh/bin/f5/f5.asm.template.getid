@@ -21,13 +21,9 @@ then
 fi
 
 # Get options
-RAW=0
-USER_DEFINED=0
-while getopts ':ru' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        r) RAW=1 ;;
-        u) USER_DEFINED=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
