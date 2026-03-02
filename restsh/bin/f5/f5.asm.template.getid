@@ -34,6 +34,7 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <name>"
+    exit 2
 fi
 
 if ! TEMPLATE_ID=$(GET /mgmt/tm/asm/policy-templates \
