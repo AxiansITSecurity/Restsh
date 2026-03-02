@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Ignores a suggestions by id.
 # Desc:
@@ -36,8 +37,8 @@ then
     exit 2
 fi
 
-POLICY=$1
-ID=$2
+restsh.util.check.string "policy" "$1"; POLICY=$1
+restsh.util.check.string "id" "$2"; ID=$2
 if [ "${POLICY:0:1}" == "/" ]
 then
     POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
@@ -47,8 +48,7 @@ fi
 
 if OUTPUT=$(PATCH "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions/$ID" <<< "{ \"status\": \"ignored\" }")
 then
-    $RESTSH_JQ -r ".id" <<< "$OUTPUT"
-    exit 0
+    JQE -r ".id" <<< "$OUTPUT"
+else
+    exit 1
 fi
-
-exit 1

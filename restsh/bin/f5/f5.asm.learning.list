@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all suggestions.
 # Desc:
@@ -20,9 +21,11 @@ then
   exit 1
 fi
 
-while getopts ':h' OPTION
+RAW=0
+while getopts ':hr' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -37,7 +40,7 @@ then
     exit 2
 fi
 
-POLICY=$1
+restsh.util.check.string "policy" "$1"; POLICY=$1
 if [ "${POLICY:0:1}" == "/" ]
 then
     POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
@@ -45,4 +48,9 @@ else
     POLICY_HASH=$POLICY
 fi
 
-GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | $RESTSH_JQ ".items[]"
+if [ "$RAW" -eq 0 ]
+then
+    GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions" | JQ ".items[]"
+else
+    GET "/mgmt/tm/asm/policies/$POLICY_HASH/suggestions"
+fi
