@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-13
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
 # Shortdesc: Lists ASM signature staging status.
 # Desc:
 # Lists ASM signature staging status.
@@ -33,8 +35,9 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-v] [<policy name>]"
-    echo -e "\tUse -v for verbose output."
+    echo "Usage: $(basename "$0") [options] [<policy fullPath>]"
+    echo "Options:"
+    echo "    -v   Verbose output."
     exit 2
 fi
 
@@ -42,6 +45,7 @@ if [ -z "${1+x}" ]
 then
     POLICY_FILTER=""
 else
+    restsh.util.check.string "policy fullPath" "$1"
     POLICY_FILTER="| select(.fullPath == \"$1\")"
 fi
 

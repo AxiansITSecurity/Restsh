@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
 # Shortdesc: Enforces all ready to be enforced signatures.
 # Desc:
 # Enforces all ready to be enforced signatures.
@@ -35,9 +37,10 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-a] [<policy name>]"
-    echo "    -a Enforce all staged signatures."
-    echo "    -n Do not apply policy after enforcement."
+    echo "Usage: $(basename "$0") [options...] [<policy fullPath>]"
+    echo "Options:"
+    echo "    -a  Enforce all staged signatures."
+    echo "    -n  Do not apply policy after enforcement."
     exit 2
 fi
 
@@ -45,6 +48,7 @@ if [ -z "${1+x}" ]
 then
     POLICY_FILTER=""
 else
+    restsh.util.check.string "policy fullPath" "$1"
     POLICY_FILTER="| select(.fullPath == \"$1\")"
 fi
 
