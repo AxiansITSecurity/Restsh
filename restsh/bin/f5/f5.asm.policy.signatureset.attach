@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
 # Shortdesc: Attaches a specific attack signature set to a policy.
 # Desc:
 # Attaches a specific attack signature set to a policy.
@@ -34,8 +36,8 @@ then
     echo "Usage: $(basename "$0") <policy full path> <signatureset id>"
     exit 2
 fi
-POLICY=$1
-SIGNATURE_SET_ID=$2
+restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
+restsh.util.check.string "signatureset id" "$2"; SIGNATURE_SET_ID=$2
 
 # Main
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")

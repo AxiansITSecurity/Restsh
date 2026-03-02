@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Lists all attack signature sets attached to a WAF policy.
+# Shortdesc: Attaches a specific attack signature set to a policy.
 # Desc:
-# Lists all attack signature sets attached to a WAF policy.
+# Attaches a specific attack signature set to a policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -29,18 +29,17 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <policy full path>"
+    echo "Usage: $(basename "$0") <policy full path> <signatureset id>"
     exit 2
 fi
 restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
+restsh.util.check.string "signatureset id" "$2"; SIGNATURE_SET_ID=$2
 
 # Main
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
-GET "/mgmt/tm/asm/policies/$POLICY_HASH/signature-sets" \
-    | JQ -r '.items[] | [.signatureSetReference.name,.id,.alarm,.block,.learn] | @tsv' \
-    | COLUMN -o "|" -N "Name,Id,alarm,block,learn"
+DELETE "/mgmt/tm/asm/policies/$POLICY_HASH/signature-sets/$SIGNATURE_SET_ID"

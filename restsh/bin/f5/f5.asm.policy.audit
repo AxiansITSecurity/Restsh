@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-03-22
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Displays the audit log for a F5 ASM Policy.
 # Desc:
@@ -33,23 +34,20 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <policy hash or fullPath>"
     exit 2
-else
-     if [ "${1:0:1}" == "/" ]
-     then
-        POLICY_HASH=$(f5.asm.policy.gethash "$1")
-     else
-        POLICY_HASH=$1
-     fi
-     AUDITLOGS=$(GET "/mgmt/tm/asm/policies/$POLICY_HASH/audit-logs" \
-        | JQ -c '.items[] | [.lastUpdateMicros, .eventType, .description, .entityName]')
-     while read -r LINE
-     do
-        TS_US=$(JQ -r '.[0]' <<< "$LINE")
-        EVENT_TYPE=$(JQ -r '.[1]' <<< "$LINE")
-        DESCRIPTION=$(JQ -r '.[2]' <<< "$LINE")
-        ENTITY_NAME=$(JQ -r '.[3]' <<< "$LINE")
-        TS=$(awk "BEGIN { print $TS_US / 1000000 }")
-        TS=$(date -d@"$TS")
-        printf "\nPolicy change info (%s):\nEntity: %s\nChange Detail: %s\nOn: %s\n" "$EVENT_TYPE" "$ENTITY_NAME" "$DESCRIPTION" "$TS"
-     done <<< "$AUDITLOGS"
 fi
+
+restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+
+AUDITLOGS=$(GET "/mgmt/tm/asm/policies/$POLICY_HASH/audit-logs" \
+    | JQ -c '.items[] | [.lastUpdateMicros, .eventType, .description, .entityName]')
+while read -r LINE
+do
+    TS_US=$(JQ -r '.[0]' <<< "$LINE")
+    EVENT_TYPE=$(JQ -r '.[1]' <<< "$LINE")
+    DESCRIPTION=$(JQ -r '.[2]' <<< "$LINE")
+    ENTITY_NAME=$(JQ -r '.[3]' <<< "$LINE")
+    TS=$(awk "BEGIN { print $TS_US / 1000000 }")
+    TS=$(date -d@"$TS")
+    printf "\nPolicy change info (%s):\nEntity: %s\nChange Detail: %s\nOn: %s\n" "$EVENT_TYPE" "$ENTITY_NAME" "$DESCRIPTION" "$TS"
+done <<< "$AUDITLOGS"

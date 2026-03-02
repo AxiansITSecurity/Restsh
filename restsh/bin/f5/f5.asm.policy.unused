@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all unused F5 ASM Policies.
 # Desc:
@@ -41,5 +42,8 @@ do
     POLICY_DATA=$(GET "/mgmt/tm/asm/policies/$POLICY_ID?\$select=fullPath,virtualServers,manualVirtualServers")
     POLICY_NAME=$(JQ -r ".fullPath" <<< "$POLICY_DATA")
     VIRTUAL_SERVERS=$(JQ -r '[.virtualServers.[]?,.manualVirtualServers.[]?] | length' <<< "$POLICY_DATA")
-    [ "$VIRTUAL_SERVERS" -eq 0 ] && echo "$POLICY_NAME"
+    if [ "$VIRTUAL_SERVERS" -eq 0 ]
+    then
+        echo "$POLICY_NAME"
+    fi
 done < <(GET "/mgmt/tm/asm/policies?\$select=name,id" | JQ -r '.items[].id')

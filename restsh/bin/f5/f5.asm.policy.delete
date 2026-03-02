@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-04-30
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes a F5 ASM Policy.
 # Desc:
@@ -31,11 +32,10 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <policy full path>"
+    echo "Usage: $(basename "$0") <policy hash or fullPath>"
     exit 2
 fi
 
-POLICY=$1
-POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+restsh.util.check.string "policy hash or fullPath" "$1"; POLICY_HASH=$(f5.asm.policy.gethash "$1")
 
 DELETE "/mgmt/tm/asm/policies/$POLICY_HASH" > /dev/null

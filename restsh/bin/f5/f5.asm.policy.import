@@ -40,7 +40,7 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <filename> <policy full path>"
+    echo "Usage: $(basename "$0") [options...] <filename> <policy fullPath>"
     echo "    -e                 Enforce all signatures"
     echo "    -i                 Enforce given policy path (Overwrite fullPath in import file)"
     echo "    -n                 Do not apply policy after import"
@@ -48,8 +48,8 @@ then
     exit 2
 fi
 
-FILENAME=$1
-NAME=$2
+restsh.util.check.string "filename" "$1"; FILENAME=$1
+restsh.util.check.string "policy fullPath" "$2"; FULL_PATH=$2
 
 # Upload the policy file
 if f5.file-transfer.upload "$FILENAME" > /dev/null
@@ -76,7 +76,7 @@ fi
 
 if [ "$IMPORT" -eq 0 ]
 then
-    PAYLOAD=$($RESTSH_JQ -n --arg name "$NAME" \
+    PAYLOAD=$($RESTSH_JQ -n --arg name "$FULL_PATH" \
         --arg filename "$FILENAME" \
         '{
             "filename": $filename,
@@ -85,7 +85,7 @@ then
             }
         }')
 else
-    PAYLOAD=$($RESTSH_JQ -n --arg name "$NAME" \
+    PAYLOAD=$($RESTSH_JQ -n --arg name "$FULL_PATH" \
         --arg filename "$FILENAME" \
         '{
             "name": $name,
@@ -99,7 +99,7 @@ TASK_ID=$(POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" <<< "$PAYLOAD" \
 
 if ! restsh.util.check.notempty "${TASK_ID}"
 then
-    echo_err "Import of policy \"$NAME\" failed."
+    echo_err "Import of policy \"$FULL_PATHE\" failed."
     exit 1
 fi
 
@@ -118,11 +118,11 @@ f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
 if [ "$ENFORCE_SIGNATURES" -eq 1 ]
 then
     # Enforce signatures and apply the policy
-    f5.asm.signaturestaging.enforce -n -a "$WAF_POLICY_FULL_PATH"
+    f5.asm.signaturestaging.enforce -n -a "$FULL_PATH"
 fi
 
 if [ "$APPLY_POLICY" -eq 1 ]
 then
     # Apply the policy
-    f5.asm.policy.apply "$NAME"
+    f5.asm.policy.apply "$FULL_PATH"
 fi

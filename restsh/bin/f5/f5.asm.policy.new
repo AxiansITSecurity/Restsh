@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a new F5 ASM Policy.
 # Desc:
@@ -33,14 +34,15 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <waf template> <policy full path>"
+    echo "Usage: $(basename "$0") [options...] <F5 ASM policy template> <policy fullPath>"
     echo "Options:"
     echo "    -n  Do not apply policy after creation"
     exit 2
 fi
 
-TEMPLATE=$1
-NAME=$2
+restsh.util.check.string "F5 ASM policy template" "$1"; TEMPLATE=$1
+restsh.util.check.string "policy fullPath" "$2"; NAME=$2
+
 FILENAME="$RESTSH_TMP/waf-policy-${NAME//\//}.json"
 
 JQ -n --arg name "$NAME" \
@@ -54,14 +56,9 @@ JQ -n --arg name "$NAME" \
             }
         }
     }' > "$FILENAME"
+trap 'rm -f -- "$FILENAME"' EXIT
 
 OPTIONS=()
 [ "$APPLY_POLICY" -eq 0 ] && OPTIONS+=("-n")
 
-if f5.asm.policy.import "${OPTIONS[@]}" "$FILENAME" "$NAME"
-then
-    rm -f "$FILENAME"
-else
-    rm -f "$FILENAME"
-    exit 1
-fi
+f5.asm.policy.import "${OPTIONS[@]}" "$FILENAME" "$NAME"

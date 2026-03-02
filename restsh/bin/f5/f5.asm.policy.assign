@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-09-08
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Assigns a F5 ASM Policy to virtual servers.
 # Desc:
@@ -24,41 +25,6 @@ fi
 . "${RESTSH_PATH}/dist/mo/mo"
 . "${RESTSH_PATH}/lib/mo/mo.functions"
 
-# Assigns an ASM policy by hash
-assign_by_hash() {
-    local POLICY_HASH=$1
-    local VAR_VIRTUAL_SERVERS=()
-    # Read virtual servers from stdin, one vs per line
-    while read -r LINE
-    do
-        [ "${LINE:0:1}" = "#" ] && continue
-        VAR_VIRTUAL_SERVERS+=("$LINE")
-    done
-    export VAR_VIRTUAL_SERVERS
-    # Assign the policy
-    local VS
-    echo "Assigning policy: \"$POLICY_HASH\"."
-    if ! VS=$($RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/policy.assign.json" \
-        | PATCH -r "/mgmt/tm/asm/policies/$POLICY_HASH" \
-        | $RESTSH_JQ -r ".virtualServers[]")
-    then
-        echo_err "Assign of policy failed."
-        return 1
-    fi
-    echo_ok "Policy assigned to:"
-    echo "$VS"
-    return 0
-}
-
-#Assigns an ASM policy by its fullPath
-assign_by_full_path() {
-    local POLICY=$1
-    # Get the policy hash
-    local POLICY_HASH
-    POLICY_HASH=$(f5.asm.policy.gethash "$POLICY") && \
-        assign_by_hash "$POLICY_HASH"
-}
-
 while getopts ':h' OPTION
 do
     case "$OPTION" in
@@ -76,9 +42,26 @@ then
     exit 2
 fi
 
-if [ "${1:0:1}" == "/" ]
+restsh.util.check.string "policy" "$1"; POLICY=$1
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+
+VAR_VIRTUAL_SERVERS=()
+# Read virtual servers from stdin, one vs per line
+while read -r LINE
+do
+    [ "${LINE:0:1}" = "#" ] && continue
+    VAR_VIRTUAL_SERVERS+=("$LINE")
+done
+export VAR_VIRTUAL_SERVERS
+
+# Assign the policy
+echo "Assigning policy: \"$POLICY_HASH\"."
+if ! VS=$($RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/policy.assign.json" \
+    | PATCH -r "/mgmt/tm/asm/policies/$POLICY_HASH" \
+    | $RESTSH_JQ -r ".virtualServers[]")
 then
-    assign_by_full_path "$1"
-else
-    assign_by_hash "$1"
+    echo_err "Assign of policy failed."
+    exit 1
 fi
+echo_ok "Policy assigned to:"
+echo "$VS"

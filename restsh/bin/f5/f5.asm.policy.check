@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Checks a F5 ASM Policy against best practices.
 # Desc:
@@ -25,7 +26,7 @@ RULES_DIR="$RESTSH_PATH/templates/f5/asm/policy.check"
 while getopts ':u:' OPTION
 do
     case "$OPTION" in
-        u) RULES_DIR=$OPTARG ;;
+        u) restsh.util.check.string "Custom rules directory" "$OPTARG"; RULES_DIR=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,11 +37,12 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-u <directory>] <json policy file>"
-    echo -e "\t-u <directory> custom rules directory"
+    echo "Options:"
+    echo "    -u <directory>  Custom rules directory"
     exit 2
-else
-    POLICY_FILE=$1
 fi
+
+restsh.util.check.string "json policy file" "$1"; POLICY_FILE=$1
 
 if [ ! -f "$POLICY_FILE" ]
 then

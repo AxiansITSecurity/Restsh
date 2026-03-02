@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: General functions for the F5 ASM module.
 # Desc:
@@ -24,77 +25,6 @@ export F5_ASM_SIGNATURE_FILTER_DISABLED="?\$filter=enabled+eq+false"
 # All enabled and not staged signatures
 export F5_ASM_SIGNATURE_FILTER_ENABLED="?\$filter=enabled+eq+true+AND+performStaging+eq+false"
 
-# Gets the id of signature for a policy by global signatureId
-f5.asm.policy.signature.getid() {
-    if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$1" = "-h" ]
-    then
-        echo "Gets the id of signature for a policy by global signatureId" 1>&2
-        echo "Usage: f5.asm.policy.signature.getid <policy hash> <signature id>" 1>&2
-        return 2
-    fi
-    local POLICY_HASH=$1
-    local GETID=$2
-    while read -r ID SIGNATUREID
-    do
-        if [ "$SIGNATUREID" = "$GETID" ]
-        then
-            printf "%s" "$ID"
-            return 0
-        fi
-    done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/signatures" \
-        | JQ -r ".items[] | .id,.signatureReference.signatureId" \
-        | paste - -)
-    echo_err "Failure getting signature id"
-    return 1
-}
-
-# Gets the signature set id
-f5.asm.signatureset.getid() {
-    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
-    then
-        echo "Gets the signature set id" 1>&2
-        echo "Usage: f5.asm.signatureset.getid <name>" 1>&2
-        return 2
-    fi
-    local SIGNATURESETID
-    local NAME=$1
-    if ! SIGNATURESETID=$(GET /mgmt/tm/asm/signature-sets?\$select=name,id | jq -r ".items[] | select(.name == \"$NAME\") | .id")
-    then
-        echo_err "Failure getting signatureset id for $NAME"
-        return 1
-    fi
-    if [ -z "$SIGNATURESETID" ] || [ "$SIGNATURESETID" = "null" ]
-    then
-        echo_err "Failure getting signatureset id for $NAME"
-        return 1
-    fi
-    printf "%s" "$SIGNATURESETID"
-    return 0
-}
-
-# Gets the id of an ASM policy template
-f5.asm.template.getid() {
-    if [ -z "${1+x}" ] || [ "$1" = "-h" ]
-    then
-        echo "Gets the id of an ASM policy template" 1>&2
-        echo "Usage: f5.asm.template.getid <template name>" 1>&2
-        return 2
-    fi
-    local TEMPLATEID
-    if ! TEMPLATEID=$(GET /mgmt/tm/asm/policy-templates | JQ -r '.items[] | select(.name == "'"$1"'") | .id')
-    then
-        echo_err "Failure getting template id"
-        return 1
-    fi
-    if [ -z "$TEMPLATEID" ] || [ "$TEMPLATEID" = "null" ]
-    then
-        echo_err "Failure getting template id"
-        return 1
-    fi
-    printf "%s" "$TEMPLATEID"
-    return 0
-}
-
 # Calculates the hash of a F5 ASM Policy fullPath.
 f5.asm.policy.gethash() {
     if [ -z "${1+x}" ] || [ "$1" = "-h" ]
@@ -104,15 +34,22 @@ f5.asm.policy.gethash() {
         return 2
     fi
     local POLICY=$1
-    # Calculate hash
+    # Calculate hash from policy name
     if [ "${POLICY:0:1}" == "/" ]
     then
         # Reference: https://my.f5.com/manage/s/article/K40414407
-        printf "%s" "$POLICY" | openssl dgst -md5 -binary | base64 | cut -c-22 | sed 'y/+\//-_/'
-    else
-        echo_err "Policy fullPath must start with /"
-        return 1
+        printf "%s" "$POLICY" | openssl dgst -md5 -binary | base64 | cut -c-22 | sed 'y/+\//-_/' | tr -d '\n'
+        return 0
     fi
+    # Check if it is already a base64url encoded value
+    local REGEX='^[0-9a-zA-Z_-]+$'
+    if [[ "$POLICY" =~ $REGEX ]]
+    then
+        printf "%s" "$POLICY"
+        return 0
+    fi
+    echo_err "Policy fullPath must start with /"
+    return 1
 }
 
 # Waits for a ASM task to be finished.
@@ -162,8 +99,5 @@ f5.asm.taskwait() {
     return 0
 }
 
-export -f f5.asm.policy.signature.getid
-export -f f5.asm.signatureset.getid
-export -f f5.asm.template.getid
 export -f f5.asm.policy.gethash
 export -f f5.asm.taskwait

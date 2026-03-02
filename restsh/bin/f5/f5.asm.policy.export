@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2022-12-17
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Exports a F5 ASM Policy.
 # Desc:
@@ -39,10 +40,10 @@ then
     exit 2
 fi
 
-POLICY=$1
+restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
 if [ -n "${2+x}" ]
 then
-    FILENAME=$2
+    restsh.util.check.string "filename" "$2"; FILENAME=$2
 else
     FILENAME="${POLICY//\//_}"
 fi

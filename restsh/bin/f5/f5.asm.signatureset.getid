@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Lists all attack signature sets attached to a WAF policy.
+# Shortdesc: Gets the signature set id by name.
 # Desc:
-# Lists all attack signature sets attached to a WAF policy.
+# Gets the signature set id by name.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -33,14 +33,15 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <policy full path>"
+    echo "Usage: $(basename "$0") <signature set name>"
     exit 2
 fi
-restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
+NAME=$1
 
-# Main
-POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-
-GET "/mgmt/tm/asm/policies/$POLICY_HASH/signature-sets" \
-    | JQ -r '.items[] | [.signatureSetReference.name,.id,.alarm,.block,.learn] | @tsv' \
-    | COLUMN -o "|" -N "Name,Id,alarm,block,learn"
+if ! SIGNATURESET_ID=$(GET -r /mgmt/tm/asm/signature-sets?\$select=name,id \
+    | JQE -r ".items[] | select(.name == \"$NAME\") | .id")
+then
+    echo_err "Failure getting signature set id for $NAME"
+    exit 1
+fi
+printf "%s" "$SIGNATURESET_ID"

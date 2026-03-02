@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-05
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
 # Shortdesc: Enforces a specific attack signature in a policy.
 # Desc:
 # Enforces a specific attack signature in a policy.
@@ -30,13 +32,14 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <policy name> <signature id>"
+    echo "Usage: $(basename "$0") <policy fullPath> <signature id>"
     exit 2
 fi
-POLICY=$1
-SIGNATURE=$2
+
+restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
+restsh.util.check.uint "signature id" "$2"; SIGNATURE_ID=$2
 
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-SIGNATURE_ID=$(f5.asm.policy.signature.getid "$POLICY_HASH" "$SIGNATURE")
+POLICY_SIGNATURE_ID=$(f5.asm.policy.signature.getid "$POLICY_HASH" "$SIGNATURE_ID")
 
-PATCH "/mgmt/tm/asm/policies/$POLICY_HASH/signatures/$SIGNATURE_ID" <<< '{"performStaging":false, "enabled":true}'
+PATCH "/mgmt/tm/asm/policies/$POLICY_HASH/signatures/$POLICY_SIGNATURE_ID" <<< '{"performStaging":false, "enabled":true}'

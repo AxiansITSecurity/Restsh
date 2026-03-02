@@ -4,9 +4,9 @@
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
 
-# Shortdesc: Lists all attack signature in a policy.
+# Shortdesc: Gets the id of signature for a policy by global signatureId
 # Desc:
-# Lists all attack signature in a policy.
+# Gets the id of signature for a policy by global signatureId
 
 # Strict error handling
 set -eEu -o pipefail
@@ -20,32 +20,32 @@ then
   exit 1
 fi
 
-RAW=0
-while getopts ':hr' OPTION
+# Get options
+while getopts ':h' OPTION
 do
     case "$OPTION" in
-        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <policy fullPath>"
+    echo "Usage: $(basename "$0") <policy full path> <signature id>"
     exit 2
 fi
-
 restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
+restsh.util.check.uint "signature id" "$2"; GETID=$2
+
+# Main
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
 
-if [ "$RAW" -eq 1 ]
+if ! SIGNATURE_ID=$(GET -r "/mgmt/tm/asm/policies/$POLICY_HASH/signatures" \
+    | JQE -r ".items[] | select(.signatureReference.signatureId == $GETID) | .id")
 then
-    GET "/mgmt/tm/asm/policies/$POLICY_HASH/signatures/"
-else
-    GET -rf '.items[] | [.id,.signatureReference.signatureId,.enabled,.alarm,.block,.learn,.performStaging,.signatureReference.name] | @tsv' \
-        "/mgmt/tm/asm/policies/$POLICY_HASH/signatures/" \
-        | COLUMN -o "|" -N "Id,signatureId,Enabled,Alarm,Block,Learn,Staging,Name"
+    echo_err "Failure getting signature id"
+    exit 1
 fi
+printf "%s" "$SIGNATURE_ID"

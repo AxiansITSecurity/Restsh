@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-07-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Applies a F5 ASM Policy by it's fullPath or hash.
 # Desc:
@@ -19,43 +20,6 @@ then
     exit 1
 fi
 
-# Applies an ASM policy by hash
-apply_by_hash() {
-    local POLICY_HASH=$1
-    # Apply the policy
-    echo "Applying policy: \"$POLICY_HASH\"."
-    local TASK_ID
-    if ! TASK_ID=$($RESTSH_JQ -n --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HASH" \
-    '{
-        policyReference: {
-            link: $waf_policy
-        }
-    }' | POST "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
-        $RESTSH_JQ -r ".id")
-    then
-        echo_err "Apply of policy failed."
-        return 1
-    fi
-
-    # Wait for completed task
-    if f5.asm.taskwait apply-policy "$TASK_ID"
-    then
-        echo_ok "Policy applied successfully."
-        return 0
-    fi
-    return 1
-}
-
-#Applies an ASM policy by its fullPath
-apply_by_full_path() {
-    local POLICY=$1
-    # Get the policy hash
-    local POLICY_HASH
-    POLICY_HASH=$(f5.asm.policy.gethash "$POLICY") && \
-        apply_by_hash "$POLICY_HASH" && return 0
-    return 1
-}
-
 while getopts ':h' OPTION
 do
     case "$OPTION" in
@@ -72,9 +36,27 @@ then
     exit 2
 fi
 
-if [ "${1:0:1}" == "/" ]
+restsh.util.check.string "policy" "$1"; POLICY=$1
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
+
+# Apply the policy
+echo "Applying policy: \"$POLICY\"."
+if ! TASK_ID=$($RESTSH_JQ -n --arg waf_policy "/mgmt/tm/asm/policies/$POLICY_HASH" \
+'{
+    policyReference: {
+        link: $waf_policy
+    }
+}' | POST "/mgmt/tm/asm/tasks/apply-policy?\$select=id" | \
+    $RESTSH_JQ -r ".id")
 then
-    apply_by_full_path "$1"
-else
-    apply_by_hash "$1"
+    echo_err "Apply of policy failed."
+    exit 1
 fi
+
+# Wait for completed task
+if f5.asm.taskwait apply-policy "$TASK_ID"
+then
+    echo_ok "Policy applied successfully."
+    exit 0
+fi
+exit 1

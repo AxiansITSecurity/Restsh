@@ -19,6 +19,11 @@ then
     exit 1
 fi
 
+echo ""
+echo_warn "This function is marked as deprecated and will be removed in a future version."
+echo_warn "Use f5.asm.policy.import instead."
+echo ""
+
 ENFORCE_SIGNATURES=0
 APPLY_POLICY=1
 while getopts ':hne' OPTION
