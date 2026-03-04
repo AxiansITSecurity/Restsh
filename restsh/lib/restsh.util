@@ -626,6 +626,19 @@ restsh.util.urlencode() {
     $RESTSH_JQ -rn --arg x "$1" '$x | @uri' | tr -d "\n"
 }
 
+# JSON encoding
+restsh.util.jsonencode() {
+    if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
+    then
+        {
+            echo "JSON encoding"
+            echo "Usage: restsh.util.jsonencode <string>"
+        } 1>&2
+        return 2
+    fi
+    echo -n "$1" | jq -R
+}
+
 # JSON validation, pipe string to stdin
 restsh.util.json_validate() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
@@ -1061,6 +1074,7 @@ export -f restsh.util.parseoutput
 export -f restsh.util.setvars
 export -f restsh.util.setvar
 export -f restsh.util.urlencode
+export -f restsh.util.jsonencode
 export -f restsh.util.json_validate
 export -f restsh.util.check.notempty
 export -f restsh.util.check.varnotempty

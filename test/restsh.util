@@ -257,6 +257,15 @@ test.restsh.util.urlencode() {
     [ "$OUTPUT" = "test%20test" ] || return 1
 }
 
+test.restsh.util.jsonencode() {
+    # Usage info
+    restsh.util.jsonencode -h > /dev/null 2>&1 || true
+    # Test
+    local OUTPUT
+    OUTPUT=$(restsh.util.jsonencode "te\"st")
+    [ "$OUTPUT" = "\"te\\\"st\"" ] || return 1
+}
+
 test.restsh.util.json_validate() {
     # Usage info
     restsh.util.json_validate -h > /dev/null 2>&1 || true
@@ -579,6 +588,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.setvars.recursive
     test.restsh.util.setvar
     test.restsh.util.urlencode
+    test.restsh.util.jsonencode
     test.restsh.util.json_validate
     test.restsh.util.check.notempty
     test.restsh.util.check.varnotempty

@@ -11,6 +11,7 @@ This is the changelog for Restsh.
     - Feat: Add `restsh.util.check.string` to validate values like filenames, paths, etc.
     - Feat: Add `restsh.util.check.uint` to validate unsigned integer values
     - Feat: Add `restsh.util.check.bool` to validate boolean values
+    - Feat: `restsh.util.jsonencode`
     - Upd: Add restsh.setup alias
     - Upd: `restsh.util.setvar` - Add check for valid filenames
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
