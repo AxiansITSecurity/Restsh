@@ -66,7 +66,7 @@ do
     case "$OPTION" in
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
-        n) NAME=$OPTARG ;;
+        n) restsh.util.check.string "name" "$OPTARG"; NAME=$OPTARG ;;
         c) restsh.util.check.string "config file" "$OPTARG"; CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
         key) KEY="$OPTARG" ;;

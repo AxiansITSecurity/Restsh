@@ -27,8 +27,9 @@ then
     echo "Usage: $(basename "$0") <fqdn> <expiration string>"
     exit 2
 fi
-FQDN=$1
-EXPIRATION=$2
+
+restsh.util.check.string "fqdn" "$1"; FQDN=$1
+restsh.util.check.string "expiration string" "$1"; EXPIRATION=$2
 
 CERT=$(GET -rf ".sslCertfile" /mgmt/tm/sys/httpd)
 EXPIRATION=$(date +%s -d"now + $EXPIRATION")

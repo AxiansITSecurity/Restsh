@@ -36,10 +36,22 @@ then
     echo "Usage: $(basename "$0") <old cert file> <old key file>"
     exit 2
 fi
-OLD_CERT_NAME="$1"
-OLD_CERT_KEY_NAME="$2"
+restsh.util.check.string "old cert file" "$1"; OLD_CERT_NAME="$1"
+restsh.util.check.string "old key file" "$1"; OLD_CERT_KEY_NAME="$2"
 
 # Main
+if ! f5.file.size "/config/httpd/conf/ssl.crt/$OLD_CERT_NAME" > /dev/null
+then
+    echo_err "Default certificate not found."
+    exit 1
+fi
+
+if ! f5.file.size "/config/httpd/conf/ssl.key/$OLD_CERT_KEY_NAME" > /dev/null
+then
+    echo_err "Default key not found."
+    exit 1
+fi
+
 f5.run "cp" "/config/httpd/conf/ssl.crt/$OLD_CERT_NAME" "/config/httpd/conf/ssl.crt/server.crt"
 f5.run "cp" "/config/httpd/conf/ssl.key/$OLD_CERT_KEY_NAME" "/config/httpd/conf/ssl.key/server.key"
 

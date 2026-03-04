@@ -29,8 +29,8 @@ then
     exit 2
 fi
 
-NAME=$1
-CERT_FILE_LOCAL=$2
+restsh.util.check.string "name" "$1"; NAME=$1
+restsh.util.check.string "certificate file" "$2"; CERT_FILE_LOCAL=$2
 
 KEY_FILE="/config/httpd/conf/ssl.key/$NAME.key"
 if ! f5.file.size "$KEY_FILE" > /dev/null

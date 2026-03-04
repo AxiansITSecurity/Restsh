@@ -61,9 +61,9 @@ do
     fi
     case "$OPTION" in
         a) ALT_NAMES+=("$OPTARG") ;;
-        c) CONFIG_FILE=$OPTARG ;;
+        c) restsh.util.check.string "config file" "$OPTARG"; CONFIG_FILE=$OPTARG ;;
         i) ALT_IPS+=("$OPTARG") ;;
-        n) NAME="$OPTARG" ;;
+        n) restsh.util.check.string "name" "$OPTARG"; NAME="$OPTARG" ;;
         keysize) KEYSIZE="$OPTARG" ;;
         cn) CN="$OPTARG" ;;
         org) ORG="$OPTARG" ;;
