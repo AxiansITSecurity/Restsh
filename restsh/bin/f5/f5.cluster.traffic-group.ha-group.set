@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-04-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Sets the ha-group for a traffic-group.
 # Desc:
@@ -35,8 +36,9 @@ then
     echo "$(basename "$0") <traffic group name> <ha-group name>"
     exit 2
 fi
-TRAFFIC_GROUP=$1
-HA_GROUP=$2
+
+restsh.util.check.string "traffic group name" "$1"; TRAFFIC_GROUP=$1
+restsh.util.check.string "ha-group name>" "$2"; HA_GROUP=$2
 
 JQ -n --arg hagroup "$HA_GROUP" \
     '{

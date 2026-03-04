@@ -40,13 +40,13 @@ then
     exit 2
 fi
 
-GROUP=$(echo -n "$1" | jq -R)
+GROUP=$(restsh.util.jsonencode "$1")
 
 POST "/mgmt/tm/cm/config-sync" << EOL
 {
     "command": "run",
     "options": [
-        { 
+        {
             "${FORCE}to-group": $GROUP
         }
     ]
