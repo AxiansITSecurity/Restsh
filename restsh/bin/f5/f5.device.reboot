@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+
+# Shortdesc: Reboots the F5.
+# Desc:
+# Reboots the F5.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+FORCE=0
+while getopts ':f' OPTION
+do
+    case "$OPTION" in
+        f) FORCE=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options]"
+    echo "Options:"
+    echo "-f  Force reboot"
+    exit 2
+fi
+
+if [ "$FORCE" -eq 1 ]
+then
+    POST /mgmt/tm/sys <<< '{ "command":"reboot" }'
+else
+    echo "Use: $(basename "$0") -f" to reboot.
+    exit 1
+fi
