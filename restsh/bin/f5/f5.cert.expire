@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-08-05
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists all traffic management certificates that should be renewed.
 # Desc:
@@ -23,10 +24,12 @@ fi
 # Get options
 DATE_STRING="next month"
 RAW=0
-while getopts ':rd:' OPTION
+FAIL=1
+while getopts ':d:rs' OPTION
 do
     case "$OPTION" in
-        d) DATE_STRING=$OPTARG ;;
+        d) restsh.util.check.string "date string" "$OPTARG"; DATE_STRING=$OPTARG ;;
+        s) FAIL=0 ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -37,35 +40,28 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-d <date string>] [-r]"
-    echo -e "\tUse -d to specify date string for expiration, default: \"next month\"."
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -d <date string>  Expiration date string, default: \"next month\"."
+    echo "    -r                Raw output."
+    echo "    -s                Do not fail on expiring certificates"
     exit 2
 fi
 
-# Check if string is in array
-in_array() {
-    local VALUE=$1
-    shift
-    for A in "$@"
-    do
-        [ "$A" = "$VALUE" ] && return 0
-    done
-    return 1
-}
-
 TRESHOLD=$(date -d "$DATE_STRING" +%s)
+# Default certificates to ignore
 IGNORE_CERTS=("/Common/f5-ca-bundle.crt" "/Common/f5-irule.crt" "/Common/f5_api_com.crt" "/Common/default.crt")
+# Check only certificates with a key
 mapfile -t KEY_LIST < <(f5.cert.key.list -r | JQ -r '.items[].fullPath')
 RC=0
 
 while IFS=$'\t' read -r CERT EXPIRATION
 do
-    if in_array "$CERT" "${IGNORE_CERTS[@]}"
+    if restsh.util.array.includes "$CERT" "${IGNORE_CERTS[@]}"
     then
         continue
     fi
-    if ! in_array "$CERT" "${KEY_LIST[@]}"
+    if ! restsh.util.array.includes "$CERT" "${KEY_LIST[@]}"
     then
         continue
     fi
@@ -81,5 +77,8 @@ do
     fi
 done < <(f5.cert.list -r | JQ -r '.items[] | [.fullPath,.expirationDate] | @tsv')
 
-# Exit with 1 if there are expiring certificates
-exit "$RC"
+if [ "$FAIL" -eq 1 ]
+then
+    # Exit with 1 if there are expiring certificates
+    exit "$RC"
+fi
