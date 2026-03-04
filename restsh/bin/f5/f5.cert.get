@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-10-07
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Shows details of a traffic management certificate.
 # Desc:
@@ -36,6 +36,7 @@ then
     echo "Usage: $(basename "$0") <certificate>"
     exit 2
 fi
-CERTIFICATE=${1//\//\~}
+
+restsh.util.check.string "certificate" "$1"; CERTIFICATE=${1//\//\~}
 
 GET "/mgmt/tm/sys/file/ssl-cert/${CERTIFICATE}?options=-hidden"

@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # (c) Axians IT Security GmbH
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-08-01
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a certificate signing request from existing key.
 # Desc:
@@ -67,7 +67,7 @@ do
         a) ALT_NAMES+=("DNS:$OPTARG") ;;
         i) ALT_IPS+=("IP:$OPTARG") ;;
         n) NAME=$OPTARG ;;
-        c) CONFIG_FILE=$OPTARG ;;
+        c) restsh.util.check.string "config file" "$OPTARG"; CONFIG_FILE=$OPTARG ;;
         partition) PARTITION="$OPTARG" ;;
         key) KEY="$OPTARG" ;;
         cn) CN="$OPTARG" ;;

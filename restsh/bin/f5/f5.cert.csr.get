@@ -35,7 +35,7 @@ then
     exit 2
 fi
 
-CSR=$1
+restsh.util.check.string "csr" "$1"; CSR=$1
 if OUTPUT=$(f5.run "tmsh" "list" "sys" "crypto" "csr" "$CSR")
 then
     if [ -z "$OUTPUT" ]

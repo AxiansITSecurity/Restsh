@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Imports traffic management key + cert + optional chain file.
 # Desc:
@@ -25,7 +26,7 @@ while getopts ':hns:' OPTION
 do
     case "$OPTION" in
         n) DATE_SUFFIX=0 ;;
-        s) BUNDLE_NAME="$OPTARG" ;;
+        s) restsh.util.check.string "bundle name" "$OPTARG"; BUNDLE_NAME="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -42,10 +43,13 @@ then
     exit 2
 fi
 
-FILE_KEY=$1
-FILE_CERT=$2
+restsh.util.check.string "key" "$1"; FILE_KEY=$1
+restsh.util.check.string "cert" "$2"; FILE_CERT=$2
 FILE_BUNDLE=""
-[ -n "${3+x}" ] && FILE_BUNDLE=$3
+if [ -n "${3+x}" ]
+then
+    restsh.util.check.string "chain bundle" "$3"; FILE_BUNDLE=$3
+fi
 
 CN=$(openssl x509 -in "$FILE_CERT" -noout -subject -nameopt compat | sed -r -e 's|.*CN=([^/]+).*|\1|' -e 's|^\*|wildcard|')
 if [ -z "$BUNDLE_NAME" ]

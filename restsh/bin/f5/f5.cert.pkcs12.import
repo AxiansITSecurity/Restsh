@@ -40,8 +40,8 @@ then
     exit 2
 fi
 
-PKCS12_FILE=$1
-NAME=$2
+restsh.util.check.string "pkcs12 file" "$1"; PKCS12_FILE=$1
+restsh.util.check.string "name" "$2"; NAME=$2
 PASSWORD=$3
 
 remove_upload_file() {

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-08-01
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes a csr on the F5.
 # Desc:
@@ -35,6 +36,6 @@ then
     exit 2
 fi
 
-F5_CSR_NAME=${1//\//\~}
+restsh.util.check.string "name" "$1"; F5_CSR_NAME=${1//\//\~}
 
 DELETE "/mgmt/tm/sys/crypto/csr/$F5_CSR_NAME"
