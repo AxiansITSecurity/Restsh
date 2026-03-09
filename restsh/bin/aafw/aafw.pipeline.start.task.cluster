@@ -41,9 +41,9 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
     echo "    -a <device>  Enforce active device after sync."
     echo "    -f           Force device-group sync."
+    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
     echo "    -w           Wait for finished pipeline."
     exit 2
 fi
