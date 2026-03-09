@@ -37,10 +37,10 @@ if [ $# -ne 3 ] || [ "$OPTION" = "invalid " ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <stage> <script>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch> <script>"
     echo "Options:"
-    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
-    echo "    -w  Wait for finished pipeline."
+    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w           Wait for finished pipeline."
     echo ""
     echo "    Script: Script in the repository defined by the CI/CD variable TASKS_CUSTOM_REPO."
     exit 2

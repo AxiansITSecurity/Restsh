@@ -36,10 +36,10 @@ if [ $# -ne 3 ] || [ "$OPTION" = "invalid " ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <stage> <package>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch> <package>"
     echo "Options:"
-    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
-    echo "    -w  Wait for finished pipeline."
+    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w           Wait for finished pipeline."
     echo ""
     echo "    Package: as3, do, ts or all"
     exit 2

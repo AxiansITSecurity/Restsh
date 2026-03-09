@@ -38,8 +38,8 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
-    echo "    -w  Wait for finished pipeline."
+    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w           Wait for finished pipeline."
     exit 2
 fi
 

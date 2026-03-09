@@ -39,11 +39,11 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid " ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <stage>"
+    echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -s Sync Cluster"
-    echo "    -t <f5 management ip> or \"active\", \"standby\", default is \"active\""
-    echo "    -w  Wait for finished pipeline."
+    echo "    -s           Sync Cluster"
+    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w           Wait for finished pipeline."
     exit 2
 fi
 
