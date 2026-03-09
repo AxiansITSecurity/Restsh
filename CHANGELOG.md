@@ -18,6 +18,7 @@ This is the changelog for Restsh.
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
 - Axians Automation Framework
     - Feat: `aafw.art.new` - Support iRule Framework configuration
+    - Feat: `aafw.pipeline.start.task.cluster`
 - F5 TMOS Module
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`
