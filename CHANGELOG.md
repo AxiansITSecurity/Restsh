@@ -19,6 +19,7 @@ This is the changelog for Restsh.
 - Axians Automation Framework
     - Feat: `aafw.art.new` - Support iRule Framework configuration
     - Feat: `aafw.pipeline.start.task.cluster`
+    - Feat: `aafw.pipeline.start.task.liveupdate`
 - F5 TMOS Module
     - Feat: `f5.sys.license`
     - Feat: `f5.asm.policy.exists`
