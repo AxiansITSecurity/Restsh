@@ -76,9 +76,11 @@ then
     echo_warn "API call failed, this is expected because of the httpd daemon restart."
 else
     # httpd not automatically restarted but it should be restarted.
+    echo "Restarting httpd"
+    echo "Connection will be reset"
     #f5.sys.service.restart httpd > /dev/null 2>&1 || true
     # Workaround for https://my.f5.com/manage/s/article/K13292945
-    f5.run /shared/axians/scripts/httpd-restart.sh
+    f5.run /shared/axians/scripts/httpd-restart.sh > /dev/null 2>&1 || true
 fi
 
 # Wait for httpd restart

@@ -62,9 +62,10 @@ f5.run "cp" "/config/httpd/conf/ssl.crt/${NAME}.crt" "/config/httpd/conf/ssl.crt
 f5.run "cp" "/config/httpd/conf/ssl.key/${NAME}.key" "/config/httpd/conf/ssl.key/server.key"
 
 echo "Restarting httpd"
+echo "Connection will be reset"
 #f5.sys.service.restart httpd > /dev/null 2>&1 || true
 # Workaround for https://my.f5.com/manage/s/article/K13292945
-f5.run /shared/axians/scripts/httpd-restart.sh
+f5.run /shared/axians/scripts/httpd-restart.sh > /dev/null 2>&1 || true
 
 # Wait for httpd restart
 sleep 2
