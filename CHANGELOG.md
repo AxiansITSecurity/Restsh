@@ -16,6 +16,7 @@ This is the changelog for Restsh.
     - Upd: Add restsh.setup alias
     - Upd: `restsh.util.setvar` - Add check for valid filenames
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
+    - Fix: F5 Token Authentication - Token renewal
 - Axians Automation Framework
     - Feat: `aafw.art.new` - Support iRule Framework configuration
     - Feat: `aafw.pipeline.start.task.cluster`

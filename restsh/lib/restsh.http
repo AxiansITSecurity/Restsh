@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-17
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Central http functions for all common REST methods.
 # Desc:
@@ -20,12 +21,14 @@ restsh.http() {
     local PARSE_OPT=()
     local OUTPUT_FILE=""
     local OPTION OPTIND
-    while getopts ':bc:f:o:r' OPTION
+    local HTTP_PRE_EXEC="$RESTSH_HTTP_PRE_EXEC"
+    while getopts ':bc:f:no:r' OPTION
     do
         case "$OPTION" in
             b) BODY=1 ;;
             c) RETRIES="$OPTARG" ;;
             f) PARSE_OPT+=("-f" "$OPTARG") ;;
+            n) HTTP_PRE_EXEC="" ;;
             o) OUTPUT_FILE="$OPTARG" ;;
             r) PARSE_OPT+=("-r") ;;
             *) OPTION="invalid"; break ;;
@@ -35,12 +38,14 @@ restsh.http() {
     if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" = "invalid" ]
     then
         {
-            echo "Usage: restsh.http [-b] [-c <retries>] [-f <filter>] [-o <file>] [-r] <method> <uri>"
-            echo -e "\tUse -b for a body and pipe the payload in the command."
-            echo -e "\tUse -c to define retries"
-            echo -e "\tUse -f to apply an jq filter to output"
-            echo -e "\tUse -o to define an output file"
-            echo -e "\tUse -r for raw output."
+            echo "Usage: restsh.http [options...] <method> <uri>"
+            echo "Options:"
+            echo "    -b           Get body from STDIN"
+            echo "    -c <retries> Number of HTTP request retries (default no retries)."
+            echo "    -f <filter>  Apply an jq filter to output"
+            echo "    -n           Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -o           Define an output file"
+            echo "    -r           Raw output."
         } 1>&2
         return 2
     fi
@@ -48,9 +53,9 @@ restsh.http() {
     local URI=$2
 
     # HTTP Pre-Exec Function
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+    if [ -n "${HTTP_PRE_EXEC}" ]
     then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
+        eval "${HTTP_PRE_EXEC}"
     fi
 
     # We must set the curl options first
@@ -105,19 +110,33 @@ restsh.download() {
     then
         {
             echo "Download a file in chunks of ${RESTSH_CHUNK_SIZE} bytes."
-            echo "Usage: restsh.download <uri> <size> <filename>"
+            echo "Usage: restsh.download [options...] <uri> <size> <filename>"
             echo "Use 0 for <size> to enable auto-detection of the size."
+            echo "Options:"
+            echo "    -n  Ignore RESTSH_HTTP_PRE_EXEC"
         } 1>&2
         return 2
     fi
+
+    local HTTP_PRE_EXEC="$RESTSH_HTTP_PRE_EXEC"
+    local OPTION OPTIND
+    while getopts ':n' OPTION
+    do
+        case "$OPTION" in
+            n) HTTP_PRE_EXEC="" ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+
     local URI=$1
     local TOTAL_SIZE=$2
     local FILENAME=$3
 
     # HTTP Pre-Exec Function
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+    if [ -n "${HTTP_PRE_EXEC}" ]
     then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
+        eval "${HTTP_PRE_EXEC}"
     fi
 
     # We must set the curl options first
@@ -200,10 +219,24 @@ restsh.upload() {
     then
         {
             echo "Upload a file in chunks of ${RESTSH_CHUNK_SIZE} bytes."
-            echo "Usage: restsh.upload <uri> <filename>"
+            echo "Usage: restsh.upload [options...] <uri> <filename>"
+            echo "Options:"
+            echo "    -n  Ignore RESTSH_HTTP_PRE_EXEC"
         } 1>&2
         return 2
     fi
+
+    local HTTP_PRE_EXEC="$RESTSH_HTTP_PRE_EXEC"
+    local OPTION OPTIND
+    while getopts ':n' OPTION
+    do
+        case "$OPTION" in
+            n) HTTP_PRE_EXEC="" ;;
+            *) OPTION="invalid"; break ;;
+        esac
+    done
+    shift "$((OPTIND -1))"
+
     local URI=$1
     local FILENAME=$2
     local TOTAL_SIZE
@@ -214,9 +247,9 @@ restsh.upload() {
     fi
 
     # HTTP Pre-Exec Function
-    if [ -n "${RESTSH_HTTP_PRE_EXEC}" ]
+    if [ -n "${HTTP_PRE_EXEC}" ]
     then
-        eval "${RESTSH_HTTP_PRE_EXEC}"
+        eval "${HTTP_PRE_EXEC}"
     fi
 
     # We must set the curl options first
@@ -274,11 +307,12 @@ restsh.upload() {
 DELETE() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':c:f:r' OPTION
+    while getopts ':c:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
             f) ARGS+=("-f" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
@@ -290,9 +324,10 @@ DELETE() {
             echo "Executes a HTTP DELETE request"
             echo "Usage: DELETE [options...] <uri>"
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
-            echo "    -f Apply an jq filter to output."
-            echo "    -r Raw output."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
@@ -304,10 +339,11 @@ DELETE() {
 DOWNLOAD() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':c:' OPTION
+    while getopts ':c:n' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -318,7 +354,8 @@ DOWNLOAD() {
             echo "Downloads a file with HTTP"
             echo "Usage: DOWNLOAD [options...] <uri> <output filename>"
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
         } 1>&2
         return 2
     fi
@@ -337,11 +374,12 @@ DOWNLOAD() {
 GET() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':c:f:r' OPTION
+    while getopts ':c:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
             f) ARGS+=("-f" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
@@ -352,10 +390,10 @@ GET() {
         {
             echo "Executes a HTTP GET request"
             echo "Usage: GET [options...] <uri>"
-            echo "Options:"
-            echo "    -c Number of retries (default no retries)."
-            echo "    -f Apply an jq filter to output."
-            echo "    -r Raw output."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
@@ -367,10 +405,11 @@ GET() {
 HEAD() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':c:' OPTION
+    while getopts ':c:n' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             *) OPTION="invalid"; break ;;
         esac
     done
@@ -381,7 +420,8 @@ HEAD() {
             echo "Executes a HTTP HEAD request and returns raw headers."
             echo "Usage: HEAD [options...] <uri>"
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
         } 1>&2
         return 2
     fi
@@ -393,11 +433,12 @@ HEAD() {
 OPTIONS() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':c:f:r' OPTION
+    while getopts ':c:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
             f) ARGS+=("-f" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
@@ -409,9 +450,10 @@ OPTIONS() {
             echo "Executes a HTTP OPTIONS request"
             echo "Usage: OPTIONS [options...] <uri>"
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
-            echo "    -f Apply an jq filter to output."
-            echo "    -r Raw output."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
@@ -423,11 +465,12 @@ OPTIONS() {
 PATCH() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':c:f:r' OPTION
+    while getopts ':c:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
             f) ARGS+=("-f" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
@@ -440,9 +483,10 @@ PATCH() {
             echo "Usage: PATCH [options...] <uri>"
             echo "Payload is read from STDIN."
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
-            echo "    -f Apply an jq filter to output."
-            echo "    -r Raw output."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
@@ -454,11 +498,12 @@ PATCH() {
 POST() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':c:f:r' OPTION
+    while getopts ':c:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
             f) ARGS+=("-f" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
@@ -471,9 +516,10 @@ POST() {
             echo "Usage: POST [options...] <uri>"
             echo "Payload is read from STDIN."
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
-            echo "    -f Apply an jq filter to output."
-            echo "    -r Raw output."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
@@ -485,11 +531,12 @@ POST() {
 PUT() {
     local ARGS=("-b")
     local OPTION OPTIND
-    while getopts ':c:f:r' OPTION
+    while getopts ':c:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
             f) ARGS+=("-f" "$OPTARG") ;;
+            n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
             *) OPTION="invalid"; break ;;
         esac
@@ -502,9 +549,10 @@ PUT() {
             echo "Usage: PUT [options...] <uri>"
             echo "Payload is read from STDIN."
             echo "Options:"
-            echo "    -c Number of retries (default no retries)."
-            echo "    -f Apply an jq filter to output."
-            echo "    -r Raw output."
+            echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
