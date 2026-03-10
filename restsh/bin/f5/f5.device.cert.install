@@ -53,18 +53,15 @@ then
     exit 1
 fi
 
-if ! JQ -n --arg cert "$CERT_FILE" --arg key "$KEY_FILE" \
-    '{
-        "sslCertfile": $cert,
-        "sslCertkeyfile": $key
-    }' | PUT /mgmt/tm/sys/httpd
-then
-    echo_warn "API call failed, this is expected because of the httpd daemon restart."
-else
-    # httpd not automatically restarted but it should be restarted.
-    # Restart it and ignore errors.
-    f5.sys.service.restart httpd > /dev/null 2>&1 || true
-fi
+echo "Backup old key and certificate"
+f5.run "cp" "/config/httpd/conf/ssl.crt/server.crt" "/config/httpd/conf/ssl.crt/old.aafw.crt"
+f5.run "cp" "/config/httpd/conf/ssl.key/server.key" "/config/httpd/conf/ssl.key/old.aafw.key"
+
+echo "Move new certificates in place"
+f5.run "cp" "/config/httpd/conf/ssl.crt/${NAME}.crt" "/config/httpd/conf/ssl.crt/server.crt"
+f5.run "cp" "/config/httpd/conf/ssl.key/${NAME}.key" "/config/httpd/conf/ssl.key/server.key"
+
+f5.sys.service.restart httpd > /dev/null 2>&1 || true
 
 # Wait for httpd restart
 sleep 2
