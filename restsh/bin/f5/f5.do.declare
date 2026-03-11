@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-01-21
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Posts a Declarative Onboarding declaration, optionally runs mustache before.
 # Desc:
@@ -26,7 +27,7 @@ KEEP_TMP=0
 while getopts ':d:kt' OPTION
 do
     case "$OPTION" in
-        d) DEFAULTS=$OPTARG ;;
+        d) restsh.util.check.string "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
         k) KEEP_TMP=1 ;;
         t) IS_TEMPLATE=1 ;;
         *) OPTION="invalid"; break ;;
@@ -38,13 +39,15 @@ if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-d <defaults file>] [-t] [-v] [-k] <do declaration file>"
-    echo -e "\t-d\tDefine a custom variable file. Default is <do declaration file>.var."
-    echo -e "\t-k\tKeeps the temporary files."
-    echo -e "\t-t\tProcess the do declaration file with mustache."
+    echo "Usage: $(basename "$0") [options...] <DO declaration file>"
+    echo "Options:"
+    echo "    -d <defaults file>  Define a custom variable file. Default is <DO declaration file>.var."
+    echo "    -k                  Keeps the temporary files."
+    echo "    -t                  Process the do declaration file with mustache."
     exit 2
 fi
-DO_FILE=$1
+
+restsh.util.check.string "DO declaration file" "$1"; DO_FILE=$1
 DO_FILE_PARSED="$RESTSH_TMP/$(basename "$DO_FILE")"
 
 # Cleanup tmp files

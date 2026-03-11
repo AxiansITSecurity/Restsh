@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-27
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Resets the Declarative Onboarding configuration.
 # Desc:
@@ -35,6 +36,7 @@ then
     echo "Usage: $(basename "$0") <id>"
     exit 2
 fi
-ID=$1
+
+restsh.util.check.string "id" "$1"; ID=$1
 
 DELETE "/mgmt/shared/declarative-onboarding/config/$ID"

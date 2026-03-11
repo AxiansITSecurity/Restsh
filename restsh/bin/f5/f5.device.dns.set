@@ -38,6 +38,7 @@ fi
 
 for SERVER in "$@"
 do
+    restsh.util.check.string "server" "$SERVER"; 
     JQ -n --arg server "$SERVER" '$server'
 done | JQ -s -n '{nameServers: input}' \
      | PATCH /mgmt/tm/sys/dns
