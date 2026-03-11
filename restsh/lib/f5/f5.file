@@ -15,7 +15,7 @@
 # Download a File       GET     /mgmt/cm/autodeploy/software-image-downloads  /shared/images/
 # Upload an Image File 	POST    /mgmt/cm/autodeploy/software-image-uploads    /shared/images/
 # Upload a File         POST    /mgmt/shared/file-transfer/uploads            /var/config/rest/downloads/
-# Download a QKView     GET     /mgmt/shared/file-transfer/qkview-downloads   /var/tmp/qkviews
+# Download a QKView     GET     /mgmt/cm/autodeploy/qkview-downloads          /var/tmp/qkviews
 # Download a UCS        GET     /mgmt/shared/file-transfer/ucs-downloads      /var/local/ucs/
 # Upload ASM Policy     POST    /mgmt/tm/asm/file-transfer/uploads            /var/ts/var/rest/
 # Download ASM Policy   GET     /mgmt/tm/asm/file-transfer/downloads          /var/ts/var/rest/
