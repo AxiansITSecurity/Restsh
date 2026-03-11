@@ -948,7 +948,7 @@ restsh.util.askpass() {
     local CHARCOUNT=0
     local CHAR
     local PASSWORD=""
-    while IFS= read -p "$PROMPT" -r -s -n 1 CHAR
+    while IFS= read -p "$PROMPT" -r -s -n 1 CHAR 1>&2
     do
         # Enter - accept password
         if [[ $CHAR == $'\0' ]]

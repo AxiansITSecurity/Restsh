@@ -27,13 +27,13 @@ f5osa.auth.token.get() {
     # Ask for user/password if not set
     if [ -z "${RESTSH_USER+x}" ]
     then
-        read -r -p "User: " RESTSH_USER
+        read -r -p "User: " RESTSH_USER 1>&2
         export RESTSH_USER
     fi
     if [ -z "${RESTSH_PASS+x}" ]
     then
         RESTSH_PASS=$(restsh.util.askpass Password)
-        echo ""
+        echo "" 1>&2
         export RESTSH_PASS
     fi
 
