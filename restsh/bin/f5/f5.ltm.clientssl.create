@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-28
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a new ClientSSL profile on the F5.
 # Desc:
@@ -35,12 +36,16 @@ then
     exit 2
 fi
 
-NAME=$1
-PARENT=$2
-CERT=$3
-KEY=$4
-CHAIN="none"
-[ -n "${5+x}" ] && CHAIN=$5
+restsh.util.check.string "clientssl profile" "$1"; NAME=$1
+restsh.util.check.string "parent" "$2"; PARENT=$2
+restsh.util.check.string "cert" "$3"; CERT=$3
+restsh.util.check.string "key" "$4"; KEY=$4
+if [ -n "${5+x}" ]
+then
+    restsh.util.check.string "bundle" "$5"; CHAIN=$5
+else
+    CHAIN="none"
+fi
 
 JQ -n --arg name "$NAME" \
     --arg parent "$PARENT" \

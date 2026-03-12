@@ -30,6 +30,7 @@ This is the changelog for Restsh.
     - Feat: `f5.asm.live-update.file.download`
     - Feat: `f5.asm.policy.signatureset.remove`, `f5.asm.policy.signatureset.getid`
     - Feat: `f5.botdefense.profile.delete`
+    - Feat: `f5.ltm.clientssl.delete`
     - Upd: `f5.cert.expire` - Add option to not fail on expired certificates
     - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
     - Upd: `f5.ltm.datagroup.internal.list` - Add option for raw json output

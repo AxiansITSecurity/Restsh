@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
-# Shortdesc: Replaces the certificate chain of a ClientSSL profiles on the F5.
+# Shortdesc: Replaces the certificate,key and chain of a ClientSSL profiles on the F5.
 # Desc:
-# Replaces the certificate chain of a ClientSSL profiles on the F5.
+# Replaces the certificate,key and chain of a ClientSSL profiles on the F5.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -35,12 +36,17 @@ then
     exit 2
 fi
 
-NAME=$1
-FULLPATH=${NAME//\//\~}
-CERT=$2
-KEY=$3
-CHAIN=""
-[ -n "${4+x}" ] && CHAIN=$4
+restsh.util.check.string "clientssl profile" "$1"; FULLPATH=$1
+FULLPATH=${FULLPATH//\//\~}
+restsh.util.check.string "cert" "$2"; CERT=$2
+restsh.util.check.string "key" "$3"; KEY=$3
+
+if [ -n "${4+x}" ]
+then
+    restsh.util.check.string "bundle" "$4"; CHAIN=$4
+else
+    CHAIN="none"
+fi
 
 JQ -n --arg cert "$CERT" \
     --arg key "$KEY" \
