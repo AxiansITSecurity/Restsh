@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates an external datagroup.
 # Desc:
 # Creates an external datagroup.
+#
+# Format of external datagroup file:
+# "name1" := "value1",
+# "name2" := "value2",
+# "name3" := "value3",
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,11 +28,11 @@ fi
 # Get options
 UPLOAD=0
 DG_TYPE=""
-while getopts ':ut' OPTION
+while getopts ':ut:' OPTION
 do
     case "$OPTION" in
         u) UPLOAD=1 ;;
-        t) DG_TYPE="$OPTARG" ;;
+        t) restsh.util.check.string "type" "$OPTARG"; DG_TYPE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -36,15 +42,15 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
   exec 1>&2
   _restsh.help.desc.get "$0"
-  echo "Usage:"
-  echo -e "\t$(basename "$0") <full path> <filename>"
-  echo -e "\t$(basename "$0") -u -t <type> <full path> <filename>"
-  echo -e "\tValid types: string, integer, ip"
+  echo "Usage: $(basename "$0") [options...] <full path> <filename>"
+  echo "Options:"
+  echo "    -u         Upload filename - executes f5.sys.datagroup.external.create before."
+  echo "    -t <type>  Required for \"-u\" option; Datagroup type: string, integer, ip"
   exit 2
 fi
 
-FULLPATH=$1
-FILENAME=$2
+restsh.util.check.string "full path" "$1"; FULLPATH=$1
+restsh.util.check.string "filename" "$2"; FILENAME=$2
 read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
 
 if [ "$UPLOAD" -eq 1 ]
@@ -54,7 +60,7 @@ fi
 
 JQ -n --arg name "$NAME" \
     --arg partition "$PARTITION" \
-    --arg filename "$FILENAME" \
+    --arg filename "$NAME" \
     '{
         "name": $name,
         "partition": $partition,

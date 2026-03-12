@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Updates an external system datagroup.
 # Desc:
@@ -37,13 +38,13 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <fullPath> <filename>"
-    echo -e "\tFormat of external datagroup file:"
-    echo -e "\t\t\"name1\" := \"value1\","
+    echo "    Format of external datagroup file:"
+    echo "        \"name1\" := \"value1\","
     exit 2
 fi
 
-FULLPATH=$1
-FILENAME=$2
+restsh.util.check.string "full path" "$1"; FULLPATH=$1
+restsh.util.check.string "filename" "$1"; FILENAME=$2
 
 if [ "${FILENAME:0:4}" != "http" ]
 then

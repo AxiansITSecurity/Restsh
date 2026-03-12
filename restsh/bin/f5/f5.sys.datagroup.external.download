@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Downloads an external system datagroup.
 # Desc:
@@ -35,8 +36,8 @@ then
   exit 2
 fi
 
-FULLPATH=${1//\//\~}
-FILENAME=$2
+restsh.util.check.string "full path" "$1"; FULLPATH=${1//\//\~}
+restsh.util.check.string "filename" "$2"; FILENAME=$2
 
 FILE=$(GET -rf ".cachePath" "/mgmt/tm/sys/file/data-group/${FULLPATH}?options=-hidden")
 f5.run "base64" "$FILE" | base64 -d > "$FILENAME"
