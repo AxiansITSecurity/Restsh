@@ -67,7 +67,7 @@ f5.common.fullPathSplit2() {
         SUBPATH=""
         NAME=$FULLPATH
     fi
-    printf "%s,%s,%s" "$PARTITION" "$SUBPATH" "$NAME"
+    printf "%s,%s,%s\n" "$PARTITION" "$SUBPATH" "$NAME"
 }
 
 # Joins path components with defined separator.
