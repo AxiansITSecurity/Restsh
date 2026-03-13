@@ -53,7 +53,7 @@ if [ "${FILENAME:0:4}" != "http" ]
 then
     if ! f5.file-transfer.upload "$FILENAME"
     then
-        return 1
+        exit 1
     fi
     FILENAME="file:///var/config/rest/downloads/$(basename "$FILENAME")"
 fi
