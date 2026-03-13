@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes a System iFile.
 # Desc:
@@ -32,11 +33,10 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <full path>"
+    echo "Usage: $(basename "$0") <fullPath>"
     exit 2
 fi
 
-FULLPATH=$1
+restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
 
 DELETE "/mgmt/tm/sys/file/ifile/${FULLPATH//\//\~}" > /dev/null
-

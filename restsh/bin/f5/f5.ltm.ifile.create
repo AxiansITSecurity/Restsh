@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a LTM iFile.
 # Desc:
@@ -35,21 +36,27 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage:"
-    echo -e "\t$(basename "$0") <full path> <sys iFile>"
-    echo -e "\t$(basename "$0") -u <full path> <local file>"
+    echo "Usage: $(basename "$0") [options...] <fullPath> <sys iFile>"
+    echo "Options:"
+    echo "    -u  Executes f5.sys.ifile.create to create the sys iFile before."
     exit 2
 fi
 
-FULLPATH=$1
-FILENAME=$2
+restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
+restsh.util.check.string "filename" "$2"; FILENAME=$2
 read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
 
 if [ "$UPLOAD" -eq 1 ]
 then
-  f5.sys.ifile.create "$FILENAME" "$FULLPATH"
+    f5.sys.ifile.create "$FILENAME" "$FULLPATH"
+    FILENAME="$FULLPATH"
 fi
 
-JQ -n --arg name "$NAME" --arg partition "$PARTITION" --arg filename "$FILENAME" \
-  '{ name: $name, partition: $partition, "file-name": $filename }' |
-    POST "/mgmt/tm/ltm/ifile"
+JQ -n --arg name "$NAME" \
+    --arg partition "$PARTITION" \
+    --arg filename "$FILENAME" \
+    '{
+        name: $name,
+        partition: $partition,
+        "file-name": $filename
+    }' | POST "/mgmt/tm/ltm/ifile"

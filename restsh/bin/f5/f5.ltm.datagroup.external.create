@@ -56,11 +56,12 @@ read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
 if [ "$UPLOAD" -eq 1 ]
 then
     f5.sys.datagroup.external.create "$FULLPATH" "$DG_TYPE" "$FILENAME"
+    FILENAME="$FULLPATH"
 fi
 
 JQ -n --arg name "$NAME" \
     --arg partition "$PARTITION" \
-    --arg filename "$NAME" \
+    --arg filename "$FILENAME" \
     '{
         "name": $name,
         "partition": $partition,

@@ -32,12 +32,12 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <full path> <filename>"
+    echo "Usage: $(basename "$0") <fullPath> <filename>"
     exit 2
 fi
 
-FULLPATH=${1//\//\~}
-FILENAME=$2
+restsh.util.check.string "fullPath" "$1"; FULLPATH=${1//\//\~}
+restsh.util.check.string "filename" "$1"; FILENAME=$2
 
 FILE=$(GET -rf ".cachePath" "/mgmt/tm/sys/file/ifile/${FULLPATH}?options=-hidden")
 f5.run "base64" "$FILE" | base64 -d > "$FILENAME"

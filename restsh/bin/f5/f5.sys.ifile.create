@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-06
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a System iFile.
 # Desc:
@@ -32,17 +33,21 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <file> <full path>"
+    echo "Usage: $(basename "$0") <file> <fullPath>"
     exit 2
 fi
 
-FILE=$1
-FULLPATH=$2
+restsh.util.check.string "file" "$1"; FILE=$1
+restsh.util.check.string "fullPath" "$2"; FULLPATH=$2
 
 IFS=, read -r PARTITION SUBPATH NAME < <(f5.common.fullPathSplit2 "$FULLPATH")
 FILENAME=$(basename "$FILE")
 
-f5.file.upload /mgmt/shared/file-transfer/uploads "$FILE" > /dev/null
+if ! f5.file.upload /mgmt/shared/file-transfer/uploads "$FILE" > /dev/null
+then
+    echo_err "Failure uploading file"
+    exit 1
+fi
 
 JQ -n --arg partition "$PARTITION" \
     --arg subpath "$SUBPATH" \
