@@ -39,6 +39,12 @@ f5.file.upload() {
     local FILE_BASENAME
     FILE_BASENAME=$(basename "$FILE_PATH")
 
+    if [ ! -f "$FILE_PATH" ]
+    then
+        echo_err "File \"$FILE_PATH\" not found."
+        return 1
+    fi
+
     if restsh.upload "$ENDPOINT/${FILE_BASENAME}" "$FILE_PATH"
     then
         return 0
@@ -58,6 +64,12 @@ f5.file.download() {
     local FILE=$2
     local SIZE=$3
     local OUT_FILE=$4
+
+    if [ -f "$OUT_FILE" ]
+    then
+        echo_err "File \"$OUT_FILE\" already exists."
+        return 1
+    fi
 
     if restsh.download "$ENDPOINT/${FILE}" "$SIZE" "$OUT_FILE"
     then
