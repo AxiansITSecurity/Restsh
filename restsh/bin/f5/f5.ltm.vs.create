@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-03
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a Virtual Server.
 # Desc:
@@ -32,11 +33,11 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <json declaration>"
+    echo "Usage: $(basename "$0") <json declaration file>"
     exit 2
 fi
 
-DECLARATION=$1
+restsh.util.check.string "json declaration file" "$1"; DECLARATION=$1
 
 # Main
 POST "/mgmt/tm/ltm/virtual" < "$DECLARATION"

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-05
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists a pool and its members that is linked to a virtual server.
 # Desc:
@@ -38,7 +39,7 @@ then
     exit 2
 fi
 
-VIRTUAL_SERVER=$1
+restsh.util.check.string "fullPath" "$1"; VIRTUAL_SERVER=$1
 
 if ! VS_PERSIST=$(f5.ltm.vs.get "$VIRTUAL_SERVER" | JQ -r '.persist[] | .name' 2>/dev/null)
 then
