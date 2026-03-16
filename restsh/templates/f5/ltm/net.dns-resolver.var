@@ -1,3 +1,4 @@
 [ -n "${VAR_NAME+x}" ] || VAR_NAME="dns-resolver-default"
-[ -n "${VAR_FULL_PATH+x}" ] || VAR_FULL_PATH="/Common/${VAR_NAME}"
+[ -n "${VAR_PARTITION+x}" ] || VAR_PARTITION="Common"
+[ -n "${VAR_FULL_PATH+x}" ] || VAR_FULL_PATH="/${VAR_PARTITION}/${VAR_NAME}"
 [ -n "${VAR_FORWARD_ZONE+x}" ] || VAR_FORWARD_ZONE="."

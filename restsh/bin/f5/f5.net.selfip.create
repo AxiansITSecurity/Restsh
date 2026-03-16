@@ -38,10 +38,12 @@ then
     echo "Usage: $(basename "$0") <name> <cidr> <vlan> <traffic-group>"
     exit 2
 fi
-NAME=$1
-ADDRESS=$2
-VLAN=$3
-TG=$4
+
+restsh.util.check.string "fullPath" "$1"; NAME=$1
+restsh.util.check.string "cidr" "$2"; ADDRESS=$2
+restsh.util.check.string "vlan" "$3"; VLAN=$3
+restsh.util.check.string "traffic-group" "$4"; TG=$4
+
 ALLOW_STR=$(restsh.util.array.string -q\" -s, "${ALLOW_SERVICE[@]}")
 
 JQ -n --arg name "$NAME" \

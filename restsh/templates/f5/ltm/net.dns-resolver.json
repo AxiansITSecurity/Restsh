@@ -1,5 +1,6 @@
 {
     "name": "{{VAR_NAME}}",
+    "partition": "{{VAR_PARTITION}}",
     "fullPath": "{{VAR_FULL_PATH}}",
     "answerDefaultZones": "yes",
     "cacheSize": 5767168,

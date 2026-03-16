@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-04-22
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Modifies a dns-resolver.
 # Desc:
@@ -36,7 +37,7 @@ if [ "$#" -lt 1 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <full path>"
+    echo "Usage: $(basename "$0") [options...] <fullPath>"
     echo "Options:"
     echo "    -d <file>         File to read variables from"
     echo "    -s \"VAR=VALUE\"  Set a variable for template processing"
@@ -50,7 +51,7 @@ then
     exit 2
 fi
 
-export VAR_FULL_PATH="$1"
+restsh.util.check.string "fullPath" "$1"; export VAR_FULL_PATH="$1"
 read -r VAR_PARTITION VAR_NAME < <(f5.common.fullPathSplit "$1")
 export VAR_PARTITION
 export VAR_NAME
@@ -81,4 +82,4 @@ then
     MO_OPTIONS+=("-s=""$DEFAULTS")
 fi
 
-$RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE" | PATCH "/mgmt/tm/net/dns-resolver/$VAR_PARTITION~$VAR_NAME"
+$RESTSH_MO "${MO_OPTIONS[@]}" -- "$TEMPLATE"  | PATCH "/mgmt/tm/net/dns-resolver/$VAR_NAME"

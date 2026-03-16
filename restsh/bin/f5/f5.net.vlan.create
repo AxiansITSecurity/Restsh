@@ -36,8 +36,9 @@ then
     echo "Usage: $(basename "$0") <id> <name>"
     exit 2
 fi
-VLAN_ID=$1
-VLAN_NAME=$2
+
+restsh.util.check.uint "id" "$1"; VLAN_ID=$1
+restsh.util.check.string "name" "$2"; VLAN_NAME=$2
 
 JQ -n --arg name "$VLAN_NAME" \
     --arg id "$VLAN_ID" \
