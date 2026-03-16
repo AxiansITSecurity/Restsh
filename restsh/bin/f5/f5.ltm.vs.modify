@@ -29,15 +29,16 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <json declaration file>"
+    echo "Usage: $(basename "$0") <full path> <json declaration file>"
     exit 2
 fi
 
-restsh.util.check.string "json declaration file" "$1"; DECLARATION=$1
+restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
+restsh.util.check.string "json declaration file" "$2"; DECLARATION=$2
 
 # Main
-PATCH "/mgmt/tm/ltm/virtual" < "$DECLARATION"
+PATCH "/mgmt/tm/ltm/virtual/${FULLPATH//\//\~}" < "$DECLARATION"
