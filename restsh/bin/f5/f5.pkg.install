@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-07-17
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Installs an iAPPs LX Package.
 # Desc:
 # Installs an iAPPs LX Package.
-# AS3: https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/installation.html
+# AS3: https://github.com/F5Networks/f5-appsvcs-extension/releases
 # DO: https://github.com/F5Networks/f5-declarative-onboarding/releases
 # TS: https://github.com/F5Networks/f5-telemetry-streaming/releases
 
@@ -35,14 +36,10 @@ then
     exec 1>&1
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <rpm file>"
-    echo "Download latest versions from:"
-    echo "    AS3: https://github.com/F5Networks/f5-appsvcs-extension/releases"
-    echo "    DO: https://github.com/F5Networks/f5-declarative-onboarding/releases"
-    echo "    TS: https://github.com/F5Networks/f5-telemetry-streaming/releases"
     exit 2
 fi
 
-RPM=$1
+restsh.util.check.string "rpm file" "$1"; RPM=$1
 
 if ! f5.file-transfer.upload "$RPM"
 then
