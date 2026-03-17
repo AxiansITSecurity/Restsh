@@ -23,11 +23,11 @@ fi
 # Get options
 RAW=0
 PARENT=""
-while getopts ':rp:' OPTION
+while getopts ':p:r' OPTION
 do
     case "$OPTION" in
-        r) RAW=1 ;;
         p) PARENT="$OPTARG" ;;
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -37,14 +37,21 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] [-p <parent group>] <name>"
-    echo -e "\t-r Raw output."
-    echo -e "\t-p Parent group name"
+    echo "Usage: $(basename "$0") [options...] <name>"
+    echo "Options:"
+    echo "    -p <parent group>  Parent group name"
+    echo "    -r  Raw output."
     exit 2
 fi
 
 restsh.util.check.string "name" "$1"; NAME=$1
 PARENTID="0"
+
+if [[ "$NAME" == */* ]]
+then
+    PARENT=${NAME%/*}
+    NAME=${NAME##*/}
+fi
 
 if [ -n "$PARENT" ]
 then
