@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-07
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes QKViews on the F5.
 # Desc:
@@ -36,4 +37,6 @@ then
     exit 2
 fi
 
-DELETE "/mgmt/cm/autodeploy/qkview/$1"
+restsh.util.check.string "qkview-id" "$1"; NAME=$1
+
+DELETE "/mgmt/cm/autodeploy/qkview/$NAME"

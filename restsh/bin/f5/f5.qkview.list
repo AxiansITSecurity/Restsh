@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-07
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Manages QKViews on the F5.
 # Desc:
@@ -42,8 +43,7 @@ fi
 
 if [ "$RAW" -eq 1 ]
 then
-    GET -r "/mgmt/cm/autodeploy/qkview" \
-        | $RESTSH_JQ -r ".items[] | [.name,.status,.id]"
+    GET "/mgmt/cm/autodeploy/qkview"
 else
     GET -r "/mgmt/cm/autodeploy/qkview" \
         | $RESTSH_JQ -r ".items[] | [.name,.status,.id] | @tsv" \

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-08-07
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Downloads a QKView from the F5.
 # Desc:
@@ -32,8 +33,11 @@ if [ "$OPTION" = "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <file> <output file>"
+    echo "Usage: $(basename "$0") <name> <output file>"
     exit 2
 fi
 
-f5.file.download "/mgmt/cm/autodeploy/qkview-downloads" "$1" 0 "$2"
+restsh.util.check.string "name" "$1"; NAME=$1
+restsh.util.check.string "output file" "$2"; OUTPUT=$2
+
+f5.file.download "/mgmt/cm/autodeploy/qkview-downloads" "$NAME" 0 "$OUTPUT"
