@@ -109,8 +109,8 @@ Restsh works only inside the bash shell and requires standard GNU core utilities
 
 Further dependencies are:
 
-- curl (v7.76.0)
-- jq
+- curl >= v7.76.0
+- jq >= 1.7
 
 ## Atuin
 
