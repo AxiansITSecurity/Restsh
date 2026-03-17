@@ -45,7 +45,9 @@ This is the changelog for Restsh.
     - Feat: `gitlab.repository.file.add`
     - Feat: `gitlab.group.path`, `gitlab.project.path`
     - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
-    - Feat: `gtilab.runner.delete`
+    - Feat: `gitlab.group.move`, `gitlab.group.rename`
+    - Feat: `gitlab.runner.delete`
+    - Upd: `gitlab.group.create` - support 'group/subgroup` as name
     - Upd: `gitlab.group.delete`, `gitlab.project.delete` - Support id's
 
 ***
