@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Gets a System Variables.
 # Desc:
@@ -34,6 +35,7 @@ then
     echo "Usage: $(basename "$0") <name>"
     exit 2
 fi
-NAME=$1
+
+restsh.util.check.string "name" "$1"; NAME=$(restsh.util.urlencode "$1")
 
 GET "/mgmt/tm/sys/db/$NAME"

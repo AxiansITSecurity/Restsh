@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Modifies a System Variable.
 # Desc:
@@ -36,8 +37,9 @@ then
     echo "Usage: $(basename "$0") <name> <value>"
     exit 2
 fi
-NAME=$1
-VALUE=$2
+
+restsh.util.check.string "name" "$1"; NAME=$(restsh.util.urlencode "$1")
+restsh.util.check.string "value" "$2"; VALUE=$2
 
 # Main
 RESULT=$(JQ -n --arg value "$VALUE" \
