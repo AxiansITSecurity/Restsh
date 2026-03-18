@@ -13,7 +13,7 @@
                 "sufficientThreshold": "1",
                 "weight": {{VAR_POOL_WEIGHT}}
             }
-        {{#ARRAY_POOLS}}
+        {{/ARRAY_POOLS}}
     ],
     "trunks": [
         {{#ARRAY_TRUNKS}}
