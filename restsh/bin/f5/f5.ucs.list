@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-06-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists ucs files on the F5, directory: /var/local/ucs/.
 # Desc:
@@ -35,18 +36,18 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r Raw output."
     exit 2
 fi
 
 if [ "$RAW" -eq 1 ]
 then
     GET -r "/mgmt/tm/sys/ucs" \
-        | $RESTSH_JQ -r ".items[] | .apiRawValues | .filename"
-    exit 0
+        | JQ -r ".items[] | .apiRawValues | .filename"
+else
+    GET -r "/mgmt/tm/sys/ucs" \
+        | JQ -r ".items[] | .apiRawValues | [.filename,.file_created_date,.file_size] | @tsv" \
+        | COLUMN -o "|" -N "File,Created,Size"
 fi
-
-GET -r "/mgmt/tm/sys/ucs" \
-    | $RESTSH_JQ -r ".items[] | .apiRawValues | [.filename,.file_created_date,.file_size] | @tsv" \
-    | COLUMN -o "|" -N "File,Created,Size"

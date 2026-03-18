@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-05-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Deletes an ucs file on the F5, /var/local/ucs/.
 # Desc:
@@ -36,4 +37,6 @@ then
     exit 2
 fi
 
-DELETE "/mgmt/tm/sys/ucs/$1"
+restsh.util.check.string "name" "$1"; NAME=$(restsh.util.urlencode "$1")
+
+DELETE "/mgmt/tm/sys/ucs/$NAME"
