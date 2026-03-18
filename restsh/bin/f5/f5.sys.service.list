@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Lists System Services.
 # Desc:
@@ -19,7 +20,7 @@ then
     exit 1
 fi
 
-while getopts ':hr' OPTION
+while getopts ':h' OPTION
 do
     case "$OPTION" in
         *) OPTION="invalid"; break ;;

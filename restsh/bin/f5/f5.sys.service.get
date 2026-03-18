@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2024-12-18
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Gets the state of a service.
 # Desc:
@@ -19,7 +20,7 @@ then
     exit 1
 fi
 
-while getopts ':hr' OPTION
+while getopts ':h' OPTION
 do
     case "$OPTION" in
         *) OPTION="invalid"; break ;;
@@ -34,7 +35,8 @@ then
     echo "Usage: $(basename "$0") <service>"
     exit 2
 fi
-SERVICE=$1
+
+restsh.util.check.string "service" "$1"; SERVICE=$(restsh.util.urlencode "$1")
 
 GET "/mgmt/tm/sys/service/$SERVICE/stats" \
     | JQ -r ".apiRawValues.apiAnonymous"
