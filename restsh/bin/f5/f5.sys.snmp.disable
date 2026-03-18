@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-03-19
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
-# Shortdesc: Disables snmpv1 and v2c.
+# Shortdesc: Disables snmp v1 and v2c.
 # Desc:
-# Disables snmpv1 and v2c.
+# Disables snmp v1 and v2c.
 
 # Strict error handling
 set -eEu -o pipefail

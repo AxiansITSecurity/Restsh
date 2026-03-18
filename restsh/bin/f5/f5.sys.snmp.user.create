@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-10-02
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a snmp v3 user.
 # Desc:
@@ -42,7 +43,7 @@ then
     exit 2
 fi
 
-USERNAME=$1
+restsh.util.check.string "username" "$1"; USERNAME=$1
 AUTHPASS=$2
 PRIVPASS=$3
 
