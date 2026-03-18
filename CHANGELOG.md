@@ -40,6 +40,7 @@ This is the changelog for Restsh.
     - Fix: `f5.asm.template.import` - Delete uploaded file after import
     - Fix: `f5.device.cert.install` - Always use `server.crt` and `server.key` as current certificate-key-pair
     - Fix: `f5.ltm.vs.modify` - Use fullPath to modify the VS
+    - Del: Removed support for F5 deprecated telemetry streaming
 - GitLab Module
     - Feat: `gitlab.project.get`
     - Feat: `gitlab.repository.file.add`
