@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2023-12-12
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
-# Shortdesc: Creates a certifcate and ssl profiles usage report in html or markdown format.
+# Shortdesc: Creates a certificate and ssl profiles usage report in html or markdown format.
 # Desc:
-# Creates a certifcate and ssl profiles usage report in html or markdown format.
+# Creates a certificate and ssl profiles usage report in html or markdown format.
 
 # Strict error handling
 set -eEu -o pipefail
