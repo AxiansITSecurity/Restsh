@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034 # Variables are used in the MO template
-
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-04-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Creates a ha-group.
 # Desc:
 # Creates a ha-group.
+
+# shellcheck disable=SC2034 # Variables are used in the MO template
 
 # Strict error handling
 set -eEu -o pipefail
@@ -59,7 +60,8 @@ then
     sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
     exit 2
 fi
-VAR_NAME=$1
+
+restsh.util.check.string "name" "$1"; VAR_NAME=$1
 
 if [ ! -f "$TEMPLATE" ]
 then

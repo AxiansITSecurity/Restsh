@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Author: Juergen Mang <juergen.mang@axians.de>
-# Date: 2025-04-04
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
 
 # Shortdesc: Gets a ha-group.
 # Desc:
@@ -35,7 +36,8 @@ then
     echo "$(basename "$0") <ha-group name>"
     exit 2
 fi
-NAME=$1
+
+restsh.util.check.string "name" "$1"; NAME=$(restsh.util.urlencode "$1")
 
 GET "/mgmt/tm/sys/ha-group/$NAME"
 
