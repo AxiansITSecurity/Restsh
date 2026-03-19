@@ -1,4 +1,4 @@
-Resth is now available under an open-source license!
+Resth is now available under an OpenSource license!
 ====================================================
 
 I am proud to announce that the complete Restsh package is now licensed under the GPL version 3 or greater. No other restrictions apply, we are not holding back any enterprise functionality and are committed to maintain and further develop it.
