@@ -54,7 +54,7 @@ You can use custom config files to work with several api endpoints. If not defin
 restsh/restsh.start custom-config1
 ```
 
-You can set the `RESTSH_CONFIG_PATH` environment variable to define the folder for configuration files.
+You can set the `RESTSH_CONFIG_PATH` environment variable to define the folder for configuration files. Subfolders are supported.
 
 ### Custom environment variables
 

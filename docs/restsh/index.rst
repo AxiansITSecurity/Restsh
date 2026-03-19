@@ -1,13 +1,5 @@
-Restsh
-======
-
-Restsh is a shell for REST APIs. It can be used interactively or in scripts. Restsh forms the basis of all pipelines of
-the Axians Automation Framework.
-
-.. figure:: ../_assets/restsh.svg
-
-Reference
----------
+Usage
+=====
 
 .. toctree::
    :glob:

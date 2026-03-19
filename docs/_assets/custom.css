@@ -46,3 +46,7 @@ html {
 a:hover {
     text-decoration-thickness:unset !important;
 }
+
+.footer-item a {
+    margin-right: 2rem;
+}
