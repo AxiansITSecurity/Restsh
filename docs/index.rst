@@ -4,8 +4,9 @@ Restsh
 .. toctree::
    :hidden:
 
-   quickstart/index.rst
-   advanced/index.rst
+   Articles/index.rst
+   Quickstart/index.rst
+   Advanced/index.rst
    restsh/index.rst
 
 Restsh is a Bash shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.

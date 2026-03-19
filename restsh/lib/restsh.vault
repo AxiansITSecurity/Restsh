@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Vault integration functions.
+# Shortdesc: HashiCorp Vault and OpenBao integration functions.
 # Desc:
-# Vault integration functions.
+# HashiCorp Vault and OpenBao integration functions.
 
 #shellcheck disable=SC2120
 
@@ -18,13 +18,21 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Detect Vault login method and login into Vault
+# Detects the Vault login method and tries to fetch a Vault token.
 vault.login() {
     if [ -n "${1+x}" ]
     then
         {
-            echo "Detect Vault login method and login into Vault"
+            echo "Detects the Vault login method and tries to fetch a Vault token."
+            echo "This function supports currently only the login into HashiCorp Vault or OpenBao with a JWT token."
+            echo ""
             echo "Usage: vault.login"
+            echo ""
+            echo "Used environment variables:"
+            echo "    VAULT_HOST: The HashiCorp Vault or OpenBao host."
+            echo "    VAULT_AUTH_ROLE: User Role"
+            echo "    VAULT_ID_TOKEN: JWT token used to login and fetch the Vault Token."
+            echo "    VAULT_TOKEN: The Vault token used for authentication."
         } 1>&2
         return 2
     fi

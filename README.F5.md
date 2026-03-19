@@ -4,7 +4,7 @@ All functions for this module are prefixed with `f5.`.
 
 ## Authentication
 
-You can use basic authentication with username and password for authentication, if the user is a local one, else you must use the token based authentication.
+You can use basic authentication with username and password for authentication or token based authentication.
 
 restsh asks for username and password. If you want to integrate restsh in a pipeline script you can simply set the environment variables `RESTSH_USER` and `RESTSH_PASS`.
 
