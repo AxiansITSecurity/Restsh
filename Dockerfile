@@ -1,8 +1,16 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
 FROM debian:stable-slim
-RUN export DEBIAN_FRONTEND=noninteractive \
-    && apt-get update \
-    && apt-get dist-upgrade -y \
-    && apt-get install -y --no-install-recommends \
+RUN <<EOL
+set -ex
+export DEBIAN_FRONTEND=noninteractive
+apt-get update
+apt-get dist-upgrade -y
+apt-get install -y --no-install-recommends \
         curl \
         gettext-base \
         git \
@@ -18,5 +26,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         rsync \
         shellcheck \
         tcl \
-        yq \
-    && rm -rf /var/lib/apt/lists/*
+        whiptail \
+        yq
+rm -rf /var/lib/apt/lists/*
+EOL

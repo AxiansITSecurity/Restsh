@@ -6,6 +6,19 @@ This framework includes [MO](https://github.com/tests-always-included/mo), a mus
 
 Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST-API's. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
 
+Restsh is one of the core components of the [Axians Automation Framework](https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf), which enables the automation of F5 environments using GitLab pipelines.
+
+## Available modules
+
+| Prefix | Description |
+| ------ | ----------- |
+| aafw | Axians Automation Framework specific modules. |
+| cert | Simpel local Certificate handling. |
+| f5 | F5 BIG-IP TMOS |
+| f5osa | F5OS-A / rSeries |
+| gitlab | GitLab |
+| scm | Sectigo Cert Manager |
+
 ## Running interactively
 
 ```sh
@@ -86,18 +99,7 @@ export RESTSH_PATH="/path/to/restsh"
 - [Examples](EXAMPLES.md)
 - [Examples for F5](EXAMPLES.F5.md)
 
-### Available modules
-
-| Prefix | Description |
-| ------ | ----------- |
-| aafw | Axians Automation Framework |
-| cert | Certificate handling |
-| f5 | F5 BIG-IP TMOS |
-| f5osa | F5OS-A / rSeries |
-| gitlab | GitLab |
-| scm | Sectigo Cert Manager |
-
-Enable modules:
+### Enable modules
 
 ```sh
 RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
@@ -111,6 +113,7 @@ Further dependencies are:
 
 - curl >= v7.76.0
 - jq >= 1.7
+- whiptail (newt)
 
 ## Atuin
 
@@ -126,3 +129,7 @@ atuin import auto
 You can add your own scripts into the `restsh/bin/custom` and `restsh/lib/custom` folders.
 
 - [DEVELOPING.md](DEVELOPING.md)
+
+## License
+
+Restsh is published under the [GPLv3+ license](LICENSE.md) in the hope that others will find it useful and make use of it.

@@ -312,7 +312,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 
 ***
 
-## 24.10.21
+## v2.0.0 - 21.10.2024
 
 - Note: Not setting `RESTSH_MODULES` is now deprecated.
 - Feat: Support of AES256 encrypted `RESTSH_PASS` and `SCM_SECRET`
@@ -333,7 +333,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 
 ***
 
-## 24.09.11
+## v1.1.0 - 11.09.2024
 
 - Feat: Add `f5.asm.advanced-settings` functions
 - Feat: Sectigo Cert Manager Integration
@@ -344,7 +344,7 @@ This version removes support for F5 Next and adds initial support for F5OS-A.
 
 ***
 
-## 24.08.01
+## v1.0.0 - 01.08.2024
 
 - Feat: Add certificate csr and key functions
 - Feat: Add F5 cluster functions

@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
-#shellcheck disable=SC2120
-
+# SPDX-License-Identifier: GPL-3.0-or-later
 # (c) Axians IT Security GmbH
 # Jürgen Mang <juergen.mang@sec.axians.de>
 # https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
 
 # Shortdesc: Some utility functions.
 # Desc:
 # Provides some utility functions. This file is included by restsh.init.
+
+#shellcheck disable=SC2120
 
 # Strict error handling
 set -uo pipefail
