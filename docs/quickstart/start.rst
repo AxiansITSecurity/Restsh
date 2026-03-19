@@ -7,7 +7,7 @@ Simply run the command ``restsh``. Without any option a ncurses menu appears whe
 
     restsh [configuration file]
 
-After selecting the configuration file Restsh asks for the username and password if it is not specified in the configuration files or in environment variables.
+After selecting the configuration file Restsh asks for the username and password if it is not specified in the configuration file or in environment variables.
 
 The environment variables are:
 
