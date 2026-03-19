@@ -38,6 +38,8 @@ export RESTSH_AUTH="anonymous"
 export RESTSH_PATH="restsh"
 . "${RESTSH_PATH}/restsh.init"
 
+export RESTSH_AAFW_ART=""
+
 module_help() {
     local MODULE=$1
     mkdir -p "docs/restsh/modules/$MODULE"
