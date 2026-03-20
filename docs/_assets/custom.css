@@ -21,28 +21,6 @@ html {
     max-width: unset;
 }
 
-.bd-header-announcement {
-    background-color: #0060bd !important;
-    color: #ffffff;
-    padding: .5rem 0rem;
-    justify-content: space-between;
-}
-
-.bd-header-announcement__content {
-    display:contents;
-}
-
-.bd-header-announcement__content > div {
-    display: flex;
-    margin: 0 1rem;
-}
-
-.ax-logo {
-    margin-top: 0.75rem;
-    margin-left: 0.25rem;
-    color: #ffffff;
-}
-
 a:hover {
     text-decoration-thickness:unset !important;
 }
