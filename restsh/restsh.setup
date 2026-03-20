@@ -45,7 +45,7 @@ restsh.setup.usage() {
     echo ""
     echo "Then add configuration files:"
     echo "    $(basename "$0") add <type> <folder> <host>"
-    echo "        Type: One of f5, f5os-a, gitlab"
+    echo "        Type: One of f5, f5osa, gitlab"
     echo "        Folder: Subfolder in the config folder"
     echo "        Host: Hostname of the REST endpoint"
     exit 2
