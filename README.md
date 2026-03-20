@@ -113,6 +113,7 @@ Further dependencies are:
 
 - curl >= v7.76.0
 - jq >= 1.7
+- openssl
 - whiptail (newt)
 
 ## Atuin
