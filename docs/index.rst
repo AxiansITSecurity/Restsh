@@ -9,11 +9,11 @@ Restsh
    Advanced/index.rst
    restsh/index.rst
 
-Restsh is a Bash shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
+Restsh is a lightweight Bash-based shell environment for working with REST APIs from the command line. It was built for interactive use, for automation in scripts, and for robust execution in CI/CD pipelines.
 
-It is one of the core components of the `Axians Automation Framework <https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf>`_, which enables the automation of F5 environments using GitLab CI/CD pipelines.
+Restsh is a core component of the `Axians Automation Framework <https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf>`_, enabling automated management of F5 environments via GitLab CI/CD pipelines.
 
-Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST-API's. You can combine the power of Bash, Curl, Jq and Mustache to interact with REST-API's.
+Restsh does not replace your shell. Instead it exports a small set of environment variables and provides focused helper functions to call and parse REST APIs. Combine the power of Bash, curl, jq and Mustache templates to build reliable, repeatable workflows and automation.
 
 Restsh is published under the :doc:`GPLv3+ license <LICENSE>` in the hope that others will find it useful and make use of it.
 

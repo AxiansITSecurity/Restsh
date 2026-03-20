@@ -1,25 +1,30 @@
-Resth is now available under an OpenSource license!
-====================================================
+Restsh is now available under an Open Source license!
+=====================================================
 
-I am proud to announce that the complete Restsh package is now licensed under the GPL version 3 or greater. No other restrictions apply, we are not holding back any enterprise functionality and are committed to maintain and further develop it.
+I am proud to announce that the complete Restsh package is now released under the GNU General Public License version 3 (GPLv3) or later. There are no hidden restrictions — we are not withholding any enterprise features. Restsh will remain actively maintained and further developed by Axians IT Security.
 
 What is Restsh?
 ---------------
 
-Restsh is a Bash shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
+Restsh is a lightweight Bash-based shell environment for working with REST APIs from the command line. It was built for interactive use, for automation in scripts, and for robust execution in CI/CD pipelines.
 
-It is one of the core components of the `Axians Automation Framework <https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf>`_, which enables the automation of F5 environments using GitLab CI/CD pipelines.
+Restsh is a core component of the `Axians Automation Framework <https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf>`_, enabling automated management of F5 environments via GitLab CI/CD pipelines.
 
-Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST-API's. You can combine the power of Bash, Curl, Jq and Mustache to interact with REST-API's.
+Restsh does not replace your shell. Instead it exports a small set of environment variables and provides focused helper functions to call and parse REST APIs. Combine the power of Bash, curl, jq and Mustache templates to build reliable, repeatable workflows and automation.
 
 What can I do with it?
 ----------------------
 
-All what you imagine. Restsh supports all common REST-API verbs and has autocompletion for the F5 and GitLab REST-API. To make it easier there are hundreds of small helper scripts that are wrapping the REST-API endpoints. These functions are based on the central Unix principle: Do one job as good as possible.
+Almost anything related to REST API automation. Restsh supports the common REST verbs and includes autocompletion for F5 and GitLab APIs. To simplify day-to-day tasks, it ships hundreds of small, focused helper scripts that wrap API endpoints — designed with the Unix principle in mind: do one thing well.
 
-You can take this simple scripts, pipe the output from one script into an another, filter the output or place it in a loop. For example, with Restsh it is a simple one-liner to export all WAF-Policies from a F5: ``f5.asm.policy.list -r -f ".items[].fullPath" | XARGS f5.asm.policy.export``
+These compact scripts can be piped together, filtered, or executed inside loops. For example, exporting all WAF policies from an F5 is a simple one-liner:
 
-Restsh is modular and ships many functions to interact with the REST-API's from F5 BIG-IP, F5 OS-A and GitLab.
+``f5.asm.policy.list -r -f ".items[].fullPath" | XARGS f5.asm.policy.export``
+
+Modular design
+--------------
+
+Restsh is modular and provides many functions to interact with the REST APIs of F5 BIG-IP, F5 OS-A and GitLab:
 
 - `F5 functions <https://axiansitsecurity.github.io/Restsh/restsh/modules/f5/overview.html>`_
 - `F5 OS-A functions <https://axiansitsecurity.github.io/Restsh/restsh/modules/f5osa/index.html>`_
@@ -28,11 +33,14 @@ Restsh is modular and ships many functions to interact with the REST-API's from 
 Do I have to sell my soul to get it?
 ------------------------------------
 
-Restsh is public available and can be downloaded from the official and public `GitHub repository <https://github.com/AxiansITSecurity/Restsh>`_.
+Restsh is publicly available and can be downloaded from the official `GitHub repository <https://github.com/AxiansITSecurity/Restsh>`_.
 
-Support?
---------
+Support
+-------
 
-This is the OpenSource and community supported version of Restsh. You can book enterprise-grade support from Axians IT Security GmbH. Simply write an email to <juergen.mang@sec.axians.de> to get in contact.
+This is the open-source, community-supported edition of Restsh. For enterprise-grade support and SLAs, Axians IT Security GmbH offers commercial support plans. Contact us at <juergen.mang@sec.axians.de> to discuss options.
 
-The documentation is `online available <https://axiansitsecurity.github.io/Restsh/>`_.
+Documentation
+-------------
+
+Full documentation is available online: `https://axiansitsecurity.github.io/Restsh/_`
