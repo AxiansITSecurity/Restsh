@@ -5,7 +5,7 @@
 # https://github.com/AxiansITSecurity/Restsh
 
 FROM debian:stable-slim
-RUN <<EOL
+RUN <<EOF
 set -ex
 export DEBIAN_FRONTEND=noninteractive
 apt-get update
@@ -14,19 +14,15 @@ apt-get install -y --no-install-recommends \
         curl \
         gettext-base \
         git \
-        gpp \
         jq \
-        libxml2-utils \
-        libxml-xpath-perl \
-        openssh-client \
+        openssl \
         pandoc \
-        python3 \
-        python3-venv \
-        rpm \
-        rsync \
-        shellcheck \
-        tcl \
         whiptail \
         yq
 rm -rf /var/lib/apt/lists/*
-EOL
+EOF
+
+COPY ./restsh /restsh
+ENV RESTSH_CONFIG_PATH=/restsh-config
+ENV LANG=C.UTF-8
+ENTRYPOINT ["/restsh/restsh.start"]
