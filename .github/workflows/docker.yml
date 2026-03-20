@@ -61,4 +61,4 @@ jobs:
           [ "$VERSION" == "master" ] && VERSION=latest
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
-          docker buildx build --platform "linux/amd64,linux/arm64" .  -t $IMAGE_ID:$VERSION --push
+          docker buildx build --platform "linux/amd64" .  -t $IMAGE_ID:$VERSION --push
