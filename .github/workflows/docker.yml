@@ -52,7 +52,7 @@ jobs:
           docker buildx create --name restshbuilder
           docker buildx use restshbuilder
           docker buildx inspect --bootstrap
-          IMAGE_ID=ghcr.io/AxiansITSecurity/Restsh/$IMAGE_NAME
+          IMAGE_ID=ghcr.io/axiansitsecurity/restsh/$IMAGE_NAME
           # Strip git ref prefix from version
           VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
           # Strip "v" prefix from tag name
