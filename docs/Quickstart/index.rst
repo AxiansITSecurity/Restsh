@@ -7,3 +7,4 @@ Quickstart
    Install.rst
    Configure.rst
    Start.rst
+   Docker.rst

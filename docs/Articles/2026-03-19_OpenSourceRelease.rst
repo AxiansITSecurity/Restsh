@@ -43,4 +43,4 @@ This is the open-source, community-supported edition of Restsh. For enterprise-g
 Documentation
 -------------
 
-Full documentation is available online: `https://axiansitsecurity.github.io/Restsh/_`
+Full documentation is available online: `https://axiansitsecurity.github.io/Restsh/ <https://axiansitsecurity.github.io/Restsh/>`_
