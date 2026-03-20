@@ -1,6 +1,8 @@
-# Use restsh with GitLab
+# Use Restsh with GitLab
 
 All functions for this module are prefixed with `gitlab.`.
+
+Example configuration file: `.restsh-config.dist.gitlab`
 
 ## Authentication
 

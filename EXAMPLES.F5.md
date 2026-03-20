@@ -33,7 +33,7 @@ done < VIRTUAL_SERVERS.array
 
 ## Change enforcement mode of an asm policy
 
-- Policy: /Common/t
+- Policy: /Common/test-policy
 
 ```sh
 # Calculate the policy hash

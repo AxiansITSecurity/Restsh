@@ -1,4 +1,4 @@
-# Use restsh
+# Use Eestsh
 
 Restsh is a shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
 
@@ -48,17 +48,21 @@ restsh/restsh.start
 
 ### Custom config
 
-You can use custom config files to work with several api endpoints. If not defined Restsh searches for a file named `.restsh-config` in the current folder and in the user home.
+You can use custom config files to work with several api endpoints. If not defined on the command line, Restsh searches for a file named `.restsh-config` in the current folder and in the user home.
 
 ```sh
 restsh/restsh.start custom-config1
 ```
 
-You can set the `RESTSH_CONFIG_PATH` environment variable to define the folder for configuration files. Subfolders are supported.
+Set the `RESTSH_CONFIG_PATH` environment variable to define the folder for configuration files. Subfolders are supported.
 
 ### Custom environment variables
 
 You can use the environment variable `RESTSH_CUSTOM_ENV` to define a custom file that will be sourced from `restsh.init`.
+
+### Certificate checking
+
+Restsh enables uses curl to communicate with the REST-APIs. Certificate checking is enabled in all default configurations. If you encounter certificate related errors you should add the signing certificate to your system trust store. Disabling certificate checking is NOT recommended, but you can set ``RESTSH_CURL_INSECURE=1`` in the configuration file to disable it.
 
 ### Password encryption
 

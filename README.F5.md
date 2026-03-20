@@ -1,6 +1,8 @@
-# Use restsh with F5
+# Use Restsh with F5
 
 All functions for this module are prefixed with `f5.`.
+
+Example configuration file: `.restsh-config.dist.f5`
 
 ## Authentication
 

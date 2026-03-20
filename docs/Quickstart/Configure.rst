@@ -8,7 +8,7 @@ The ``restsh.setup`` script can be used to create the initial configuration file
 .. code:: sh
 
     restsh.setup add <type> <folder> <host>
-        Type: One of f5, f5os-a, gitlab
+        Type: One of f5, f5osa, gitlab
         Folder: Subfolder in the config folder
         Host: Hostname of the REST endpoint
 
@@ -19,3 +19,9 @@ To create an configuration file for your first F5 BIG-IP:
 .. code:: sh
 
     restsh.setup add f5 lab f5-lab-v17-1.lab.lan
+
+To create an configuration file for your GitLab instance:
+
+.. code:: sh
+
+    restsh.setup add gitlab lab gitlab.lab.lan

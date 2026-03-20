@@ -1,6 +1,8 @@
-# Use restsh with Sectigo Cert Manager
+# Use Restsh with Sectigo Cert Manager
 
 All functions for this module are prefixed with `scm.`.
+
+Example configuration file: `.restsh-config.dist.scm`
 
 ## Authentication
 
