@@ -13,19 +13,42 @@
 # Strict error handling
 set -eEu -o pipefail
 
-if [ $# -ne 1 ]
-then
-    echo "Usage: $(basename "$1") <doc destination>"
+usage() {
+    echo "Usage: $(basename "$0") [options...] <build|serve> <dest>"
+    echo "Options:"
+    echo "    -t <tmpdir>  Specify tmpdir and do not remove it on exit"
     exit 2
+}
+
+TMPDIR=""
+while getopts ':t:' OPTION
+do
+    case "$OPTION" in
+        t) ART_PROJECT="$OPTARG" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+then
+    usage
 fi
 
-DOC_DEST=$1
+ACTION=$1
+DOC_DEST=$2
+
+if [ -z "$TMPDIR"]
+then
+    TMPDIR=$(mktemp -d)
+    trap 'rm -f -- "$TMPDIR"' EXIT
+fi
+OUTDIR="$TMPDIR/docs/restsh"
 
 ###############################################################################
 # Create Restsh doc from help
 
-OUTDIR="docs/restsh"
-
+cp -a docs "/$TMPDIR/"
 cp -v ./*.md "$OUTDIR"
 mv "$OUTDIR/README.md" "$OUTDIR/Usage.md"
 mv "$OUTDIR/README.F5.md" "$OUTDIR/UsageF5.md"
@@ -42,8 +65,8 @@ export RESTSH_AAFW_ART=""
 
 module_help() {
     local MODULE=$1
-    mkdir -p "docs/restsh/modules/$MODULE"
-    cat > docs/restsh/modules/$MODULE/overview.md << EOL
+    mkdir -p "$OUTDIR/modules/$MODULE"
+    cat > "$OUTDIR/modules/$MODULE/overview.md" << EOL
 # Overview for $MODULE
 
 | Function | Description |
@@ -51,7 +74,7 @@ module_help() {
 EOL
     # Print overview table
     _restsh.help.modules.cmds "$MODULE" \
-        | perl -ne 'if (/^\s+(\S+)\s+(.*)$/) { print "| [$1]($1.md) | $2 |\n"; }' >> docs/restsh/modules/$MODULE/overview.md
+        | perl -ne 'if (/^\s+(\S+)\s+(.*)$/) { print "| [$1]($1.md) | $2 |\n"; }' >> "$OUTDIR/modules/$MODULE/overview.md"
     # Print usage of each function
     local FUNCS FUNC
     FUNCS=$(_restsh.help.modules.cmds "$MODULE" | grep "$MODULE\." | awk '{print $1}')
@@ -63,7 +86,7 @@ EOL
             echo '```'
             "$FUNC" -h 2>&1 || true
             echo '```'
-        } > "docs/restsh/modules/$MODULE/$FUNC.md"
+        } > "$OUTDIR/modules/$MODULE/$FUNC.md"
     done
 }
 
@@ -89,7 +112,7 @@ general_help() {
             echo '```'
             "$FUNC" -h 2>&1 || true
             echo '```'
-        } > "docs/restsh/GeneralFunctions/$FUNC.md"
+        } > "$OUTDIR/GeneralFunctions/$FUNC.md"
     done
     unset CMDS
 }
@@ -131,7 +154,7 @@ EOL
     _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.vault"
     _restsh.help.print | perl -ne 'if (/^\s+(\S+)\s+(.*)$/) { print "| [$1]($1.md) | $2 |\n"; }'
     unset CMDS
-} > docs/restsh/GeneralFunctions/overview.md
+} > "$OUTDIR/GeneralFunctions/overview.md"
 
 general_help "$RESTSH_PATH/lib/restsh.http"
 general_help "$RESTSH_PATH/lib/restsh.util"
@@ -140,7 +163,17 @@ general_help "$RESTSH_PATH/lib/restsh.vault"
 ###############################################################################
 # Install and run Sphinx
 
-python3 -m venv /tmp/python-venv/
-/tmp/python-venv/bin/python3 -m pip install --upgrade pip
-/tmp/python-venv/bin/pip install sphinx sphinx-book-theme sphinx-copybutton myst-parser
-/tmp/python-venv/bin/sphinx-build -M html docs "$DOC_DEST"
+python3 -m venv "$TMPDIR/python-venv/"
+$TMPDIR/python-venv/bin/python3 -m pip install --upgrade pip
+$TMPDIR/python-venv/bin/pip install sphinx sphinx-book-theme sphinx-copybutton myst-parser
+case "$ACTION" in
+    build)
+        $TMPDIR/python-venv/bin/sphinx-build -M html "$TMPDIR/docs" "$DOC_DEST"
+        ;;
+    serve)
+        $TMPDIR/python-venv/bin/pip install sphinx-autobuild
+        $TMPDIR/python-venv/bin/sphinx-autobuild -M html "$TMPDIR/docs" "$DOC_DEST"
+        ;;
+    *)
+        usage
+esac

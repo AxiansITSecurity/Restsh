@@ -8,6 +8,7 @@ Restsh
    Quickstart/index.rst
    Advanced/index.rst
    restsh/index.rst
+   LICENSE.md
 
 Restsh is a lightweight Bash-based shell environment for working with REST APIs from the command line. It was built for interactive use, for automation in scripts, and for robust execution in CI/CD pipelines.
 
