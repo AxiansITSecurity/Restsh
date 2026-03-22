@@ -1,5 +1,9 @@
 # Use Restsh with F5OS-A
 
+```sh
+RESTSH_MODULES=("cert" "custom" "f5osa")
+```
+
 Restsh is using the restconf port 8888 (API prefix `/restconf`).
 
 All functions for this module are prefixed with `f5osa.`.

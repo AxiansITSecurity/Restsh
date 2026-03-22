@@ -6,6 +6,8 @@ This is the changelog for Restsh.
 
 ## v4.5.0 - not yet released
 
+This is the first version that is released under GPL-3.0-or-later.
+
 - General
     - Feat: `restsh.passphrase`
     - Feat: Add `restsh.util.check.string` to validate values like filenames, paths, etc.
@@ -16,6 +18,7 @@ This is the changelog for Restsh.
     - Upd: Add restsh.setup alias
     - Upd: `restsh.util.setvar` - Add check for valid filenames
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
+    - Upd: Documentation
     - Fix: F5 Token Authentication - Token renewal
 - Axians Automation Framework
     - Feat: `aafw.art.new` - Support iRule Framework configuration

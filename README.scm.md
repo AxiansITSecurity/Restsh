@@ -1,5 +1,9 @@
 # Use Restsh with Sectigo Cert Manager
 
+```sh
+RESTSH_MODULES=("cert" "custom" "scm")
+```
+
 All functions for this module are prefixed with `scm.`.
 
 Example configuration file: `.restsh-config.dist.scm`

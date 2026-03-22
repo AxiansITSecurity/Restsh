@@ -1,5 +1,9 @@
 # Use Restsh with F5
 
+```sh
+RESTSH_MODULES=("cert" "custom" "f5")
+```
+
 All functions for this module are prefixed with `f5.`.
 
 Example configuration file: `.restsh-config.dist.f5`

@@ -105,6 +105,8 @@ export RESTSH_PATH="/path/to/restsh"
 
 ### Enable modules
 
+Modules are enabled in the configuration file.
+
 ```sh
 RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
 ```
@@ -125,7 +127,10 @@ Further dependencies are:
 Restsh supports the integration of [Atuin](https://atuin.sh/) for better shell history support.
 
 ```sh
+# Install latest Atuin version from repository
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+
+# Import shell history"
 atuin import auto
 ```
 
@@ -134,6 +139,10 @@ atuin import auto
 You can add your own scripts into the `restsh/bin/custom` and `restsh/lib/custom` folders.
 
 - [DEVELOPING.md](DEVELOPING.md)
+
+## Documentation
+
+You can build the documentation local with the `doc.sh` script or you can read it [online](https://axiansitsecurity.github.io/Restsh/).
 
 ## License
 
