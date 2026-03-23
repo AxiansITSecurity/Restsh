@@ -808,8 +808,35 @@ restsh.util.check.string() {
     if [[ $# -ne 2 ]] || [[ "${1}" == "-h" ]]
     then
         {
-            echo "Validates a value."
-            echo "Usage: restsh.value.validate <name> <value>"
+            echo "Validates a string."
+            echo "Usage: restsh.util.check.string <name> <value>"
+            echo "Valid characters are defined by regex: '^[a-zA-Z0-9_=.:/ @~+-]*$'"
+        } 1>&2
+        return 2
+    fi
+    local NAME="$1"
+    local PARAM="$2"
+    if [[ -z "$PARAM" ]]
+    then
+        return 0
+    fi
+    local REGEX='^[a-zA-Z0-9_=.:/ @~+-]*$'
+    if [[ ! "$PARAM" =~ $REGEX ]]
+    then
+        echo_err "Invalid value for \"$NAME\": \"$PARAM\", must match: $REGEX"
+        return 1
+    fi
+}
+
+# Validates a value.
+restsh.util.check.filename() {
+    if [[ $# -ne 2 ]] || [[ "${1}" == "-h" ]]
+    then
+        {
+            echo "Validates a filename."
+            echo "Usage: restsh.util.check.filename <name> <value>"
+            echo "Valid characters are defined by regex: '^[a-zA-Z0-9_=.:/ @~+-]*$'"
+            echo "Filename must not start with a hyphen."
         } 1>&2
         return 2
     fi
@@ -1085,6 +1112,7 @@ export -f restsh.util.check.bool
 export -f restsh.util.check.isnumber
 export -f restsh.util.check.isvarname
 export -f restsh.util.check.string
+export -f restsh.util.check.filename
 export -f restsh.util.declare.var
 export -f restsh.util.filesize
 export -f restsh.util.array.includes

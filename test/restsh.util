@@ -332,9 +332,19 @@ test.restsh.util.check.string() {
     restsh.util.check.string -h > /dev/null 2>&1 || true
     # Test
     restsh.util.check.string "all special chars" "a-zA-Z0-9_=.:/ @~+-"
+    restsh.util.check.string "start with hyphen" "-sdf"
     # Negative test
     if restsh.util.check.string "invalid special chars" "sdf(asdf)"; then return 1; fi
-    if restsh.util.check.string "start with hyphen" "-sdf"; then return 1; fi
+}
+
+test.restsh.util.check.filename() {
+    # Usage info
+    restsh.util.check.filename -h > /dev/null 2>&1 || true
+    # Test
+    restsh.util.check.filename "all special chars" "a-zA-Z0-9_=.:/ @~+-"
+    # Negative test
+    if restsh.util.check.filename "invalid special chars" "sdf(asdf)"; then return 1; fi
+    if restsh.util.check.filename "start with hyphen" "-sdf"; then return 1; fi
 }
 
 test.restsh.util.check.uint() {
@@ -597,6 +607,7 @@ TESTS_RESTSH_UTIL=(
     test.restsh.util.check.isnumber
     test.restsh.util.check.isvarname
     test.restsh.util.check.string
+    test.restsh.util.check.filename
     test.restsh.util.check.uint
     test.restsh.util.check.bool
     test.restsh.util.declare.var
