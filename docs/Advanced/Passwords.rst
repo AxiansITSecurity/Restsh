@@ -12,7 +12,7 @@ Restsh automatically handles Vault values or encrypted values for following vari
 - RESTSH_TOKEN_VALUE
 - SCM_SECRET
 
-Any other variable can be resolved with the ``restsh.util.var.decrypt`` function. ``restsh.util.setvar`` and ``restsh.util.setvars`` can also be used for decryption.
+Any other variable can be resolved with the ``restsh.util.var.decrypt`` function. ``restsh.util.setvar`` and ``restsh.util.setvars`` also use this feature.
 
 Restsh checks the start of the variable to decide if it must be decrypted or fetched. The keywords are ``AES256:`` and ``VAULT:``.
 
@@ -25,7 +25,7 @@ For interactive mode you can simply not set the ``RESTSH_SECRET`` value. Restsh 
 
 .. Hint::
 
-    Set the value of a variable to the output of ``restsh.util.encrypt`` (with the`` AES256:`` prefix) to define a encrypted variable.
+    Set the value of a variable to the output of ``restsh.util.encrypt`` (with the ``AES256:`` prefix) to define a encrypted variable.
 
 HashiCorp Vault
 ---------------
