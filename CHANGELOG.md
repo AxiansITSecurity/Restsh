@@ -56,7 +56,7 @@ This is the first version that is released under GPL-3.0-or-later.
 
 ***
 
-## v4.4.1 - not yet released
+## v4.4.1 - 2026-03-24
 
 - F5 TMOS Module
     - Fix: `f5.asm.policy.audit` - fail if policy does not exists
