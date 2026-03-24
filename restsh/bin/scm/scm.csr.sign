@@ -25,7 +25,7 @@ fi
 usage() {
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") -o <org id> -p <profile id> [options...] <csr file>"
+    echo "Usage: $(basename "$0") -o <org id> -p <profile id> -a <name> [options...] <csr file>"
     echo "Options:"
     echo "    -a <name>        DNS Alternative Name"
     echo "    -o <org id>      Organization ID: GET /api/organization/v1"
@@ -51,13 +51,15 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ] || [ -z "$ORG_ID" ] || [ -z "$CERT_PROFILE" ]
+ALT_NAME=$(IFS=,; printf '%s' "${ALT_NAMES[*]}")
+
+if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ] || [ -z "$ORG_ID" ] || [ -z "$CERT_PROFILE" ] || [ -z "$ALT_NAME" ]
 then
     usage
 fi
 
 CSR_FILE=$1
-ALT_NAME=$(IFS=,; printf '%s' "${ALT_NAMES[*]}")
+
 
 $RESTSH_JQ -n --argjson org_id "$ORG_ID" \
     --arg alt_names "$ALT_NAME" \
