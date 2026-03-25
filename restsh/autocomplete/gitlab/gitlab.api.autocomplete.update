@@ -41,9 +41,10 @@ then
     return 1
 fi
 
-OPENAPI_FILE="$RESTSH_PATH/autocomplete/gitlab/openapi.yaml"
+OPENAPI_FILE="$RESTSH_TMP/openapi-gitlab.yaml"
+trap 'rm -f -- "$OPENAPI_FILE"' EXIT
 
-# Fetch OpenAPI File
+echo "Fetching OpenAPI file from gitlab.com"
 OPENAPI_URI="https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/api/openapi/openapi.yaml"
 if ! curl -f -s --show-error -o "$OPENAPI_FILE" "$OPENAPI_URI"
 then

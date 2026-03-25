@@ -12,8 +12,8 @@ put /api/acme/v1/pca/account/{id}
 	Updates Universal ACME account with given Name parameter
 get /api/acme/v1/pca/account/{id}/client
 	Query universal ACME account with given ID for available clients according to filtering parameters supplied
-delete /api/acme/v1/pca/account/{id}/client/{clientId}
-	Delete client by its ID for universal ACME account with given ID
+put /api/acme/v1/pca/account/{id}/client/{clientId}
+	Deactivate universal ACME client by its UUID for universal ACME account with given ID
 get /api/acme/v1/server
 	Query public ACME servers available according to filtering parameters supplied
 get /api/acme/v2/account
@@ -28,8 +28,8 @@ put /api/acme/v2/account/{id}
 	Updates ACME account details with given Name parameter
 get /api/acme/v2/account/{id}/client
 	Query Public ACME account's clients available according to filtering parameters supplied
-delete /api/acme/v2/account/{id}/client/{clientId}
-	Delete Public ACME account client with given ID for specified account ID
+put /api/acme/v2/account/{id}/client/{clientId}
+	Deactivate Public ACME account client with given ID for specified account ID
 delete /api/acme/v2/account/{id}/domain
 	Remove list of given domains from Public ACME account with given id
 get /api/acme/v2/account/{id}/domain
@@ -130,6 +130,10 @@ get /api/connector/v1/dns/{uuid}
 	Get Connector details.
 get /api/connector/v1/dns/{uuid}/provider
 	List all DNS Provides available for the connector
+post /api/cscert/v1/import
+	Import code signing certificates
+post /api/cscert/v1/revoke/manual
+	Marking CodeSign certificate as revoked in SCM
 get /api/customField/v2
 	List all custom fields according to filter. Includes complete details.
 post /api/customField/v2
@@ -184,6 +188,8 @@ post /api/device/v1/decline/{deviceCertId}
 	Allows admin to decline the requested Device certificate.
 post /api/device/v1/enroll
 	Creation and submission of a request for a new Device certificate.
+post /api/device/v1/import
+	Import device certificates
 post /api/device/v1/renew/order/{deviceCertId}
 	Submission of a request for a new Device certificate using the CSR and parameters of the initial Device certificate.
 post /api/device/v1/renew/serial/{serialNumber}
@@ -191,6 +197,8 @@ post /api/device/v1/renew/serial/{serialNumber}
 post /api/device/v1/replace/order/{deviceCertId}
 	Submission of a request for a replace of a Device certificate using new CSR and the parameters of the initial Device certificate.
 The initial certificate is defined by its Id.
+post /api/device/v1/revoke/manual
+	Marking Device certificate as revoked in SCM
 post /api/device/v1/revoke/order/{deviceCertId}
 	Sending a request to CA to add the Device certificate under the particular Id to certificate revocation list.
 post /api/device/v1/revoke/serial/{serialNumber}
@@ -291,6 +299,8 @@ get /api/domain/v1
 	Get list of domains according to the specified filter and pagination.
 post /api/domain/v1
 	Creates new domain according to the provided request.
+post /api/domain/v1/delegation
+	Add domains delegation to organization / department in context of particular certificate types.
 delete /api/domain/v1/{id}
 	Delete domain. Operation is allowed only for admins with role MRAO.
 get /api/domain/v1/{id}
@@ -329,10 +339,34 @@ get /api/endpoint/v1/{id}
 	Get detailed information about endpoint.
 put /api/endpoint/v1/{id}
 	Updates endpoint according to the provided request.
+get /api/endpoint/v1/{id}/config
+	Get enrollment endpoint configuration details
+put /api/endpoint/v1/{id}/config
+	Create/Update enrollment endpoint configuration, e.g. customized contact data
 delete /api/endpoint/v1/{id}/delegations
 	Remove all endpoint delegations from organization / department. The endpoint will be switched to global delegation mode.
 put /api/endpoint/v1/{id}/delegations
 	Create/Update endpoint delegations to organization / department. If endpoint was in global delegation mode, it will be switched to custom mode.
+get /api/mark-certificate/v1
+	Returns a paginated list of Mark certificates.
+post /api/mark-certificate/v1/approve/{id}
+	Approve a Mark certificate request that needs approval
+get /api/mark-certificate/v1/collect/{id}
+	Collect a Mark certificate request
+post /api/mark-certificate/v1/decline/{id}
+	Decline a Mark certificate request that needs approval
+post /api/mark-certificate/v1/enroll
+	Submit request for a new certificate.
+post /api/mark-certificate/v1/revoke/{id}
+	Revoke a Mark certificate request
+get /api/mark-certificate/v1/{certId}/dcv
+	Returns certificate DCV info
+post /api/mark-certificate/v1/{certId}/dcv/recheck
+	Initiate certificate revalidation of DCV info
+get /api/mark-certificate/v1/{id}
+	Returns details for a specific Mark certificate.
+put /api/mark-certificate/v1/{id}
+	Submit request for a new certificate.
 get /api/notification/v1
 	Get notifications according to applied filter
 post /api/notification/v1
@@ -357,18 +391,24 @@ get /api/organization/v1/{id}
 	Returns organization detailed info
 put /api/organization/v1/{id}
 	Updates organization with given parameters
-get /api/organization/v1/{orgId}/validations
+get /api/organization/v2/{orgId}/validations
 	Get list of organization validations.
-post /api/organization/v1/{orgId}/validations
+post /api/organization/v2/{orgId}/validations/assignment
+	Creates the assignment to the external organization's validation.
+put /api/organization/v2/{orgId}/validations/assignment/{validationId}
+	Updates the assigned external organization's validation.
+post /api/organization/v2/{orgId}/validations/submit
 	Submit organization validation.
-put /api/organization/v1/{orgId}/validations/{validationId}
-	Updates organization validation according to the provided request.
-put /api/organization/v1/{orgId}/validations/{validationId}/admin
-	Updates organization validation admin according to the provided request.
-post /api/organization/v1/{orgId}/validations/{validationId}/reset
-	Resets organization validation.
-post /api/organization/v1/{orgId}/validations/{validationId}/sync
+delete /api/organization/v2/{orgId}/validations/{validationId}
+	Resets and removes organization validation.
+get /api/organization/v2/{orgId}/validations/{validationId}
+	Return detailed response for the specified organization validation.
+put /api/organization/v2/{orgId}/validations/{validationId}/revalidate
+	Resets and submit the validation with the updated details provided in the request.
+post /api/organization/v2/{orgId}/validations/{validationId}/sync
 	Synchronize organization validation.
+put /api/organization/v2/{orgId}/validations/{validationId}/validator
+	Updates organization validation admin according to the provided request.
 get /api/person/v2
 	List of person info objects according to applied filters.
 post /api/person/v2
@@ -376,7 +416,7 @@ post /api/person/v2
 get /api/person/v2/id/byEmail/{email}
 	Will return ID for a person with given email.
 delete /api/person/v2/{id}
-	Delete person.
+	Delete person
 get /api/person/v2/{id}
 	Will return info for a person with given id.
 put /api/person/v2/{id}
@@ -389,6 +429,10 @@ post /api/person/v2/{id}/invitation/send
 	Invitation email will be sent with link to enrollment form. Account for enrollment form can be specified in request.
 post /api/person/v2/{personId}/import-key
 	Import private key to key store. Multiple entries allowed.
+get /api/profile/v1
+	Query profiles available for logged in client admin
+get /api/profile/v1/{id}
+	Returns profile detailed info
 post /api/report/v1/activity
 	Retrieves a log of SCM activities for a customer’s account, including actions on Certificates and actions of Agents.
 post /api/report/v1/client-certificates
@@ -397,40 +441,28 @@ post /api/report/v1/device-certificates
 	Retrieves a log for an existing Device Certificates.
 post /api/report/v1/domains
 	Retrieves a log for an existing Domains.
+post /api/report/v1/mark-certificates
+	Retrieves a log for an existing Mark Certificates.
 post /api/report/v1/ssl-certificates
 	Retrieves a log for an existing SSL Certificates.
+post /api/report/v2/stream
+	Generates a report based on the provided request parameters and streams the CSV data as response. Supports multiple report types including SSL certificates, activity logs, client certificates, device certificates, and admin reports.
 get /api/smime/v2
 	List all client certificates that match the requested filter.
 get /api/smime/v2/byPersonEmail/{email}
 	List all Client Certificates for a person with given email.
 get /api/smime/v2/byPersonId/{pid}
 	List all Client Certificates for a person with given ID.
-get /api/smime/v2/collect/{backendCertId}
+get /api/smime/v2/collect/order/{backendCertId}
 	Delivering the newly issued Client certificate from CA to the administrator for download.
-get /api/smime/v2/customFields
-	List Client Certificate custom fields. An enrollment requires all mandatory custom fields to be specified.
-post /api/smime/v2/enroll
-	Creation and submission of a request for a new Client Certificate.
-post /api/smime/v2/keystore/{certId}
-	Download Client Certificate in P12 format.
+get /api/smime/v2/collect/{id}
+	Delivering the newly issued Client certificate from CA to the administrator for download.
+post /api/smime/v2/import
+	Import client certificates
 post /api/smime/v2/renew/order/{backendCertId}
 	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its backend certificate ID.
 post /api/smime/v2/renew/serial/{serialNumber}
 	Submission of a request for a new Client certificate using the CSR and parameters of the initial Client certificate. The initial certificate is defined by its serial number.
-post /api/smime/v2/revoke
-	Sending a request to CA to add all Client certificates issued for the person with the particular email address in certificate revocation list.
-post /api/smime/v2/revoke/order/{backendCertId}
-	Sending a request to CA to add the particular Client certificate in certificate revocation list.
-post /api/smime/v2/revoke/serial/{serialNumber}
-	Sending a request to CA to add the Client certificate under the particular serial number in certificate revocation list.
-get /api/smime/v2/types
-	List Client Certificate profiles, previously known as a certificate type. An enrollment request will require the Certificate Profile be specified.
-delete /api/smime/v2/{certId}
-	Submission of a request for deleting Client certificate for a given Id.
-get /api/smime/v2/{certId}
-	Get Client certificate details.
-put /api/smime/v2/{certId}
-	Update Client certificate.
 get /api/smime/v2/{certId}/location
 	Returns a list of Client certificate locations.
 post /api/smime/v2/{certId}/location
@@ -441,51 +473,59 @@ get /api/smime/v2/{certId}/location/{locationId}
 	Returns Client certificate location details.
 put /api/smime/v2/{certId}/location/{locationId}
 	Updates custom certificate location with the new details.
-get /api/ssl/v1
+get /api/ssl/v2
 	List all SSL certificates that match the requested filter.
-put /api/ssl/v1
+put /api/ssl/v2
 	Update SSL certificate.
-post /api/ssl/v1/approve/{id}
+post /api/ssl/v2/approve/{id}
 	Approve a SSL certificate request that needs approval
-get /api/ssl/v1/collect/{sslId}
+get /api/ssl/v2/collect/{sslId}
 	Delivering the newly issued SSL Certificate from CA to the administrator for download.
-get /api/ssl/v1/customFields
+get /api/ssl/v2/customFields
 	List SSL certificate custom fields. An enrollment require will require all mandatory custom fields be specified.
-post /api/ssl/v1/decline/{id}
+post /api/ssl/v2/decline/{id}
 	Decline a SSL certificate request
-post /api/ssl/v1/enroll
+post /api/ssl/v2/enroll
 	Submit request for a new SSL certificate.
-post /api/ssl/v1/enroll-keygen
+post /api/ssl/v2/enroll-keygen
 	Submit request for a new SSL certificate with generated keypair
-post /api/ssl/v1/import
-	Import certificates to SCM.
-get /api/ssl/v1/keystore/{sslId}/{formatType}
+post /api/ssl/v2/import
+	Import SSL certificates
+post /api/ssl/v2/keystore/{sslId}/{formatType}
 	Generation of a link to download private key from Private Key Agent.
-post /api/ssl/v1/renew/manual/{id}
-	null
-post /api/ssl/v1/renew/{renewId}
+post /api/ssl/v2/renew/manual/{id}
+	Manually marking an SSL certificate as renewed, optionally linking it to a new certificate ID or Order Number. The initial certificate is defined by its ID.
+post /api/ssl/v2/renew/{renewId}
 	Submission of a request for a new SSL certificate using the CSR and parameters of the initial certificate. The initial certificate is the one that is selected by the administrator for renewal in this case.
-post /api/ssl/v1/renewById/{sslId}
+post /api/ssl/v2/renewById/{sslId}
 	Submission of a request for a new SSL certificate using the CSR and parameters of the initial SSL certificate. The initial certificate is defined by its ID in this case.
-post /api/ssl/v1/replace/{sslId}
+post /api/ssl/v2/replace/{sslId}
 	Submission of a request for the substition of the particular SSL certificate applying its parameters and a new CSR.
-post /api/ssl/v1/revoke/serial/{serialNumber}
+post /api/ssl/v2/revoke/manual
+	Marking SSL certificate as revoked in SCM
+post /api/ssl/v2/revoke/serial/{serialNumber}
 	Sending a request to CA to add the particular SSL certificate in certificate revocation list
-post /api/ssl/v1/revoke/{id}
+post /api/ssl/v2/revoke/{id}
 	Sending a request to CA to add the particular SSL certificate in certificate revocation list.
-get /api/ssl/v1/types
+get /api/ssl/v2/types
 	List SSL certificate profiles, previously known as a certificate type. An enrollment request will require the certificate profile be specified.
-delete /api/ssl/v1/{sslId}
+delete /api/ssl/v2/{sslId}
 	Submission of a request for deleting SSL certificate for a given SSL Id.
-get /api/ssl/v1/{sslId}
+get /api/ssl/v2/{sslId}
 	Get SSL certificate details.
-get /api/ssl/v1/{sslId}/location
+get /api/ssl/v2/{sslId}/dcv
+	Returns SSL certificate DCV info
+post /api/ssl/v2/{sslId}/dcv/recheck
+	Initiate SSL certificate revalidation of DCV info
+get /api/ssl/v2/{sslId}/location
 	List SSL certificate locations.
-post /api/ssl/v1/{sslId}/location
+post /api/ssl/v2/{sslId}/location
 	Creates a new custom location for the SSL certificate.
-delete /api/ssl/v1/{sslId}/location/{locationId}
+delete /api/ssl/v2/{sslId}/location/{locationId}
 	Deletes custom certificate location.
-get /api/ssl/v1/{sslId}/location/{locationId}
+get /api/ssl/v2/{sslId}/location/{locationId}
 	Returns SSL certificate location details.
-put /api/ssl/v1/{sslId}/location/{locationId}
+put /api/ssl/v2/{sslId}/location/{locationId}
 	Updates custom certificate location with the new details.
+get /api/ssl/v2/{sslId}/renew-tree-history
+	Returns SSL certificate location details.

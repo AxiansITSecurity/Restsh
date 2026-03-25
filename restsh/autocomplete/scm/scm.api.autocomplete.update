@@ -35,9 +35,10 @@ then
     exit 2
 fi
 
-OPENAPI_FILE="$RESTSH_PATH/autocomplete/scm/openapi.json"
+OPENAPI_FILE="$RESTSH_TMP/openapi-scm.json"
+trap 'rm -f -- "$OPENAPI_FILE"' EXIT
 
-# Fetch OpenAPI File
+echo "Fetching OpenAPI file from admin.enterprise.sectigo.com"
 OPENAPI_URI="https://admin.enterprise.sectigo.com/api/v3/api-docs"
 if ! curl -f -s --show-error -o "$OPENAPI_FILE" "$OPENAPI_URI"
 then
