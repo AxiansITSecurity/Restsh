@@ -23,10 +23,12 @@ then
 fi
 
 # Get options
+BACKGROUND=0
 RAW=0
-while getopts ':r' OPTION
+while getopts ':br' OPTION
 do
     case "$OPTION" in
+        b) BACKGROUND=1 ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -38,10 +40,18 @@ then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
     echo "Usage: $(basename "$0") [-r] <shell command> [options...]"
+    echo "    -b  Run command detached and in background"
     echo "    -r  Print raw output."
     exit 2
 fi
-COMMAND=$(restsh.util.array.string -q\" "$@")
+
+if [ "$BACKGROUND" -eq 1 ]
+then
+    COMMAND=$(restsh.util.array.string -q\" "$@")
+    COMMAND="nohup ${COMMAND} >/dev/null 2>&1 </dev/null &"
+else
+    COMMAND=$(restsh.util.array.string -q\" "$@")
+fi
 
 # Main
 if RESPONSE=$(JQ -n --arg command " -c '$COMMAND'" \

@@ -40,6 +40,7 @@ This is the first version that is released under GPL-3.0-or-later.
     - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
     - Upd: `f5.ltm.datagroup.internal.list` - Add option for raw json output
     - Upd: `f5.ltm.datagroup.internal.create`, `f5.ltm.datagroup.internal.update` - Add option for CSV separator
+    - Upd: `f5.run` - Add option to run command in background
     - Fix: `f5.asm.template.import` - Delete uploaded file after import
     - Fix: `f5.device.cert.install` - Always use `server.crt` and `server.key` as current certificate-key-pair
     - Fix: `f5.ltm.vs.modify` - Use fullPath to modify the VS
