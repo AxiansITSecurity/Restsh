@@ -40,7 +40,7 @@ then
     exit 2
 fi
 
-restsh.util.check.string "pkcs12 file" "$1"; PKCS12_FILE=$1
+restsh.util.check.filename "pkcs12 file" "$1"; PKCS12_FILE=$1
 FILENAME=$(basename "$PKCS12_FILE")
 FILENAME=${FILENAME%.*}
 

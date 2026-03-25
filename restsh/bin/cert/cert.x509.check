@@ -42,7 +42,7 @@ then
     exit 2
 fi
 
-restsh.util.check.string "x509 cert file" "$1"; CERT_FILE=$1
+restsh.util.check.filename "x509 cert file" "$1"; CERT_FILE=$1
 restsh.util.check.string "hostname" "$2"; CERT_HOST=$2
 
 openssl x509 -in "$CERT_FILE" -noout -checkhost "$CERT_HOST"

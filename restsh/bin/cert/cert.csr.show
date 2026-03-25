@@ -38,6 +38,6 @@ then
     exit 2
 fi
 
-restsh.util.check.string "csr file" "$1"; CSR_FILE=$1
+restsh.util.check.filename "csr file" "$1"; CSR_FILE=$1
 
 openssl req -in "$CSR_FILE" -text

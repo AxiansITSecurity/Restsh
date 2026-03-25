@@ -69,13 +69,13 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ] || [ -z "${CN}" ] || [ "$OPTION" = "invalid" ]
+if [ $# -ne 2 ] || [ -z "${CN}" ] || [ "$OPTION" = "invalid" ]
 then
     usage
 fi
 
-restsh.util.check.string "key file" "$1"; KEY_FILE=$1
-restsh.util.check.string "csr file" "$2"; CSR_FILE=$2
+restsh.util.check.filename "key file" "$1"; KEY_FILE=$1
+restsh.util.check.filename "csr file" "$2"; CSR_FILE=$2
 CSR_CONFIG="$RESTSH_TMP/csr.cnf"
 
 cat > "$CSR_CONFIG" << EOL

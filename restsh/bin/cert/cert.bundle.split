@@ -42,7 +42,7 @@ then
     exit 2
 fi
 
-restsh.util.check.string "bundle path" "$1"; BUNDLE_FILE=$1
+restsh.util.check.filename "bundle path" "$1"; BUNDLE_FILE=$1
 TMP_DIR=$(mktemp -d -p "$RESTSH_TMP")
 csplit -k -z -f "${TMP_DIR}/cert" "${BUNDLE_FILE}" '/END CERTIFICATE/+1' "{100}" >/dev/null 2>&1 || true
 for CERT in "${TMP_DIR}"/cert*; do

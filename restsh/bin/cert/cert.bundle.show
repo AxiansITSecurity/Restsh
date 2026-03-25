@@ -38,5 +38,5 @@ then
     exit 2
 fi
 
-restsh.util.check.string "bundle path" "$1"; BUNDLE_FILE=$1
+restsh.util.check.filename "bundle path" "$1"; BUNDLE_FILE=$1
 openssl crl2pkcs7 -nocrl -certfile "$BUNDLE_FILE" | openssl pkcs7 -print_certs -noout
