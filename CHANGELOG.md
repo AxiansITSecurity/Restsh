@@ -10,9 +10,10 @@ This is the first version that is released under GPL-3.0-or-later.
 
 - General
     - Feat: `restsh.passphrase`
-    - Feat: Add `restsh.util.check.string` to validate values like filenames, paths, etc.
+    - Feat: Add `restsh.util.check.string` to validate values like names, ids, etc.
+    - Feat: Add `restsh.util.check.filename` to validate values like filenames and paths
     - Feat: Add `restsh.util.check.uint` to validate unsigned integer values
-    - Feat: Add `restsh.util.check.bool` to validate boolean values
+    - Feat: Add `restsh.util.check.bool` to validate boolean values (true, false)
     - Feat: `restsh.util.jsonencode`
     - Feat: `f5.device.reboot`
     - Upd: Add restsh.setup alias
