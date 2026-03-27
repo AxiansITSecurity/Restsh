@@ -94,8 +94,8 @@ restsh.help.modules() {
         for MODULE in "${RESTSH_MODULES[@]}"
         do
             local DESC=""
-            [ -f "$RESTSH_PATH/bin/$MODULE/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/bin/$MODULE/.shortdesc")
-            [ -f "$RESTSH_PATH/lib/$MODULE/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/lib/$MODULE/.shortdesc")
+            [ -f "$RESTSH_PATH/modules/$MODULE/bin/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/modules/$MODULE/bin/.shortdesc")
+            [ -f "$RESTSH_PATH/modules/$MODULE/lib/.shortdesc" ] && DESC=$(<"$RESTSH_PATH/modules/$MODULE/lib/.shortdesc")
             echo -e "$MODULE\t$DESC"
         done
     } | COLUMN | _indent
@@ -107,14 +107,14 @@ _restsh.help.modules.cmds() {
     echo ""
     echo "$MODULE commands:"
     declare -A CMDS
-    if [ -d "$RESTSH_PATH/lib/$MODULE" ]
+    if [ -d "$RESTSH_PATH/modules/$MODULE/lib" ]
     then
         while read -r FILE
         do
             _restsh.help.parse.lib "$FILE"
-        done < <(find "$RESTSH_PATH/lib/$MODULE" -type f)
+        done < <(find "$RESTSH_PATH/modules/$MODULE/lib" -type f)
     fi
-    if [ -d "$RESTSH_PATH/bin/$MODULE" ]
+    if [ -d "$RESTSH_PATH/modules/$MODULE/bin" ]
     then
         while read -r FILE
         do
@@ -122,7 +122,25 @@ _restsh.help.modules.cmds() {
             FILE="${FILE##*/}"
             [ "$FILE" == ".shortdesc" ] && continue
             CMDS[$FILE]=$DESC
-        done < <(find "$RESTSH_PATH/bin/$MODULE" -type f ! -name .\*)
+        done < <(find "$RESTSH_PATH/modules/$MODULE/bin" -type f ! -name .\*)
+    fi
+    _restsh.help.print
+}
+
+# Prints all commands from a module
+_restsh.help.restsh.cmds() {
+    echo ""
+    echo "restsh commands:"
+    declare -A CMDS
+    if [ -d "$RESTSH_PATH/bin" ]
+    then
+        while read -r FILE
+        do
+            DESC=$(_restsh.help.shortdesc.get "$FILE")
+            FILE="${FILE##*/}"
+            [ "$FILE" == ".shortdesc" ] && continue
+            CMDS[$FILE]=$DESC
+        done < <(find "$RESTSH_PATH/bin" -type f ! -name .\*)
     fi
     _restsh.help.print
 }
@@ -155,7 +173,7 @@ restsh.help() {
     declare -A CMDS
     _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.util"
     _restsh.help.print
-    _restsh.help.modules.cmds "restsh"
+    _restsh.help.restsh.cmds
 
     if [ "$MODULES" == "none" ]
     then
@@ -170,7 +188,8 @@ restsh.help() {
         do
             _restsh.help.modules.cmds "$MODULE"
         done
-    else
+    elif [ "$MODULES" != "restsh" ]
+    then
         # Print commands from one module
         _restsh.help.modules.cmds "$MODULES"
     fi

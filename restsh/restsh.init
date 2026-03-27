@@ -88,7 +88,7 @@ do
     . "$LINE"
 done < <(find "$RESTSH_PATH/lib" -maxdepth 1 -type f ! -name .\*)
 
-PATH="$PATH:$RESTSH_PATH/bin/restsh"
+PATH="$PATH:$RESTSH_PATH/bin"
 
 # Check for enabled modules, enable all if not defined
 if [ -z "${RESTSH_MODULES+x}" ]
@@ -104,13 +104,13 @@ fi
 # Include enabled modules by setting path and including functions
 for MODULE in "${RESTSH_MODULES[@]}"
 do
-    [ -d "$RESTSH_PATH/bin/$MODULE" ] && PATH="$PATH:$RESTSH_PATH/bin/$MODULE"
-    if [ -d "$RESTSH_PATH/lib/$MODULE" ]
+    [ -d "$RESTSH_PATH/$MODULE/bin" ] && PATH="$PATH:$RESTSH_PATH/$MODULE/bin"
+    if [ -d "$RESTSH_PATH/$MODULE/lib" ]
     then
         while read -r LINE
         do
             . "$LINE"
-        done < <(find "$RESTSH_PATH/lib/$MODULE" -maxdepth 1 -type f ! -name .\*)
+        done < <(find "$RESTSH_PATH/$MODULE/lib" -maxdepth 1 -type f ! -name .\*)
     fi
 done
 export PATH
@@ -278,7 +278,7 @@ then
             echo -e "\tAuth:    anonymous"
             ;;
     esac
-    echo -e "\tModules: ${RESTSH_MODULES[*]}"
+    echo "    Modules: ${RESTSH_MODULES[*]}"
     echo ""
     echo "Run restsh.help for available commands."
     echo "Use exit to finish."
