@@ -19,10 +19,14 @@ Restsh is one of the core components of the [Axians Automation Framework](https:
 | gitlab | GitLab |
 | scm | Sectigo Cert Manager |
 
+## Quickstart
+
+- [Quickstart](https://axiansitsecurity.github.io/Restsh/Quickstart/index.html)
+
 ## Running interactively
 
 ```sh
-git clone <clone uri>
+git clone https://github.com/AxiansITSecurity/Restsh.git restsh
 cd restsh
 #
 # Rename .restsh-config.dist to .restsh-config and customize it or export some environment variables.
@@ -39,16 +43,21 @@ cd restsh
 # export RESTSH_AUTH="token"
 # export RESTSH_TOKEN_HEADER="X-Auth-Token"
 # export RESTSH_TOKEN_VALUE="the_token"
-#
-# You can also use the .netrc file to store the credentials.
-# export RESTSH_AUTH="netrc"
-#
 restsh/restsh.start
 ```
 
+### Pre-defined config files
+
+| Prefix | Description |
+| ------ | ----------- |
+| `.restsh-config.dist.f5` | F5 BIG-IP TMOS |
+| `.restsh-config.dist.f5osa` | F5OS-A / rSeries |
+| `.restsh-config.dist.gitlab` | GitLab |
+| `.restsh-config.dist.scm` | Sectigo Cert Manager |
+
 ### Custom config
 
-You can use custom config files to work with several api endpoints. If not defined on the command line, Restsh searches for a file named `.restsh-config` in the current folder and in the user home.
+You can use custom config files to work with several api endpoints. If not defined on the command line, Restsh searches for a file named `.restsh-config` in the current folder and in the user home. If no configuration file is found a ncurses menu appears.
 
 ```sh
 restsh/restsh.start custom-config1

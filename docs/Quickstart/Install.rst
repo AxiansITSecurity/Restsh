@@ -33,13 +33,13 @@ Personally, I manage all my Git repositories in a ``git`` folder in my home dire
 
 .. code::
 
-    git clone https://github.com/AxiansITSecurity/Restsh.git
+    git clone https://github.com/AxiansITSecurity/Restsh.git restsh
 
 **With SSH**
 
 .. code::
 
-    git@github.com:AxiansITSecurity/Restsh.git
+    git@github.com:AxiansITSecurity/Restsh.git restsh
 
 Setup
 -----
@@ -48,7 +48,7 @@ Change your working directory into the cloned folder and run the setup script.
 
 .. code:: sh
 
-    cd Restsh
+    cd restsh
     restsh/restsh.setup init
 
 This adjusts your ``.bashrc``, sets an alias for ``restsh`` and creates the ``.restsh-config`` folder in your home

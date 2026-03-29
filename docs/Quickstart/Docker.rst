@@ -10,8 +10,8 @@ There is a ``Dockerfile`` in the root of the Restsh repository and a helper scri
 
 .. code:: sh
 
-    git clone https://github.com/AxiansITSecurity/Restsh.git
-    cd Restsh
+    git clone https://github.com/AxiansITSecurity/Restsh.git restsh
+    cd restsh
     ./docker.sh build
     ./docker.sh run
 
