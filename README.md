@@ -69,7 +69,7 @@ Restsh enables uses curl to communicate with the REST-APIs. Certificate checking
 The easiest thing to do is not to use a proxy and allow direct connections. Restsh uses the system proxy settings (https_proxy and http_proxy environment variables) and supports basic authentication for the proxy. Simply set following variables in the configuration file:
 
 ```sh
-RESTSH_CURL_PROX_INSECURE="0"
+RESTSH_CURL_PROXY_INSECURE="0"
 RESTSH_CURL_PROXY_AUTH="basic"
 RESTSH_CURL_PROXY_USER="<user>"
 RESTSH_CURL_PROXY_PASS="<password>"
