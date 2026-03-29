@@ -26,7 +26,7 @@ fi
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set"; exit 1; }
 [ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set"; exit 1; }
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set"; exit 1; }
-[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/templates/aafw/project_settings_default.json"
+[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="${RESTSH_PATH}/modules/aafw/templates/project_settings_default.json"
 
 # Get options
 INIT_PROJECT=""

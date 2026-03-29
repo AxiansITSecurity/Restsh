@@ -24,8 +24,8 @@ then
     exit 1
 fi
 
-TEMPLATE="$RESTSH_PATH/templates/f5/sys/ha-group.json"
-DEFAULTS="$RESTSH_PATH/templates/f5/sys/ha-group.var"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/sys/ha-group.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/sys/ha-group.var"
 
 ARRAY_POOLS=()
 ARRAY_TRUNKS=()

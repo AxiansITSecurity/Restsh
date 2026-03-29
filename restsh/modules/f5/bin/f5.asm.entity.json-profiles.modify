@@ -22,8 +22,8 @@ then
     exit 1
 fi
 
-TEMPLATE="$RESTSH_PATH/templates/f5/asm/json-profiles.defense-attributes.json"
-DEFAULTS="$RESTSH_PATH/templates/f5/asm/json-profiles.defense-attributes.var"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/asm/json-profiles.defense-attributes.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/asm/json-profiles.defense-attributes.var"
 ENTITY="json-profiles"
 
 OPTS=()

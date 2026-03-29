@@ -41,7 +41,7 @@ fi
 
 # Mustache template definitions
 restsh.util.check.string "tenant name" "$1"; export TENANT_NAME=$1
-TEMPLATE="$RESTSH_PATH/templates/f5/as3/tenant.remove.json"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/as3/tenant.remove.json"
 
 # Include mustache
 . "${RESTSH_PATH}/dist/mo/mo"

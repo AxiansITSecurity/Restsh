@@ -23,8 +23,8 @@ then
 fi
 
 OPTS=()
-TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.filetypes-disallowed.json"
-DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.filetypes-disallowed.var"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/asm/entity.filetypes-disallowed.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/asm/entity.filetypes-disallowed.var"
 ENTITY="filetypes"
 while getopts ':d:t:s:' OPTION
 do

@@ -22,8 +22,8 @@ then
     exit 1
 fi
 
-TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.urls-disallowed.json"
-DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.urls-disallowed.var"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/asm/entity.urls-disallowed.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/asm/entity.urls-disallowed.var"
 ENTITY="urls"
 
 OPTS=()
