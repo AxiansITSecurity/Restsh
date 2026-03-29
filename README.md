@@ -136,13 +136,13 @@ atuin import auto
 
 ## Customize
 
-You can add your own scripts into the `restsh/bin/custom` and `restsh/lib/custom` folders.
+You can fork it and add your own scripts into the folder in `restsh/modules/custom`.
 
 - [DEVELOPING.md](DEVELOPING.md)
 
 ## Documentation
 
-You can build the documentation local with the `doc.sh` script or you can read it [online](https://axiansitsecurity.github.io/Restsh/).
+You can build the documentation locally with the `doc.sh` script or you can read it [online](https://axiansitsecurity.github.io/Restsh/).
 
 ## License
 
