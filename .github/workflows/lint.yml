@@ -23,3 +23,6 @@ jobs:
         sudo apt-get install -y shellcheck
     - name: lint js css html lua
       run: ./lint.sh
+    - name: test
+      run: ./test/test.sh -g restsh
+
