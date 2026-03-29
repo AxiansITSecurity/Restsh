@@ -62,22 +62,22 @@ You can use the environment variable `RESTSH_CUSTOM_ENV` to define a custom file
 
 ### Certificate checking
 
-Restsh enables uses curl to communicate with the REST-APIs. Certificate checking is enabled in all default configurations. If you encounter certificate related errors you should add the signing certificate to your system trust store. Disabling certificate checking is NOT recommended, but you can set ``RESTSH_CURL_INSECURE=1`` in the configuration file to disable it.
+Restsh enables uses curl to communicate with the REST-APIs. Certificate checking is enabled in all default configurations. If you encounter certificate related errors you should add the signing certificate to your system trust store. Disabling certificate checking is NOT recommended, but you can set `RESTSH_CURL_INSECURE=1` in the configuration file to disable it.
 
-### Password encryption
+### Proxy
 
-You can store the `RESTSH_PASS` and `RESTSH_TOKEN_VALUE` AES256 encrypted in the configuration file.
+The easiest thing to do is not to use a proxy and allow direct connections. Restsh uses the system proxy settings (https_proxy and http_proxy environment variables) and supports basic authentication for the proxy. Simply set following variables in the configuration file:
 
-- Start Restsh
-- Create the encrypted password string:
+```sh
+RESTSH_CURL_PROX_INSECURE="0"
+RESTSH_CURL_PROXY_AUTH="basic"
+RESTSH_CURL_PROXY_USER="<user>"
+RESTSH_CURL_PROXY_PASS="<password>"
+```
 
-    ```sh
-    restsh.util.encrypt
-    ```
+### Securing passwords
 
-- Exit Restsh and define the `RESTSH_PASS` variable as `<output of above command>`, beginning with `AES256:`.
-- In interactive mode, Restsh asks for the secret if it is not defined in `RESTSH_SECRET`. In script mode it terminates with an error.
-- As an alternative you can set `RESTSH_SECRET_FILE` to a file to read the `RESTSH_SECRET` from.
+Sensitive values can be stored encrypted or in HashiCorp Vault, see [Passwords and Secrets](https://axiansitsecurity.github.io/Restsh/Advanced/Passwords.html) for details.
 
 ### Debug
 

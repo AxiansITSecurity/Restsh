@@ -67,6 +67,35 @@ restsh.init.check.env() {
             export RESTSH_TOKEN_VALUE=""
         fi
     fi
+
+    if [ "$RESTSH_CURL_PROXY_AUTH" == "basic" ]
+    then
+        if [ -z "${RESTSH_CURL_PROXY_USER+x}" ] || [ -z "${RESTSH_CURL_PROXY_USER}" ]
+        then
+            # Ask for user only in interactive mode
+            if [ -n "${RESTSH_INTERACTIVE+x}" ]
+            then
+                read -r -p "Proxy user: " RESTSH_CURL_PROXY_USER
+                export RESTSH_CURL_PROXY_USER
+            else
+                echo_warn "No proxy user set"
+                export RESTSH_CURL_PROXY_USER=""
+            fi
+        fi
+        if [ -z "${RESTSH_CURL_PROXY_PASS+x}" ] || [ -z "${RESTSH_CURL_PROXY_PASS}" ]
+        then
+            # Ask for password only in interactive mode
+            if [ -n "${RESTSH_INTERACTIVE+x}" ]
+            then
+                RESTSH_CURL_PROXY_PASS=$(restsh.util.askpass "proxy password")
+                export RESTSH_CURL_PROXY_PASS
+                printf "\n"
+            else
+                echo_warn "No proxy password set"
+                export RESTSH_CURL_PROXY_PASS=""
+            fi
+        fi
+    fi
     return 0
 }
 

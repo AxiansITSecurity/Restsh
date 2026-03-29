@@ -77,12 +77,15 @@ restsh.help.showenv() {
     while read -r LINE
     do
         echo -e "\t$LINE"
-    done < <(export | grep "declare -x RESTSH" | \
-        sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
+    done < <(export | grep "declare -x RESTSH" \
+        | sed -E -e 's/declare -x //' -e "s/(RESTSH_PASS=).*/\1\"***\"/" \
             -e "s/(RESTSH_TOKEN_VALUE=).*/\1\"***\"/" \
             -e "s/(RESTSH_REFRESH_TOKEN=).*/\1\"***\"/" \
-            -e "s/(RESTSH_SECRET=).*/\1\"***\"/"| \
-        sort | sed -e 's/=/\t/' | COLUMN)
+            -e "s/(RESTSH_SECRET=).*/\1\"***\"/" \
+            -e "s/(RESTSH_CURL_PROXY_PASS=).*/\1\"***\"/"\
+        | sort \
+        | sed -e 's/=/\t/' \
+        | COLUMN)
 }
 
 # Prints additional modules
