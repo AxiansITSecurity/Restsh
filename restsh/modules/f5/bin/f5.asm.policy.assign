@@ -58,7 +58,7 @@ export VAR_VIRTUAL_SERVERS
 
 # Assign the policy
 echo "Assigning policy: \"$POLICY_HASH\"."
-if ! VS=$($RESTSH_MO -- "$RESTSH_PATH/templates/f5/asm/policy.assign.json" \
+if ! VS=$($RESTSH_MO -- "${RESTSH_PATH}/modules/f5/templates/asm/policy.assign.json" \
     | PATCH -r "/mgmt/tm/asm/policies/$POLICY_HASH" \
     | $RESTSH_JQ -r ".virtualServers[]")
 then

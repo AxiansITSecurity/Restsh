@@ -23,7 +23,7 @@ then
 fi
 
 # Get options
-POLICY_DIR="$RESTSH_PATH/templates/check/http-header"
+POLICY_DIR="${RESTSH_PATH}/templates/check/http-header"
 CURL_OPTS=()
 while getopts ':kp:r:' OPTION
 do

@@ -44,7 +44,7 @@ then
     echo "Pipe the list of signature ids to STDIN, one signature per line."
     echo "Ignores lines starting with #."
     echo "Options:"
-    echo "    -t <template>        JSON Template, default: $RESTSH_PATH/templates/f5/asm/signatureset-manual.json"
+    echo "    -t <template>        JSON Template, default: ${RESTSH_PATH}/modules/f5/templates/asm/signatureset-manual.json"
     exit 2
 fi
 
@@ -52,7 +52,7 @@ restsh.util.check.string "signature set name" "$1"; export VAR_NAME=$1
 
 if [ -z "$TEMPLATE" ]
 then
-    TEMPLATE="$RESTSH_PATH/templates/f5/asm/signatureset-manual.json"
+    TEMPLATE="${RESTSH_PATH}/modules/f5/templates/asm/signatureset-manual.json"
 fi
 
 # Read signature ids from STDIN

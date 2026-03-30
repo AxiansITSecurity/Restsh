@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Adds a disallowed url to a F5 ASM Policy.
+# Shortdesc: Sets the defense attributes of all json content profiles for specified ASM policy.
 # Desc:
-# Adds a disallowed url to a F5 ASM Policy.
+# Sets the defense attributes of all json content profiles for specified ASM policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,40 +22,45 @@ then
     exit 1
 fi
 
-TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.urls-disallowed.json"
-DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.urls-disallowed.var"
-ENTITY="urls"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/asm/json-profiles.defense-attributes.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/asm/json-profiles.defense-attributes.var"
+ENTITY="json-profiles"
 
 OPTS=()
 while getopts ':d:t:s:' OPTION
 do
     case "$OPTION" in
         d) restsh.util.check.string "variables file" "$OPTARG"; DEFAULTS=$OPTARG ;;
-        t) restsh.util.check.string "template" "$OPTARG"; TEMPLATE=$OPTARG ;;
+        t) restsh.util.check.string "modify template" "$OPTARG"; TEMPLATE=$OPTARG ;;
         s) OPTS+=("-s" "$OPTARG") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ -z "${1+x}" ] || [ -z "${2+x}" ]
+# Check options
+if [ $# -lt 1 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") [options...] <policy full path> <url>"
+    echo "$(basename "$0") [options...] <policy full path>"
     echo "Options:"
     echo "    -t <template>         Template to use, default is: $TEMPLATE"
     echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."
     echo "    -sVAR=VALUE           Define a custom variable."
     echo ""
-    echo "Defaults for add are:"
+    echo "Defaults are:"
     sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
     exit 2
 fi
 
-restsh.util.check.string "policy full path" "$1"; POLICY=$1
-URL=$2
+# Main
+restsh.util.check.string "policy full path" "$1"; POLICY_NAME=$1
+POLICY_HASH=$(f5.asm.policy.gethash "$POLICY_NAME")
 
-export VAR_DISALLOWED_URL=$URL
-f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "${OPTS[@]}" "$POLICY" "$ENTITY"
+while read -r PROFILE
+do
+    f5.asm.entity.modify -t "$TEMPLATE" -d "$DEFAULTS" "${OPTS[@]}" "$POLICY_NAME" "$ENTITY" "$PROFILE" \
+        | JQ -r ".name"
+done < <(GET "/mgmt/tm/asm/policies/$POLICY_HASH/$ENTITY" | JQ -r ".items[] | .name")

@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Adds an allowed url to a F5 ASM Policy.
+# Shortdesc: Adds a disallowed filetype to a F5 ASM Policy.
 # Desc:
-# Adds an allowed url to a F5 ASM Policy.
+# Adds a disallowed filetype to a F5 ASM Policy.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,11 +22,10 @@ then
     exit 1
 fi
 
-TEMPLATE="$RESTSH_PATH/templates/f5/asm/entity.urls-allowed.json"
-DEFAULTS="$RESTSH_PATH/templates/f5/asm/entity.urls-allowed.var"
-ENTITY="urls"
-
 OPTS=()
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/asm/entity.filetypes-disallowed.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/asm/entity.filetypes-disallowed.var"
+ENTITY="filetypes"
 while getopts ':d:t:s:' OPTION
 do
     case "$OPTION" in
@@ -43,7 +42,7 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") [options...] <policy full path> <url>"
+    echo "$(basename "$0") [options...] <policy full path> <filetype>"
     echo "Options:"
     echo "    -t <template>         Template to use, default is: $TEMPLATE"
     echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."
@@ -55,7 +54,7 @@ then
 fi
 
 restsh.util.check.string "policy full path" "$1"; POLICY=$1
-URL=$2
+restsh.util.check.string "filetype" "$2"; FILETYPE=$2
 
-export VAR_ALLOWED_URL=$URL
-f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "${OPTS[@]}" "$POLICY" "$ENTITY"
+export VAR_DISALLOWED_FILETYPE=$FILETYPE
+f5.asm.entity.add -t "$TEMPLATE" -d "$DEFAULTS" "${OPTS[@]}" "$POLICY" "$ENTITY" > /dev/null

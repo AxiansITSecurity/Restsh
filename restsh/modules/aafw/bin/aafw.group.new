@@ -23,7 +23,7 @@ then
 fi
 
 # Get options
-TEMPLATE_DIR="$RESTSH_PATH/templates/aafw"
+TEMPLATE_DIR="${RESTSH_PATH}/modules/aafw/templates"
 while getopts ':ht:' OPTION
 do
     case "$OPTION" in
@@ -39,7 +39,7 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <group path>"
     echo "Options:"
-    echo "    -t <template folder>, default: $RESTSH_PATH/templates/aafw"
+    echo "    -t <template folder>, default: ${RESTSH_PATH}/modules/aafw/templates"
     exit 2
 fi
 
@@ -54,7 +54,7 @@ fi
 set_group_properties() {
     local GROUP_ID=$1
     echo "Setting group properties for $GROUP_ID"
-    if ! RESULT=$(PUT "$GITLAB_API_PREFIX/groups/$GROUP_ID" < "$RESTSH_PATH/templates/aafw/group_settings_default.json")
+    if ! RESULT=$(PUT "$GITLAB_API_PREFIX/groups/$GROUP_ID" < "${RESTSH_PATH}/modules/aafw/templates/group_settings_default.json")
     then
         echo_err "Failure setting group properties for $GROUP_ID"
         echo_err "$RESULT"
