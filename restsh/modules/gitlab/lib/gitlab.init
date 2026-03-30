@@ -20,7 +20,7 @@ set -uo pipefail
 
 if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
-    if [ "$GITLAB_ENABLE_AUTOCOMPLETE" -eq 1 ] && [ -s "$RESTSH_PATH/autocomplete/gitlab/openapi_help.txt" ]
+    if [ "$GITLAB_ENABLE_AUTOCOMPLETE" -eq 1 ] && [ -s "$RESTSH_PATH/modules/gitlab/autocomplete/openapi_help.txt" ]
     then
         . "$RESTSH_PATH/modules/gitlab/autocomplete/autocomplete.sh"
     fi

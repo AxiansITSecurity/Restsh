@@ -25,19 +25,19 @@ _method() {
             cur="$P"
             break
         fi
-    done < "$RESTSH_PATH/autocomplete/scm/method_$prev"
+    done < "$RESTSH_PATH/modules/scm/autocomplete/method_$prev"
     case "$prev" in
         DELETE|GET|PATCH|POST|PUT)
-            opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/autocomplete/scm/method_$prev" | sort -u)
+            opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/modules/scm/autocomplete/method_$prev" | sort -u)
             if [ -z "$opts" ] && [ "${cur:0-1}" != "/" ]
             then
                 cur="$cur/"
                 org="$org/"
-                opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/autocomplete/scm/method_$prev" | sort -u)
+                opts=$(grep -E "^${cur}[^/]+/?$" "$RESTSH_PATH/modules/scm/autocomplete/method_$prev" | sort -u)
             fi
             if [ -z "$opts" ]
             then
-                opts=$(grep -E "^${cur}[^/]+/[^/]+/?$" "$RESTSH_PATH/autocomplete/scm/method_$prev" | sort -u)
+                opts=$(grep -E "^${cur}[^/]+/[^/]+/?$" "$RESTSH_PATH/modules/scm/autocomplete/method_$prev" | sort -u)
             fi
             ;;
     esac

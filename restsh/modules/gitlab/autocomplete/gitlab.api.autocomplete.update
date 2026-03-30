@@ -70,8 +70,8 @@ METHODS=(DELETE GET PUT POST)
 # Remove old files
 for F in "${METHODS[@]}"
 do
-    rm -f "$RESTSH_PATH/autocomplete/gitlab/method_${F}"
-    rm -f "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
+    rm -f "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}"
+    rm -f "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp"
 done
 
 echo "Generating completion files"
@@ -81,16 +81,16 @@ do
     do
         case "$METHOD" in
             delete)
-                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/autocomplete/gitlab/method_DELETE.tmp"
+                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_DELETE.tmp"
             ;;
             get)
-                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/autocomplete/gitlab/method_GET.tmp"
+                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_GET.tmp"
             ;;
             put)
-                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/autocomplete/gitlab/method_PUT.tmp"
+                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_PUT.tmp"
             ;;
             post)
-                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/autocomplete/gitlab/method_POST.tmp"
+                echo "${GITLAB_API_PREFIX}${URI}" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_POST.tmp"
             ;;
         esac
     done < <($RESTSH_YQ -r ".paths.\"$URI\" | keys[]"  < "$OPENAPI_FILE" 2>/dev/null)
@@ -101,7 +101,7 @@ then
     echo "Adding additional URL's"
     while read -r METHOD URI
     do
-        printf "%s\n" "$URI" >> "$RESTSH_PATH/autocomplete/gitlab/method_${METHOD}.tmp"
+        printf "%s\n" "$URI" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_${METHOD}.tmp"
     done < "$RESTSH_PATH/autocomplete/gitlab/manual_uris.txt"
 fi
 
@@ -115,13 +115,13 @@ do
         for T in "${TOKEN[@]}"
         do
             P="$P$T"
-            printf "%s\n" "$P" >> "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp2"
+            printf "%s\n" "$P" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp2"
         done
-    done < "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
-    cat "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp2" >> "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
-    rm -f "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp2"
-    sort -u "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp" | sed '/^[[:space:]]*$/d' > "$RESTSH_PATH/autocomplete/gitlab/method_${F}"
-    rm -f "$RESTSH_PATH/autocomplete/gitlab/method_${F}.tmp"
+    done < "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp"
+    cat "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp2" >> "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp"
+    rm -f "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp2"
+    sort -u "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp" | sed '/^[[:space:]]*$/d' > "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}"
+    rm -f "$RESTSH_PATH/modules/gitlab/autocomplete/method_${F}.tmp"
 done
 
 echo "Generating help file"
