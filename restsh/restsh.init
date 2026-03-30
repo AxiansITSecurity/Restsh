@@ -117,13 +117,13 @@ fi
 # Include enabled modules by setting path and including functions
 for MODULE in "${RESTSH_MODULES[@]}"
 do
-    [ -d "$RESTSH_PATH/$MODULE/bin" ] && PATH="$PATH:$RESTSH_PATH/$MODULE/bin"
-    if [ -d "$RESTSH_PATH/$MODULE/lib" ]
+    [ -d "$RESTSH_PATH/modules/$MODULE/bin" ] && PATH="$PATH:$RESTSH_PATH/modules/$MODULE/bin"
+    if [ -d "$RESTSH_PATH/modules/$MODULE/lib" ]
     then
         while read -r LINE
         do
             . "$LINE"
-        done < <(find "$RESTSH_PATH/$MODULE/lib" -maxdepth 1 -type f ! -name .\*)
+        done < <(find "$RESTSH_PATH/modules/$MODULE/lib" -maxdepth 1 -type f ! -name .\*)
     fi
 done
 export PATH
