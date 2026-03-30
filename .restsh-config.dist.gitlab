@@ -41,6 +41,14 @@ RESTSH_MODULES=("aafw" "cert" "custom" "gitlab")
 [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="PRIVATE-TOKEN"
 [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"
 
+# Proxy settings
+# Restsh uses the system proxy settings (https_proxy and http_proxy environment variables)
+[ -n "${RESTSH_CURL_PROXY_INSECURE+x}" ] || RESTSH_CURL_PROXY_INSECURE="0"
+[ -n "${RESTSH_CURL_PROXY_AUTH+x}" ] || RESTSH_CURL_PROXY_AUTH="anonymous"
+#[ -n "${RESTSH_CURL_PROXY_AUTH+x}" ] || RESTSH_CURL_PROXY_AUTH="basic"
+#[ -n "${RESTSH_CURL_PROXY_USER+x}" ] || RESTSH_CURL_PROXY_USER=""
+#[ -n "${RESTSH_CURL_PROXY_PASS+x}" ] || RESTSH_CURL_PROXY_PASS=""
+
 # Set REST payload format
 #[ -n "${RESTSH_CONTENT+x}" ] || export RESTSH_CONTENT="application/json"
 

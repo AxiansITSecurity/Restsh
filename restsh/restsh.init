@@ -68,6 +68,19 @@ export RESTSH_CHUNK_SIZE
 [ -n "${RESTSH_HTTP_PRE_EXEC+x}" ] || RESTSH_HTTP_PRE_EXEC=""
 export RESTSH_HTTP_PRE_EXEC
 
+# Proxy defaults
+[ -n "${RESTSH_CURL_PROXY_INSECURE+x}" ] || RESTSH_CURL_PROXY_INSECURE="0"
+export RESTSH_CURL_PROXY_INSECURE
+[ -n "${RESTSH_CURL_PROXY_AUTH+x}" ] || RESTSH_CURL_PROXY_AUTH="anonymous"
+export RESTSH_CURL_PROXY_AUTH
+[ -n "${RESTSH_CURL_PROXY_USER+x}" ] || RESTSH_CURL_PROXY_USER=""
+export RESTSH_CURL_PROXY_USER
+[ -n "${RESTSH_CURL_PROXY_PASS+x}" ] || RESTSH_CURL_PROXY_PASS=""
+export RESTSH_CURL_PROXY_PASS
+
+# Extra curl options
+[ -n "${RESTSH_CURL_EXTRA_OPTIONS+x}" ] || RESTSH_CURL_EXTRA_OPTIONS=()
+
 # Include custom environment definitions
 if [ -n "${RESTSH_CUSTOM_ENV+x}" ] && [ -n "${RESTSH_CUSTOM_ENV}" ] && [ -s "${RESTSH_CUSTOM_ENV}" ]
 then
@@ -217,6 +230,33 @@ then
     fi
 fi
 
+# Decrypt proxy password
+if [ -n "${RESTSH_CURL_PROXY_PASS+x}" ] && [ "${RESTSH_CURL_PROXY_PASS:0:7}" = "AES256:" ]
+then
+    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    then
+        if [ -n "${RESTSH_INTERACTIVE+x}" ]
+        then
+            echo "Proxy password is encrypted."
+            RESTSH_SECRET=$(restsh.util.askpass Secret)
+            echo ""
+            if ! RESTSH_CURL_PROXY_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_CURL_PROXY_PASS:7}")
+            then
+                echo_err "Decryption of proxy password failed."
+                exit 1
+            fi
+        else
+            echo_err "Proxy password is encrypted, but secret for decryption is not set."
+            echo_err "Set it with: export RESTSH_SECRET=\"secret\"".
+            exit 1
+        fi
+    elif ! RESTSH_CURL_PROXY_PASS=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${RESTSH_CURL_PROXY_PASS:7}")
+    then
+        echo_err "Decryption of proxy password failed."
+        exit 1
+    fi
+fi
+
 # Vault Integration
 if [ -n "${RESTSH_PASS+x}" ] && [ "${RESTSH_PASS:0:6}" = "VAULT:" ]
 then
@@ -233,6 +273,15 @@ then
     then
         RESTSH_TOKEN_VALUE=$(vault.get "${RESTSH_TOKEN_VALUE:6}" "RESTSH_TOKEN_VALUE")
         export RESTSH_TOKEN_VALUE
+    fi
+fi
+
+if [ -n "${RESTSH_CURL_PROXY_PASS+x}" ] && [ "${RESTSH_CURL_PROXY_PASS:0:6}" = "VAULT:" ]
+then
+    if vault.login
+    then
+        RESTSH_CURL_PROXY_PASS=$(vault.get "${RESTSH_CURL_PROXY_PASS:6}" "RESTSH_CURL_PROXY_PASS")
+        export RESTSH_CURL_PROXY_PASS
     fi
 fi
 

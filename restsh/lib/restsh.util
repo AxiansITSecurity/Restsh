@@ -381,6 +381,18 @@ restsh.util.setcurloptions() {
         RESTSH_CURL_OPTS+=("-k")
     fi
 
+    # Proxy authentication
+    if [ "$RESTSH_CURL_PROXY_INSECURE" -eq 1 ]
+    then
+        RESTSH_CURL_OPTS+=("--proxy-insecure")
+    fi
+
+    case "$RESTSH_CURL_PROXY_AUTH" in
+        basic)
+            RESTSH_CURL_OPTS+=("--proxy-basic" "--proxy-user" "$RESTSH_CURL_PROXY_USER:$RESTSH_CURL_PROXY_PASS")
+        ;;
+    esac
+
     # Enable curl verbose mode
     if [ -n "${RESTSH_DEBUG+x}" ]
     then
@@ -401,6 +413,11 @@ restsh.util.setcurloptions() {
             RESTSH_CURL_OPTS+=("-n")
         ;;
     esac
+
+    if [ -n "${RESTSH_CURL_EXTRA_OPTIONS[*]}" ]
+    then
+        RESTSH_CURL_OPTS+=("${RESTSH_CURL_EXTRA_OPTIONS[@]}")
+    fi
 
     export RESTSH_CURL_OPTS
 }
