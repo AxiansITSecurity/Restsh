@@ -24,7 +24,7 @@ if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
     if [ "$F5_ENABLE_AUTOCOMPLETE" -eq 1 ]
     then
-        . "$RESTSH_PATH/autocomplete/f5/autocomplete.sh"
+        . "$RESTSH_PATH/modules/f5/autocomplete/autocomplete.sh"
     fi
 fi
 

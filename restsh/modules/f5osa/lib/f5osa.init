@@ -19,13 +19,14 @@ set -uo pipefail
 [ -n "${F5OSA_ENABLE_AUTOCOMPLETE+x}" ] || export F5OSA_ENABLE_AUTOCOMPLETE=0
 [ -n "${F5OSA_TOKEN_LIFETIME+x}" ] || export F5OSA_TOKEN_LIFETIME=60
 
-if [ -n "${RESTSH_INTERACTIVE+x}" ]
-then
-    if [ "$F5OSA_ENABLE_AUTOCOMPLETE" -eq 1 ]
-    then
-        . "$RESTSH_PATH/autocomplete/f5osa/autocomplete.sh"
-    fi
-fi
+# No autocomplete for F5OS-A currently available
+#if [ -n "${RESTSH_INTERACTIVE+x}" ]
+#then
+#    if [ "$F5OSA_ENABLE_AUTOCOMPLETE" -eq 1 ]
+#    then
+#        . "$RESTSH_PATH/modules/f5osa/autocomplete/autocomplete.sh"
+#    fi
+#fi
 
 # Prefix for the F5 REST API
 export F5OSA_API_PREFIX="/restconf"

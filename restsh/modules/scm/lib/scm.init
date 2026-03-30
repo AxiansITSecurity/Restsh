@@ -22,7 +22,7 @@ if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
     if [ "$SCM_ENABLE_AUTOCOMPLETE" -eq 1 ] && [ -s "$RESTSH_PATH/autocomplete/scm/openapi_help.txt" ]
     then
-        . "$RESTSH_PATH/autocomplete/scm/autocomplete.sh"
+        . "$RESTSH_PATH/modules/scm/autocomplete/autocomplete.sh"
     fi
 fi
 
