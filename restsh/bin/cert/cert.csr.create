@@ -102,6 +102,11 @@ subjectAltName = @alt_names
 [alt_names]
 EOL
 
+if [ ${#ALT_NAMES[@]} -eq 0 ]
+then
+    ALT_NAMES=("$CN")
+fi
+
 I=0
 for ALT_NAME in "${ALT_NAMES[@]}"
 do
