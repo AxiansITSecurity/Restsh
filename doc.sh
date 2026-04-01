@@ -112,7 +112,7 @@ restsh_help() {
             echo '```'
             "$FUNC" -h 2>&1 || true
             echo '```'
-        } > "docs/restsh/GeneralFunctions/$FUNC.md"
+        } > "$OUTDIR/GeneralFunctions/$FUNC.md"
     done
 }
 
