@@ -96,7 +96,25 @@ module_help "gitlab"
 module_help "scm"
 module_help "cert"
 module_help "aafw"
-module_help "restsh"
+
+restsh_help() {
+    # Print overview table
+    _restsh.help.restsh.cmds \
+        | perl -ne 'if (/^\s+(\S+)\s+(.*)$/) { print "| [$1]($1.md) | $2 |\n"; }'
+    # Print usage of each function
+    local FUNCS FUNC
+    FUNCS=$(_restsh.help.restsh.cmds | grep "restsh\." | awk '{print $1}')
+    for FUNC in $FUNCS
+    do
+        {
+            echo "# $FUNC"
+            echo ""
+            echo '```'
+            "$FUNC" -h 2>&1 || true
+            echo '```'
+        } > "docs/restsh/GeneralFunctions/$FUNC.md"
+    done
+}
 
 general_help() {
     local LIB=$1
@@ -142,6 +160,15 @@ EOL
     _restsh.help.parse.lib "$RESTSH_PATH/lib/restsh.util"
     _restsh.help.print | perl -ne 'if (/^\s+(\S+)\s+(.*)$/) { print "| [$1]($1.md) | $2 |\n"; }'
     unset CMDS
+
+    cat << EOL
+
+## Restsh Functions
+
+| Function | Description |
+| -------- | ----------- |
+EOL
+    restsh_help
 
     cat << EOL
 
