@@ -14,7 +14,7 @@ The environment variables are:
 - RESTSH_USER
 - RESTSH_PASS
 
-Your are now in a standard Bash shell with a custom environment. Type ``restsh.help`` to show all valid commands provided by Restsh and use ``exit`` to return your default environment.
+Your are now in a standard Bash shell with a custom environment. Type ``restsh.help`` to show all valid commands provided by Restsh and use ``exit`` to return to your default environment.
 
 - :doc:`General examples </restsh/EXAMPLES>`
 - :doc:`F5 examples </restsh/EXAMPLES.F5>`
