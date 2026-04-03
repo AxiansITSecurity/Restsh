@@ -29,7 +29,7 @@ vault.login() {
             echo "Usage: vault.login"
             echo ""
             echo "Used environment variables:"
-            echo "    VAULT_HOST: The HashiCorp Vault or OpenBao host."
+            echo "    VAULT_HOST or VAULT_ADDR: The HashiCorp Vault or OpenBao host."
             echo "    VAULT_AUTH_ROLE: User Role"
             echo "    VAULT_ID_TOKEN: JWT token used to login and fetch the Vault Token."
             echo "    VAULT_TOKEN: The Vault token used for authentication."
@@ -148,3 +148,10 @@ export -f vault.login
 export -f vault.login.jwt
 export -f vault.get
 export -f vault.logout
+
+# VAULT_ADDR is used by the vault cli.
+# Map it to VAULT_HOST that is used by Restsh.
+if [ -n "${VAULT_ADDR+x}" ]
+then
+    VAULT_HOST="$VAULT_ADDR"
+fi
