@@ -153,5 +153,5 @@ export -f vault.logout
 # Map it to VAULT_HOST that is used by Restsh.
 if [ -n "${VAULT_ADDR+x}" ]
 then
-    VAULT_HOST="$VAULT_ADDR"
+    export VAULT_HOST="$VAULT_ADDR"
 fi
