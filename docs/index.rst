@@ -4,7 +4,6 @@ Restsh
 .. toctree::
    :hidden:
 
-   Articles/index.rst
    Quickstart/index.rst
    Advanced/index.rst
    restsh/index.rst
