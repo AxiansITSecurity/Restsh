@@ -5,8 +5,8 @@ Restsh
    :hidden:
 
    FirstSteps/index.rst
-   Advanced/index.rst
    restsh/index.rst
+   Advanced/index.rst
    CHANGELOG.md
    LICENSE.md
 
