@@ -39,7 +39,7 @@ To use Axians Automation Framework specific functions you must configure below v
 # ART
 [ -n "${RESTSH_AAFW_ART+x}" ] || export RESTSH_AAFW_ART="${RESTSH_AAFW_GROUP}/art"
 # Default project settings
-[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/templates/aafw/project_settings_default.json"
+[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/modules/aafw/templates/project_settings_default.json"
 ```
 
 ## References
