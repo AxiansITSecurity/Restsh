@@ -4,9 +4,7 @@ Restsh is a shell environment to work with REST-API's on the command line. It is
 
 This framework includes [MO](https://github.com/tests-always-included/mo), a mustache template engine written in bash.
 
-Restsh is not a standalone shell. It sets only some environment variables and defines helper functions to access and parse REST-API's. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
-
-Restsh is one of the core components of the [Axians Automation Framework](https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf), which enables the automation of F5 environments using GitLab pipelines.
+Restsh is not a standalone shell. It transforms the Bash shell into a powerful commandline to access REST-API's and parse the responses. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
 
 ## Available modules
 
@@ -19,9 +17,9 @@ Restsh is one of the core components of the [Axians Automation Framework](https:
 | gitlab | GitLab |
 | scm | Sectigo Cert Manager |
 
-## Quickstart
+## First steps
 
-- [Quickstart](https://axiansitsecurity.github.io/Restsh/Quickstart/index.html)
+- [First steps](https://axiansitsecurity.github.io/Restsh/FirstSteps/index.html)
 
 ## Running interactively
 
@@ -107,11 +105,6 @@ export RESTSH_PATH="/path/to/restsh"
 . "$RESTSH_PATH/restsh.init"
 ```
 
-## Usage
-
-- [Examples](EXAMPLES.md)
-- [Examples for F5](EXAMPLES.F5.md)
-
 ### Enable modules
 
 Modules are enabled in the configuration file.
@@ -147,7 +140,7 @@ atuin import auto
 
 You can fork it and add your own scripts into the folder in `restsh/modules/custom`.
 
-- [DEVELOPING.md](DEVELOPING.md)
+- [DEVELOPING.md](https://axiansitsecurity.github.io/Restsh/Advanced/Developing.html)
 
 ## Documentation
 
@@ -155,4 +148,4 @@ You can build the documentation locally with the `doc.sh` script or you can read
 
 ## License
 
-Restsh is published under the [GPLv3+ license](LICENSE.md) in the hope that others will find it useful and make use of it.
+Restsh is published under the GPLv3+ license in the hope that others will find it useful and make use of it.

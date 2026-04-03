@@ -49,12 +49,9 @@ OUTDIR="$TMPDIR/docs/restsh"
 # Create Restsh doc from help
 
 cp -a docs "/$TMPDIR/"
-cp -v ./*.md "$OUTDIR"
-mv "$OUTDIR/README.md" "$OUTDIR/Usage.md"
-mv "$OUTDIR/README.F5.md" "$OUTDIR/UsageF5.md"
-mv "$OUTDIR/README.F5OSA.md" "$OUTDIR/UsageF5OSA.md"
-mv "$OUTDIR/README.gitlab.md" "$OUTDIR/UsageGitLab.md"
-mv "$OUTDIR/README.scm.md" "$OUTDIR/UsageSCM.md"
+cp -v CHANGELOG.md "$TMPDIR/docs/"
+cp -v LICENSE.md "$TMPDIR/docs/"
+cp -v README.md "$OUTDIR/Usage.md"
 
 export RESTSH_HOST=""
 export RESTSH_AUTH="anonymous"

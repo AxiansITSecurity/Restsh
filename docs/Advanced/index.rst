@@ -5,6 +5,7 @@ Advanced
    :maxdepth: 1
 
    Passwords.rst
+   Developing.md
 
 .. Hint::
 
