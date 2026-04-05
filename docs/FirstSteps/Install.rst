@@ -1,6 +1,18 @@
 Install
 =======
 
+Dependencies
+------------
+
+Restsh works only inside the Bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
+
+Further dependencies are:
+
+- curl >= v7.76.0
+- jq >= 1.7
+- openssl
+- whiptail (newt)
+
 Prepare your environment
 ------------------------
 

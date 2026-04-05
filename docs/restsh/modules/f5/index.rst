@@ -50,14 +50,16 @@ References
 Examples
 --------
 
-- [Usage examples](examples.md)
+- :doc:`Usage examples </restsh/modules/f5/Examples>`
 
 List of all functions
 ---------------------
 
+- :doc:`Overview of all functions </restsh/modules/f5/overview>`
+
 .. toctree::
    :titlesonly:
    :glob:
+   :hidden:
 
-   overview.md
    *

@@ -15,7 +15,7 @@ Authentication
 --------------
 
 You can use basic authentication with username and password to retrieve a token for further authentication.
-Restsh asks for username and password to retrieve the token. If you want to integrate restsh in a pipeline script you can simply set the environment variables `RESTSH_USER` and `RESTSH_PASS`.
+Restsh asks for username and password to retrieve the token. If you want to integrate restsh in a pipeline script you can simply set the environment variables ``RESTSH_USER`` and ``RESTSH_PASS``.
 
 .. code:: sh
 
@@ -32,9 +32,11 @@ References
 List of all functions
 ---------------------
 
+- :doc:`Overview of all functions </restsh/modules/f5osa/overview>`
+
 .. toctree::
    :titlesonly:
    :glob:
+   :hidden:
 
-   overview.md
    *

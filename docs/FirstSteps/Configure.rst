@@ -26,6 +26,9 @@ To create an configuration file for your GitLab instance:
 
     restsh.setup add gitlab lab gitlab.lab.lan
 
+Customize
+---------
+
 After initial creation of the configuration file you can adapt it to your needs. All configuration options are documented directly in the file.
 
 .. hint::

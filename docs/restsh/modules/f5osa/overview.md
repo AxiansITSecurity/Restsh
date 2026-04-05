@@ -1,3 +1,3 @@
 # Overview
 
-This is a placeholder file that is overwritten by `doc-restsh.sh`.
+This is a placeholder file that will be overwritten at documentation creation.

@@ -1,9 +1,6 @@
 GitLab Module
 =============
 
-Use Restsh with GitLab
-======================
-
 .. code:: sh
 
    RESTSH_MODULES=("cert" "custom" "gitlab")
@@ -21,10 +18,11 @@ You can use a private token for authentication. Set
 ``RESTSH_TOKEN_HEADER`` to ``PRIVATE-TOKEN`` and set the
 ``RESTSH_TOKEN_VALUE`` to your generated private token.
 
-.restsh-config for token based authentication
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. code:: sh
 
-``sh [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token" [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="PRIVATE-TOKEN" [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"``
+   [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
+   [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="PRIVATE-TOKEN"
+   [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"``
 
 Axians Automation Framework Integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -59,9 +57,11 @@ References
 List of all functions
 ---------------------
 
+- :doc:`Overview of all functions </restsh/modules/gitlab/overview>`
+
 .. toctree::
    :titlesonly:
    :glob:
+   :hidden:
 
-   overview.md
    *

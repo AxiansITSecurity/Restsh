@@ -1,9 +1,6 @@
 Sectigo Cert Manager Module
 ===========================
 
-Use Restsh with Sectigo Cert Manager
-====================================
-
 .. code:: sh
 
    RESTSH_MODULES=("cert" "custom" "scm")
@@ -52,8 +49,7 @@ To generate the encrypted string:
 References
 ----------
 
-- `Sectigo Cert Manager
-  API <https://www.sectigo.com/knowledge-base/detail/Sectigo-Certificate-Manager-SCM-REST-API/kA01N000000XDkE>`__
+- `Sectigo Cert Manager API <https://www.sectigo.com/knowledge-base/detail/Sectigo-Certificate-Manager-SCM-REST-API/kA01N000000XDkE>`__
 
 List of all functions
 ---------------------
@@ -61,6 +57,6 @@ List of all functions
 .. toctree::
    :titlesonly:
    :glob:
+   :hidden:
 
-   overview.md
    *

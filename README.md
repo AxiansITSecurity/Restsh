@@ -113,29 +113,6 @@ Modules are enabled in the configuration file.
 RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
 ```
 
-## Dependencies
-
-Restsh works only inside the bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
-
-Further dependencies are:
-
-- curl >= v7.76.0
-- jq >= 1.7
-- openssl
-- whiptail (newt)
-
-## Atuin
-
-Restsh supports the integration of [Atuin](https://atuin.sh/) for better shell history support.
-
-```sh
-# Install latest Atuin version from repository
-curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
-
-# Import shell history"
-atuin import auto
-```
-
 ## Customize
 
 You can fork it and add your own scripts into the folder in `restsh/modules/custom`.

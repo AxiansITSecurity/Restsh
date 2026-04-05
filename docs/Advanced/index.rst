@@ -3,10 +3,7 @@ Advanced
 
 .. toctree::
    :maxdepth: 1
+   :glob:
+   :titlesonly:
 
-   Passwords.rst
-   Developing.md
-
-.. Hint::
-
-   More to come - stay tuned!
+   *
