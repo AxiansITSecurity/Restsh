@@ -2,8 +2,6 @@
 
 Restsh is a shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
 
-This framework includes [MO](https://github.com/tests-always-included/mo), a mustache template engine written in bash.
-
 Restsh is not a standalone shell. It transforms the Bash shell into a powerful commandline to access REST-API's and parse the responses. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
 
 ## Available modules
@@ -24,3 +22,7 @@ You can build the documentation locally with the `doc.sh` script or you can read
 ## License
 
 Restsh is published under the [GPLv3+ license](LICENSE.md) in the hope that others will find it useful and make use of it.
+
+## Support
+
+This is the OpenSource and community supported version of Restsh. You can book enterprise-grade support from Axians IT Security GmbH. Simply write an email to <juergen.mang@sec.axians.de> to get in contact.
