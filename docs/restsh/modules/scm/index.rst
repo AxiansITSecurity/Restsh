@@ -59,4 +59,5 @@ List of all functions
    :glob:
    :hidden:
 
+   overview.md
    *

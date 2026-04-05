@@ -11,4 +11,5 @@ This functions are mainly shortcuts for otherwise manual GitLab configuration st
    :glob:
    :hidden:
 
+   overview.md
    *
