@@ -29,7 +29,11 @@ Use the image from GitHub
 Restsh configuration
 --------------------
 
-The Docker image uses the path ``/restsh-config`` for configuration files. You can optionally specify the full path of configuration file to use in the ``docker run`` command, e. g. ``docker run --rm -it -v "$RESTSH_CONFIG_PATH":/restsh-config --network host ghcr.io/axiansitsecurity/restsh/restsh /restsh-config/lab/.restsh-config-f5-lab-v17-1``.
+The Docker image uses the path ``/restsh-config`` for configuration files. You can optionally specify the full path of configuration file to use in the ``docker run`` command.
+
+.. code:: sh
+
+    docker run --rm -it -v "$RESTSH_CONFIG_PATH":/restsh-config --network host ghcr.io/axiansitsecurity/restsh/restsh /restsh-config/lab/.restsh-config-f5-lab-v17-1
 
 Create configuration files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -17,6 +17,5 @@ Import shell history
 --------------------
 
 .. code::
-    
-    atuin import auto
 
+    atuin import auto

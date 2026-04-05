@@ -8,7 +8,7 @@ The ``restsh.setup`` script can be used to create the initial configuration file
 .. code:: sh
 
     restsh.setup add <type> <folder> <host>
-        Type: One of f5, f5osa, gitlab
+        Type: One of f5, f5osa, gitlab, scm
         Folder: Subfolder in the config folder
         Host: Hostname of the REST endpoint
 
@@ -29,12 +29,17 @@ To create an configuration file for your GitLab instance:
 Pre-defined config files
 ------------------------
 
-| Prefix | Description |
-| ------ | ----------- |
-| `.restsh-config.dist.f5` | F5 BIG-IP TMOS |
-| `.restsh-config.dist.f5osa` | F5OS-A / rSeries |
-| `.restsh-config.dist.gitlab` | GitLab |
-| `.restsh-config.dist.scm` | Sectigo Cert Manager |
++------------------------------+----------------------+
+| Prefix                       | Description          |
++==============================+======================+
+| `.restsh-config.dist.f5`     | F5 BIG-IP TMOS       |
++------------------------------+----------------------+
+| `.restsh-config.dist.f5osa`  | F5OS-A / rSeries     |
++------------------------------+----------------------+
+| `.restsh-config.dist.gitlab` | GitLab               |
++------------------------------+----------------------+
+| `.restsh-config.dist.scm`    | Sectigo Cert Manager |
++------------------------------+----------------------+
 
 Customize
 ---------
