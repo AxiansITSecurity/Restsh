@@ -1,15 +1,15 @@
-GitLab Module
-=============
+GitLab
+======
 
 .. code:: sh
 
    RESTSH_MODULES=("cert" "custom" "gitlab")
 
-All functions for this module are prefixed with ``gitlab.``. The
-``aafw`` module provides functions for the Axians Automation Framework
-and are not useful in standalone setups.
+All functions for this module are prefixed with ``gitlab.``. The ``aafw`` module provides functions for the Axians Automation Framework and are not useful in standalone setups.
 
 Example configuration file: ``.restsh-config.dist.gitlab``
+
+This module provides autocompletion for the REST API. All endpoints are starting with ``/api/v4/``.
 
 Authentication
 --------------
@@ -27,9 +27,7 @@ You can use a private token for authentication. Set
 Axians Automation Framework Integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To use Axians Automation Framework specific functions you must configure
-below variables and enable the module ``aafw`` in addition to the
-``gitlab`` module.
+To use Axians Automation Framework specific functions you must configure below variables and enable the module ``aafw`` in addition to the ``gitlab`` module.
 
 .. code:: sh
 
@@ -57,11 +55,12 @@ References
 List of all functions
 ---------------------
 
-- :doc:`Overview of all functions </restsh/modules/gitlab/overview>`
+- :doc:`Overview of all functions </restsh/modules/gitlab/Overview>`
 
 .. toctree::
    :titlesonly:
    :glob:
    :hidden:
 
+   Overview.md
    *

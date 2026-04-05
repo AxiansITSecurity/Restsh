@@ -1,5 +1,5 @@
-F5OS-A Module
-=============
+F5OS-A
+======
 
 .. code:: sh
 
@@ -32,12 +32,12 @@ References
 List of all functions
 ---------------------
 
-- :doc:`Overview of all functions </restsh/modules/f5osa/overview>`
+- :doc:`Overview of all functions </restsh/modules/f5osa/Overview>`
 
 .. toctree::
    :titlesonly:
    :glob:
    :hidden:
 
-   overview.md
+   Overview.md
    *

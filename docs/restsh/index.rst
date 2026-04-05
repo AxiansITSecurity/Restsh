@@ -5,12 +5,38 @@ Usage
    :glob:
    :hidden:
 
-   Usage.md
    Examples.rst
    GeneralFunctions/index.rst
    modules/index.rst
 
-- :doc:`How to use Restsh <Usage>`
+First read the :doc:`First Steps chapter </FirstSteps/index>` to install and setup Restsh correctly.
+
+Interactive mode
+----------------
+
+1. Start Restsh: ``restsh``
+2. Select configuration to use
+3. The prompt changes to the Restsh prompt that shows your current working directory, git branch and the configured REST endpoint.
+
+In this mode you can use all the commands you know from your linux environment and additional special commands defined by Restsh and the loaded modules. Type ``restsh.help`` to get an overview of the configured environment and available commands.
+
+HTTP methods
+~~~~~~~~~~~~
+
+Restsh defines the special ``DELETE``, ``GET``, ``HEAD``, ``PATCH``, ``POST``, ``PUT`` commands that connects directly to the defined Restsh endpoint defined by ``RESTSH_HOST``.
+
+``GET /api/version`` translates to ``https://<rest endpoint>/api/version``. Restsh transparently handles the authentication for you.
+
+- :doc:`HTTP functions </restsh/GeneralFunctions/Overview>`
+
+.. hint::
+
+   Restsh provides autocompletion for F5, GitLab and SCM REST API endpoints. Simply start typing and press ``TAB`` for completion, e. g. ``GET /mgmt/tm/``.
+
+Scripted mode
+-------------
+
+- :doc:`Scripting </Advanced/Scripting>`
 
 Functions
 ---------

@@ -14,7 +14,7 @@ Restsh is a lightweight Bash-based shell environment for working with REST APIs 
 
 Restsh is a core component of the `Axians Automation Framework <https://www.axians.de/app/uploads/sites/72/2025/10/Axians-Automation-Framework_web.pdf>`_, enabling automated management of F5 environments via GitLab CI/CD pipelines.
 
-Restsh does not replace your shell. Instead it exports a small set of environment variables and provides focused helper functions to call and parse REST APIs. Combine the power of Bash, curl, jq and Mustache templates to build reliable, repeatable workflows and automation.
+Restsh does not replace your shell. It transforms the Bash shell into a powerful commandline to access REST-API's and parse the responses. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
 
 Restsh is published under the :doc:`GPLv3+ license <LICENSE>` in the hope that others will find it useful and make use of it.
 

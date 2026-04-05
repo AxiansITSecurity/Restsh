@@ -117,3 +117,5 @@ Your ``.bashsrc`` should now have entries like:
     alias restsh.setup="/home/juergen/git/Restsh/restsh/restsh.setup"
 
 Re-open the terminal or run ``. ~/.bashrc``.
+
+The `RESTSH_CONFIG_PATH` environment variable defines the folder for configuration files. Subfolders are supported.

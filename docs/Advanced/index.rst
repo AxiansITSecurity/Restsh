@@ -7,3 +7,4 @@ Advanced
    :titlesonly:
 
    *
+   Templating/index

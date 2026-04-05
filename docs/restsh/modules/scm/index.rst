@@ -1,5 +1,5 @@
-Sectigo Cert Manager Module
-===========================
+Sectigo Cert Manager
+====================
 
 .. code:: sh
 
@@ -8,6 +8,8 @@ Sectigo Cert Manager Module
 All functions for this module are prefixed with ``scm.``.
 
 Example configuration file: ``.restsh-config.dist.scm``
+
+This module provides autocompletion for the REST API. All endpoints are starting with ``/api/``.
 
 Authentication
 --------------
@@ -28,23 +30,21 @@ Type ``scm.auth.login`` to retrieve a bearer token.
 Client Secret encryption
 ------------------------
 
-You can store the SCM_SECRET AES256 encrypted in the configuration file.
+You can store the ``SCM_SECRET`` AES256 encrypted in the configuration file.
 
 To generate the encrypted string:
 
 - Start restsh
 
-- Create the encrypted SCM_SECRET string:
+- Create the encrypted ``SCM_SECRET`` string:
 
   .. code:: sh
 
      restsh.util.encrypt
 
-- Exit restsh and define the SCM_SECRET variable as
-  ``<output of above command>``, beginning with AES256:.
+- Exit restsh and define the SCM_SECRET variable as ``<output of above command>``, beginning with AES256:.
 
-- In interactive mode, restsh asks for the secret if it is not defined
-  in RESTSH_SECRET. In script mode it terminates with an error.
+- In interactive mode, restsh asks for the secret if it is not defined in ``RESTSH_SECRET``. In script mode it terminates with an error.
 
 References
 ----------
@@ -59,5 +59,5 @@ List of all functions
    :glob:
    :hidden:
 
-   overview.md
+   Overview.md
    *

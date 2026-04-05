@@ -1,5 +1,5 @@
-F5 Module
-=========
+F5 TMOS
+=======
 
 .. code:: sh
 
@@ -8,6 +8,8 @@ F5 Module
 All functions for this module are prefixed with ``f5.``.
 
 Example configuration file: ``.restsh-config.dist.f5``
+
+This module provides autocompletion for the REST API. All endpoints are starting with ``/mgmt/``.
 
 Authentication
 --------------
@@ -55,12 +57,13 @@ Examples
 List of all functions
 ---------------------
 
-- :doc:`Overview of all functions </restsh/modules/f5/overview>`
+- :doc:`Overview of all functions </restsh/modules/f5/Overview>`
 
 .. toctree::
    :titlesonly:
    :glob:
    :hidden:
 
-   overview.md
+   Overview.md
+   Examples.rst
    *

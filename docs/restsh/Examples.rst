@@ -1,5 +1,5 @@
-Usage examples
-==============
+Examples
+========
 
 Show help
 ---------

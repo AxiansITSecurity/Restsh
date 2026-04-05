@@ -1,5 +1,5 @@
-Usage examples for F5
-=====================
+Examples
+========
 
 Get all virtual servers
 -----------------------

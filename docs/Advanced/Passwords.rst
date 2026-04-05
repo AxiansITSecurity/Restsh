@@ -41,15 +41,10 @@ Workflow
 ~~~~~~~~
 
 - Start Restsh
-- Create the encrypted password string:
-
-    ```sh
-    restsh.util.encrypt
-    ```
-
-- Exit Restsh and define the `RESTSH_PASS` variable as `<output of above command>`, beginning with `AES256:`.
-- In interactive mode, Restsh asks for the secret if it is not defined in `RESTSH_SECRET`. In script mode it terminates with an error.
-- As an alternative you can set `RESTSH_SECRET_FILE` to a file to read the `RESTSH_SECRET` from.
+- Create the encrypted password string: ``restsh.util.encrypt``
+- Exit Restsh and define the ``RESTSH_PASS`` variable as ``<output of above command>``, beginning with ``AES256:``.
+- In interactive mode, Restsh asks for the secret if it is not defined in ``RESTSH_SECRET``. In script mode it terminates with an error.
+- As an alternative you can set ``RESTSH_SECRET_FILE`` to a file to read the ``RESTSH_SECRET`` from.
 
 .. Hint::
 

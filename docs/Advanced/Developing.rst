@@ -1,4 +1,4 @@
-Developing restsh functions
+Developing Restsh functions
 ===========================
 
 You can place custom scripts in the ``restsh/modules/custom/bin`` or ``restsh/modules/custom/lib`` folders.
