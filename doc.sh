@@ -30,13 +30,13 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+if [ "$OPTION" = "invalid" ]
 then
     usage
 fi
 
 ACTION=$1
-DOC_DEST=$2
+[ $# -eq 2 ] && DOC_DEST=$2
 
 if [ -z "$TMPDIR"]
 then
@@ -225,12 +225,17 @@ EOL
 
 python3 -m venv "$TMPDIR/python-venv/"
 $TMPDIR/python-venv/bin/python3 -m pip install --upgrade pip
-$TMPDIR/python-venv/bin/pip install sphinx sphinx-book-theme sphinx-copybutton myst-parser
+$TMPDIR/python-venv/bin/pip install sphinx sphinx-book-theme sphinx-copybutton myst-parser sphinx-lint
 case "$ACTION" in
     build)
+        [ $# -eq 2 ] || usage
         $TMPDIR/python-venv/bin/sphinx-build -M html "$TMPDIR/docs" "$DOC_DEST"
         ;;
+    lint)
+        $TMPDIR/python-venv/bin/sphinx-lint "$TMPDIR/docs"
+        ;;
     serve)
+        [ $# -eq 2 ] || usage
         $TMPDIR/python-venv/bin/pip install sphinx-autobuild
         $TMPDIR/python-venv/bin/sphinx-autobuild -M html "$TMPDIR/docs" "$DOC_DEST"
         ;;
