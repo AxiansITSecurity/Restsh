@@ -3,6 +3,8 @@ Docker
 
 You can create your own Docker image or you can use the image from `GitHub container registry <https://github.com/orgs/AxiansITSecurity/packages?repo_name=Restsh>`_.
 
+Set the environment variable ``RESTSH_CONFIG_PATH`` to an empty folder to store the configuration files.
+
 Create and use your own image
 -----------------------------
 
@@ -36,4 +38,4 @@ You must overwrite the default entrypoint.
 
 .. code:: sh
 
-    docker run --rm -it -v "$RESTSH_CONFIG_PATH":/restsh-config --network host --entrypoint /restsh/restsh.setup ghcr.io/axiansitsecurity/restsh/restsh
+    docker run --rm -it -v "$RESTSH_CONFIG_PATH":/restsh-config --network host --entrypoint /restsh/restsh/restsh.setup ghcr.io/axiansitsecurity/restsh/restsh [options...]

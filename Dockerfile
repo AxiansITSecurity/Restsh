@@ -22,7 +22,7 @@ apt-get install -y --no-install-recommends \
 rm -rf /var/lib/apt/lists/*
 EOF
 
-COPY ./restsh /restsh
+COPY ./ /restsh
 ENV RESTSH_CONFIG_PATH=/restsh-config
 ENV LANG=C.UTF-8
-ENTRYPOINT ["/restsh/restsh.start"]
+ENTRYPOINT ["/restsh/restsh/restsh.start"]
