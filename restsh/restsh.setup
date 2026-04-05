@@ -85,7 +85,7 @@ restsh.setup.add() {
     DIST_CONFIG=$(realpath "${RESTSH_PATH}/../.restsh-config.dist.${RESTSH_TYPE}")
     if [ ! -f "$DIST_CONFIG" ]
     then
-        echo "Invalid type."
+        echo "Invalid type: \"$RESTSH_TYPE\""
         restsh.setup.usage
     fi
 
@@ -100,8 +100,7 @@ restsh.setup.add() {
         echo "Configuration already exists."
         return 1
     fi
-    sed -e "s/<restsh-endpoint>/${RESTSH_HOST}/" \
-        "$DIST_CONFIG" > "$CONFIG_FILE"
+    sed -e "s/<restsh-endpoint>/${RESTSH_HOST}/" "$DIST_CONFIG" > "$CONFIG_FILE"
     echo "Configuration file ${CONFIG_FILE} created."
     return 0
 }
