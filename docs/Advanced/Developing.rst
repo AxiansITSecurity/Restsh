@@ -28,7 +28,7 @@ Use the following header for each script file:
 
    if [ -z "${RESTSH_PATH+x}" ]
    then
-       echo "Script must be run in the restsh environment." >&2
+       echo "Script must be run in the restsh environment." 1>&2
        exit 1
    fi
 
@@ -83,5 +83,6 @@ Some further hints
 
 - The header enables strict error checking. Handle each command that can fail and return an appropriated error code: ``0`` for success, else ``1``
 - Use ``echo_err`` or ``echo_warn`` to print errors and warnings to STDERR.
+- Use ``echo_verbose`` to print verbose messages. They are only printed if ``RESTSH_VERBOSE`` is set to ``1``.
 - Provide usage information for all functions.
 - Check your functions with `shellcheck <https://github.com/koalaman/shellcheck>`__, the ``lint.sh`` script does it for you.

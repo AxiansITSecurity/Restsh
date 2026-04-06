@@ -1,14 +1,14 @@
 Docker
 ======
 
-You can create your own Docker image or you can use the image from `GitHub container registry <https://github.com/orgs/AxiansITSecurity/packages?repo_name=Restsh>`_.
+You can create your own Docker image or you can use the image from `GitHub container registry <https://github.com/orgs/AxiansITSecurity/packages?repo_name=Restsh>`__.
 
 Set the environment variable ``RESTSH_CONFIG_PATH`` to an empty folder to store the configuration files.
 
 Create and use your own image
 -----------------------------
 
-There is a ``Dockerfile`` in the root of the Restsh repository and a helper script ``docker.sh``
+There is a ``Dockerfile`` in the root of the Restsh repository and a helper script ``docker.sh``.
 
 .. code:: sh
 
@@ -16,7 +16,6 @@ There is a ``Dockerfile`` in the root of the Restsh repository and a helper scri
     cd restsh
     ./docker.sh build
     ./docker.sh run
-
 
 Use the image from GitHub
 -------------------------

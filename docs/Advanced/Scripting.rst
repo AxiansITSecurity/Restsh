@@ -1,7 +1,7 @@
 Scripting
 =========
 
-Restsh can be integrated into scripts. Simply export the RESTSH_PATH and source the ``restsh.init`` file.
+Restsh can be integrated into scripts. Simply export the ``RESTSH_PATH`` and source the ``restsh.init`` file.
 
 .. code:: sh
 
@@ -9,7 +9,7 @@ Restsh can be integrated into scripts. Simply export the RESTSH_PATH and source 
     #export RESTSH_CONFIG="custom-config"
     . "$RESTSH_PATH/restsh.init"
 
-In this non-interactive mode Restsh does not prompt for passwords and fails instead.
+In this non-interactive mode Restsh does not prompt for credentials and fails instead. Set the credentials in the configuration file or as environment variables.
 
 CI/CD pipelines
 ---------------

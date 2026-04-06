@@ -56,9 +56,9 @@ HashiCorp Vault
 Using HashiCorp Vault or OpenBao is the best way to store passwords and secrets. Restsh supports the login with an JWT token and fetching a key value.
 
 1. Set VAULT_HOST or VAULT_ADDR and VAULT_AUTH_ROLE
-2. Set VAULT_ID_TOKEN and call ``vault.login`` or set the ``VAULT_TOKEN`` directly if you have a already a valid token.
+2. Set VAULT_ID_TOKEN and call ``vault.login`` or set the ``VAULT_TOKEN`` directly if you have already a valid token.
 3. Use ``vault.get`` to fetch a key value.
 
 .. Hint::
 
-    Set the value of a variable to ``VAULT:<path>`` to reference a value in Vault.
+    Set the value of a variable to ``VAULT:<path>`` to reference a value in Vault. The functions ``restsh.util.var.decrypt`` and ``restsh.util.setvar`` can be used to resolve the variable to the real value.

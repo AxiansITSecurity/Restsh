@@ -12,15 +12,15 @@ The ``restsh.setup`` script can be used to create the initial configuration file
         Folder: Subfolder in the config folder
         Host: Hostname of the REST endpoint
 
-As an alternative you can copy one of the ``.restsh-config.dist`` files in your ``.restsh-config`` folder. The filename must always start with ``.resth-config-``. All the configuration options are documented directly in this files.
+As an alternative you can copy one of the ``.restsh-config.dist`` files in the folder defined by the ``RESTSH_CONFIG_PATH`` environment variable (default is ``${HOME}/.restsh-config``). The filename must always start with ``.restsh-config-``. All the configuration options are documented directly in this files.
 
-To create an configuration file for your first F5 BIG-IP:
+To create a configuration file for your first F5 BIG-IP:
 
 .. code:: sh
 
     restsh.setup add f5 lab f5-lab-v17-1.lab.lan
 
-To create an configuration file for your GitLab instance:
+To create a configuration file for your GitLab instance:
 
 .. code:: sh
 
@@ -29,17 +29,17 @@ To create an configuration file for your GitLab instance:
 Pre-defined config files
 ------------------------
 
-+------------------------------+----------------------+
-| Prefix                       | Description          |
-+==============================+======================+
-| `.restsh-config.dist.f5`     | F5 BIG-IP TMOS       |
-+------------------------------+----------------------+
-| `.restsh-config.dist.f5osa`  | F5OS-A / rSeries     |
-+------------------------------+----------------------+
-| `.restsh-config.dist.gitlab` | GitLab               |
-+------------------------------+----------------------+
-| `.restsh-config.dist.scm`    | Sectigo Cert Manager |
-+------------------------------+----------------------+
++--------------------------------+----------------------+
+| Prefix                         | Description          |
++================================+======================+
+| ``.restsh-config.dist.f5``     | F5 BIG-IP TMOS       |
++--------------------------------+----------------------+
+| ``.restsh-config.dist.f5osa``  | F5OS-A / rSeries     |
++--------------------------------+----------------------+
+| ``.restsh-config.dist.gitlab`` | GitLab               |
++--------------------------------+----------------------+
+| ``.restsh-config.dist.scm``    | Sectigo Cert Manager |
++--------------------------------+----------------------+
 
 Customize
 ---------
@@ -67,12 +67,12 @@ Modules are enabled by setting the ``RESTSH_MODULES`` array.
 Certificate checking
 ~~~~~~~~~~~~~~~~~~~~
 
-Restsh enables uses curl to communicate with the REST-APIs. Certificate checking is enabled in all default configurations. If you encounter certificate related errors you should add the signing certificate to your system trust store. Disabling certificate checking is NOT recommended, but you can set `RESTSH_CURL_INSECURE=1` in the configuration file to disable it.
+Restsh enables uses curl to communicate with the REST-APIs. Certificate checking is enabled in all default configurations. If you encounter certificate related errors you should add the signing certificate to your system trust store. Disabling certificate checking is NOT recommended, but you can set ``RESTSH_CURL_INSECURE=1`` in the configuration file to disable it.
 
 Proxy
 ~~~~~
 
-The easiest thing to do is not to use a proxy and allow direct connections. Restsh uses the system proxy settings (https_proxy and http_proxy environment variables) and supports basic authentication for the proxy. Simply set following variables in the configuration file:
+The easiest thing to do is not to use a proxy and allow direct connections. Restsh uses the system proxy settings (``https_proxy`` and ``http_proxy`` environment variables) and supports basic authentication for the proxy. Simply set following variables in the configuration file:
 
 .. code:: sh
 
@@ -93,5 +93,8 @@ Print all executed commands and enables verbose mode of curl.
 
 .. code:: sh
 
+    # Enable debug mode
     export RESTSH_DEBUG=1
-    restsh/restsh.start
+
+    # Disable debug mode
+    unset RESTSH_DEBUG

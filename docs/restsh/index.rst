@@ -9,7 +9,7 @@ Usage
    GeneralFunctions/index.rst
    modules/index.rst
 
-First read the :doc:`First Steps chapter </FirstSteps/index>` to install and setup Restsh correctly.
+First read and follow the :doc:`First Steps chapter </FirstSteps/index>` to install and setup Restsh correctly.
 
 Interactive mode
 ----------------
