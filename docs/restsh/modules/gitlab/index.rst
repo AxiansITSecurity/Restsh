@@ -3,7 +3,7 @@ GitLab
 
 .. code:: sh
 
-   RESTSH_MODULES=("cert" "custom" "gitlab")
+   RESTSH_MODULES=("cert" "custom" "gitlab" "aafw")
 
 All functions for this module are prefixed with ``gitlab.``. The ``aafw`` module provides functions for the Axians Automation Framework and are not useful in standalone setups.
 
@@ -14,18 +14,18 @@ This module provides autocompletion for the REST API. All endpoints are starting
 Authentication
 --------------
 
-You can use a private token for authentication. Set
-``RESTSH_TOKEN_HEADER`` to ``PRIVATE-TOKEN`` and set the
-``RESTSH_TOKEN_VALUE`` to your generated private token.
+You can use a private token for authentication. Set ``RESTSH_TOKEN_HEADER`` to ``PRIVATE-TOKEN`` and set the ``RESTSH_TOKEN_VALUE`` to your generated private token.
+
+See :doc:`Passwords and Secrets </Advanced/Passwords>` for storing the credentials encrypted.
 
 .. code:: sh
 
    [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
    [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="PRIVATE-TOKEN"
-   [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"``
+   [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"
 
 Axians Automation Framework Integration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------------------
 
 To use Axians Automation Framework specific functions you must configure below variables and enable the module ``aafw`` in addition to the ``gitlab`` module.
 
@@ -52,6 +52,11 @@ References
 
 - `GitLab API <https://docs.gitlab.com/ee/api/rest/>`__
 
+Examples
+--------
+
+- :doc:`Usage examples </restsh/modules/gitlab/Examples>`
+
 List of all functions
 ---------------------
 
@@ -63,4 +68,5 @@ List of all functions
    :hidden:
 
    Overview.md
+   Examples.rst
    *

@@ -15,14 +15,17 @@ Authentication
 --------------
 
 You can use basic authentication with username and password to retrieve a token for further authentication.
-Restsh asks for username and password to retrieve the token. If you want to integrate restsh in a pipeline script you can simply set the environment variables ``RESTSH_USER`` and ``RESTSH_PASS``.
+
+See :doc:`Passwords and Secrets </Advanced/Passwords>` for storing the credentials encrypted.
 
 .. code:: sh
 
    [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
    [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-Auth-Token"
+   [ -n "${RESTSH_USER+x}" ] || export RESTSH_USER="<user>"
+   [ -n "${RESTSH_PASS+x}" ] || export RESTSH_PASS="<password>"
 
-Call ``f5osa.auth.token.get`` to retrieve the token. It uses the provided username and password to retrieve the token and sets the ``RESTSH_TOKEN_VALUE`` environment variable.
+Call ``f5osa.auth.token.get`` to retrieve the token. It uses the provided username and password to retrieve the token and sets the ``RESTSH_TOKEN_VALUE`` environment variable. The initial token is retrieved on startup and renewal is also managed by Restsh.
 
 References
 ----------

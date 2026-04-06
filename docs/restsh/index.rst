@@ -14,16 +14,17 @@ First read the :doc:`First Steps chapter </FirstSteps/index>` to install and set
 Interactive mode
 ----------------
 
-1. Start Restsh: ``restsh``
-2. Select configuration to use
-3. The prompt changes to the Restsh prompt that shows your current working directory, git branch and the configured REST endpoint.
+#. Start Restsh: ``restsh``
+#. Select configuration to use.
+#. Restsh prompts for credentials if not defined in the configuration file.
+#. The prompt changes to the Restsh prompt that shows your current working directory, git branch and the configured REST endpoint.
 
 In this mode you can use all the commands you know from your linux environment and additional special commands defined by Restsh and the loaded modules. Type ``restsh.help`` to get an overview of the configured environment and available commands.
 
 HTTP methods
 ~~~~~~~~~~~~
 
-Restsh defines the special ``DELETE``, ``GET``, ``HEAD``, ``PATCH``, ``POST``, ``PUT`` commands that connects directly to the defined Restsh endpoint defined by ``RESTSH_HOST``.
+Restsh defines the special ``DELETE``, ``GET``, ``HEAD``, ``PATCH``, ``POST``, ``PUT`` commands that connects directly to the endpoint defined by ``RESTSH_HOST``.
 
 ``GET /api/version`` translates to ``https://<rest endpoint>/api/version``. Restsh transparently handles the authentication for you.
 
