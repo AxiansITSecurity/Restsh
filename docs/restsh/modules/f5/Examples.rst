@@ -10,7 +10,7 @@ Get all virtual servers
    # or
    f5.ltm.vs.list
 
-Get details of a virtual servers
+Get details of a virtual server
 --------------------------------
 
 .. code:: sh
@@ -35,7 +35,7 @@ Attach a log profile to a list of virtual servers
        PATCH "/mgmt/tm/ltm/virtual/$VS" < $RESTSH_TMP/log-profile.json
    done < VIRTUAL_SERVERS.array
 
-Change enforcement mode of an asm policy
+Change enforcement mode of an ASM policy
 ----------------------------------------
 
 - Policy: /Common/test-policy
