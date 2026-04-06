@@ -23,11 +23,11 @@ then
 fi
 
 # Get options
-VERBOSE=0
+RESTSH_VERBOSE=0
 while getopts ':v' OPTION
 do
     case "$OPTION" in
-        v) VERBOSE=1 ;;
+        v) RESTSH_VERBOSE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -54,7 +54,7 @@ fi
 # Signature list for verbose mode
 print_detail() {
     local COUNT=$1
-    if [ "$VERBOSE" -eq 1 ] && [ "$COUNT" -gt 0 ]
+    if [ "$RESTSH_VERBOSE" -eq 1 ] && [ "$COUNT" -gt 0 ]
     then
         echo "$SIG_STAGING"
     fi

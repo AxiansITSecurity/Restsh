@@ -18,9 +18,9 @@ test.restsh.util.echo_verbose() {
     echo_verbose -h > /dev/null 2>&1 || true
     # Test
     echo_verbose "test"
-    export VERBOSE=1
+    export RESTSH_VERBOSE=1
     echo_verbose "test"
-    unset VERBOSE
+    unset RESTSH_VERBOSE
 }
 
 test.restsh.util.echo_ok() {

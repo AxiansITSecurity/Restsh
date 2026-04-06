@@ -67,6 +67,8 @@ export RESTSH_CONTENT
 export RESTSH_CHUNK_SIZE
 [ -n "${RESTSH_HTTP_PRE_EXEC+x}" ] || RESTSH_HTTP_PRE_EXEC=""
 export RESTSH_HTTP_PRE_EXEC
+[ -n "${RESTSH_VERBOSE+x}" ] || RESTSH_VERBOSE=0
+export RESTSH_VERBOSE
 
 # Proxy defaults
 [ -n "${RESTSH_CURL_PROXY_INSECURE+x}" ] || RESTSH_CURL_PROXY_INSECURE="0"
@@ -311,20 +313,20 @@ PROMPT_COMMAND=restsh.init.prompt_command
 # Interactive mode
 if [ -n "${RESTSH_INTERACTIVE+x}" ]
 then
-    echo -e "\tConfig:  ${RESTSH_CONFIG}"
-    echo -e "\tHost:    ${RESTSH_URL}"
+    echo "    Config:  ${RESTSH_CONFIG}"
+    echo "    Host:    ${RESTSH_URL}"
     case "$RESTSH_AUTH" in
         basic)
-            echo -e "\tUser:    $RESTSH_USER"
+            echo "    User:    $RESTSH_USER"
             ;;
         token)
-            echo -e "\tAuth:    token"
+            echo "    Auth:    token"
             ;;
         netrc)
-            echo -e "\tUser:    from .netrc"
+            echo "    User:    from .netrc"
             ;;
         *)
-            echo -e "\tAuth:    anonymous"
+            echo "    Auth:    anonymous"
             ;;
     esac
     echo "    Modules: ${RESTSH_MODULES[*]}"

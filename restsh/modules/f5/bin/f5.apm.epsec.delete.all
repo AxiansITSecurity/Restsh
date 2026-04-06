@@ -23,11 +23,11 @@ then
 fi
 
 # Get options
-VERBOSE=0
+RESTSH_VERBOSE=0
 while getopts ':v' OPTION
 do
     case "$OPTION" in
-        v) export VERBOSE=1 ;;
+        v) export RESTSH_VERBOSE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
