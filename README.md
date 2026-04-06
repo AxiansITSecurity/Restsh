@@ -1,4 +1,4 @@
-# Use Restsh
+# Restsh
 
 Restsh is a shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
 
