@@ -2,7 +2,11 @@
 
 Restsh is a shell environment to work with REST-API's on the command line. It is designed to be used interactively, in scripts or in CI/CD pipelines.
 
-Restsh is not a standalone shell. It transforms the Bash shell into a powerful commandline to access REST-API's and parse the responses. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
+Restsh does not replace your shell. It transforms the Bash shell into a powerful commandline to access REST-API's and parse the responses. You can combine the power of bash, curl, jq and mustache to interact with REST-API's.
+
+Restsh provides fast, direct, scriptable REST API operations without overhead. With Restsh, tasks that would otherwise require writing a Terraform module or an Ansible role can often be completed in minutes and just a few lines of script.
+
+It offers hundreds of API wrapper scripts to simplify the use of REST APIs. If no script is available, the API can be accessed directly using GET, DELETE, PATCH, POST, etc. It is also easy to write your own API wrapper scripts.
 
 ## Available modules
 
