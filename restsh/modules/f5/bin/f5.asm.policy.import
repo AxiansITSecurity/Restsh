@@ -61,6 +61,7 @@ then
     echo_ok "Uploaded $FILENAME to /ts/var/rest/"
 else
     echo_err "Failure uploading $FILENAME"
+    exit 1
 fi
 
 # Optionally upload the openapi file
@@ -73,6 +74,7 @@ then
         echo_ok "Uploaded $OPENAPI_FILE to /ts/var/rest/"
     else
         echo_err "Failure uploading $FILENAME"
+        exit 1
     fi
 fi
 
