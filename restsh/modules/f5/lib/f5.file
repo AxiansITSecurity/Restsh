@@ -8,19 +8,19 @@
 
 # Shortdesc: General file management functions for F5.
 # Desc:
-# General file management functions for F5
-# https://my.f5.com/manage/s/article/K41763344
-# https://community.f5.com/t5/technical-articles/demystifying-icontrol-rest-part-5-transferring-files/ta-p/286689
-#
 # Endpoints:
-# Description           Method  URI                                           File Location
+# Description           Method  URI (endpoint)                                Path on the F5
 # Download a File       GET     /mgmt/cm/autodeploy/software-image-downloads  /shared/images/
-# Upload an Image File 	POST    /mgmt/cm/autodeploy/software-image-uploads    /shared/images/
+# Upload an Image File  POST    /mgmt/cm/autodeploy/software-image-uploads    /shared/images/
 # Upload a File         POST    /mgmt/shared/file-transfer/uploads            /var/config/rest/downloads/
 # Download a QKView     GET     /mgmt/cm/autodeploy/qkview-downloads          /var/tmp/qkviews
 # Download a UCS        GET     /mgmt/shared/file-transfer/ucs-downloads      /var/local/ucs/
 # Upload ASM Policy     POST    /mgmt/tm/asm/file-transfer/uploads            /var/ts/var/rest/
 # Download ASM Policy   GET     /mgmt/tm/asm/file-transfer/downloads          /var/ts/var/rest/
+#
+# References:
+#     - https://my.f5.com/manage/s/article/K41763344
+#     - https://community.f5.com/t5/technical-articles/demystifying-icontrol-rest-part-5-transferring-files/ta-p/286689
 
 # Strict error handling
 set -uo pipefail
@@ -32,8 +32,12 @@ set -uo pipefail
 f5.file.upload() {
     if [ "$#" -ne 2 ] || [ "$1" = "-h" ]
     then
-        echo "Uploads a file to the F5." 1>&2
-        echo "Usage: f5.file.upload <upload endpoint> <file>" 1>&2
+        {
+            echo "Uploads a file to the F5."
+            echo "Usage: f5.file.upload <upload endpoint> <file>"
+            echo ""
+            _restsh.help.desc.get $RESTSH_PATH/modules/f5/lib/f5.file
+        } 1>&2
         return 2
     fi
     local ENDPOINT=$1
@@ -58,8 +62,12 @@ f5.file.upload() {
 f5.file.download() {
     if [ "$#" -ne 4 ] || [ "$1" = "-h" ]
     then
-        echo "Downloads a file from the F5." 1>&2
-        echo "Usage: f5.file.download <download endpoint> <file> <size> <local file>" 1>&2
+        {
+            echo "Downloads a file from the F5."
+            echo "Usage: f5.file.download <download endpoint> <file> <size> <local file>"
+            echo ""
+            _restsh.help.desc.get $RESTSH_PATH/modules/f5/lib/f5.file
+        } 1>&2
         return 2
     fi
     local ENDPOINT=$1
@@ -84,8 +92,10 @@ f5.file.download() {
 f5.file.remove() {
     if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
-        echo "Deletes a file from the F5." 1>&2
-        echo "Usage: f5.file.remove <file path>" 1>&2
+        {
+            echo "Deletes a file from the F5."
+            echo "Usage: f5.file.remove <file path>"
+        } 1>&2
         return 2
     fi
     local RM_FILE=$1
@@ -108,8 +118,10 @@ f5.file.remove() {
 f5.file.list() {
     if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
-        echo "Lists a file or directory on the F5." 1>&2
-        echo "Usage: f5.file.list <path>" 1>&2
+        {
+            echo "Lists a file or directory on the F5."
+            echo "Usage: f5.file.list <path>"
+        } 1>&2
         return 2
     fi
     local LIST_FILE=$1
@@ -127,8 +139,10 @@ f5.file.list() {
 f5.file.size() {
     if [ -z "${1+x}" ] || [ "$1" = "-h" ]
     then
-        echo "Get the size of a file on the F5." 1>&2
-        echo "Usage: f5.file.size <file>" 1>&2
+        {
+            echo "Get the size of a file on the F5."
+            echo "Usage: f5.file.size <file>"
+        } 1>&2
         return 2
     fi
     if SIZE=$(f5.run -r "stat" "-c%s" "$1" \
