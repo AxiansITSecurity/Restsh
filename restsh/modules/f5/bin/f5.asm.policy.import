@@ -76,6 +76,12 @@ then
     fi
 fi
 
+# Cleanup function
+_cleanup() {
+    f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
+    [ -n "$OPENAPI_FILE" ] && f5.file.remove "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE" > /dev/null
+}
+
 if [ "$IMPORT" -eq 0 ]
 then
     PAYLOAD=$($RESTSH_JQ -n --arg name "$FULL_PATH" \
@@ -101,6 +107,7 @@ TASK_ID=$(POST "/mgmt/tm/asm/tasks/import-policy?\$select=id" <<< "$PAYLOAD" \
 
 if ! restsh.util.check.notempty "${TASK_ID}"
 then
+    _cleanup
     echo_err "Import of policy \"$FULL_PATHE\" failed."
     exit 1
 fi
@@ -108,14 +115,14 @@ fi
 # Wait for completed task
 if ! f5.asm.taskwait import-policy "$TASK_ID"
 then
+    _cleanup
     echo_err "Import of policy failed."
     exit 1
 fi
 echo_ok "Import of policy was successful"
 
 # Cleanup
-f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
-[ -n "$OPENAPI_FILE" ] && f5.file.remove "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE" > /dev/null
+_cleanup
 
 if [ "$ENFORCE_SIGNATURES" -eq 1 ]
 then
