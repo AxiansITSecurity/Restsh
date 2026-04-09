@@ -32,12 +32,42 @@ Use the following header for each script file:
        exit 1
    fi
 
-   # Begin of custom script
+   # Get options
+   while getopts ':h' OPTION
+   do
+       case "$OPTION" in
+           *) OPTION="invalid"; break ;;
+       esac
+   done
+   shift "$((OPTIND -1))"
+
+   # Usage info on invalid options
+   if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
+   then
+       exec 1>&2
+       _restsh.help.shortdesc.get "$0"
+       echo "Usage: $(basename "$0") [options...] <argument1> <argument2>"
+       echo ""
+       echo "Options:"
+       echo "    -a  Description"
+       echo "    -b  Description"
+       echo ""
+       _restsh.help.desc.get "$0"
+       exit 2
+   fi
+
+   # Check arguments
+   restsh.util.check.string "argument1" "$1"; ARG1=$1
+   restsh.util.check.filename "argument2" "$2"; ARG2=$2
+   #restsh.util.check.bool "argument2" "$2"; ARG2=$2
+   #restsh.util.check.uint "argument2" "$2"; ARG2=$2
+
+   # Main
 
 Scripts in the lib folder
 -------------------------
 
-Scripts in the lib folder are sourced in from ``restsh.init``. Define functions in this file and export these functions.
+Scripts in the lib folder are sourced from ``restsh.init``. Use this method only for central functions that must manipulate the environment or called by many scripts.
 
 Use the following header for each script file:
 
@@ -55,8 +85,20 @@ Use the following header for each script file:
    # Debug mode
    [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-   # Description - this line is displayed in the help, only one line allowed.
+Define functions in this file and export these functions.
+
+.. code:: sh
+
+   # Description - this line is displayed in the help.
    sample.func() {
+       if [ $# -ne 1 ] || [ "$1" = "-h" ]
+       then
+           {
+               echo "Short description"
+               echo "Usage: sample.func <argument1>"
+            } 1>&2
+            return 2
+       fi
        # Function body
        return 0
    }
