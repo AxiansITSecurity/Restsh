@@ -32,7 +32,7 @@ do
         e) ENFORCE_SIGNATURES=1 ;;
         i) IMPORT=1 ;;
         n) APPLY_POLICY=0 ;;
-        o) OPENAPI_FILE="$OPTARG" ;;
+        o) restsh.util.check.filename "OpenAPI file" "$OPTARG"; OPENAPI_FILE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -46,11 +46,11 @@ then
     echo "    -e                 Enforce all signatures"
     echo "    -i                 Enforce given policy path (Overwrite fullPath in import file)"
     echo "    -n                 Do not apply policy after import"
-    echo "    -o <openapi file>  Specify OpenApi File"
+    echo "    -o <openapi file>  Specify OpenAPI File"
     exit 2
 fi
 
-restsh.util.check.string "filename" "$1"; FILENAME=$1
+restsh.util.check.filename "filename" "$1"; FILENAME=$1
 restsh.util.check.string "policy fullPath" "$2"; FULL_PATH=$2
 
 # Upload the policy file
