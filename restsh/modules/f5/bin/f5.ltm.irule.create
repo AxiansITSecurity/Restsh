@@ -33,16 +33,22 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    _restsh.help.desc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <fullPath> <filename>"
     exit 2
 fi
 
 restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
-restsh.util.check.string "filename" "$2"; FILE=$2
+restsh.util.check.filename "filename" "$2"; FILE=$2
 
 read -r PARTITION NAME < <(f5.common.fullPathSplit "$FULLPATH")
 
-JQ -n --arg name "$NAME" --arg partition "$PARTITION" --rawfile content "$FILE" \
-  '{ name: $name, partition: $partition, apiAnonymous: $content }' | \
-    POST "/mgmt/tm/ltm/rule" > /dev/null
+JQ -n --arg name "$NAME" \
+      --arg partition "$PARTITION" \
+      --rawfile content "$FILE" \
+   '{
+      name: $name,
+      partition: $partition,
+      apiAnonymous: $content
+    }' \
+    | POST "/mgmt/tm/ltm/rule" > /dev/null

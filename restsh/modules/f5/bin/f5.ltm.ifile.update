@@ -9,7 +9,7 @@
 # Shortdesc: Changes the sys iFile reference for the LTM iFile.
 # Desc:
 # Changes the sys iFile reference for the LTM iFile.
-# https://community.f5.com/t5/codeshare/syncing-local-repositories-and-ifiles-using-icontrol-rest-api/ta-p/290848
+# Reference: https://community.f5.com/t5/codeshare/syncing-local-repositories-and-ifiles-using-icontrol-rest-api/ta-p/290848
 
 # Strict error handling
 set -eEu -o pipefail
@@ -34,14 +34,18 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    _restsh.help.desc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <fullPath> <sys iFile>"
+    echo ""
+    _restsh.help.desc.get "$0"
     exit 2
 fi
 
 restsh.util.check.string "fullPath" "$1"; FULLPATH=$1
-restsh.util.check.string "sys iFile" "$2"; FILENAME=$2
+restsh.util.check.filename "sys iFile" "$2"; FILENAME=$2
 
 JQ -n --arg filename "$FILENAME" \
-  '{ "file-name": $filename }' |
-    PATCH "/mgmt/tm/ltm/ifile/${FULLPATH//\//\~}"
+   '{
+      "file-name": $filename
+    }' \
+    | PATCH "/mgmt/tm/ltm/ifile/${FULLPATH//\//\~}"

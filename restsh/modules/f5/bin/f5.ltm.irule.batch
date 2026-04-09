@@ -96,15 +96,17 @@ else
     ACTION=$1
 fi
 
+restsh.util.check.filename "filename" "$2"; DIR=$2
+
 case "$ACTION" in
     create)
-        create_all "$2"
+        create_all "$DIR"
         ;;
     download)
-        download_all "$2"
+        download_all "$DIR"
         ;;
     update)
-        update_all "$2"
+        update_all "$DIR"
         ;;
     *)
         exec 1>&2
