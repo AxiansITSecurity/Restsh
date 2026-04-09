@@ -8,7 +8,9 @@
 
 # Shortdesc: Batch management of iRules.
 # Desc:
-# Batch management of iRules.
+# iRule filenames for create and update must end with ".irule" and are named after the basename of the file.
+# The create action has a fallback to update if the iRule already exists on the F5.
+# iRules starting with _sys_ are ignored by the download action.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -39,9 +41,12 @@ download_all() {
 
 create_all() {
     local IRULE_DIR=$1
+    local FILE
     for FILE in "$IRULE_DIR/"*.irule
     do
+        local NAME
         NAME=$(basename "$FILE" .irule)
+        NAME=${NAME//\~/\/}
         if ! f5.ltm.irule.create "$NAME" "$FILE" 2>/dev/null
         then
             if f5.ltm.irule.update "$NAME" "$FILE"
@@ -59,9 +64,12 @@ create_all() {
 
 update_all() {
     local IRULE_DIR=$1
+    local FILE
     for FILE in "$IRULE_DIR/"*.irule
     do
+        local NAME
         NAME=$(basename "$FILE" .irule)
+        NAME=${NAME//\~/\/}
         if f5.ltm.irule.update "$NAME" "$FILE"
         then
             echo_ok "iRule $NAME updated"
@@ -81,7 +89,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     ACTION="invalid"
 else
@@ -100,11 +108,10 @@ case "$ACTION" in
         ;;
     *)
         exec 1>&2
-        _restsh.help.desc.get "$0"
+        _restsh.help.shortdesc.get "$0"
         echo "Usage: $(basename "$0") <create|download|update> <directory>"
         echo ""
-        echo "iRule filenames must end with .irule."
-        echo "Create has a fallback to update if the iRule already exists on the F5."
+        _restsh.help.desc.get "$0"
         exit 2
         ;;
 esac
