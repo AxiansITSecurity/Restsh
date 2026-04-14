@@ -43,5 +43,5 @@ Set variables
 
 Restsh provides two helper functions to define variables from files.
 
-- :doc:`/restsh/GeneralFunctions/restsh.util.setvar`
-- :doc:`/restsh/GeneralFunctions/restsh.util.setvars`
+- :doc:`restsh.util.setvar </restsh/GeneralFunctions/restsh.util.setvar>`
+- :doc:`restsh.util.setvars </restsh/GeneralFunctions/restsh.util.setvars>`
