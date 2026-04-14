@@ -21,10 +21,9 @@ usage() {
 }
 
 TMPDIR=""
-while getopts ':t:' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        t) ART_PROJECT="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -38,7 +37,7 @@ fi
 ACTION=$1
 [ $# -eq 2 ] && DOC_DEST=$2
 
-if [ -z "$TMPDIR"]
+if [ -z "$TMPDIR" ]
 then
     TMPDIR=$(mktemp -d)
     trap 'rm -f -- "$TMPDIR"' EXIT
