@@ -16,7 +16,7 @@ Further dependencies are:
 Prepare your environment
 ------------------------
 
-Restsh runs in any current Linux environment, WSL2, :doc:`/FirstSteps/Docker` and also on macOS. The Bash shell is required.
+Restsh runs in any current Linux environment, WSL2, :doc:`Docker </FirstSteps/Docker>` and also on macOS. The Bash shell is required.
 
 Windows: Install WSL2
 ~~~~~~~~~~~~~~~~~~~~~
