@@ -81,7 +81,10 @@ fi
 # Cleanup function
 _cleanup() {
     f5.file.remove "/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
-    [ -n "$OPENAPI_FILE" ] && f5.file.remove "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE" > /dev/null
+    if [ -n "$OPENAPI_FILE" ]
+    then
+        f5.file.remove "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE" > /dev/null
+    fi
 }
 
 if [ "$IMPORT" -eq 0 ]
