@@ -22,8 +22,8 @@ then
     exit 1
 fi
 
-TEMPLATE="${RESTSH_PATH}/templates/f5/ltm/net.dns-resolver.json"
-DEFAULTS="${RESTSH_PATH}/templates/f5/ltm/net.dns-resolver.var"
+TEMPLATE="${RESTSH_PATH}/modules/f5/templates/ltm/net.dns-resolver.json"
+DEFAULTS="${RESTSH_PATH}/modules/f5/templates/ltm/net.dns-resolver.var"
 while getopts ':d:s:t:' OPTION
 do
     case "$OPTION" in
