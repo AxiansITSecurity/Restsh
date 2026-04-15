@@ -23,7 +23,7 @@ then
 fi
 
 PARSE_OPTS=()
-while getopts ':h' OPTION
+while getopts ':hs:' OPTION
 do
     case "$OPTION" in
         s) PARSE_OPTS+=("-s" "$OPTARG") ;;
