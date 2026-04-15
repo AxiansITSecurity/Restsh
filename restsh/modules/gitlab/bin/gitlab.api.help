@@ -38,4 +38,4 @@ then
     exit 2
 fi
 
-grep -A1 "$1" "$RESTSH_PATH/autocomplete/gitlab/openapi_help.txt" | grep -v -- "--"
+grep -A1 "$1" "$RESTSH_PATH/modules/gitlab/autocomplete/openapi_help.txt" | grep -v -- "--"
