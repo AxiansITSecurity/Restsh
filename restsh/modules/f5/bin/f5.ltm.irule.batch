@@ -94,9 +94,8 @@ then
     ACTION="invalid"
 else
     ACTION=$1
+    restsh.util.check.filename "filename" "$2"; DIR=$2
 fi
-
-restsh.util.check.filename "filename" "$2"; DIR=$2
 
 case "$ACTION" in
     create)
