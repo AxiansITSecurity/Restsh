@@ -13,7 +13,7 @@
 
 # Enabled modules
 # shellcheck disable=SC2034
-RESTSH_MODULES=("cert" "custom" "f5" "gitlab" "next" "scm")
+RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "next" "scm")
 
 # Command that is executed after initialization in interactive mode
 [ -n "${RESTSH_INIT_CMD+x}" ] || RESTSH_INIT_CMD=""
