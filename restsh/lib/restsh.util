@@ -1140,3 +1140,5 @@ export -f restsh.util.askpass
 export -f restsh.util.isencrypted
 export -f restsh.util.trim
 export -f restsh.util.base64url
+export -f restsh.util.var.decrypt
+export -f restsh.util.eval_stage_var
