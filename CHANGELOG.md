@@ -52,7 +52,7 @@ This is the first version that is released under GPL-3.0-or-later.
     - Fix: `f5.ltm.vs.modify` - Use fullPath to modify the VS
     - Del: Removed support for F5 deprecated telemetry streaming
 - GitLab Module
-    - Feat: `gitlab.project.get`
+    - Feat: `gitlab.project.get`, `gitlab.project.exists`
     - Feat: `gitlab.repository.file.add`
     - Feat: `gitlab.group.path`, `gitlab.project.path`
     - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
