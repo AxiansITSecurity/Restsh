@@ -58,6 +58,7 @@ This is the first version that is released under GPL-3.0-or-later.
     - Feat: `gitlab.group.purge`, `gitlab.project.purge` - Purges a project/group (delete and permanently delete in one step)
     - Feat: `gitlab.group.move`, `gitlab.group.rename`
     - Feat: `gitlab.runner.delete`
+    - Feat: `gitlab.branch.exists`
     - Upd: `gitlab.group.create` - support 'group/subgroup` as name
     - Upd: `gitlab.group.delete`, `gitlab.project.delete` - Support id's
 
