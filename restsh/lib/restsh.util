@@ -177,7 +177,7 @@ echo_warn() {
         } 1>&2
         return 2
     fi
-    echo -e "${COLOR_YELLOW}ERROR: $*${COLOR_RESET}" 1>&2
+    echo -e "${COLOR_YELLOW}WARNING: $*${COLOR_RESET}" 1>&2
 }
 
 # Prints yellow warning message in JSON format to STDOUT.
