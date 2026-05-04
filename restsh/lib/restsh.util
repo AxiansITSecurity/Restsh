@@ -103,16 +103,11 @@ echo_err() {
         {
             echo "Prints red error messages to STDERR."
             echo ""
-            echo "Usage: echo_err [echo options] <message>"
+            echo "Usage: echo_err <message>"
         } 1>&2
         return 2
     fi
-    {
-        echo -ne "${COLOR_RED}"
-        echo -n "ERROR: "
-        echo "$@"
-        echo -ne "${COLOR_RESET}"
-    } 1>&2
+    echo -e "${COLOR_RED}ERROR: $*${COLOR_RESET}" 1>&2
 }
 
 # Prints red error message in JSON format to STDERR.
@@ -178,16 +173,11 @@ echo_warn() {
         {
             echo "Prints yellow warning messages to STDERR."
             echo ""
-            echo "Usage: echo_warn [echo options] <message>"
+            echo "Usage: echo_warn <message>"
         } 1>&2
         return 2
     fi
-    {
-        echo -ne "${COLOR_YELLOW}"
-        echo -n "WARN: "
-        echo "$@"
-        echo -ne "${COLOR_RESET}"
-    } 1>&2
+    echo -e "${COLOR_YELLOW}ERROR: $*${COLOR_RESET}" 1>&2
 }
 
 # Prints yellow warning message in JSON format to STDOUT.
