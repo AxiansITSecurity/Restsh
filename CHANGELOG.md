@@ -27,6 +27,7 @@ This is the first version that is released under GPL-3.0-or-later.
     - Feat: `aafw.art.new` - Support iRule Framework configuration
     - Feat: `aafw.pipeline.start.task.cluster`
     - Feat: `aafw.pipeline.start.task.liveupdate`
+    - Feat: `aafw.pipeline.start.task.asmtemplates`
 - Certificate Module
     - Feat: `cert.csr.pubkey`
     - Feat: `cert.csr.pubkey.hash`, `cert.key.public.hash`, `cert.x509.pubkey.hash` - Print SHA256 hash of public keys
