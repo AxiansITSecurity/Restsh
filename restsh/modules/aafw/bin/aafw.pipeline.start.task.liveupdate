@@ -25,10 +25,12 @@ fi
 # Get options
 TASK_HOST=""
 PIPELINE_OPTS=()
-while getopts ':ct:w' OPTION
+SYNC=0
+while getopts ':cst:w' OPTION
 do
     case "$OPTION" in
         c) PIPELINE_OPTS+=("-s" "TASK_F5_LIVE_UPDATE_CHECK_ONLY=1") ;;
+        s) SYNC=1 ;;
         t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
         w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
@@ -43,6 +45,7 @@ then
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
     echo "    -c           Only check for updates, do not install."
+    echo "    -s           Sync Cluster"
     echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
     echo "    -w           Wait for finished pipeline."
     exit 2
@@ -53,5 +56,6 @@ restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
     -s "TASK=f5_live_update" -s "TASK_HOST=$TASK_HOST" \
+    -s "SYNC=$SYNC" \
     "${PIPELINE_OPTS[@]}" \
     "$PROJECT" "$BRANCH"
