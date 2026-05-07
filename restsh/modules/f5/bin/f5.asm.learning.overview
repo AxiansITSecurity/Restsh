@@ -33,12 +33,12 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-r]"
-    echo -e "\tUse -r for raw output."
+    echo "    -r  Raw output."
     exit 2
 fi
 
