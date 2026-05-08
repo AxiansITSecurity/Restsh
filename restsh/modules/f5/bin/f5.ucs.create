@@ -28,7 +28,7 @@ PASSPHRASE=""
 while getopts ':e:h' OPTION
 do
     case "$OPTION" in
-        e) PASSPHRASE="$OPTARG" ;;
+        e) restsh.util.check.string "passphrase" "$OPTARG"; PASSPHRASE="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -45,7 +45,7 @@ then
     exit 2
 fi
 
-NAME=$1
+restsh.util.check.filename "output file" "$1"; NAME=$1
 
 # Create the task
 
