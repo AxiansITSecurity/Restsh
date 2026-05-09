@@ -60,7 +60,10 @@ scm.auth.login() {
     # Vault Integration
     if [ "${SCM_SECRET:0:6}" = "VAULT:" ]
     then
-        vault.login
+        if ! vault.login
+        then
+            return 1
+        fi
         SCM_SECRET=$(vault.get "${SCM_SECRET:6}" "SCM_SECRET")
         export SCM_SECRET
     fi

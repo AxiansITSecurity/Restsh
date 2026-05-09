@@ -250,7 +250,7 @@ then
     export ART_TMP
     export TENANT_FOLDER
     export TEMPLATE
-    eval "${ART_TMP}/art/${TEMPLATE}/deploy.sh"
+    "${ART_TMP}/art/${TEMPLATE}/deploy.sh"
 fi
 
 # Push to origin

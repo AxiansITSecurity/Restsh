@@ -87,7 +87,7 @@ then
     # Do not show the config select
     export RESTSH_CONFIG=$1
 else
-    if [ -n "${1+x}" ] || [ -d "$1" ]
+    if [ -n "${1+x}" ] && [ -d "$1" ]
     then
         # First argument is a folder
         # Show config select for this folder

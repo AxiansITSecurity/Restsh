@@ -81,7 +81,11 @@ restsh.http() {
 
     if [ "$RETRIES" -gt 0 ]
     then
-        RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "$RESTSH_CURL_OPT_RETRY_ALL" "--retry-delay" "10")
+        RESTSH_CURL_OPTS+=("--retry" "$RETRIES" "--retry-delay" "10")
+        if [ -n "$RESTSH_CURL_OPT_RETRY_ALL" ]
+        then
+            RESTSH_CURL_OPTS+=("$RESTSH_CURL_OPT_RETRY_ALL")
+        fi
     fi
 
     if [ -n "$OUTPUT_FILE" ]

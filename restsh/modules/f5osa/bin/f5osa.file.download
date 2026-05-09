@@ -39,7 +39,7 @@ then
     exit 2
 fi
 restsh.util.check.string "remote filepath" "$1"; FILEPATH_REMOTE=$1
-restsh.util.check.string "local filepath" "$1"; FILEPATH_LOCAL=$2
+restsh.util.check.string "local filepath" "$2"; FILEPATH_LOCAL=$2
 
 FILENAME_REMOTE=$(basename "$FILEPATH_REMOTE")
 FILEPATH_REMOTE=$(dirname "$FILEPATH_REMOTE")
