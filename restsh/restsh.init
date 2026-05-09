@@ -119,7 +119,12 @@ fi
 # Include enabled modules by setting path and including functions
 for MODULE in "${RESTSH_MODULES[@]}"
 do
-    [ -d "$RESTSH_PATH/modules/$MODULE/bin" ] && PATH="$PATH:$RESTSH_PATH/modules/$MODULE/bin"
+    if [ -d "$RESTSH_PATH/modules/$MODULE/bin" ]
+    then
+        PATH="$PATH:$RESTSH_PATH/modules/$MODULE/bin"
+    else
+        echo_warn "Module $MODULE not found."
+    fi
     if [ -d "$RESTSH_PATH/modules/$MODULE/lib" ]
     then
         while read -r LINE
@@ -181,7 +186,7 @@ fi
 # Decrypt password
 if [ -n "${RESTSH_PASS+x}" ] && [ "${RESTSH_PASS:0:7}" = "AES256:" ]
 then
-    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    if ! restsh.util.check.varnotempty RESTSH_SECRET
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
@@ -208,7 +213,7 @@ fi
 # Decrypt token
 if [ -n "${RESTSH_TOKEN_VALUE+x}" ] && [ "${RESTSH_TOKEN_VALUE:0:7}" = "AES256:" ]
 then
-    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    if ! restsh.util.check.varnotempty RESTSH_SECRET
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
@@ -235,7 +240,7 @@ fi
 # Decrypt proxy password
 if [ -n "${RESTSH_CURL_PROXY_PASS+x}" ] && [ "${RESTSH_CURL_PROXY_PASS:0:7}" = "AES256:" ]
 then
-    if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+    if ! restsh.util.check.varnotempty RESTSH_SECRET
     then
         if [ -n "${RESTSH_INTERACTIVE+x}" ]
         then
@@ -342,7 +347,7 @@ then
     # 4 spaces tab is enough
     tabs 4 2>/dev/null || true
 
-    if [ -n "${RESTSH_INIT_CMD+x}" ] && [ -n "${RESTSH_INIT_CMD}" ]
+    if restsh.util.check.varnotempty RESTSH_INIT_CMD
     then
         ${RESTSH_INIT_CMD}
         echo ""

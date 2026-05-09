@@ -31,6 +31,8 @@ set -uo pipefail
 # Prefix for the F5 REST API
 export F5OSA_API_PREFIX="/restconf"
 
+# Default init command.
+# This is only executed in interactive mode.
 if [ -z "${RESTSH_INIT_CMD+x}" ]
 then
     if [ "$RESTSH_AUTH" = "basic" ]

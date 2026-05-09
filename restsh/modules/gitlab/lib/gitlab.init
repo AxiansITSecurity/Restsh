@@ -29,6 +29,8 @@ fi
 # Prefix for the GitLab REST API
 export GITLAB_API_PREFIX="/api/v4"
 
+# Default init command.
+# This is only executed in interactive mode.
 if [ -z "${RESTSH_INIT_CMD+x}" ]
 then
     export RESTSH_INIT_CMD="gitlab.version"
