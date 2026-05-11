@@ -32,10 +32,12 @@ COMPONENTS=(
     "threat-campaigns"
 )
 RAW=0
-while getopts ':r' OPTION
+WAIT=0
+while getopts ':rw' OPTION
 do
     case "$OPTION" in
         r) RAW=1 ;;
+        w) WAIT=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -48,6 +50,7 @@ then
     echo "Usage: $(basename "$0") [options] [component]"
     echo "Options:"
     echo "    -r  Raw output"
+    echo "    -w  Wait for finished checks"
     echo "Available components:"
     for COMPONENT in "${COMPONENTS[@]}"
     do
@@ -62,20 +65,40 @@ then
 fi
 
 # Main
-{
-    for COMPONENT in "${COMPONENTS[@]}"
-    do
-        if [ "$RAW" -eq 1 ]
+
+for COMPONENT in "${COMPONENTS[@]}"
+do
+    if [ "$RAW" -eq 1 ]
+    then
+        PATCH "/mgmt/tm/live-update/$COMPONENT/availability" <<< '{"status": "check"}' || true
+    else
+        printf "%s" "$COMPONENT: "
+        if ! RESULT=$(PATCH "/mgmt/tm/live-update/$COMPONENT/availability" <<< '{"status": "check"}' 2>&1)
         then
-            PATCH "/mgmt/tm/live-update/$COMPONENT/availability" <<< '{"status": "check"}' || true
+            JQ -r ".error.output.message" <<< "$RESULT"
         else
-            printf "%s" "$COMPONENT: "
-            if ! RESULT=$(PATCH "/mgmt/tm/live-update/$COMPONENT/availability" <<< '{"status": "check"}' 2>&1)
-            then
-                JQ -r ".error.output.message" <<< "$RESULT"
-            else
-                JQ -r ".status" <<< "$RESULT"
-            fi
+            JQ -r ".status" <<< "$RESULT"
         fi
+    fi
+done
+
+if [ "$WAIT" -eq 1 ]
+then
+    echo ""
+    echo "Waiting for live-update checks to finish..."
+    COUNTER=0
+    while :
+    do
+        if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
+        then
+            echo_err "Timeout waiting for task."
+            break
+        fi
+        sleep "$F5_TASK_CHECK_INTERVAL"
+        COUNTER=$((COUNTER+1))
+        CHECK_STATUS=$(f5.asm.live-update.status -r | JQ -r 'select(.status == "check")')
+        [ -z "$CHECK_STATUS" ] && break
     done
-}
+    echo_ok "Checks finished"
+    f5.asm.live-update.status
+fi
