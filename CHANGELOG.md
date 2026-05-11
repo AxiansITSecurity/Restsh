@@ -37,7 +37,10 @@ This is the first version that is released under GPL-3.0-or-later.
     - Feat: `f5.asm.template.update`
     - Feat: `f5.asm.entity.filetypes.remove`
     - Feat: `f5.asm.entity.urls-allowed.add`, `f5.asm.entity.urls.remove`
+    - Feat: `f5.asm-live-update.check` - Add wait option
+    - Feat: `f5.asm.live-update.file.cleanup`
     - Feat: `f5.asm.live-update.file.download`
+    - Feat: `f5.asm.live-update.stage`
     - Feat: `f5.asm.policy.signatureset.remove`, `f5.asm.policy.signatureset.getid`
     - Feat: `f5.botdefense.profile.delete`
     - Feat: `f5.ltm.clientssl.delete`
