@@ -87,6 +87,7 @@ then
     echo ""
     echo "Waiting for live-update checks to finish..."
     COUNTER=0
+    F5_TASK_TIMEOUT=36
     while :
     do
         if [ "$COUNTER" -eq "$F5_TASK_TIMEOUT" ]
