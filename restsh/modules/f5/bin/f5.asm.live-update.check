@@ -96,7 +96,7 @@ then
         fi
         sleep "$F5_TASK_CHECK_INTERVAL"
         COUNTER=$((COUNTER+1))
-        CHECK_STATUS=$(f5.asm.live-update.status -r | JQ -r 'select(.status == "check")')
+        CHECK_STATUS=$(f5.asm.live-update.status -r | JQ -r 'select(.status == "check" or .status == "check-in-progress")')
         [ -z "$CHECK_STATUS" ] && break
     done
     echo_ok "Checks finished"
