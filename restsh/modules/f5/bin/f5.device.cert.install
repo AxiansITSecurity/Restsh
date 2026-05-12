@@ -60,8 +60,8 @@ f5.run "cp" "/config/httpd/conf/ssl.crt/server.crt" "/config/httpd/conf/ssl.crt/
 f5.run "cp" "/config/httpd/conf/ssl.key/server.key" "/config/httpd/conf/ssl.key/old.aafw.key"
 
 echo "Move new certificates in place"
-f5.run "cp" "/config/httpd/conf/ssl.crt/${NAME}.crt" "/config/httpd/conf/ssl.crt/server.crt"
-f5.run "cp" "/config/httpd/conf/ssl.key/${NAME}.key" "/config/httpd/conf/ssl.key/server.key"
+f5.run "mv" "-v" "/config/httpd/conf/ssl.crt/${NAME}.crt" "/config/httpd/conf/ssl.crt/server.crt"
+f5.run "mv" "-v" "/config/httpd/conf/ssl.key/${NAME}.key" "/config/httpd/conf/ssl.key/server.key"
 
 echo "Restarting httpd"
 echo "Connection will be reset"
