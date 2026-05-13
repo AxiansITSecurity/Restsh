@@ -10,6 +10,7 @@
 # Desc:
 # Uploads and installs a device certificate, restarts httpd.
 # A key with the same name must already exist on the F5.
+# Be aware of this bug: https://my.f5.com/manage/s/article/K13292945
 
 # Strict error handling
 set -eEu -o pipefail
@@ -56,17 +57,25 @@ then
 fi
 
 echo "Backup old key and certificate"
-f5.run "cp" "/config/httpd/conf/ssl.crt/server.crt" "/config/httpd/conf/ssl.crt/old.aafw.crt"
-f5.run "cp" "/config/httpd/conf/ssl.key/server.key" "/config/httpd/conf/ssl.key/old.aafw.key"
+f5.run "cp" "-v" "/config/httpd/conf/ssl.crt/server.crt" "/config/httpd/conf/ssl.crt/old.aafw.crt"
+f5.run "cp" "-v" "/config/httpd/conf/ssl.key/server.key" "/config/httpd/conf/ssl.key/old.aafw.key"
 
 echo "Move new certificates in place"
 f5.run "mv" "-v" "/config/httpd/conf/ssl.crt/${NAME}.crt" "/config/httpd/conf/ssl.crt/server.crt"
 f5.run "mv" "-v" "/config/httpd/conf/ssl.key/${NAME}.key" "/config/httpd/conf/ssl.key/server.key"
 
+# This script is provided by the Axians Automation Framework and is
+# a workaround for https://my.f5.com/manage/s/article/K13292945.
+if ! f5.file.size "/shared/axians/scripts/httpd-restart.sh" > /dev/null
+then
+    echo_warn "You must restart the http service manually."
+    echo_warn "F5 Bug: https://my.f5.com/manage/s/article/K13292945"
+    exit 1
+fi
+
 echo "Restarting httpd"
 echo "Connection will be reset"
 #f5.sys.service.restart httpd > /dev/null 2>&1 || true
-# Workaround for https://my.f5.com/manage/s/article/K13292945
 f5.run /shared/axians/scripts/httpd-restart.sh > /dev/null 2>&1 || true
 
 # Wait for httpd restart
