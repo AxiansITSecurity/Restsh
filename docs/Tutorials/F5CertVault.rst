@@ -88,3 +88,23 @@ Finally, we upload the signed certificate back to the F5. This makes the certifi
 .. code:: sh
 
    f5.cert.import /Common/test.lab.lan "$RESTSH_TMP/test.lab.lan.crt"
+
+5. Cleanup
+-----------
+
+Cleanup is optional the files in the temporary directory will be automatically removed after the script finishes. However, if you want to manually remove the CSR and certificate files from your local machine, you can do so with the following command:
+
+.. code:: sh
+
+   rm "$RESTSH_TMP/test.lab.lan.csr" "$RESTSH_TMP/test.lab.lan.crt"
+
+Optionally sync the F5 cluster to ensure the new certificate is available on all cluster members:
+
+.. code:: sh
+
+   f5.cluster.config-sync failover
+
+Summary
+-------
+
+In this tutorial, we walked through the process of deploying a new certificate on an F5 device using Restsh and HashiCorp Vault. We created a key pair and CSR on the F5, signed the CSR with Vault, and then imported the signed certificate back to the F5. This workflow allows you to securely manage certificates without exposing private keys, while leveraging the power of Restsh for automation and integration with your existing infrastructure.
