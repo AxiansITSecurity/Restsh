@@ -29,7 +29,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     usage
 fi
