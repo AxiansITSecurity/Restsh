@@ -7,6 +7,7 @@ Restsh
    FirstSteps/index.rst
    restsh/index.rst
    Advanced/index.rst
+   Tutorials/index.rst
    CHANGELOG.md
    LICENSE.md
 
