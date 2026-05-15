@@ -33,7 +33,7 @@ Below are the certificate parameters we'll use for this example:
 
 .. code:: sh
 
-   f5.cert.csr.create --cn test.lab.lan --keytype=ec-private --curvename=secp384r1 -a test.lab.lan -a test2.lab.lan -n test.lab.lan
+   f5.cert.csr.create --cn=test.lab.lan --keytype=ec-private --curvename=secp384r1 -a test.lab.lan -a test2.lab.lan -n test.lab.lan
 
 2. Download the signing request
 -------------------------------
@@ -89,16 +89,22 @@ Finally, we upload the signed certificate back to the F5. This makes the certifi
 
    f5.cert.import /Common/test.lab.lan "$RESTSH_TMP/test.lab.lan.crt"
 
+You can view the imported certificate with following command:
+
+.. code:: sh
+
+   f5.cert.get /Common/test.lab.lan
+
 5. Cleanup
 -----------
 
-Cleanup is optional the files in the temporary directory will be automatically removed after the script finishes. However, if you want to manually remove the CSR and certificate files from your local machine, you can do so with the following command:
+Cleanup is optional the files in the temporary directory will be automatically removed after Restsh finishes. However, if you want to manually remove the CSR and certificate files from your local machine, you can do so with the following command:
 
 .. code:: sh
 
    rm "$RESTSH_TMP/test.lab.lan.csr" "$RESTSH_TMP/test.lab.lan.crt"
 
-Optionally sync the F5 cluster to ensure the new certificate is available on all cluster members:
+Optionally sync the F5 cluster to ensure the new certificate is available on all cluster members. `failover` is here the name of the Sync-Failover device group.
 
 .. code:: sh
 
