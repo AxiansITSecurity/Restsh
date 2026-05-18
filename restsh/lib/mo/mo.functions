@@ -26,6 +26,7 @@ MO_COMMA_IF_NOT_EMPTY() {
     # Join arguments but last
     local COUNT=0
     local ARG
+    set +u # Do not fail if not defined
     for ARG in "${MO_FUNCTION_ARGS[@]}"
     do
         BEFORE_VALUES="${BEFORE_VALUES}${!ARG}"
@@ -37,6 +38,7 @@ MO_COMMA_IF_NOT_EMPTY() {
     ARG=${MO_FUNCTION_ARGS[$MAX_ARG_INDEX]}
     local LAST_VALUE
     LAST_VALUE=${!ARG}
+    set -u
     if [ -n "$BEFORE_VALUES" ] && [ -n "$LAST_VALUE" ]
     then
         printf ","
@@ -79,7 +81,9 @@ MO_VALUE_EXPAND_OR_DEFAULT() {
 # Usage: {{MO_TRUE_IF_NOT_EMPTY 'VAR_HOSTNAMES'}}
 MO_TRUE_IF_NOT_EMPTY() {
     local ARG=${MO_FUNCTION_ARGS[0]}
+    set +u # Do not fail if not defined
     local VALUE="${!ARG}"
+    set -u
     if [ -n "${VALUE}" ]
     then
         printf "true"
