@@ -237,8 +237,28 @@ test.mo.functions.MO_TRUE_IF_NOT_EMPTY.true() {
     unset OUT
 }
 
+test.mo.functions.MO_TRUE_IF_NOT_EMPTY.true_array() {
+    local KEY1=("test1" "test2")
+    local MO_FUNCTION_ARGS=("KEY1")
+    local OUT
+    OUT=$(MO_TRUE_IF_NOT_EMPTY)
+    [ "$OUT" = "true" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
 test.mo.functions.MO_TRUE_IF_NOT_EMPTY.false() {
     local KEY1=""
+    local MO_FUNCTION_ARGS=("KEY1")
+    local OUT
+    OUT=$(MO_TRUE_IF_NOT_EMPTY)
+    [ "$OUT" = "false" ] || return 1
+    unset MO_FUNCTION_ARGS
+    unset OUT
+}
+
+test.mo.functions.MO_TRUE_IF_NOT_EMPTY.false_array() {
+    local KEY1=()
     local MO_FUNCTION_ARGS=("KEY1")
     local OUT
     OUT=$(MO_TRUE_IF_NOT_EMPTY)
