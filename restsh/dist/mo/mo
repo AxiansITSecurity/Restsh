@@ -128,7 +128,7 @@ mo() (
             if $moDoubleHyphens; then
                 #: After we encounter two hyphens together, all the rest
                 #: of the arguments are files.
-                moFiles=(${moFiles[@]+"${moFiles[@]}"} "$arg")
+                moFiles+=("$arg")
             else
                 case "$arg" in
                     -h|--h|--he|--hel|--help|-\?)
@@ -203,7 +203,7 @@ mo() (
 
                     *)
                         #: Every arg that is not a flag or a option should be a file
-                        moFiles=(${moFiles[@]+"${moFiles[@]}"} "$arg")
+                        moFiles+=("$arg")
                         ;;
                 esac
             fi
@@ -213,7 +213,7 @@ mo() (
     mo::debug "Debug enabled"
     MO_OPEN_DELIMITER="$MO_OPEN_DELIMITER_DEFAULT"
     MO_CLOSE_DELIMITER="$MO_CLOSE_DELIMITER_DEFAULT"
-    mo::content moContent ${moFiles[@]+"${moFiles[@]}"} || return 1
+    mo::content moContent "${moFiles[@]}" || return 1
     mo::parse moParsed "$moContent"
     printf '%s' "$moParsed"
 )
@@ -225,7 +225,7 @@ mo() (
 #
 # Returns nothing.
 mo::debug() {
-    [[ -z ${MO_DEBUG-} ]] && return
+    [[ -z "${MO_DEBUG-}" ]] && return
     echo "DEBUG ${FUNCNAME[1]:-?} - $1" >&2
 }
 
@@ -248,7 +248,7 @@ mo::debugShowState() {
     moState="$moState  standalone: $moTemp"
     moTemp=${MO_CURRENT@Q}
     moState="$moState  current: $moTemp"
-    moIndex=$((${#MO_PARSED} - 20))
+    (( moIndex = ${#MO_PARSED} - 20 )) || true
     moDots=...
 
     if (( moIndex < 0 )); then
@@ -291,11 +291,9 @@ mo::error() {
 #
 # Returns nothing. Exits the program.
 mo::errorNear() {
-    local moEscaped
-
-    mo::escape moEscaped "${2:0:40}"
+    local moContext="${2:0:40}"
     echo "ERROR: $1" >&2
-    echo "ERROR STARTS NEAR: $moEscaped"
+    echo "ERROR STARTS NEAR: ${moContext@Q}"
     exit "${3:-1}"
 }
 
@@ -337,7 +335,7 @@ mo::content() {
         for moFilename in "$@"; do
             mo::debug "Using template to load content from file: $moFilename"
             #: This is so relative paths work from inside template files
-            moContent="$moContent$MO_OPEN_DELIMITER>$moFilename$MO_CLOSE_DELIMITER"
+            moContent+="$MO_OPEN_DELIMITER>$moFilename$MO_CLOSE_DELIMITER"
         done
     else
         mo::debug "Will read content from stdin"
@@ -363,16 +361,9 @@ mo::contentFile() {
     #: needs to stay.
     moFile=${2:-/dev/stdin}
 
-    if [[ -e "$moFile" ]]; then
+    if [[ -r "$moFile" ]]; then
         mo::debug "Loading content: $moFile"
-        moContent=$(
-            set +Ee
-            cat -- "$moFile"
-            moResult=$?
-            printf '.'
-            exit "$moResult"
-        ) || return 1
-        moContent=${moContent%.}  #: Remove last dot
+        IFS= read -r -d '' moContent <"$moFile"
     elif [[ -n "${MO_FAIL_ON_FILE-}" ]]; then
         mo::error "No such file: $moFile"
     else
@@ -434,9 +425,6 @@ mo::indirectArray() {
 #
 # Returns nothing.
 mo::trimUnparsed() {
-    # fast path
-    [[ ${MO_UNPARSED:0:1} != ' ' && ${MO_UNPARSED:0:1} != $'\t' ]] && return
-
     #: Use regex with =~ for faster matching in Bash 5
     if [[ $MO_UNPARSED =~ ^[[:space:]]+ ]]; then
         MO_UNPARSED=${MO_UNPARSED#${BASH_REMATCH[0]}}
@@ -451,9 +439,7 @@ mo::trimUnparsed() {
 #
 # Returns nothing.
 mo::chomp() {
-    #: Use single pattern substitution for faster processing in Bash 5
-    local moTemp=${2%%[[:space:]]*}
-    local "$1" && mo::indirect "$1" "$moTemp"
+    printf -v "$1" '%s' "${2%%[[:space:]]*}"
 }
 
 
@@ -790,7 +776,6 @@ mo::parsePartial() {
         printf '%s.' "$moPartialParsed"
     ) || exit 1
 
-
     if [[ -z "$moResult" ]]; then
         mo::debug "Error detected when trying to read the file"
         exit 1
@@ -806,8 +791,6 @@ mo::parsePartial() {
 #
 # Returns nothing
 mo::parseComment() {
-    local moContent moContent
-
     MO_UNPARSED=${MO_UNPARSED#*"$MO_CLOSE_DELIMITER"}
     mo::debug "Parsing comment"
 
@@ -900,7 +883,6 @@ mo::isFunction() {
 # $1 - Name of environment variable
 #
 # Returns 0 if the name is not empty, 1 otherwise.
-
 mo::isArray() {
     local name=$1
     local cached=${__mo_type_cache[$name]:-}
@@ -965,24 +947,6 @@ mo::isArrayIndexValid() {
 }
 
 
-# Internal: Determine if a variable is assigned, even if it is assigned an empty
-# value.
-#
-# $1 - Variable name to check.
-#
-# Can not use logic like this in case invalid variable names are passed.
-#     [[ "${!1-a}" == "${!1-b}" ]]
-#
-# Returns true (0) if the variable is set, 1 if the variable is unset.
-mo::isVarSet() {
-    if ! declare -p "$1" &> /dev/null; then
-        return 1
-    fi
-
-    return 0
-}
-
-
 # Internal: Determine if a value is considered truthy.
 #
 # $1 - The value to test
@@ -1041,7 +1005,7 @@ mo::evaluate() {
                 moType=$1
                 moValue=$2
                 mo::debug "Combining $moValue tokens"
-                moIndex=$((${#moStack[@]} - (2 * moValue)))
+                (( moIndex = ${#moStack[@]} - (2 * moValue) )) || true
                 mo::evaluateListOfSingles moCombined "${moStack[@]:$moIndex}"
 
                 if [[ "$moType" == "PAREN" ]]; then
@@ -1052,7 +1016,7 @@ mo::evaluate() {
                 ;;
 
             *)
-                moStack=(${moStack[@]+"${moStack[@]}"} "$1" "$2")
+                moStack+=("$1" "$2")
                 ;;
         esac
 
@@ -1068,7 +1032,7 @@ mo::evaluate() {
     else
         #: Concatenate
         mo::debug "Concatenating ${#moStack[@]} stack items"
-        mo::evaluateListOfSingles moResult ${moStack[@]+"${moStack[@]}"}
+        mo::evaluateListOfSingles moResult "${moStack[@]}"
     fi
 
     local "$moTarget" && mo::indirect "$moTarget" "$moResult"
@@ -1172,9 +1136,10 @@ mo::evaluateVariable() {
     if [[ -z "${moNameParts[1]}" ]]; then
         if mo::isArray "${moNameParts[0]}"; then
             local -n arrayRef=${moNameParts[0]}
-            mo::join moResult "," "${arrayRef[@]}"
+            local IFS=,
+            printf -v moResult '%s' "${arrayRef[*]}"
         else
-            if mo::isVarSet "${moNameParts[0]}"; then
+            if declare -p "${moNameParts[0]}" &> /dev/null; then
                 local -n varRef=${moNameParts[0]}
                 if [[ -z "${varRef-}" ]]; then
                     moResult=""
@@ -1257,23 +1222,6 @@ mo::findVariableName() {
     fi
 
     local "$1" && mo::indirectArray "$1" "$moResultBase" "$moResultIndex"
-}
-
-
-# Internal: Join / implode an array
-#
-# $1    - Variable name to receive the joined content
-# $2    - Joiner
-# $3-@ - Elements to join
-#
-# Returns nothing.
-mo::join() {
-    local target joiner
-    target=$1
-    joiner=$2
-    shift 2
-    local IFS="$joiner"
-    printf -v "$target" '%s' "$*"
 }
 
 
@@ -1368,13 +1316,13 @@ mo::standaloneProcess() {
     local moI moTemp moChar
 
     mo::debug "Standalone tag - processing content before and after tag"
-    moI=$((${#MO_PARSED} - 1))
+    (( moI = ${#MO_PARSED} - 1 )) || true
     mo::debug "zero done ${#MO_PARSED}"
-    mo::escape moTemp "$MO_PARSED"
+    moTemp="${MO_PARSED@Q}"
     mo::debug "$moTemp"
 
-    while moChar="${MO_PARSED:$moI:1}" && [[ "$moChar" == " " || "$moChar" == $'\t' ]]; do
-        moI=$((moI - 1))
+    while [[ ${MO_PARSED:moI:1} == ' ' || ${MO_PARSED:moI:1} == $'\t' ]]; do
+        (( moI-- )) || true
     done
 
     if [[ $((moI + 1)) != "${#MO_PARSED}" ]]; then
@@ -1383,18 +1331,18 @@ mo::standaloneProcess() {
 
     moI=0
 
-    while moChar="${MO_UNPARSED:${moI}:1}" && [[ "$moChar" == " " || "$moChar" == $'\t' ]]; do
-        moI=$((moI + 1))
+    while [[ ${MO_UNPARSED:moI:1} == ' ' || ${MO_UNPARSED:moI:1} == $'\t' ]]; do
+        (( moI++ )) || true
     done
 
     moChar="${MO_UNPARSED:${moI}:1}"
     if [[ "$moChar" == $'\r' ]]; then
-        moI=$((moI + 1))
+        (( moI++ )) || true
         moChar="${MO_UNPARSED:${moI}:1}"
     fi
 
     if [[ "$moChar" == $'\n' ]]; then
-        moI=$((moI + 1))
+        (( moI++ )) || true
     fi
 
     if [[ "$moI" != 0 ]]; then
@@ -1453,20 +1401,6 @@ mo::indentLines() {
 
     #local "$1" && mo::indirect "$1" "$moResult"
     printf -v "$1" '%s' "$moResult"
-}
-
-
-# Internal: Escape a value
-#
-# $1 - Destination variable name
-# $2 - Value to escape
-#
-# Returns nothing
-mo::escape() {
-    local moResult
-    moResult=$2
-    moResult=${moResult@Q} 
-    local "$1" && mo::indirect "$1" "$moResult"
 }
 
 
@@ -1744,7 +1678,7 @@ mo::tokenizeTagContents() {
 
             "$moTerminator"*)
                 mo::debug "Found terminator"
-                local "$1" && mo::indirectArray "$1" "$moTokenCount" ${moResult[@]+"${moResult[@]}"}
+                local "$1" && mo::indirectArray "$1" "$moTokenCount" "${moResult[@]}"
                 return
                 ;;
 
@@ -1785,7 +1719,7 @@ mo::tokenizeTagContents() {
         esac
 
         mo::debug "Got chunk: ${moTemp[0]} ${moTemp[1]}"
-        moTokenCount=$((moTokenCount + 1))
+        (( moTokenCount = moTokenCount + 1 )) || true
     done
 }
 
@@ -1925,6 +1859,11 @@ mo::tokenizeTagContentsSingleQuote() {
 # Save the original command's path for usage later
 MO_ORIGINAL_COMMAND="$(cd "${BASH_SOURCE[0]%/*}" || exit 1; pwd)/${BASH_SOURCE[0]##*/}"
 MO_VERSION="5.0.0"
+
+if [[ "${BASH_VERSINFO[0]}" -lt 5 ]]; then
+    echo "This MO version is only compatible with Bash 5 or newer."
+    exit 1
+fi
 
 # If sourced, load all functions.
 # If executed, perform the actions as expected.
