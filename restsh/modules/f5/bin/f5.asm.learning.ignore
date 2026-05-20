@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Ignores a suggestions by id.
+# Shortdesc: Ignores a suggestion by id.
 # Desc:
-# Ignores a suggestions by id.
+# Ignores a suggestion by id.
 
 # Strict error handling
 set -eEu -o pipefail
