@@ -25,6 +25,7 @@ Restsh is only compatible with Bash 5 or newer and checks the Bash version now o
     - Upd: `restsh.util.setvars` - Add warning for invalid filenames
     - Upd: Documentation
     - Upd: Revised Mustache Template Engine
+    - Upd: `XARGS` - do not run command with empty argument
     - Fix: F5 Token Authentication - Token renewal
 - Axians Automation Framework
     - Feat: `aafw.art.new` - Support iRule Framework configuration
