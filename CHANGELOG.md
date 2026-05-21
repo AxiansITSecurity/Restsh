@@ -50,6 +50,7 @@ Restsh is only compatible with Bash 5 or newer and checks the Bash version now o
     - Feat: `f5.ltm.clientssl.delete`
     - Feat: `f5.net.selfip.delete`
     - Feat: `f5.net.vlan.delete`
+    - Feat: `f5.cluster.traffic-group.masquerade.set`
     - Upd: `f5.cert.expire` - Add option to not fail on expired certificates
     - Upd: `f5.device.cert.reset` - Add required options for old cert/key name
     - Upd: `f5.ltm.datagroup.internal.list` - Add option for raw json output

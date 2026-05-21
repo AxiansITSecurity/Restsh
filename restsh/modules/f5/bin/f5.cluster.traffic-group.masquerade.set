@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Sets the MAC Masquerade Address for a traffic-group.
+# Desc:
+# Specify "auto" to automatically generate a MAC Masquerade Address. The address
+# is generated using the template 02:f5:aa:bb:cc:dd, where aa:bb:cc:dd represents
+# the hexadecimal encoding of the first Self IP Address associated with the traffic
+# group. If the traffic group has no Self IP Address, the first Self IP of the
+# local-only traffic group is used as the fallback.
+#
+# See https://my.f5.com/manage/s/article/K3523 for details.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+DRY_RUN=0
+while getopts ':d' OPTION
+do
+    case "$OPTION" in
+        d) DRY_RUN=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage:"
+    echo "$(basename "$0") [options...] <traffic group name> <MAC Masquerade Address>"
+    echo "Options":
+    echo "-d  Do net set the address, only display the generated."
+    echo ""
+    _restsh.help.desc.get "$0"
+    exit 2
+fi
+
+restsh.util.check.string "traffic group name" "$1"; TRAFFIC_GROUP=$1
+restsh.util.check.string "MAC Masquerade Address>" "$2"; MAC=$2
+
+# Autogenerate MAC address
+if [ "$MAC" = "auto" ]
+then
+    IP=$(GET -rf "[.items[] | select(.trafficGroup == \"/Common/${TRAFFIC_GROUP}\") | .address][0]" /mgmt/tm/net/self)
+    if ! restsh.util.check.varnotempty IP
+    then
+        IP=$(GET -rf '[.items[] | select(.trafficGroup == "/Common/traffic-group-local-only") | .address][0]' /mgmt/tm/net/self)
+    fi
+    IP=${IP%%/*}
+    # Split IP by space
+    #shellcheck disable=SC2086
+    MAC="02:f5$(printf ':%02X' ${IP//./ })"
+    echo "Using generated MAC: $MAC"
+fi
+
+if [ "$DRY_RUN" -eq 1 ]
+then
+    exit 0
+fi
+
+JQ -n --arg mac "$MAC" \
+    '{
+        mac: $MAC
+    }' | PATCH "/mgmt/tm/cm/traffic-group/$TRAFFIC_GROUP"
