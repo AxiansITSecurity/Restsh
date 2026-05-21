@@ -82,5 +82,5 @@ fi
 
 JQ -n --arg mac "$MAC" \
     '{
-        mac: $MAC
+        mac: $mac
     }' | PATCH "/mgmt/tm/cm/traffic-group/$TRAFFIC_GROUP"
