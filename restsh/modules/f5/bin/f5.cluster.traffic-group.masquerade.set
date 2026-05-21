@@ -62,6 +62,12 @@ then
     then
         IP=$(GET -rf '[.items[] | select(.trafficGroup == "/Common/traffic-group-local-only") | .address][0]' /mgmt/tm/net/self)
     fi
+    if ! restsh.util.check.varnotempty IP
+    then
+        echo_err "No Self IP Address found."
+        exit 1
+    fi
+
     IP=${IP%%/*}
     # Split IP by space
     #shellcheck disable=SC2086
