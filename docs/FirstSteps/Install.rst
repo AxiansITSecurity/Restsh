@@ -42,6 +42,7 @@ Most packages should be already installed on a standard Linux installation.
 -  grep
 -  jq
 -  newt (whiptail)
+-  openssl
 -  sed
 -  yq
 
