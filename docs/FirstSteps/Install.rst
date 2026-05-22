@@ -106,7 +106,8 @@ Change your working directory into the cloned folder and run the setup script.
     cd restsh
     restsh/restsh.setup init
 
-This adjusts your ``.bashrc``, sets an alias for ``restsh`` and creates the ``.restsh-config`` folder in your home directory.
+This adjusts your ``.bashrc`` and creates the ``.restsh-config`` folder in your home directory.
+You have no aliases for ``restsh`` and ``restsh.setup``.
 
 Your ``.bashrc`` should now have entries like:
 
