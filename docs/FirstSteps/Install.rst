@@ -94,7 +94,7 @@ Personally, I manage all my Git repositories in a ``git`` folder in my home dire
 
 .. code::
 
-    git@github.com:AxiansITSecurity/Restsh.git restsh
+    git clone git@github.com:AxiansITSecurity/Restsh.git restsh
 
 Setup
 -----
