@@ -43,15 +43,19 @@ then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage:"
-    echo "$(basename "$0") [options...] <traffic group name> <MAC Masquerade Address>"
+    echo "$(basename "$0") [options...] <Traffic Group Name> <MAC Masquerade Address>"
     echo "Options":
-    echo "-d  Do net set the address, only display the generated."
+    echo "    -d  Do net set the address, only display the generated."
+    echo ""
+    echo "Valid values:"
+    echo "    Traffic Group Name: This is usually traffic-group-1"
+    echo "    MAC Masquerade Address: \"auto\", \"none\" or valid MAC Address"
     echo ""
     _restsh.help.desc.get "$0"
     exit 2
 fi
 
-restsh.util.check.string "traffic group name" "$1"; TRAFFIC_GROUP=$1
+restsh.util.check.string "Traffic Group Name" "$1"; TRAFFIC_GROUP=$1
 restsh.util.check.string "MAC Masquerade Address>" "$2"; MAC=$2
 
 # Autogenerate MAC address
