@@ -1,6 +1,9 @@
 F5 certificate deployment with HashiCorp Vault
 ==============================================
 
+Introduction
+------------
+
 This tutorial demonstrates how to deploy a new certificate on the F5 by creating a certificate signing request and signing it with HashiCorp Vault.
 
 In this workflow, you'll create the certificate materials on the F5, have them signed by a trusted Certificate Authority (in this case, HashiCorp Vault), and then deploy the signed certificate back to the F5. This process ensures that the private key never leaves the F5.
