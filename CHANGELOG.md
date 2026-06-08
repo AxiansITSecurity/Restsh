@@ -9,7 +9,9 @@ This is the changelog for Restsh.
 - General
     - Doc: Add more tutorials
 - GitLab Module
-    - `gitlab.project.schedules.list` - Add ref to list
+    - Feat: `gitlab.project.schedules.list` - Add ref to list
+- F5 TMOS Module
+    - Feat: `f5.sslreport.generate` - Add option to create Markdown report
 
 ***
 
