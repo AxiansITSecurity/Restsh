@@ -12,6 +12,12 @@ This is the changelog for Restsh.
     - Feat: `gitlab.project.schedules.list` - Add ref to list
 - F5 TMOS Module
     - Feat: `f5.sslreport.generate` - Add option to create Markdown report
+- F5OS-A Module
+    - Feat: Enhanced tenant management
+        - Add `f5osa.tenant.create`
+        - Add `f5osa.tenant.delete`
+        - Add `f5osa.tenant.get`
+        - Add `f5osa.tenant.state`
 
 ***
 

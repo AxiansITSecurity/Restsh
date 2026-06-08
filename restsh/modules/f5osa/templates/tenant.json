@@ -1,0 +1,33 @@
+{
+    "tenant": [
+        {
+            "name": "{{VAR_NAME}}",
+            "config": {
+                "type": "BIG-IP",
+                "image": "{{VAR_IMAGE}}",
+                "nodes": [
+                    1
+                ],
+                "mgmt-ip": "{{VAR_IP_ADDRESS}}",
+                "prefix-length": {{VAR_IP_MASK_LENGTH}},
+                "gateway": "{{VAR_IP_GATEWAY}}",
+                "vlans": [
+                    {{#VAR_VLANS}}
+                        {{MO_COMMA_IF_NOT_FIRST}}
+                        {{.}}
+                    {{/VAR_VLANS}}
+                ],
+                "cryptos": "enabled",
+                "vcpu-cores-per-node": {{VAR_CPUS}},
+                "memory": "{{VAR_MEM_MB}}",
+                "storage": {
+                    "size": {{VAR_DISK_GB}}
+                },
+                "running-state": "configured",
+                "appliance-mode": {
+                    "enabled": false
+                }
+            }
+        }
+    ]
+}

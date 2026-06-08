@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Gets or sets a tenant state.
+# Desc:
+# Valid tenant states:
+# - configured
+# - provisioned
+# - deployed
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+while getopts ':' OPTION
+do
+    case "$OPTION" in
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ] || [ $# -lt 1 ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") <tenant name> [running state]"
+    echo ""
+    _restsh.help.desc.get "$0"
+    exit 2
+fi
+
+restsh.util.check.string "tenant name" "$1"; TENANT_NAME=$1
+if [ -n "${2+x}" ]
+then
+    restsh.util.check.string "running state" "$1"; RUNNING_STATE=$2
+    JQ -n --arg running_state "$RUNNING_STATE" \
+        '{
+            "running-state": $running_state
+        }' \
+    | PATCH "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/config/running-state"
+else
+    GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/config/running-state"
+    GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/state/status"
+fi
