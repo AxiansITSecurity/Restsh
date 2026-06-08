@@ -37,8 +37,10 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m]"
-    echo -e "\tUse -m for markdown output."
+    echo "Usage: $(basename "$0") [options...]"
+    echo ""
+    echo "Options":
+    echo "    -m  Create report in Markdown format."
     exit 2
 fi
 
