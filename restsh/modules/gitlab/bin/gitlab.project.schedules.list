@@ -58,8 +58,8 @@ then
     then
         JQ "." <<< "$RESULT"
     else
-        JQ -r '.[] | [.id,.active,.description,.cron] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "ID,Active,Description,Cron"
+        JQ -r '.[] | [.id,.active,.ref,.description,.cron] | @tsv' <<< "$RESULT" | \
+            COLUMN -o "|" -N "ID,Active,Ref,Description,Cron"
     fi
     exit 0
 fi
