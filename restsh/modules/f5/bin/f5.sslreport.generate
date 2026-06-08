@@ -6,9 +6,16 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Creates a certificate and ssl profiles usage report in html or markdown format.
+# Shortdesc: Creates a certificate and ssl profiles usage report.
 # Desc:
-# Creates a certificate and ssl profiles usage report in html or markdown format.
+# This script uses Pandoc to create a HTML report.
+# If Pandoc is not installed, the report will be generated in Markdown.
+#
+# Report types:
+# - Virtual Server -> SSL Profile
+# - SSL Profile -> Virtual Server
+# - SSL Profiles - Certificates
+# - Certificates - SSL Profiles
 
 # Strict error handling
 set -eEu -o pipefail
@@ -22,9 +29,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+FORMAT=""
+while getopts ':hm' OPTION
 do
     case "$OPTION" in
+        m) FORMAT="md" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -33,18 +42,26 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <output file>"
+    echo "Options":
+    echo "    -m  Create report in Markdown format."
+    echo ""
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <output file>"
     exit 2
 fi
 
-OUTFILE=$1
-TITLE="SSl Profiles And Certificate Report"
-if PANDOC=$(command -v pandoc)
+restsh.util.check.filename "output file" "$1"; OUTFILE=$1
+TITLE="SSL Profiles And Certificate Report"
+
+if [ -z "$FORMAT" ] && PANDOC=$(command -v pandoc2)
 then
     PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--embed-resources" "--standalone" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
 else
-    echo_warn "pandoc not found, creating markdown report"
+    if [ -z "$PANDOC" ]
+    then
+        echo_warn "Pandoc not found, creating markdown report."
+    fi
     OUTFILE=${OUTFILE/.html/.md}
     PANDOC="cat"
 fi
@@ -64,7 +81,7 @@ fi
     echo ""
     f5.sslreport.sslprofiles-cert -m
     echo ""
-    echo "## Certificates - SSL profiles"
+    echo "## Certificates - SSL Profiles"
     echo ""
     f5.sslreport.cert-sslprofiles -m
     echo ""
