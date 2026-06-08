@@ -26,10 +26,12 @@ fi
 # Get options
 IS_TEMPLATE=0
 KEEP_TMP=0
+DEFAULTS=""
 while getopts ':d:kts:' OPTION
 do
     case "$OPTION" in
         d) restsh.util.check.string "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        e) PRINT_EXAMPLE=1 ;;
         k) KEEP_TMP=1 ;;
         t) IS_TEMPLATE=1 ;;
         s) restsh.util.declare.var "$OPTARG" ;;
@@ -44,12 +46,18 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <declaration file>"
     echo "Options:"
-    echo "    -d <defaults file>  Define a custom variable file. Default is <declaration file>.var."
-    echo "    -k                  Keeps the temporary files."
-    echo "    -sVAR=VALUE         Define a custom variable."
-    echo "    -t                  Process the declaration file with mustache."
+    echo "    -d <variables file>  Define a custom variable file."
+    echo "    -e                   Print example template and exit."
+    echo "    -k                   Keeps the temporary files."
+    echo "    -sVAR=VALUE          Define a custom variable."
+    echo "    -t                   Process the declaration file with mustache."
     echo ""
     _restsh.help.desc.get "$0"
+    echo_ok "Example template file:"
+    cat "$RESTSH_PATH/modules/f5osa/templates/tenant.json"
+    echo ""
+    echo_ok "Example variable file:"
+    cat "$RESTSH_PATH/modules/f5osa/templates/tenant.var"
     exit 2
 fi
 
@@ -69,11 +77,19 @@ then
     . "${RESTSH_PATH}/lib/mo/mo.functions"
 
     # Load variables file
-    [ -z "${DEFAULTS+x}" ] && DEFAULTS="${DECLARATION_FILE}.var"
-    [ -s "$DEFAULTS" ] && . "$DEFAULTS"
+    MO_OPTIONS=()
+    if [ -n "$DEFAULTS" ]
+    then
+        if [ ! -s "$DEFAULTS" ]
+        then
+            echo_err "Variables file not found."
+            exit 1
+        fi
+        MO_OPTIONS+=("-s=""$DEFAULTS")
+    fi
 
     # Process template
-    if ! $RESTSH_MO -- "$DECLARATION_FILE" > "$DECLARATION_FILE_PARSED"
+    if ! $RESTSH_MO "${MO_OPTIONS[@]}" -- "$DECLARATION_FILE" > "$DECLARATION_FILE_PARSED"
     then
         echo_err "Processing the template failed."
         exit 1
