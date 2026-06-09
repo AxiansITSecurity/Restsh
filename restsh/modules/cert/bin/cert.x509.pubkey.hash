@@ -40,5 +40,5 @@ fi
 
 restsh.util.check.filename "x509 cert file" "$1"; CERT_FILE=$1
 
-openssl x509 -in "$CERT_FILE" -noout -pubkey -outform der \
+openssl x509 -in "$CERT_FILE" -noout -pubkey | openssl pkey -pubin -outform der \
     | openssl dgst -sha256 -binary | openssl enc -base64

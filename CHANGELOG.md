@@ -21,6 +21,14 @@ This is the changelog for Restsh.
 
 ***
 
+## v4.5.1 - not yet released
+
+- Certificate Module
+    - Fix: cert.csr.pubkey.hash - Print correct hash
+    - Fix: cert.x509.pubkey.hash - Print correct hash
+
+***
+
 ## v4.5.0 - 2026-05-26
 
 This is the first version that is released under GPL-3.0-or-later.
