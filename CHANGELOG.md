@@ -9,6 +9,8 @@ This is the changelog for Restsh.
 - Certificate Module
     - Fix: cert.csr.pubkey.hash - Print correct hash
     - Fix: cert.x509.pubkey.hash - Print correct hash
+- GitLab Module
+    - Fix: gitlab.group.clone - Run fetch before pull to update a local repository
 
 ***
 

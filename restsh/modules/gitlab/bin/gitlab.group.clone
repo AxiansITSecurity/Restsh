@@ -55,6 +55,7 @@ clone_group() {
             local BASE_PATH
             BASE_PATH="$(pwd)"
             cd "${PROJECT}" || exit 1
+            git fetch
             git pull
             cd "$BASE_PATH" || exit 1
         else
