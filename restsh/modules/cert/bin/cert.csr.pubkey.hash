@@ -40,5 +40,5 @@ fi
 
 restsh.util.check.filename "csr file" "$1"; CSR_FILE=$1
 
-openssl req -in "$CSR_FILE" -noout -pubkey -outform der \
+openssl req -in "$CSR_FILE" -noout -pubkey | openssl pkey -pubin -outform der \
     | openssl dgst -sha256 -binary | openssl enc -base64
