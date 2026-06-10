@@ -1,4 +1,4 @@
-F5 certificate deployment with HashiCorp Vault
+F5 Certificate Deployment with HashiCorp Vault
 ==============================================
 
 Introduction

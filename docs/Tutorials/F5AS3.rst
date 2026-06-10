@@ -1,4 +1,4 @@
-F5 AS3 management
+F5 AS3 Management
 =================
 
 Introduction
@@ -96,8 +96,7 @@ You need to create a JSON declaration file that contains the complete definition
 
 .. hint::
 
-   You can fetch the current schema file directly from your f5: ``f5.as3.schema > as3-schema.json``
-   The schema on GitHub is no more up-to-date.
+   The schema on GitHub is no longer up-to-date. You can fetch the current schema file directly from your f5: ``f5.as3.schema > as3-schema.json``
 
 **Example: test-tenant.json**
 
@@ -189,7 +188,7 @@ To inspect the complete declaration of a specific tenant:
 This retrieves the exact declaration that was deployed for the specified tenant, useful for verification or documentation purposes.
 
 4. Update the tenant
--------------------
+--------------------
 
 Updating existing tenants follows the same declarative model as creation. To modify a tenant's configuration, you edit the declaration file and redeploy it.
 
@@ -216,7 +215,7 @@ Updating existing tenants follows the same declarative model as creation. To mod
    f5.as3.tenant.declare test-tenant.json
 
 5. Delete the tenant
--------------------
+--------------------
 
 When you no longer need a tenant and its associated resources, you can delete it. AS3 provides a dedicated command for safe tenant removal.
 
@@ -352,4 +351,3 @@ This tutorial has covered the complete lifecycle of AS3 tenant management using 
 - Integrate AS3 deployments into CI/CD pipelines for automated infrastructure provisioning
 - Review the official F5 AS3 documentation for comprehensive API reference and advanced use cases
 - Implement Restsh templating for multi-environment deployments (development, staging, production)
-
