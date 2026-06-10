@@ -102,7 +102,7 @@ You need to create a JSON declaration file that contains the complete onboarding
 .. code:: json
 
    {
-    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-declarative-onboarding/main/src/schema/latest/do.schema.json",
+    "$schema": "https://raw.githubusercontent.com/F5Networks/f5-declarative-onboarding/refs/heads/main/src/schema/latest/base.schema.json",
     "schemaVersion": "1.46.0",
     "class": "Device",
     "async": true,
