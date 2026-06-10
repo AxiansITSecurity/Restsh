@@ -107,7 +107,7 @@ Cleanup is optional the files in the temporary directory will be automatically r
 
    rm "$RESTSH_TMP/test.lab.lan.csr" "$RESTSH_TMP/test.lab.lan.crt"
 
-Optionally sync the F5 cluster to ensure the new certificate is available on all cluster members. `failover` is here the name of the Sync-Failover device group.
+Optionally sync the F5 cluster to ensure the new certificate is available on all cluster members. ``failover`` is here the name of the Sync-Failover device group.
 
 .. code:: sh
 
