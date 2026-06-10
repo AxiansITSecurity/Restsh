@@ -139,11 +139,9 @@ You need to create a JSON declaration file that contains the complete definition
 
 **Validation and deployment**:
 
-Before deploying, validate the JSON syntax and the AS3 declaration:
-
 .. code:: sh
 
-   # Validate JSON syntax (requires jq utility)
+   # Validate JSON syntax
    # This ensures the file is valid JSON before submission
    jq "." test-tenant.json
 
