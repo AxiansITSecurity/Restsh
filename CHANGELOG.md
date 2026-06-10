@@ -11,6 +11,7 @@ This is the changelog for Restsh.
 - GitLab Module
     - Feat: `gitlab.project.schedules.list` - Add ref to list
 - F5 TMOS Module
+    - Feat: `f5.as3.schema`, `f5.do.schema` - Fetches the schema from current installed packages
     - Feat: `f5.sslreport.generate` - Add option to create Markdown report
 - F5OS-A Module
     - Feat: Enhanced tenant management
