@@ -290,11 +290,25 @@ KV() {
         } 1>&2
         return 2
     fi
-    while IFS=$'\t' read -r KEY VALUE
-    do
-        [ -z "$KEY" ] && continue
-        echo "$KEY: \"$VALUE\""
-    done
+    local TMPFILE
+    TMPFILE="$(mktemp)"
+    cat >> "$TMPFILE"
+    awk -F "\t" -v sep=":" '
+        NR == FNR {
+            for (i = 1; i <= NF; i++) {
+            l = length($i)
+            if (w[i] < l && l < 200)
+                w[i] = l
+            }
+            next
+        }
+        {
+            for (i = 1; i <= NF; i++)
+                printf "%s%-*s", (i > 1 ? sep " " : ""), w[i], $i
+            printf " \n"
+        }
+        ' "$TMPFILE" "$TMPFILE"
+    rm -f "$TMPFILE"
 }
 
 # Replacement for the column command, separator is tab.

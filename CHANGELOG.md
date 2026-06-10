@@ -8,6 +8,7 @@ This is the changelog for Restsh.
 
 - General
     - Doc: Add more tutorials
+    - Upd: Pad output of KV
 - GitLab Module
     - Feat: `gitlab.project.schedules.list` - Add ref to list
 - F5 TMOS Module
