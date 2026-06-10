@@ -349,3 +349,14 @@ This tutorial has covered the complete lifecycle of AS3 tenant management using 
 - Integrate AS3 deployments into CI/CD pipelines for automated infrastructure provisioning
 - Review the official F5 AS3 documentation for comprehensive API reference and advanced use cases
 - Implement Restsh templating for multi-environment deployments (development, staging, production)
+
+**Used Restsh commands**:
+
+- ``f5.as3.info``: Shows the installed AS3 version
+- ``f5.pkg.install``: Installs an iAPPsLX package
+- ``f5.pkg.list``: Lists all iAPPsLX package
+- ``f5.as3.schema``: Fetches the AS3 schema
+- ``f5.as3.tenant.declare``: Declares an AS3 tenant
+- ``f5.as3.tenant.get``: Gets the declaration of a tenant
+- ``f5.as3.tenant.list``: Lists all AS3 tenants
+- ``f5.as3.tenant.remove``: Removes a tenant

@@ -270,3 +270,14 @@ This tutorial has covered the complete lifecycle of DO declaration management us
 - Integrate DO deployments into CI/CD pipelines for automated infrastructure provisioning
 - Review the official F5 DO documentation for comprehensive API reference and advanced use cases
 - Implement Restsh templating for multi-environment deployments (development, staging, production)
+
+**Used Restsh commands**:
+
+- ``f5.pkg.install``: Installs an iAPPsLX package
+- ``f5.pkg.list``: Lists all iAPPsLX package
+- ``f5.do.declare``: Posts a declaration
+- ``f5.do.get``: Gets currently deployed declaration
+- ``f5.do.get.id``: Gets currently deployed declaration id
+- ``f5.do.info``: Shows the installed DO version
+- ``f5.do.reset``: Resets the declaration
+- ``f5.do.schema``: Fetches the DO schema

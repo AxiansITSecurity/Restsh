@@ -117,3 +117,14 @@ Summary
 -------
 
 In this tutorial, we walked through the process of deploying a new certificate on an F5 device using Restsh and HashiCorp Vault. We created a key pair and CSR on the F5, signed the CSR with Vault, and then imported the signed certificate back to the F5. This workflow allows you to securely manage certificates without exposing private keys, while leveraging the power of Restsh for automation and integration with your existing infrastructure.
+
+**Used Restsh commands**:
+
+- ``cert.csr.pubkey``: Shows the public key of a certificate signing request
+- ``cert.x509.pubkey``: Shows the public key of a certificate
+- ``cert.x509.show``: Shows details of a certificate
+- ``f5.cert.csr.create``: Creates a certificate signing request on the F5
+- ``f5.cert.csr.get``: Exports a certificate signing request from the F5
+- ``f5.cert.get``: Exports a certificate from the F5
+- ``f5.cert.import``: Imports a certificate into the F5
+- ``f5.cluster.config-sync``: Syncs a F5 Device Group
