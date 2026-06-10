@@ -94,7 +94,10 @@ A tenant in AS3 represents a logical container for organizing applications and t
 
 You need to create a JSON declaration file that contains the complete definition of your tenant and its applications. The declaration must conform to the `AS3 JSON schema <https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/refguide/schema-reference.html>`_.
 
-``test-tenant.json``
+.. hint::
+
+   You can fetch the current schema file directly from your f5: ``f5.as3.schema > as3-schema.json``
+   The schema on GitHub is no more up-to-date.
 
 **Example: test-tenant.json**
 

@@ -95,7 +95,10 @@ Once the installation is confirmed, you can proceed to create and manage DO decl
 
 You need to create a JSON declaration file that contains the complete onboarding configuration. The declaration must conform to the `DO JSON schema <https://clouddocs.f5.com/products/extensions/f5-declarative-onboarding/latest/schema-reference.html>`_.
 
-``onboarding.json``
+.. hint::
+
+   You can fetch the current schema file directly from your f5: ``f5.do.schema > do-schema.json``
+   The schema on GitHub is no more up-to-date.
 
 **Example: onboarding.json**
 
