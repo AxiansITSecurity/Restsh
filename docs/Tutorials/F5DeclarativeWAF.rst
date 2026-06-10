@@ -59,7 +59,7 @@ You will enable the blocking options and add entities in your Declarative Policy
 
    f5.asm.template.import my-blank-template.xml /Common/my-blank-template
 
-1. Create your first declarative policy
+2. Create your first declarative policy
 ---------------------------------------
 
 **Example: test-policy.json**
