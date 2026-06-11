@@ -667,7 +667,8 @@ restsh.util.json_validate() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
         {
-            echo "JSON validation, pipe string to stdin"
+            echo "JSON validation using the jq utility."
+            echo "Reads the json from stdin."
             echo "Usage: restsh.util.json_validate"
         } 1>&2
         return 2
