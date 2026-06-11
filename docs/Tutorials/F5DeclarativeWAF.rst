@@ -13,7 +13,7 @@ Key features of Declarative WAF:
 
 - **Declarative syntax**: Define desired state in JSON format, not imperative steps
 - **REST API driven**: Full programmatic control via HTTP/REST endpoints
-- **Version-controlled configurations**: Treat waf policies as code
+- **Version-controlled configurations**: Treat WAF policies as code
 - **Atomic deployments**: Ensure consistent, all-or-nothing changes
 
 For complete API reference and examples, see:
@@ -48,6 +48,7 @@ Like any other policy, a declarative policy is also based on a template. It is b
 
 The template is a XML file, edit it with your preferred editor that has XML formatting support.
 
+- Change the name
 - Remove all entities that are not absolutely necessary
 - Disable all blocking options
 
@@ -137,7 +138,7 @@ This retrieves the exact declaration that was deployed, useful for verification 
 
 **Enforce Attack Signatures**:
 
-If you have enabled "Signature Staging" all signatures are in staging after policy creation.
+If you have enabled "Signature Staging", all signatures are in staging after policy creation.
 
 .. code:: sh
 
@@ -156,7 +157,7 @@ If you have enabled "Signature Staging" all signatures are in staging after poli
 4. Templating
 -------------
 
-For managing multiple similar polices or creating reusable configuration patterns, Restsh integrates the Mustache template engine. This allows you to parameterize policy declarations using variables that are substituted at deployment time.
+For managing multiple similar policies or creating reusable configuration patterns, Restsh integrates the Mustache template engine. This allows you to parameterize policy declarations using variables that are substituted at deployment time.
 
 For detailed templating information, see: :doc:`Templating </Advanced/Templating/index>`
 
@@ -180,7 +181,7 @@ Replace hardcoded values in your declaration with Mustache variables using ``{{V
       "policy" : {
          "type" : "security",
          "name" : "{{NAME}}",
-         "description" : "Created by Created by Restsh",
+         "description" : "Created by Restsh",
          "template" : {
             "name" : "my-blank-template"
          },
@@ -199,7 +200,7 @@ Create a separate file containing variable assignments:
    NAME="test-tenant"
    ENFORCEMENT_MODE="transparent"
 
-**Create the policy from the template and deploy it**:
+**Create and deploy**:
 
 Create the policy from the template with the help of the integrated Mustache templating engine.
 
