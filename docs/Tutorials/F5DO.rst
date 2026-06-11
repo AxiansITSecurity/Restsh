@@ -134,7 +134,7 @@ You need to create a JSON declaration file that contains the complete onboarding
 
    # Validate JSON syntax
    # This ensures the file is valid JSON before submission
-   jq "." onboarding.json
+   restsh.util.json_validate < onboarding.json
 
    # Deploy the declaration to the F5 system
    f5.do.declare onboarding.json
@@ -281,3 +281,4 @@ This tutorial has covered the complete lifecycle of DO declaration management us
 - ``f5.do.info``: Shows the installed DO version
 - ``f5.do.reset``: Resets the declaration
 - ``f5.do.schema``: Fetches the DO schema
+- ``restsh.util.json_validate``: JSON validation

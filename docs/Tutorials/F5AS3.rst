@@ -143,7 +143,7 @@ You need to create a JSON declaration file that contains the complete definition
 
    # Validate JSON syntax
    # This ensures the file is valid JSON before submission
-   jq "." test-tenant.json
+   restsh.util.json_validate < test-tenant.json
 
    # Perform a dry-run validation using AS3
    # The -v flag validates without applying changes
@@ -360,3 +360,4 @@ This tutorial has covered the complete lifecycle of AS3 tenant management using 
 - ``f5.as3.tenant.get``: Gets the declaration of a tenant
 - ``f5.as3.tenant.list``: Lists all AS3 tenants
 - ``f5.as3.tenant.remove``: Removes a tenant
+- ``restsh.util.json_validate``: JSON validation

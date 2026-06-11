@@ -42,7 +42,7 @@ Like any other policy, a declarative policy is also based on a template. It is b
 
 .. code:: sh
 
-   f5.asm.template.export /Common/Blank my-blank-template.xml
+   f5.asm.template.export POLICY_TEMPLATE_BLANK my-blank-template.xml
 
 **Customize Template**
 
@@ -57,7 +57,10 @@ You will enable the blocking options and add entities in your Declarative Policy
 
 .. code:: sh
 
-   f5.asm.template.import my-blank-template.xml /Common/my-blank-template
+   f5.asm.template.import my-blank-template.xml my-blank-template
+
+   # List all user-defined templates
+   f5.asm.template.list -u
 
 2. Create your first declarative policy
 ---------------------------------------
@@ -100,7 +103,7 @@ You will enable the blocking options and add entities in your Declarative Policy
 
    # Validate JSON syntax
    # This ensures the file is valid JSON before submission
-   jq "." test-policy.json
+   restsh.util.json_validate < test-policy.json
 
    # Deploy the policy to the F5 system
    # The policy will be applied after import
@@ -206,7 +209,7 @@ Create the policy from the template with the help of the integrated Mustache tem
    MO -s=test-policy.var test-policy.tmpl > test-policy.json
 
    # Validate the JSON
-   jq "." test-policy.json
+   restsh.util.json_validate < test-policy.json
 
    # Deploy the policy to the F5 system
    # The policy will be applied after import
@@ -257,3 +260,5 @@ This tutorial has covered the complete lifecycle of Declarative WAF management u
 - ``f5.asm.signaturestaging.enforce``: Enforces attack signatures
 - ``f5.asm.template.export``: Exports an ASM policy template
 - ``f5.asm.template.import``: Imports an ASM policy template
+- ``f5.asm.template.list``: Lists all ASM policy templates
+- ``restsh.util.json_validate``: JSON validation
