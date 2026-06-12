@@ -9,7 +9,7 @@
 # Shortdesc: Creates or updates an application with the new Declarative API.
 # Desc:
 # Reference: https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api/big-ip-declarative-api.html
-# Example app template: restsh/modules/f5/templates/declared-app.json
+# Example app template: restsh/modules/f5/templates/declared/app.json
 
 # Strict error handling
 set -eEu -o pipefail
@@ -56,10 +56,10 @@ then
     echo ""
     _restsh.help.desc.get "$0"
     echo_ok "Example template file:"
-    cat "$RESTSH_PATH/modules/f5/templates/declared-app.json"
+    cat "$RESTSH_PATH/modules/f5/templates/declared/app.json"
     echo ""
     echo_ok "Example variable file:"
-    cat "$RESTSH_PATH/modules/f5/templates/declared-app.var"
+    cat "$RESTSH_PATH/modules/f5/templates/declared/app.var"
     exit 2
 fi
 

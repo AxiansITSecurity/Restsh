@@ -1,0 +1,5 @@
+{
+  "name": "{{NAME}}",
+  "partition": "{{PARTITION}}",
+  "resources": []
+}
