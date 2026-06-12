@@ -15,6 +15,15 @@ This is the changelog for Restsh.
 - F5 TMOS Module
     - Feat: `f5.as3.schema`, `f5.do.schema` - Fetches the schema from current installed packages
     - Feat: `f5.sslreport.generate` - Add option to create Markdown report
+    - Feat: Support of the new [declarative API](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api.html)
+        - `f5.declared.app.declare` - Create or update an app
+        - `f5.declared.app.get` - Get the app declaration
+        - `f5.declared.app.list` - Lists all app declarations
+        - `f5.declared.app.remove` - Removes an app declaration
+    - Feat: Partition management
+        - `f5.partition.create`
+        - `f5.partition.delete`
+        - `f5.partition.list`
 - F5OS-A Module
     - Feat: Enhanced tenant management
         - Add `f5osa.tenant.create`
