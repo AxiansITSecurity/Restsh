@@ -340,7 +340,7 @@ This tutorial has covered the complete lifecycle of AS3 tenant management using 
 - Validate all declarations in a pre-production environment before deploying to production
 - Use templates for multi-tenant deployments to ensure consistency
 - Document variable files and their purpose for operational clarity
-- Back up existing declarations before performing updates
+- Backup existing declarations before performing updates
 - Use meaningful tenant and application names for clarity and maintainability
 
 **Next steps**:

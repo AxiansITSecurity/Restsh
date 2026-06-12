@@ -262,7 +262,7 @@ This tutorial has covered the complete lifecycle of DO declaration management us
 - Validate all declarations in a pre-production environment before deploying to production
 - Use templates for multi-environment deployments to ensure consistency
 - Document variable files and their purpose for operational clarity
-- Back up existing declarations before performing updates
+- Backup existing declarations before performing updates
 
 **Next steps**:
 
