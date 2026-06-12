@@ -29,7 +29,7 @@ Connect to the F5 with Restsh:
 - Select your F5
 
 1. Create your first app
----------------------------
+------------------------
 
 A application represents a logical container for organizing applications and their related resources (virtual servers, pools, policies, etc.). Each application is a top-level entity that can be independently managed, updated, or deleted.
 
@@ -65,8 +65,19 @@ A application represents a logical container for organizing applications and the
       ]
    }
 
+**Deploy the app**:
+
+.. code:: sh
+
+   # Validate JSON syntax
+   # This ensures the file is valid JSON before submission
+   restsh.util.json_validate < test-app.json
+
+   # Deploy the declaration
+   f5.declared.app.declare test-app.json
+
 2. App management
---------------------
+-----------------
 
 Once apps are deployed, you can perform various management operations to monitor, inspect, and manage your apps.
 
@@ -93,7 +104,7 @@ To inspect the complete declaration of a specific app:
 This retrieves the exact declaration that was deployed for the specified app, useful for verification or documentation purposes.
 
 3. Update the app
---------------------
+-----------------
 
 Updating existing apps follows the same declarative model as creation. To modify a app's configuration, you edit the declaration file and redeploy it.
 
@@ -116,7 +127,7 @@ Updating existing apps follows the same declarative model as creation. To modify
    f5.declared.app.declare -u test-app.json
 
 4. Delete the app
---------------------
+-----------------
 
 When you no longer need a app and its associated resources, you can delete it. The API provides a dedicated command for safe app removal.
 
@@ -250,3 +261,4 @@ This tutorial has covered the complete lifecycle of a new declarative app using 
 - ``f5.declared.app.get`` - Get the app declaration
 - ``f5.declared.app.list`` - Lists all app declarations
 - ``f5.declared.app.remove`` - Removes an app declaration
+- ``restsh.util.json_validate``: JSON validation
