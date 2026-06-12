@@ -1555,6 +1555,7 @@
 /mgmt/tm/sys/alert
 /mgmt/tm/sys/alert/lcd
 /mgmt/tm/sys/aom
+/mgmt/tm/sys/app-service
 /mgmt/tm/sys/appiq
 /mgmt/tm/sys/appiq/config
 /mgmt/tm/sys/application
