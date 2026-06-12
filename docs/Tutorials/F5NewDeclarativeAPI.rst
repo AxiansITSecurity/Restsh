@@ -223,7 +223,7 @@ This tutorial has covered the complete lifecycle of a new declarative app using 
 1. **Declarative API**: The new API enables declarative, programmable management of F5 BIG-IP application services through REST APIs and JSON declarations.
 2. **App creation**: Define application services in JSON declarations , then deploy to create apps on the F5 system.
 3. **Validation**: Always use dry-run mode to validate declarations before production deployment to catch configuration errors early.
-4. **Management operations**: Use dedicated commands to list apps, retrieve configurations, and update the app.
+4. **Management operations**: Use dedicated commands to list apps and retrieve configurations.
 5. **Updates**: Modify and redeploy declarations using the same workflow as creation; updates are atomic and complete.
 6. **Deletion**: Remove apps safely using the dedicated removal command, which cleanly removes all associated resources.
 7. **Templating**: Leverage Mustache templates to parameterize declarations and enable reusable configuration patterns across multiple deployments.
@@ -250,4 +250,3 @@ This tutorial has covered the complete lifecycle of a new declarative app using 
 - ``f5.declared.app.get`` - Get the app declaration
 - ``f5.declared.app.list`` - Lists all app declarations
 - ``f5.declared.app.remove`` - Removes an app declaration
-- ``restsh.util.json_validate``: JSON validation
