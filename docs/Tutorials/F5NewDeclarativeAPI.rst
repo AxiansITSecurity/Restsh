@@ -38,7 +38,7 @@ A application represents a logical container for organizing applications and the
 - Logical grouping of BIG-IP resources into applications
 - Declarative deployment workflows using BIG-IP-native resource properties
 
-**Example template: test-app.json**
+**Example declaration: test-app.json**
 
 .. code:: json
 
