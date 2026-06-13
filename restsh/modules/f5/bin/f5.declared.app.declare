@@ -31,7 +31,7 @@ MODE="auto"
 while getopts ':d:nkts:u' OPTION
 do
     case "$OPTION" in
-        d) restsh.util.check.string "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        d) restsh.util.check.filename "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
         n) MODE="new" ;;
         k) KEEP_TMP=1 ;;
         t) IS_TEMPLATE=1 ;;

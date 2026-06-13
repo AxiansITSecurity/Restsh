@@ -30,7 +30,7 @@ KEEP_TMP=0
 while getopts ':d:ks:tv' OPTION
 do
     case "$OPTION" in
-        d) DEFAULTS=$OPTARG ;;
+        d) restsh.util.check.filename "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
         k) KEEP_TMP=1 ;;
         s) restsh.util.declare.var "$OPTARG" ;;
         t) IS_TEMPLATE=1 ;;
