@@ -73,11 +73,19 @@ then
     . "${RESTSH_PATH}/lib/mo/mo.f5.as3"
 
     # Load variables file
-    [ -z "${DEFAULTS+x}" ] && DEFAULTS="${AS3_FILE}.var"
-    [ -s "$DEFAULTS" ] && . "$DEFAULTS"
+    MO_OPTIONS=()
+    if [ -n "$DEFAULTS" ]
+    then
+        if [ ! -f "$DEFAULTS" ]
+        then
+            echo_err "Variables file not found."
+            exit 1
+        fi
+        MO_OPTIONS+=("-s=$DEFAULTS")
+    fi
 
     # Process template
-    if ! $RESTSH_MO -- "$AS3_FILE" > "$AS3_FILE_PARSED"
+    if ! $RESTSH_MO "${MO_OPTIONS[@]}" -- "$AS3_FILE" > "$AS3_FILE_PARSED"
     then
         echo_err "Processing the template failed."
         exit 1

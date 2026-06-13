@@ -78,12 +78,12 @@ then
     MO_OPTIONS=()
     if [ -n "$DEFAULTS" ]
     then
-        if [ ! -s "$DEFAULTS" ]
+        if [ ! -f "$DEFAULTS" ]
         then
             echo_err "Variables file not found."
             exit 1
         fi
-        MO_OPTIONS+=("-s=""$DEFAULTS")
+        MO_OPTIONS+=("-s=$DEFAULTS")
     fi
 
     # Process template
