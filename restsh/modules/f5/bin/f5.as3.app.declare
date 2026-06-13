@@ -55,7 +55,7 @@ then
 fi
 
 restsh.util.check.string "tenant name" "$1"; TENANT=$1
-restsh.util.check.string "AS3 declaration file" "$2"; AS3_FILE=$2
+restsh.util.check.filename "AS3 declaration file" "$2"; AS3_FILE=$2
 AS3_FILE_PARSED="$RESTSH_TMP/$(basename "AS3_FILE")"
 
 # Cleanup tmp files
