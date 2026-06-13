@@ -46,16 +46,15 @@ then
     echo "Usage: $(basename "$0") [options...] <declaration file>"
     echo "Options:"
     echo "    -d <variables file>  Define a custom variable file."
-    echo "    -e                   Print example template and exit."
     echo "    -k                   Keeps the temporary files."
     echo "    -sVAR=VALUE          Define a custom variable."
     echo "    -t                   Process the declaration file with mustache."
     echo ""
     _restsh.help.desc.get "$0"
-    echo_ok "Example template file:"
+    echo "Example template file:"
     cat "$RESTSH_PATH/modules/f5osa/templates/tenant.json"
     echo ""
-    echo_ok "Example variable file:"
+    echo "Example variable file:"
     cat "$RESTSH_PATH/modules/f5osa/templates/tenant.var"
     exit 2
 fi
