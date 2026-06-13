@@ -27,15 +27,16 @@ fi
 IS_TEMPLATE=0
 KEEP_TMP=0
 DEFAULTS=""
-UPDATE=0
-while getopts ':d:kts:u' OPTION
+MODE="auto"
+while getopts ':d:nkts:u' OPTION
 do
     case "$OPTION" in
         d) restsh.util.check.string "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        n) MODE="new" ;;
         k) KEEP_TMP=1 ;;
         t) IS_TEMPLATE=1 ;;
         s) restsh.util.declare.var "$OPTARG" ;;
-        u) UPDATE=1 ;;
+        u) MODE="update" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -48,10 +49,11 @@ then
     echo "Usage: $(basename "$0") [options...] <declaration file>"
     echo "Options:"
     echo "    -d <variables file>  Define a custom variable file."
+    echo "    -n                   Create a new app."
     echo "    -k                   Keeps the temporary files."
     echo "    -sVAR=VALUE          Define a custom variable."
     echo "    -t                   Process the declaration file with mustache."
-    echo "    -u                   Replace an existing declaration."
+    echo "    -u                   Replace an existing app."
     echo ""
     _restsh.help.desc.get "$0"
     echo "Example template file:"
@@ -99,8 +101,18 @@ else
     cp "$DECLARATION_FILE" "$DECLARATION_FILE_PARSED"
 fi
 
+if [ "$MODE" = "auto" ]
+then
+    if GET "$F5_API_PREFIX/tm/sys/app-service/$APPLICATION" >/dev/null 2>&1
+    then
+        MODE="update"
+    else
+        MODE="new"
+    fi
+fi
+
 # Post the declaration
-if [ "$UPDATE" -eq 1 ]
+if [ "$MODE" = "update" ]
 then
     PUT "$F5_API_PREFIX/tm/sys/app-service" < "$DECLARATION_FILE_PARSED"
 else
