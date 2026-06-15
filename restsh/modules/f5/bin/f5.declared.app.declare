@@ -101,6 +101,16 @@ else
     cp "$DECLARATION_FILE" "$DECLARATION_FILE_PARSED"
 fi
 
+# Check the parsed declaration
+restsh.util.json_validate < "$DECLARATION_FILE_PARSED"
+
+# Get the application fullPath from the declaration
+if ! APPLICATION=$(jq -re '"~" + .partition + "~" + .name' "$DECLARATION_FILE_PARSED")
+then
+    echo_err "Invalid declaration, partition and name not defined"
+    exit 1
+fi
+
 if [ "$MODE" = "auto" ]
 then
     if GET "$F5_API_PREFIX/tm/sys/app-service/$APPLICATION" >/dev/null 2>&1
@@ -114,7 +124,7 @@ fi
 # Post the declaration
 if [ "$MODE" = "update" ]
 then
-    PUT "$F5_API_PREFIX/tm/sys/app-service" < "$DECLARATION_FILE_PARSED"
+    PUT "$F5_API_PREFIX/tm/sys/app-service/$APPLICATION" < "$DECLARATION_FILE_PARSED"
 else
     POST "$F5_API_PREFIX/tm/sys/app-service" < "$DECLARATION_FILE_PARSED"
 fi
