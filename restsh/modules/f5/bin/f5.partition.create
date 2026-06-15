@@ -24,11 +24,11 @@ fi
 
 DESCRIPTION=""
 RD=0
-while getopts ':h' OPTION
+while getopts ':d:r:' OPTION
 do
     case "$OPTION" in
         d) DESCRIPTION=$OPTARG ;;
-        r) restsh.util.check.uint "$OPTARG"; RD=$OPTARG ;;
+        r) restsh.util.check.uint "Route domain" "$OPTARG"; RD=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -48,7 +48,7 @@ fi
 restsh.util.check.string "partition" "$1"; PARTITION=$1
 
 JQ -n --arg partition "$PARTITION" \
-    --arg-json rd "$RD" \
+    --argjson rd "$RD" \
     --arg description "$DESCRIPTION" \
     '{
         "name": $partition,
