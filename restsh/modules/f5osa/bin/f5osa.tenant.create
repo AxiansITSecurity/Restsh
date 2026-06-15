@@ -27,13 +27,15 @@ fi
 IS_TEMPLATE=0
 KEEP_TMP=0
 DEFAULTS=""
-while getopts ':d:kts:' OPTION
+DRY_RUN=0
+while getopts ':d:kts:v' OPTION
 do
     case "$OPTION" in
         d) restsh.util.check.filename "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
         k) KEEP_TMP=1 ;;
         t) IS_TEMPLATE=1 ;;
         s) restsh.util.declare.var "$OPTARG" ;;
+        v) DRY_RUN=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -49,6 +51,7 @@ then
     echo "    -k                   Keeps the temporary files."
     echo "    -sVAR=VALUE          Define a custom variable."
     echo "    -t                   Process the declaration file with mustache."
+    echo "    -v                   Output the parsed declaration, do not post it."
     echo ""
     _restsh.help.desc.get "$0"
     echo "Example template file:"
@@ -96,5 +99,13 @@ else
     cp "$DECLARATION_FILE" "$DECLARATION_FILE_PARSED"
 fi
 
-# Post the declaration
-POST "$F5OSA_API_PREFIX/data/f5-tenants:tenants" < "$DECLARATION_FILE_PARSED"
+# Check the parsed declaration
+restsh.util.json_validate < "$DECLARATION_FILE_PARSED"
+
+if [ "$DRY_RUN" -eq 1 ]
+then
+    JQ "." "$DECLARATION_FILE_PARSED"
+else
+    # Post the declaration
+    POST "$F5OSA_API_PREFIX/data/f5-tenants:tenants" < "$DECLARATION_FILE_PARSED"
+fi
