@@ -44,5 +44,6 @@ if [ "$RAW" -eq 1 ]
 then
     GET "/mgmt/tm/auth/partition"
 else
-    GET -rf ".items[].fullPath" "/mgmt/tm/auth/partition?\$select=fullPath"
+    GET -rf ".items[] | [.fullPath,.defaultRouteDomain,.description] | @tsv" "/mgmt/tm/auth/partition" \
+        | COLUMN -o "|" -N "Name,RD,Description"
 fi
