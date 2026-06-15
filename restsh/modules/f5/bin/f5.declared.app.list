@@ -6,7 +6,7 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Lists all application of the new Declarative API.
+# Shortdesc: Lists all applications of the new Declarative API.
 # Desc:
 # Reference: https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api/big-ip-declarative-api.html
 
@@ -37,7 +37,9 @@ if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0")"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output"
     echo ""
     _restsh.help.desc.get "$0"
     exit 2
