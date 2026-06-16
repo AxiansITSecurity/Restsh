@@ -33,6 +33,14 @@ do
     shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
 done < <(find restsh/lib restsh/bin -type f ! -name .\*)
 
+for M in aafw cert custom f5 f5osa gitlab scm
+do
+    while read -r FILE
+    do
+        shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
+    done < <(find restsh/modules/${M}/lib restsh/modules/${M}/bin -type f ! -name .\*)
+done
+
 if [ "$ERROR" -eq 0 ]
 then
     echo "OK! Shellcheck does not report any warnings or errors"
