@@ -9,6 +9,8 @@ This is the changelog for Restsh.
 - General
     - Doc: Add more tutorials
     - Upd: Pad output of KV
+- Axians Automation Framework
+    - Feat: `aafw.pipeline.start.task.sysdb`
 - GitLab Module
     - Upd: `gitlab.project.schedules.list` - Add ref to list
     - Feat: `gitlab.project.schedules.state`
