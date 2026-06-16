@@ -23,13 +23,12 @@ then
 fi
 
 # Get options
-TASK_HOST=""
-SYNC=0
+TASK_HOST="active"
 PIPELINE_OPTS=()
-while getopts ':st:w' OPTION
+while getopts ':s:t:w' OPTION
 do
     case "$OPTION" in
-        s) SYNC=1 ;;
+        s) restsh.util.check.uint "Sync" "$OPTARG"; PIPELINE_OPTS+=("-s" "SYNC=${OPTARG}") ;;
         t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
         w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
@@ -43,7 +42,7 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -s           Sync Cluster"
+    echo "    -s <0|1>     1 = Sync Device Group, 0 = Do not sync Device Group"
     echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
     echo "    -w           Wait for finished pipeline."
     exit 2
@@ -53,6 +52,7 @@ restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK=f5_sys_db" -s "TASK_HOST=$TASK_HOST" \
-    -s "SYNC=$SYNC" \
-    "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
+    -s "TASK=f5_sys_db" \
+    -s "TASK_HOST=$TASK_HOST" \
+    "${PIPELINE_OPTS[@]}" \
+    "$PROJECT" "$BRANCH"
