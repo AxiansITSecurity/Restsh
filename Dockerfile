@@ -19,6 +19,7 @@ apt-get install -y --no-install-recommends \
         pandoc \
         whiptail \
         yq
+apt-get clean
 rm -rf /var/lib/apt/lists/*
 EOF
 
