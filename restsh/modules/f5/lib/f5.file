@@ -36,7 +36,7 @@ f5.file.upload() {
             echo "Uploads a file to the F5."
             echo "Usage: f5.file.upload <upload endpoint> <file>"
             echo ""
-            _restsh.help.desc.get $RESTSH_PATH/modules/f5/lib/f5.file
+            _restsh.help.desc.get "$RESTSH_PATH/modules/f5/lib/f5.file"
         } 1>&2
         return 2
     fi
@@ -66,7 +66,7 @@ f5.file.download() {
             echo "Downloads a file from the F5."
             echo "Usage: f5.file.download <download endpoint> <file> <size> <local file>"
             echo ""
-            _restsh.help.desc.get $RESTSH_PATH/modules/f5/lib/f5.file
+            _restsh.help.desc.get "$RESTSH_PATH/modules/f5/lib/f5.file"
         } 1>&2
         return 2
     fi
