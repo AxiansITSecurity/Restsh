@@ -80,5 +80,6 @@ while read -r ID
 do
     TASK_HOST=$(GET -r -f ".[] | select(.key == \"TASK_HOST\") | .value" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/variables")
     JOB_ID=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .id" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
-    echo "Job $JOB_ID: $TASK_HOST"
+    URL=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
+    echo "Created job $JOB_ID for $TASK_HOST: $URL"
 done < <(GET -r -f ".[].id" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/?ref=$BRANCH&status=manual&per_page=$NUM_JOBS")
