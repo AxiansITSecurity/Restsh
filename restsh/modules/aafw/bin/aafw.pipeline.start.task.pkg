@@ -23,7 +23,7 @@ then
 fi
 
 # Get options
-TASK_HOST=""
+TASK_HOST="active"
 PIPELINE_OPTS=()
 while getopts ':t:w' OPTION
 do
@@ -53,6 +53,8 @@ restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 restsh.util.check.string "package" "$3"; PKG=$3
 
 gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK=pkg_install" -s "TASK_HOST=$TASK_HOST" \
-    -s "TASK_PKG=$PKG" "${PIPELINE_OPTS[@]}" \
+    -s "TASK=pkg_install" \
+    -s "TASK_HOST=$TASK_HOST" \
+    -s "TASK_PKG=$PKG" \
+    "${PIPELINE_OPTS[@]}" \
     "$PROJECT" "$BRANCH"
