@@ -16,6 +16,7 @@ This is the changelog for Restsh.
     - Feat: `gitlab.project.schedules.state`
 - F5 TMOS Module
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
+    - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
     - Feat: `f5.as3.schema`, `f5.do.schema` - Fetches the schema from current installed packages
     - Feat: `f5.sslreport.generate` - Add option to create Markdown report
     - Feat: Support of the new [declarative API](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api.html)
