@@ -23,16 +23,16 @@ then
 fi
 
 # Get options
-TASK_HOST=""
 while getopts ':t:' OPTION
 do
     case "$OPTION" in
-        t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
+        t) restsh.util.check.string "Task host" "$OPTARG"; PIPELINE_OPTS+=("-s" "TASK_HOST=${OPTARG}") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
+PIPELINE_OPTS=("-s" "CI_PIPELINE_SOURCE=api")
 if [ $# -ne 2 ] || [ "$OPTION" = "invalid " ]
 then
     exec 1>&2
@@ -47,20 +47,11 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
-if [ -n "$TASK_HOST" ]
-then
-    NUM_JOBS=1
-else
-    NUM_JOBS=2
-fi
-
 # Special case for draft branch
 if [ "$BRANCH" = "draft" ]
 then
-    if gitlab.project.pipeline.start -s "CI_COMMIT_BRANCH=$BRANCH" \
-        -s "CI_PIPELINE_SOURCE=push" -s "TASK_HOST=$TASK_HOST" \
-        "${PIPELINE_OPTS[@]}" \
-        "$PROJECT" "$BRANCH"
+    PIPELINE_OPTS+=("-s" "CI_COMMIT_BRANCH=$BRANCH")
+    if gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
     then
         exit 0
     fi
@@ -68,11 +59,17 @@ then
 fi
 
 # Start pipeline to create manual jobs
-gitlab.project.pipeline.start -w -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK_HOST=$TASK_HOST" \
-    "$PROJECT" "$BRANCH"
+PIPELINE_OPTS+=("-w")
+gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
 
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
+
+if [ -n "$TASK_HOST" ]
+then
+    NUM_JOBS=1
+else
+    NUM_JOBS=2
+fi
 
 echo "Created manual jobs for Declarative Onboarding."
 echo "You can use \"gitlab.project.job.start\" to start it."

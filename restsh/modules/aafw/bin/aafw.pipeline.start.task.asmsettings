@@ -23,15 +23,17 @@ then
 fi
 
 # Get options
-TASK_HOST="active"
 RESTART_ASM=1
-PIPELINE_OPTS=()
+PIPELINE_OPTS=(
+    "-s" "CI_PIPELINE_SOURCE=api"
+    "-s" "TASK=asm_settings"
+)
 while getopts ':ns:t:w' OPTION
 do
     case "$OPTION" in
         n) RESTART_ASM=0 ;;
         s) restsh.util.check.uint "Sync" "$OPTARG"; PIPELINE_OPTS+=("-s" "SYNC=${OPTARG}") ;;
-        t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
+        t) restsh.util.check.string "Task host" "$OPTARG"; PIPELINE_OPTS+=("-s" "TASK_HOST=${OPTARG}") ;;
         w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -54,9 +56,5 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
-gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK=asm_settings" \
-    -s "TASK_HOST=$TASK_HOST" \
-    -s "RESTART_ASM=$RESTART_ASM" \
-    "${PIPELINE_OPTS[@]}" \
-    "$PROJECT" "$BRANCH"
+PIPELINE_OPTS+=("-s" "RESTART_ASM=$RESTART_ASM")
+gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"

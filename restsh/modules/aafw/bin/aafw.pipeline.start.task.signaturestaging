@@ -23,14 +23,15 @@ then
 fi
 
 # Get options
-TASK_HOST="active"
-ENFORCE_ALL=0
-PIPELINE_OPTS=()
+PIPELINE_OPTS=(
+    "-s" "CI_PIPELINE_SOURCE=api"
+    "-s" "TASK=signature_staging"
+)
 while getopts ':at:w' OPTION
 do
     case "$OPTION" in
-        a) ENFORCE_ALL=1 ;;
-        t) restsh.util.check.string "Task host" "$OPTARG"; TASK_HOST=$OPTARG ;;
+        a) PIPELINE_OPTS+=("-s" "ENFORCE_ALL=$ENFORCE_ALL") ;;
+        t) restsh.util.check.string "Task host" "$OPTARG"; PIPELINE_OPTS+=("-s" "TASK_HOST=${OPTARG}") ;;
         w) PIPELINE_OPTS+=("-w") ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -52,9 +53,4 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
-gitlab.project.pipeline.start -s "CI_PIPELINE_SOURCE=trigger" \
-    -s "TASK=signature_staging" \
-    -s "TASK_HOST=$TASK_HOST" \
-    -s "ENFORCE_ALL=$ENFORCE_ALL" \
-    "${PIPELINE_OPTS[@]}" \
-    "$PROJECT" "$BRANCH"
+gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
