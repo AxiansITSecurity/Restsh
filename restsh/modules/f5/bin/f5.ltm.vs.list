@@ -47,6 +47,6 @@ if [ "$RAW" -eq 1 ]
 then
     GET /mgmt/tm/ltm/virtual
 else
-    GET /mgmt/tm/ltm/virtual | JQ -r ".items[] | [.fullPath,.destination] | @tsv" \
-        | COLUMN -o "|" -N "Full Path,Destination"
+    GET /mgmt/tm/ltm/virtual | JQ -r ".items[] | [.fullPath,.enabled,.destination,.description] | @tsv" \
+        | COLUMN -o "|" -N "Full Path,Enabled,Destination,Description"
 fi
