@@ -11,10 +11,12 @@ This is the changelog for Restsh.
     - Upd: Pad output of KV
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.sysdb`
+    - Feat: `aafw.pipeline.start.task.f5-system-scanner`
 - GitLab Module
     - Upd: `gitlab.project.schedules.list` - Add ref to list
     - Feat: `gitlab.project.schedules.state`
 - F5 TMOS Module
+    - Feat: `f5.system-scanner` - https://my.f5.com/manage/s/article/K000160515
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
     - Feat: `f5.as3.schema`, `f5.do.schema` - Fetches the schema from current installed packages

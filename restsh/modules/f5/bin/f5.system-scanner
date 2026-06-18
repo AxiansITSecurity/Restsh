@@ -1,0 +1,132 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Uploads and runs the f5-system-scanner
+# Desc:
+# Uploads the files to /shared/tmp and runs the system scanner with a nice value of 19.
+# The script waits for the scanner to finish, downloads the report and searches for
+# "MISMATCH" lines in the report. If it finds a mismatch the script exits with exit code 1.
+#
+# Reference: https://my.f5.com/manage/s/article/K000160515
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+WAIT_MIN=30
+while getopts ':w:' OPTION
+do
+    case "$OPTION" in
+        w) restsh.util.check.uint "Wait time" "$OPTARG"; WAIT_MIN=$OPTARG ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -ne 4 ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <system scanner binary> <dat file> <dat hash file>  <output file>"
+    echo "Options:"
+    echo "    -w <minutes>  Timeout in minutes for waiting, default 30" 
+    echo ""
+    _restsh.help.desc.get "$0"
+    exit 2
+fi
+restsh.util.check.filename "system scanner binary" "$1"; LOCAL_SCANNER_BIN=$1
+restsh.util.check.filename "dat file" "$2"; LOCAL_DAT_FILE=$2
+restsh.util.check.filename "dat hash file" "$3"; LOCAL_DAT_HASH_FILE=$3
+restsh.util.check.filename "output file" "$4"; LOCAL_OUTPUT_FILE=$4
+
+if [ ! -f "$LOCAL_SCANNER_BIN" ]
+then
+    echo_err "System scanner binary not found."
+    exit 1
+fi
+if [ ! -f "$LOCAL_DAT_FILE" ]
+then
+    echo_err "Dat file not found."
+    exit 1
+fi
+if [ ! -f "$LOCAL_DAT_HASH_FILE" ]
+then
+    echo_err "Dat hash file not found."
+    exit 1
+fi
+
+#shellcheck disable=SC2034
+# Read is used to split the line
+read -r SHA512_HASH FILENAME < "$LOCAL_DAT_HASH_FILE"
+
+echo "Uploading scanner file"
+# Upload the system scanner and the dat file
+SCANNER_BIN=$(basename "$LOCAL_SCANNER_BIN")
+f5.file-transfer.upload "$LOCAL_SCANNER_BIN" > /dev/null
+f5.run "mv" "/var/config/rest/downloads/${SCANNER_BIN}" "/shared/tmp/${SCANNER_BIN}"
+f5.run "chmod" "+x" "/shared/tmp/${SCANNER_BIN}"
+
+echo "Uploading dat file"
+DAT_FILE=$(basename "$LOCAL_DAT_FILE")
+DAT_FILE_GZ="${DAT_FILE}.gz"
+gzip -c "$LOCAL_DAT_FILE" > "$RESTSH_TMP/${DAT_FILE_GZ}"
+f5.file-transfer.upload "$RESTSH_TMP/${DAT_FILE_GZ}" > /dev/null
+rm -f "$RESTSH_TMP/${DAT_FILE_GZ}"
+f5.run "mv" "/var/config/rest/downloads/${DAT_FILE_GZ}" "/shared/tmp/${DAT_FILE_GZ}"
+f5.run "gzip" "-d" "-f" "/shared/tmp/${DAT_FILE_GZ}"
+
+# Create and upload wrapper script
+REPORT_FILE="f5-system-scanner-report.txt"
+WRAPPER_SCRIPT="f5-system-scanner-wrapper.sh"
+cat > "${RESTSH_TMP}/${WRAPPER_SCRIPT}" <<EOL
+#!/bin/sh
+rm -f "/shared/tmp/${REPORT_FILE}"
+nice -n 19 "/shared/tmp/${SCANNER_BIN}" --dat-file "/shared/tmp/${DAT_FILE}" --dat-file-sha512 "$SHA512_HASH" --output "/shared/tmp/${REPORT_FILE}.tmp"
+mv "/shared/tmp/${REPORT_FILE}.tmp" "/shared/tmp/${REPORT_FILE}"
+EOL
+f5.file-transfer.upload "$RESTSH_TMP/${WRAPPER_SCRIPT}" > /dev/null
+rm -f "$RESTSH_TMP/${WRAPPER_SCRIPT}"
+f5.run "mv" "/var/config/rest/downloads/${WRAPPER_SCRIPT}" "/shared/tmp/${WRAPPER_SCRIPT}"
+f5.run "chmod" "+x" "/shared/tmp/${WRAPPER_SCRIPT}"
+
+echo "Start system scanner in background"
+f5.run -b "/shared/tmp/${WRAPPER_SCRIPT}"
+
+echo "Waiting for completion - this can take a while"
+sleep 60
+
+COUNTER=0
+while ! f5.file.size "/shared/tmp/${REPORT_FILE}" >/dev/null 2>&1
+do
+    sleep 60
+    COUNTER=$((COUNTER+1))
+    if [ "$COUNTER" -ge "$WAIT_MIN" ]
+    then
+        echo_err "System scanner has not finished until deadline."
+        exit 1
+    fi
+done
+
+# Fetch the result
+echo "Saving report: ${LOCAL_OUTPUT_FILE}"
+f5.run "cat" "/shared/tmp/${REPORT_FILE}" > "$LOCAL_OUTPUT_FILE"
+if grep -qs MISMATCH "$LOCAL_OUTPUT_FILE"
+then
+    echo_err "Found MISMATCH"
+    exit 1
+fi
+echo_ok "Finished"
