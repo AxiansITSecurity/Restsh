@@ -36,6 +36,9 @@ This is the changelog for Restsh.
         - Add `f5osa.tenant.delete`
         - Add `f5osa.tenant.get`
         - Add `f5osa.tenant.state`
+    - Feat: Dockerized services management
+        - Add `f5osa.service.list`
+        - Add `f5osa.service.restart`
 
 ***
 
