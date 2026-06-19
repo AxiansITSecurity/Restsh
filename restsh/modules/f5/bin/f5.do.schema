@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Fetches the current DO schema from the installed DO package.
+# Shortdesc: Fetches the current DO schema files from the installed DO package.
 # Desc:
-# Fetches the current DO schema from the installed DO package.
+# Fetches the current DO schema files from the installed DO package.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -31,12 +31,16 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0")"
+    echo "Usage: $(basename "$0") <destination folder>"
     exit 2
 fi
+restsh.util.check.filename "destination folder" "$1"; FOLDER=$1
 
-f5.run "base64" "/var/config/rest/iapps/f5-declarative-onboarding/schema/latest/base.schema.json" | base64 -d
+while read -r FILE
+do
+    f5.run "base64" "/var/config/rest/iapps/f5-declarative-onboarding/schema/latest/${FILE}" | base64 -d > "${FOLDER}/${FILE}"
+done < <(f5.run "ls" "-1" "/var/config/rest/iapps/f5-declarative-onboarding/schema/latest/")

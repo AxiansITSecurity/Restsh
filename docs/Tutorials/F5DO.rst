@@ -97,7 +97,7 @@ You need to create a JSON declaration file that contains the complete onboarding
 
 .. hint::
 
-   The schema on GitHub is no longer up-to-date. You can fetch the current schema file directly from your f5: ``f5.do.schema > do-schema.json``
+   The schema on GitHub is no longer up-to-date. You can fetch the current schema file directly from your f5: ``f5.do.schema <destination folder>``
 
 **Example: onboarding.json**
 
