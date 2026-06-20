@@ -11,30 +11,34 @@
 # Initializes and checks the environment. Start this script not directly,
 # use restsh/restsh.start or source it from your script instead.
 
-# Check if we are in a valid GitLab CI/CD pipeline
-if [ -n "${CI_PROJECT_DIR+x}" ] && [ -d "${CI_PROJECT_DIR}/restsh/restsh" ]
+# Strict error handling
+set -eEu -o pipefail
+
+# Check if we are running in a GitLab CI/CD pipeline
+if [ -n "${CI_PROJECT_DIR:-}" ] && [ -d "${CI_PROJECT_DIR}" ]
 then
     # In GitLab pipeline.
     # If there is no .restsh-config create an empty one.
-    # Settings can be defined by CI/CD variables.
+    # Settings should be defined by CI/CD variables.
     [ -s "$CI_PROJECT_DIR/.restsh-config" ] || echo "#" > "$CI_PROJECT_DIR/.restsh-config"
     export RESTSH_CONFIG="$CI_PROJECT_DIR/.restsh-config"
-    export RESTSH_PATH="$CI_PROJECT_DIR/restsh/restsh"
 fi
 
-if [ -z "${RESTSH_PATH+x}" ]
+# Check for required RESTSH_PATH
+if [ -z "${RESTSH_PATH:-}" ]
 then
-    echo "Script must be run in the restsh environment." >&2
-    exit 1
+    # Set it from own source file info
+    RESTSH_PATH=${BASH_SOURCE[0]%/*}
+    RESTSH_PATH=$(realpath "$RESTSH_PATH")
+    echo "Setting RESTSH_PATH to $RESTSH_PATH"
+    export RESTSH_PATH
 fi
 
+# We use modern Bash functions
 if [[ ! -v BASH_VERSINFO ]] || [[ "${BASH_VERSINFO[0]}" -lt 5 ]]; then
     echo "Restsh is only compatible with Bash 5 or newer." >&2
     exit 1
 fi
-
-# Strict error handling
-set -eEu -o pipefail
 
 # Use default or custom config file
 if [ -z "${RESTSH_CONFIG+x}" ]
