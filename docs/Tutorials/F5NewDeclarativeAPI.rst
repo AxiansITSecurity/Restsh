@@ -262,3 +262,9 @@ This tutorial has covered the complete lifecycle of a new declarative app using 
 - ``f5.declared.app.list`` - Lists all app declarations
 - ``f5.declared.app.remove`` - Removes an app declaration
 - ``restsh.util.json_validate``: JSON validation
+
+Discuss
+-------
+
+- `GitHub discussion <https://github.com/AxiansITSecurity/Restsh/discussions/12>`__
+- `F5 DevCentral <https://community.f5.com/kb/communityarticles/restsh-is-now-available-under-an-open-source-license/345860>`__
