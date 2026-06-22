@@ -31,6 +31,14 @@ This is the changelog for Restsh.
         - `f5.partition.create`
         - `f5.partition.delete`
         - `f5.partition.list`
+    - Feat: tmsh script management
+        - `f5.cli.script.create`
+        - `f5.cli.script.delete`
+        - `f5.cli.script.get`
+        - `f5.cli.script.list`
+        - `f5.cli.script.run`
+        - `f5.cli.script.update`
+    - Upd: `f5.sys.service.restart` - Add workaround for httpd restart
     - Upd: `f5.asm.live-update.list` - Add option to hide previously installed updates
 - F5OS-A Module
     - Feat: Enhanced tenant management
