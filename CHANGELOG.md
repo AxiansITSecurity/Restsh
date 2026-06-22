@@ -15,6 +15,7 @@ This is the changelog for Restsh.
 - GitLab Module
     - Upd: `gitlab.project.schedules.list` - Add ref to list
     - Feat: `gitlab.project.schedules.state`
+    - Feat: `gitlab.project.job_token_scope.push`
 - F5 TMOS Module
     - Feat: `f5.system-scanner` - https://my.f5.com/manage/s/article/K000160515
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
