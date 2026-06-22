@@ -32,9 +32,11 @@ COMPONENTS=(
     "threat-campaigns"
 )
 RAW=0
-while getopts ':r' OPTION
+FILTER=""
+while getopts ':nr' OPTION
 do
     case "$OPTION" in
+        n) FILTER='| select(.status != "previously-installed")' ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -47,6 +49,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] [component]"
     echo "Options:"
+    echo "    -n  Do not list previous installed updates"
     echo "    -r  Raw output"
     echo "Available components:"
     for COMPONENT in "${COMPONENTS[@]}"
@@ -66,7 +69,7 @@ if [ "$RAW" -eq 1 ]
 then
     for COMPONENT in "${COMPONENTS[@]}"
     do
-        GET "/mgmt/tm/live-update/$COMPONENT/installations"
+        GET -rf ".items[] $FILTER" "/mgmt/tm/live-update/$COMPONENT/installations"
     done
 else
     {
@@ -78,7 +81,7 @@ else
                 UPDATE_DT=$(date -d@"$UPDATE_S" +"%Y-%m-%dT%H:%M:%SZ")
                 printf "%s\t%s\t%s\t%s\t%s\n" "$COMPONENT" "$ID" "$STATUS" "$LOADDT" "$UPDATE_DT" 
             done < <(GET "/mgmt/tm/live-update/$COMPONENT/installations" \
-                | JQ -r ".items[] | [.id,.status,.lastUpdateMicros,.loadDateTime] | @tsv")
+                | JQ -r ".items[] $FILTER | [.id,.status,.lastUpdateMicros,.loadDateTime] | @tsv")
         done
     } | COLUMN -o "|" -N "component,id,status,loadDateTime,lastUpdate"
 fi

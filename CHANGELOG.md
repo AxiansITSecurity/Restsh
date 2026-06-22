@@ -31,6 +31,7 @@ This is the changelog for Restsh.
         - `f5.partition.create`
         - `f5.partition.delete`
         - `f5.partition.list`
+    - Upd: `f5.asm.live-update.list` - Add option to hide previously installed updates
 - F5OS-A Module
     - Feat: Enhanced tenant management
         - Add `f5osa.tenant.create`
