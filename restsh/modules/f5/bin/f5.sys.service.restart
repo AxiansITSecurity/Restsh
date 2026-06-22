@@ -38,10 +38,32 @@ then
     exit 2
 fi
 
-restsh.util.check.string "service" "$1"; NAME=$1
+restsh.util.check.string "service" "$1"; SERVICE=$1
 
-$RESTSH_JQ -n --arg name "$NAME" \
-    '{
-        command: "restart",
-        "name": $name
-    }' | POST "/mgmt/tm/sys/service"
+if [ "$SERVICE" = "httpd" ]
+then
+    # Workaround for https://my.f5.com/manage/s/article/K13292945
+    if f5.file.size "/shared/axians/scripts/httpd-restart.sh" > /dev/null 2>&1
+    then
+        f5.run "/shared/axians/scripts/httpd-restart.sh" >/dev/null 2>&1 || true
+    else
+        cat > "$RESTSH_TMP/httpd-restart.sh" <<EOL
+#!/usr/bin/env bash
+tmsh stop sys service httpd
+killall -9 httpd
+tmsh start sys service httpd
+rm -f /shared/tmp/httpd-restart.sh
+EOL
+        f5.file-transfer.upload "$RESTSH_TMP/httpd-restart.sh" >/dev/null
+        rm "$RESTSH_TMP/httpd-restart.sh"
+        f5.run "mv" "/var/config/rest/downloads/httpd-restart.sh" "/shared/tmp"
+        f5.run "chmod" "+x" "/shared/tmp/httpd-restart.sh"
+        f5.run "/shared/tmp/httpd-restart.sh" >/dev/null 2>&1 || true
+    fi
+else
+    JQ -n --arg name "$SERVICE" \
+        '{
+            command: "restart",
+            "name": $name
+        }' | POST "/mgmt/tm/sys/service"
+fi
