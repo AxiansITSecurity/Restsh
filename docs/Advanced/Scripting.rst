@@ -21,6 +21,8 @@ If the variable ``CI_PROJECT_DIR`` is set, Restsh runs in pipeline mode. In this
 
 The Restsh configuration is normally set through CI/CD variables.
 
+Read the :doc:`GitLab pipeline </Tutorials/GitLabPipeline>` for a step by step guide.
+
 Call Restsh from Python
 -----------------------
 

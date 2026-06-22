@@ -128,3 +128,9 @@ In this tutorial, we walked through the process of deploying a new certificate o
 - ``f5.cert.get``: Exports a certificate from the F5
 - ``f5.cert.import``: Imports a certificate into the F5
 - ``f5.cluster.config-sync``: Syncs a F5 Device Group
+
+Discuss
+-------
+
+- `GitHub discussion <https://github.com/AxiansITSecurity/Restsh/discussions/9>`__
+- `F5 DevCentral <https://community.f5.com/kb/communityarticles/f5-certificate-deployment-with-icontrol-rest-and-hashicorp-vault/346445>`__

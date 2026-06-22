@@ -282,3 +282,9 @@ This tutorial has covered the complete lifecycle of DO declaration management us
 - ``f5.do.reset``: Resets the declaration
 - ``f5.do.schema``: Fetches the DO schema
 - ``restsh.util.json_validate``: JSON validation
+
+Discuss
+-------
+
+- `GitHub discussion <https://github.com/AxiansITSecurity/Restsh/discussions/11>`__
+- `F5 DevCentral <https://community.f5.com/kb/communityarticles/restsh-is-now-available-under-an-open-source-license/345860>`__

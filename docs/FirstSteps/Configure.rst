@@ -26,6 +26,13 @@ To create a configuration file for your GitLab instance:
 
     restsh.setup add gitlab lab gitlab.lab.lan
 
+1. Create a personal access token for your user in GitLab
+2. Set the variable ``RESTSH_TOKEN_VALUE`` in the configuration file to this value.
+
+   .. code:: sh
+
+      [ -n "${RESTSH_TOKEN_VALUE+x}" ] || export RESTSH_TOKEN_VALUE="<private token value>"
+
 Pre-defined config files
 ------------------------
 

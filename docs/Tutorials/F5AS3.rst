@@ -361,3 +361,9 @@ This tutorial has covered the complete lifecycle of AS3 tenant management using 
 - ``f5.as3.tenant.list``: Lists all AS3 tenants
 - ``f5.as3.tenant.remove``: Removes a tenant
 - ``restsh.util.json_validate``: JSON validation
+
+Discuss
+-------
+
+- `GitHub discussion <https://github.com/AxiansITSecurity/Restsh/discussions/8>`__
+- `F5 DevCentral <https://community.f5.com/kb/communityarticles/restsh-is-now-available-under-an-open-source-license/345860>`__

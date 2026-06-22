@@ -263,3 +263,9 @@ This tutorial has covered the complete lifecycle of Declarative WAF management u
 - ``f5.asm.template.import``: Imports an ASM policy template
 - ``f5.asm.template.list``: Lists all ASM policy templates
 - ``restsh.util.json_validate``: JSON validation
+
+Discuss
+-------
+
+- `GitHub discussion <https://github.com/AxiansITSecurity/Restsh/discussions/10>`__
+- `F5 DevCentral <https://community.f5.com/kb/communityarticles/restsh-is-now-available-under-an-open-source-license/345860>`__
