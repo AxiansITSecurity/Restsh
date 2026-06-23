@@ -43,7 +43,7 @@ restsh.util.check.string "service" "$1"; SERVICE=$1
 if [ "$SERVICE" = "httpd" ]
 then
     # Workaround for https://my.f5.com/manage/s/article/K13292945
-    # We use a scrip to restart the httpd service
+    # We use a script to restart the httpd service
     if ! f5.cli.script.get httpd-restart.tcl >/dev/null 2>&1
     then
         cat > "$RESTSH_TMP/httpd-restart.tcl" <<EOL
