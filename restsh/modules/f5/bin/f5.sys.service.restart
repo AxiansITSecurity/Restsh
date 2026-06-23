@@ -43,23 +43,20 @@ restsh.util.check.string "service" "$1"; SERVICE=$1
 if [ "$SERVICE" = "httpd" ]
 then
     # Workaround for https://my.f5.com/manage/s/article/K13292945
-    if f5.file.size "/shared/axians/scripts/httpd-restart.sh" > /dev/null 2>&1
+    # We use a scrip to restart the httpd service
+    if ! f5.cli.script.get httpd-restart.tcl >/dev/null 2>&1
     then
-        f5.run "/shared/axians/scripts/httpd-restart.sh" >/dev/null 2>&1 || true
-    else
-        cat > "$RESTSH_TMP/httpd-restart.sh" <<EOL
-#!/usr/bin/env bash
-tmsh stop sys service httpd
-killall -9 httpd
-tmsh start sys service httpd
-rm -f /shared/tmp/httpd-restart.sh
+        cat > "$RESTSH_TMP/httpd-restart.tcl" <<EOL
+proc script::run {} {
+    tmsh::stop sys service httpd
+    tmsh::run util bash -c 'killall -9 httpd'
+    tmsh::start sys service httpd
+}
 EOL
-        f5.file-transfer.upload "$RESTSH_TMP/httpd-restart.sh" >/dev/null
-        rm "$RESTSH_TMP/httpd-restart.sh"
-        f5.run "mv" "/var/config/rest/downloads/httpd-restart.sh" "/shared/tmp"
-        f5.run "chmod" "+x" "/shared/tmp/httpd-restart.sh"
-        f5.run "/shared/tmp/httpd-restart.sh" >/dev/null 2>&1 || true
+        f5.cli.script.create httpd-restart.tcl "$RESTSH_TMP/httpd-restart.tcl" > /dev/null
     fi
+    # Run the script to restart httpd
+    f5.cli.script.run httpd-restart.tcl >/dev/null 2>&1 || true
 else
     JQ -n --arg name "$SERVICE" \
         '{
