@@ -47,4 +47,4 @@ JQ -n \
         kind: "tm:cli:script:runstate",
         "command":"run"
     }' \
-    | POST /mgmt/tm/cli/script/$NAME
+    | POST "/mgmt/tm/cli/script/$NAME"
