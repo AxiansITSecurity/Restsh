@@ -549,7 +549,7 @@ restsh.util.setvars() {
     done < <(find "$DIR" "${FIND_OPTS[@]}" -type f -name \*.txt -or -name \*.array)
     # Warn for skipped files
     local INVALID
-    INVALID=$(find "$DIR" -type f -printf "%f\n" | grep -Pv '^((\w+)\.(array|txt|inc)|\.gitkeep)$' || true)
+    INVALID=$(find "$DIR" -type f -printf "%f\n" | grep -Pv '^((\w+)\.(array|txt)|\.gitkeep)$' || true)
     if [ -n "$INVALID" ]
     then
         echo_warn "Skipped files in folder \"$DIR\":"
