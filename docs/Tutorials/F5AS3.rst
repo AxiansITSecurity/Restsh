@@ -108,7 +108,7 @@ You need to create a JSON declaration file that contains the complete definition
       "action": "deploy",
       "declaration": {
         "class": "ADC",
-        "schemaVersion": "3.57.0",
+        "schemaVersion": "3.56.0",
         "label": "",
         "remark": "",
         "test-tenant": {
@@ -269,7 +269,7 @@ Replace hardcoded values in your declaration with Mustache variables using ``{{V
       "action": "deploy",
       "declaration": {
         "class": "ADC",
-        "schemaVersion": "3.57.0",
+        "schemaVersion": "3.56.0",
         "label": "",
         "remark": "",
         "{{TENANT_NAME}}": {
