@@ -26,6 +26,7 @@ fi
 IS_TEMPLATE=0
 DRY=0
 KEEP_TMP=0
+DEFAULTS=""
 while getopts ':d:ks:tv' OPTION
 do
     case "$OPTION" in
