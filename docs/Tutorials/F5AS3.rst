@@ -96,7 +96,7 @@ You need to create a JSON declaration file that contains the complete definition
 
 .. hint::
 
-   The schema on GitHub is no longer up-to-date. You can fetch the current schema file directly from your f5: ``f5.as3.schema <destination folder>``
+   The GitHub schema is outdated, and the only way to access a current version is through a support ticket.
 
 **Example: test-tenant.json**
 
