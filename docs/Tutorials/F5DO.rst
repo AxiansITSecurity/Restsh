@@ -97,7 +97,7 @@ You need to create a JSON declaration file that contains the complete onboarding
 
 .. hint::
 
-   The GitHub schema is outdated, and the only way to access a current version is through a support ticket.
+   The schema available on GitHub is outdated, and the only way to obtain an up-to-date version is by extracting it directly from the RPM or from an installed F5 system. Restsh includes the ``f5.do.schema`` function, which allows you to download the schema from the package installed on your F5.
 
 **Example: onboarding.json**
 
