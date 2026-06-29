@@ -82,8 +82,15 @@ f5.run "chmod" "+x" "/shared/tmp/${SCANNER_BIN}"
 
 echo "Uploading dat file"
 DAT_FILE=$(basename "$LOCAL_DAT_FILE")
-DAT_FILE_GZ="${DAT_FILE}.gz"
-gzip -c "$LOCAL_DAT_FILE" > "$RESTSH_TMP/${DAT_FILE_GZ}"
+if [[ "$VAR_F5_SYSTEM_SCANNER_DAT_URL" == *.gz ]]
+then
+    # Already compressed
+    DAT_FILE_GZ="${DAT_FILE}"
+    DAT_FILE=$(basename "$DAT_FILE" .gz)
+else
+    DAT_FILE_GZ="${DAT_FILE}.gz"
+    gzip -c "$LOCAL_DAT_FILE" > "$RESTSH_TMP/${DAT_FILE_GZ}"
+fi
 f5.file-transfer.upload "$RESTSH_TMP/${DAT_FILE_GZ}" > /dev/null
 rm -f "$RESTSH_TMP/${DAT_FILE_GZ}"
 f5.run "mv" "/var/config/rest/downloads/${DAT_FILE_GZ}" "/shared/tmp/${DAT_FILE_GZ}"
