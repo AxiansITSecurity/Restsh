@@ -4,7 +4,7 @@ This is the changelog for Restsh.
 
 ***
 
-## v4.5.1 - not yet released
+## v4.5.1 - 2026-06-29
 
 - Certificate Module
     - Fix: cert.csr.pubkey.hash - Print correct hash
