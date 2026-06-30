@@ -28,7 +28,7 @@ BRANCH="master"
 while getopts ':b:r' OPTION
 do
     case "$OPTION" in
-        b) BRANCH=$OPTARG ;;
+        b) restsh.util.check.string "branch" "$OPTARG"; BRANCH=$OPTARG ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
