@@ -16,6 +16,16 @@ This is the changelog for Restsh.
     - Upd: `gitlab.project.schedules.list` - Add ref to list
     - Feat: `gitlab.project.schedules.state`
     - Feat: `gitlab.project.job_token_scope.push`
+    - Feat: Group access token management
+        - `gitlab.group.access_token.create`
+        - `gitlab.group.access_token.list`
+        - `gitlab.group.access_token.revoke`
+        - `gitlab.group.access_token.rotate`
+    - Feat: Project access token management
+        - `gitlab.project.access_token.create`
+        - `gitlab.project.access_token.list`
+        - `gitlab.project.access_token.revoke`
+        - `gitlab.project.access_token.rotate`
 - F5 TMOS Module
     - Feat: `f5.system-scanner` - https://my.f5.com/manage/s/article/K000160515
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description

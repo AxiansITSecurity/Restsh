@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Lists all group access tokens.
+# Desc:
+# Lists all group access tokens.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ $# -lt 1 ] ||[ "$OPTION" == "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <group> [<page>]"
+    echo "Options:"
+    echo "    -r Raw output."
+    exit 2
+fi
+
+restsh.util.check.string "group" "$1"; GROUP=$1
+restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
+
+PAGE=0
+if [ -n "${2+x}" ]
+then
+    restsh.util.check.uint "page" "$2"; PAGE=$2
+fi
+
+if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/access_tokens?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+then
+    if [ "$RAW" -eq 1 ]
+    then
+        JQ "." <<< "$RESULT"
+    else
+        JQ -r '.[] | [.id,.name, .active, .expires_at, .access_level, (.scopes  | join(","))] | @tsv' <<< "$RESULT" | \
+            COLUMN -o " | " -N "Id,Name,Active,Expires,Access Level,Scopes"
+    fi
+    exit 0
+fi
+
+exit 1
