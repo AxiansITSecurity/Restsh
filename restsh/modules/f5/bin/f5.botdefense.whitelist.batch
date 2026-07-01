@@ -42,7 +42,7 @@ fi
 
 restsh.util.check.string "fullPath" "$1"; FULLPATH_ORG=$1
 FULLPATH=${FULLPATH_ORG//\//\~}
-restsh.util.check.string "ehitelist entries csv" "$2"; CSV=$2
+restsh.util.check.filename "whitelist entries csv" "$2"; CSV=$2
 
 # Get existing entries
 mapfile -t EXISTING_ENTRIES < <(GET -rf '.items[].name' "/mgmt/tm/security/bot-defense/profile/$FULLPATH/whitelist")
@@ -60,7 +60,7 @@ do
         f5.botdefense.whitelist.add "$FULLPATH_ORG" "$NAME" "$SRC" "$URL" > /dev/null
     fi
     CSV_ENTRIES+=("$NAME")
-done < "$CSV"
+done < <(grep -v -P '^(#|\s*$)' "$CSV" | tr -d '\r' || true)
 
 # Remove obsolete entries
 for NAME in "${EXISTING_ENTRIES[@]}"
