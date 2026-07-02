@@ -62,13 +62,20 @@ This is the changelog for Restsh.
 
 ***
 
-## v4.5.1 - not yet released
+## v4.5.2 - not yet released
+
+- F5 TMOS Module
+    - Fix: f5.ltm.clientssl.list - List certificate
+
+***
+
+## v4.5.1 - 2026-06-29
 
 - Certificate Module
-    - Fix: `cert.csr.pubkey.hash` - Print correct hash
-    - Fix: `cert.x509.pubkey.hash` - Print correct hash
+    - Fix: cert.csr.pubkey.hash - Print correct hash
+    - Fix: cert.x509.pubkey.hash - Print correct hash
 - GitLab Module
-    - Fix: `gitlab.group.clone` - Run fetch before pull to update a local repository
+    - Fix: gitlab.group.clone - Run fetch before pull to update a local repository
 
 ***
 
