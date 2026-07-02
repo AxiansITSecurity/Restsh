@@ -4,6 +4,13 @@ This is the changelog for Restsh.
 
 ***
 
+## v4.5.2 - not yet released
+
+- F5 TMOS Module
+    - Fix: f5.ltm.clientssl.list - List certificate
+
+***
+
 ## v4.5.1 - 2026-06-29
 
 - Certificate Module
