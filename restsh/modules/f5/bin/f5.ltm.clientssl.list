@@ -45,8 +45,8 @@ fi
 
 if [ "$RAW" -eq 1 ]
 then
-    GET /mgmt/tm/ltm/profile/client-ssl | JQ -r '.items[] | [.fullPath, .defaultsFrom, .serverName, .cert]'
+    GET /mgmt/tm/ltm/profile/client-ssl
 else
-    GET /mgmt/tm/ltm/profile/client-ssl | JQ -r '.items[] | [.fullPath, .defaultsFrom, .serverName, .cert] | @tsv' \
+    GET /mgmt/tm/ltm/profile/client-ssl | JQ -r '.items[] | [.fullPath, .defaultsFrom, .serverName, .certKeyChain[0].cert] | @tsv' \
         | COLUMN -o "|" -N "fullPath,parent,serverName,cert"
 fi
