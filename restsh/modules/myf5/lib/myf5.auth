@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Gets the bearer token from myF5 OAuth Authorization Server.
+# Desc:
+# Gets the bearer token from myF5 OAuth Authorization Server.
+# Define MYF5_CLIENTID and MYF5_SECRET variables.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Gets the bearer token from the Sectigo OAuth authorization server
+myf5.auth.login() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Gets the bearer token from the myF5 OAuth authorization server" 1>&2
+        echo "Usage: scm.auth.login" 1>&2
+        return 2
+    fi
+
+    if [ -z "${MYF5_CLIENTID+x}" ] || [ -z "${MYF5_SECRET+x}" ]
+    then
+        echo_err "You must define MYF5_CLIENTID and MYF5_SECRET."
+        return 1
+    fi
+
+    # Decrypt client secret
+    if [ "${MYF5_SECRET:0:7}" = "AES256:" ]
+    then
+        if [ -z "${RESTSH_SECRET+x}" ] || [ -z "$RESTSH_SECRET" ]
+        then
+            if [ -n "${RESTSH_INTERACTIVE+x}" ]
+            then
+                echo "Client secret is encrypted."
+                if ! MYF5_SECRET=$(openssl enc -aes-256-cbc -pbkdf2 -a -d <<< "${MYF5_SECRET:7}")
+                then
+                    echo_err "Decryption of client secret failed."
+                    return 1
+                fi
+            else
+                echo_err "Client secret is encrypted, but secret for decryption is not set."
+                echo_err "Set it with: export RESTSH_SECRET=\"secret\"".
+                return 1
+            fi
+        elif ! MYF5_SECRET=$(openssl enc -aes-256-cbc -pbkdf2 -a -d -k "$RESTSH_SECRET" <<< "${MYF5_SECRET:7}")
+        then
+            echo_err "Decryption of client secret failed."
+            return 1
+        fi
+    fi
+
+    # Vault Integration
+    if [ "${MYF5_SECRET:0:6}" = "VAULT:" ]
+    then
+        if ! vault.login
+        then
+            return 1
+        fi
+        MYF5_SECRET=$(vault.get "${MYF5_SECRET:6}" "MYF5_SECRET")
+        export MYF5_SECRET
+    fi
+
+    export RESTSH_TOKEN_VALUE=""
+    restsh.util.setcurloptions
+    RESTSH_CURL_OPTS+=("-X" "POST" "-H" "Content-Type: application/x-www-form-urlencoded")
+    RESTSH_CURL_OPTS+=("-d" "grant_type=client_credentials")
+    RESTSH_CURL_OPTS+=("-d" "scope=myf5_scope")
+    RESTSH_CURL_OPTS+=("-u" "${MYF5_CLIENTID}:${MYF5_SECRET}")
+    local RESULT
+    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "https://identity.account.f5.com/oauth2/${MYF5_APPID}/v1/token")
+    then
+        local ACCESS_TOKEN
+        if ! ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT" 2> /dev/null)
+        then
+            echo_err "Login failed"
+            return 1
+        fi
+        if restsh.util.check.notempty "${ACCESS_TOKEN}"
+        then
+            echo_ok "New Access Token retrieved" >&2
+            export RESTSH_TOKEN_VALUE="Bearer $ACCESS_TOKEN"
+            local NOW
+            NOW=$(date +%s)
+            RESTSH_TOKEN_LIFETIME=$((NOW+1740))
+            export RESTSH_TOKEN_LIFETIME
+            return 0
+        fi
+    fi
+    export RESTSH_TOKEN_VALUE=""
+    echo_err "Could not get token."
+    return 1
+}
+
+# Renews the token if it was expired
+myf5.auth.token.renew() {
+    if [ -n "${1+x}" ]
+    then
+        echo "Renews the token if it was expired." 1>&2
+        echo "Usage: myf5.auth.token.renew" 1>&2
+        return 2
+    fi
+    if [ "$(date +%s)" -gt "$RESTSH_TOKEN_LIFETIME" ]
+    then
+        if myf5.auth.login
+        then
+            # This files are read by the prompt command and used to inject the refreshed token into the parent bash session
+            printf "%s" "$RESTSH_TOKEN_LIFETIME" > "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
+            printf "%s" "$RESTSH_TOKEN_VALUE" > "$RESTSH_TMP/.RESTSH_TOKEN_VALUE"
+            return 0
+        fi
+        export RESTSH_TOKEN_VALUE=""
+        return 1
+    fi
+}
+
+export -f myf5.auth.login
+export -f myf5.auth.token.renew
