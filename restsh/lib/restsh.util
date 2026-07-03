@@ -411,7 +411,10 @@ restsh.util.setcurloptions() {
             RESTSH_CURL_OPTS+=("-u" "${RESTSH_USER}:${RESTSH_PASS}")
         ;;
         token)
-            RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
+            if [ -n "${RESTSH_TOKEN_VALUE:-}" ]
+            then
+                RESTSH_CURL_OPTS+=("-H" "${RESTSH_TOKEN_HEADER}: ${RESTSH_TOKEN_VALUE}")
+            fi
         ;;
         netrc)
             RESTSH_CURL_OPTS+=("-n")
