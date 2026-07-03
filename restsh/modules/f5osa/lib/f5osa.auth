@@ -97,6 +97,7 @@ f5osa.auth.token.renew() {
         fi
 
         # Use current token to get a new one
+        echo "Extending token" 1>&2
         local RESULT
         if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -H "X-F5-Auth-Token: $RESTSH_TOKEN_VALUE" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OSA_API_PREFIX")
         then
