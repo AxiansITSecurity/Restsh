@@ -12,6 +12,13 @@ This is the changelog for Restsh.
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.sysdb`
     - Feat: `aafw.pipeline.start.task.f5-system-scanner`
+- Certificate Module
+    - Feat: Add support for ML-DSA algorithm for key handling
+    - Feat: New commands
+        - `cert.key.info`: Shows the public key type
+        - `cert.key.public.verify`: Check public key consistency
+        - `cert.x509.create`: Creates a self-signed certificate
+    - Upd: Remove <alg> parameter where possible
 - GitLab Module
     - Upd: `gitlab.project.schedules.list` - Add ref to list
     - Feat: `gitlab.project.schedules.state`
