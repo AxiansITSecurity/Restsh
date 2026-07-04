@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Creates a CSR for a key pair.
+# Shortdesc: Creates a CSR from a key pair.
 # Desc:
-# Creates a CSR for a key pair.
+# Creates a CSR from a key pair.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -76,7 +76,9 @@ fi
 
 restsh.util.check.filename "key file" "$1"; KEY_FILE=$1
 restsh.util.check.filename "csr file" "$2"; CSR_FILE=$2
+
 CSR_CONFIG="$RESTSH_TMP/csr.cnf"
+trap 'rm -rf -- "$CSR_CONFIG"' EXIT
 
 cat > "$CSR_CONFIG" << EOL
 [req]
@@ -123,11 +125,4 @@ done
 OPENSSL_OPTS=()
 [ -n "${KEY_PASS+x}" ] && OPENSSL_OPTS+=("-passin" "env:KEY_PASS")
 
-if openssl req -new -key "$KEY_FILE" "${OPENSSL_OPTS[@]}" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE"
-then
-    rm -f "$CSR_CONFIG"
-    exit 0
-else
-    rm -f "$CSR_CONFIG"
-    exit 1
-fi
+openssl req -new -key "$KEY_FILE" "${OPENSSL_OPTS[@]}" -extensions v3_req -config "$CSR_CONFIG" -out "$CSR_FILE"
