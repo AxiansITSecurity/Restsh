@@ -18,6 +18,7 @@ This is the changelog for Restsh.
         - `cert.key.info`: Shows the public key type
         - `cert.key.public.verify`: Check public key consistency
         - `cert.x509.create`: Creates a self-signed certificate
+        - `cert.x509.fingerprint`: Prints the sha256 fingerprint of the certificate.
     - Upd: Remove <alg> parameter where possible
 - GitLab Module
     - Upd: `gitlab.project.schedules.list` - Add ref to list
