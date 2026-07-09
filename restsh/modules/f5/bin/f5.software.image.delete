@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Lists F5 software images (or other files), directory: /shared/images/.
+# Shortdesc: Deletes a F5 software image or hotfix, directory: /shared/images/.
 # Desc:
-# Lists F5 software images (or other files), directory: /shared/images/.
+# Deletes a F5 software image or hotfix, directory: /shared/images/.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -30,12 +30,14 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0")"
+    echo "Usage: $(basename "$0") <file>"
     exit 2
 fi
 
-f5.file.list "/shared/images/"
+restsh.util.check.filename "file" "$1";
+
+f5.file.remove "/shared/images/$1"

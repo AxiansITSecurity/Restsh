@@ -56,6 +56,18 @@ This is the changelog for Restsh.
         - `f5.cli.script.list`
         - `f5.cli.script.run`
         - `f5.cli.script.update`
+    - Feat: New and reworked functions for software and volume management
+        - `f5.software.hotfix.install`
+        - `f5.software.hotfix.list`
+        - `f5.software.image.delete`
+        - `f5.software.image.download`
+        - `f5.software.image.install`
+        - `f5.software.image.list`
+        - `f5.software.image.upload`
+        - `f5.software.volume.activate`
+        - `f5.software.volume.cpcfg`
+        - `f5.software.volume.delete`
+        - `f5.software.volume.list`
     - Upd: `f5.sys.service.restart` - Add workaround for httpd restart
     - Upd: `f5.asm.live-update.list` - Add option to hide previously installed updates
 - F5OS-A Module

@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Downloads a F5 software image, directory: /shared/images/.
+# Shortdesc: Lists F5 software images, directory: /shared/images/.
 # Desc:
-# Downloads a F5 software image, directory: /shared/images/.
+# Lists F5 software images, directory: /shared/images/.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -30,15 +30,12 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ] || [ $# -lt 2 ]
+if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <file> <output file>"
+    echo "Usage: $(basename "$0")"
     exit 2
 fi
 
-restsh.util.check.string "file" "$1";
-restsh.util.check.string "output file" "$2";
-
-f5.file.download "/mgmt/cm/autodeploy/software-image-downloads" "$1" 0 "$2"
+GET -rf '.items[].name' /mgmt/tm/sys/software/image

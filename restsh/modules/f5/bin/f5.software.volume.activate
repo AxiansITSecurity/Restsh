@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Uploads a F5 software image, directory: /shared/images/.
+# Shortdesc: Reboots into a F5 software volume.
 # Desc:
-# Uploads a F5 software image, directory: /shared/images/.
+# Reboots into a F5 software volume.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -34,10 +34,14 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <file>"
+    echo "Usage: $(basename "$0") <volume>"
     exit 2
 fi
 
-restsh.util.check.string "file" "$1";
+restsh.util.check.filename "volume" "$1"; VOLUME=$1
 
-f5.file.upload "/mgmt/cm/autodeploy/software-image-uploads" "$1"
+JQ -n --arg volume "$VOLUME" \
+    '{
+        command: "reboot",
+        volume: $volume
+    }' | POST /mgmt/tm/sys
