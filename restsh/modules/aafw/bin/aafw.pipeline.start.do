@@ -59,24 +59,25 @@ then
 fi
 
 # Start pipeline to create manual jobs
-PIPELINE_OPTS+=("-w")
-gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
+PIPELINE_OPTS+=("-w" "-r")
+if PARENT_PIPELINE=$(gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH")
+then
+    PARENT_ID=$(JQ -r '.id' <<< "$PARENT_PIPELINE")
+else
+    echo_error "Failure starting the pipeline."
+    exit 1
+fi
 
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-if [ -n "$TASK_HOST" ]
-then
-    NUM_JOBS=1
-else
-    NUM_JOBS=2
-fi
-
-echo "Created manual jobs for Declarative Onboarding."
+echo "Pipeline ${PARENT_ID} created manual jobs for Declarative Onboarding."
 echo "You can use \"gitlab.project.job.start\" to start it."
 while read -r ID
 do
+    PIPELINE_URL=$(GET -r -f ".web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID")
     TASK_HOST=$(GET -r -f ".[] | select(.key == \"TASK_HOST\") | .value" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/variables")
     JOB_ID=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .id" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
     URL=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
-    echo "Created job $JOB_ID for $TASK_HOST: $URL"
-done < <(GET -r -f ".[].id" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/?ref=$BRANCH&status=manual&per_page=$NUM_JOBS")
+    echo "Pipeline ${ID}: ${PIPELINE_URL}"
+    echo "    Created job ${JOB_ID} for ${TASK_HOST}: ${URL}"
+done < <(GET -r -f ".[] | select(.name != null) | select(.name | startswith(\"$PARENT_ID\")) | .id" "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipelines?per_page=10")
