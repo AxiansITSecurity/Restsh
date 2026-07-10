@@ -26,8 +26,9 @@ fi
 [ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set"; exit 1; }
 [ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set"; exit 1; }
 [ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set"; exit 1; }
+[ -n "${RESTSH_AAFW_F5UPDATESKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_F5UPDATESKELETON not set"; exit 1; }
 [ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="${RESTSH_PATH}/modules/aafw/templates/project_settings_default.json"
-[ -f "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="${RESTSH_PATH}/modules/aafw/templates/project_settings_default.json"
+[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="${RESTSH_PATH}/modules/aafw/templates/project_settings_default.json"
 
 # Get options
 INIT_PROJECT=""
@@ -69,7 +70,7 @@ then
     echo "    -d <folder>         Parent folder for cloned repository."
     echo "    -e <file>           Project settings json file."
     echo "                        Default: templates/aafw/project_settings_default.json."
-    echo "    -i <type>           Initialize repository for as3, cert, do, tasks or waf."
+    echo "    -i <type>           Initialize repository for as3, cert, do, tasks, waf, f5update."
     echo "    -l <push,merge>     Access level for protected branches, default: Maintainer access for merge only."
     echo "    -s <skeleton path>  Skeleton path for initialization."
     echo "    -t <clm type>       CLM pipeline to use (only for type = cert, see aafw.project.init.cert -h for details)"
@@ -141,6 +142,18 @@ then
             aafw.project.init.cert "${INIT_OPTS[@]}" "$CLONE_URI"
             ;;
         do)
+            if [ -z "$SKELETON_PATH" ]
+            then
+                if [ -n "${RESTSH_AAFW_F5UPDATESKELETON+x}" ]
+                then
+                    SKELETON_PATH="$RESTSH_AAFW_F5UPDATESKELETON"
+                else
+                    SKELETON_PATH="${RESTSH_AAFW_GROUP}/f5updateskeleton"
+                fi
+            fi
+            aafw.project.init.do "${INIT_OPTS[@]}" "${RESTSH_AAFW_URI}${SKELETON_PATH}" "$CLONE_URI"
+            ;;
+        f5update)
             if [ -z "$SKELETON_PATH" ]
             then
                 if [ -n "${RESTSH_AAFW_DOSKELETON+x}" ]
