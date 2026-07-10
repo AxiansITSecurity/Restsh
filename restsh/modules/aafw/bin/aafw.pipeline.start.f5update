@@ -49,7 +49,7 @@ if PARENT_PIPELINE=$(gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJE
 then
     PARENT_ID=$(JQ -r '.id' <<< "$PARENT_PIPELINE")
 else
-    echo_error "Failure starting the pipeline."
+    echo_err "Failure starting the pipeline."
     exit 1
 fi
 
