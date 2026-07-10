@@ -66,42 +66,63 @@ if RESULT=$(create_data | POST "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipelin
 then
     if [ "$WAIT" -eq 1 ]
     then
-        echo_ok -n "Pipeline started: "
-        JQ -r ".web_url" <<< "$RESULT"
+        echo_ok -n "Pipeline started: " 1>&2
+        JQ -r ".web_url" <<< "$RESULT" 1>&2
 
         ID=$(JQE ".id" <<< "$RESULT")
-        echo "Waiting for pipeline $ID to finish"
+        echo "Waiting for pipeline $ID to finish" 1>&2
         while :
         do
             STATUS=$(GET -r -f ".status" "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipelines/$ID")
             case "$STATUS" in
                 canceled)
-                    echo ""
-                    echo_err "Pipeline $ID canceled"
+                    echo "" 1>&2
+                    if [ "$RAW" -eq 1 ]
+                    then
+                        JQ "." <<< "$RESULT"
+                    else
+                        echo_err "Pipeline $ID canceled"
+                    fi
                     exit 1
                     ;;
                 failed)
-                    echo ""
-                    echo_err "Pipeline $ID failed"
+                    echo "" 1>&2
+                    if [ "$RAW" -eq 1 ]
+                    then
+                        JQ "." <<< "$RESULT"
+                    else
+                        echo_err "Pipeline $ID failed"
+                    fi
                     exit 1
                     ;;
                 manual)
-                    echo ""
-                    echo_ok "Manual job created."
+                    echo "" 1>&2
+                    if [ "$RAW" -eq 1 ]
+                    then
+                        JQ "." <<< "$RESULT"
+                    else
+                        echo_ok "Manual job created." 1>&2
+                    fi
                     exit 0
                     ;;
                 success)
-                    echo ""
-                    echo_ok "Pipeline succeeded"
+                    echo "" 1>&2
+                    if [ "$RAW" -eq 1 ]
+                    then
+                        JQ "." <<< "$RESULT"
+                    else
+                        echo_ok "Pipeline succeeded" 1>&2
+                    fi
                     exit 0
                     ;;
                 *)
-                    printf "\33[2K\r%s" "Status: $STATUS"
+                    printf "\33[2K\r%s" "Status: $STATUS" 1>&2
                     ;;
             esac
             sleep 5
         done
-    elif [ "$RAW" -eq 1 ]
+    fi
+    if [ "$RAW" -eq 1 ]
     then
         JQ "." <<< "$RESULT"
     else
