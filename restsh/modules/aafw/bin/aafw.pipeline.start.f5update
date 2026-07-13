@@ -61,8 +61,8 @@ while read -r ID
 do
     PIPELINE_URL=$(GET -r -f ".web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID")
     TASK_HOST=$(GET -r -f ".[] | select(.key == \"TASK_HOST\") | .value" "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/variables")
-    JOB_ID=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .id" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
-    JOB_URL=$(GET -r -f ".[] | select(.pipeline.id == $ID) | .web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs?scope=manual")
+    JOB_ID=$(GET -r -f ".[0] | select(.pipeline.id == $ID) | .id" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs")
+    JOB_URL=$(GET -r -f ".[0] | select(.pipeline.id == $ID) | .web_url" "$GITLAB_API_PREFIX/projects/$PROJECT/jobs")
     echo "Pipeline ${ID}: ${PIPELINE_URL}"
     echo "    Created job ${JOB_ID} for ${TASK_HOST}: ${JOB_URL}"
 done < <(GET -r -f ".[] | select(.name != null) | select(.name | startswith(\"$PARENT_ID\")) | .id" "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipelines?per_page=10")
