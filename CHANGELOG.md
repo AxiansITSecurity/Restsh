@@ -65,6 +65,7 @@ This is the changelog for Restsh.
         - `f5.software.image.list`
         - `f5.software.image.upload`
         - `f5.software.volume.activate`
+        - `f5.software.volume.active`
         - `f5.software.volume.cpcfg`
         - `f5.software.volume.delete`
         - `f5.software.volume.list`
