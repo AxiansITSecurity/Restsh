@@ -22,9 +22,11 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+RAW=0
+while getopts ':hr' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -38,5 +40,10 @@ then
     exit 2
 fi
 
-GET -rf '.items[] | [.name, .active] | @tsv' /mgmt/tm/sys/software/volume \
-    | COLUMN -N"name,active" -o "|"
+if [ "$RAW" -eq 1 ]
+then
+    GET /mgmt/tm/sys/software/volume
+else
+    GET -rf '.items[] | [.name, .active] | @tsv' /mgmt/tm/sys/software/volume \
+        | COLUMN -N"name,active" -o "|"
+fi
