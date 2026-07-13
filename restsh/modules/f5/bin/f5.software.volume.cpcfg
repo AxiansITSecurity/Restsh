@@ -42,4 +42,48 @@ fi
 restsh.util.check.filename "source volume" "$1"; SRC_VOL=$1
 restsh.util.check.filename "destination volume" "$2"; DST_VOL=$2
 
-f5.run "cpcfg" "--source=$SRC_VOL" "$DST_VOL"
+echo "Starting cpcfg in background."
+f5.run -b -o "/tmp/cpcfg.out" "cpcfg" "--source=$SRC_VOL" "$DST_VOL"
+
+# Check for running cpcfg
+sleep "$F5_TASK_CHECK_INTERVAL"
+CPCFG_PID=$(f5.run "pgrep" "cpcfg")
+echo "cpcfg started with PID $CPCFG_PID"
+if [ -z "$CPCFG_PID" ]
+then
+    echo_err "Failure starting cpcfg."
+    f5.run "cat" "/tmp/cpcfg.out"
+    f5.file.remove "/tmp/cpcfg.out" >/dev/null
+    exit 1
+fi
+
+echo "Waiting for cpcfg to finish."
+COUNTER=0
+F5_TASK_TIMEOUT=60
+F5_TASK_CHECK_INTERVAL=10
+while [ "$COUNTER" -lt $F5_TASK_TIMEOUT ]
+do
+    sleep "$F5_TASK_CHECK_INTERVAL"
+    CPCFG_PID=$(f5.run "pgrep" "cpcfg")
+    if [ -z "$CPCFG_PID" ]
+    then
+        # Finished
+        echo ""
+        f5.run "cat" "/tmp/cpcfg.out"
+
+        ERRORS=$(f5.run "grep" "-v" "^info:" "/tmp/cpcfg.out")
+        if [ -n "$ERRORS" ]
+        then
+            echo "cpcfg returned an error."
+            exit 1
+        fi
+        echo_ok "cpcfg run successfully"
+        f5.file.remove "/tmp/cpcfg.out" >/dev/null
+        exit 0
+    fi
+done
+
+echo ""
+f5.run "cat" "/tmp/cpcfg.out"
+echo_err "Timeout waiting for cpcfg to finish."
+exit 1
