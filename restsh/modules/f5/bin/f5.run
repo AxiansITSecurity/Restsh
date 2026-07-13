@@ -25,10 +25,12 @@ fi
 # Get options
 BACKGROUND=0
 RAW=0
-while getopts ':br' OPTION
+OUTFILE="/dev/null"
+while getopts ':bo:r' OPTION
 do
     case "$OPTION" in
         b) BACKGROUND=1 ;;
+        o) restsh.util.check.filename "Output file" "$OPTARG" ; OUTFILE=$OPTARG ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -39,16 +41,18 @@ if [ -z "${1+x}" ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     grep "^# Shortdesc" "$0" | sed 's/^# Shortdesc: //'
-    echo "Usage: $(basename "$0") [-r] <shell command> [options...]"
-    echo "    -b  Run command detached and in background"
-    echo "    -r  Print raw output."
+    echo "Usage: $(basename "$0") [options...] <shell command> [options...]"
+    echo "Options:"
+    echo "    -b              Run command detached and in background."
+    echo "    -o  <filename>  Save command output in file, for background commands only."
+    echo "    -r              Print raw output."
     exit 2
 fi
 
 if [ "$BACKGROUND" -eq 1 ]
 then
     COMMAND=$(restsh.util.array.string -q\" "$@")
-    COMMAND="nohup ${COMMAND} >/dev/null 2>&1 </dev/null &"
+    COMMAND="nohup ${COMMAND} >${OUTFILE} 2>&1 </dev/null &"
 else
     COMMAND=$(restsh.util.array.string -q\" "$@")
 fi
