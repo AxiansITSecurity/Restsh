@@ -1,0 +1,6 @@
+# Fields: KEY VALUE MASKED RAW DESC
+
+F5UPDATE_DOWNLOAD,0,false,true,Start download job automatically
+F5UPDATE_INSTALL,0,false,true,Start install job automatically
+F5UPDATE_COPY_CONFIG,0,false,true,Copies the config before rebooting (configuration was already copied at install stage)
+F5UPDATE_ACTIVATE,0,false,true,Start activate job automatically

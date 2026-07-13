@@ -1,0 +1,5 @@
+# Fields: KEY VALUE MASKED RAW DESC
+
+DO_DEFAULT_DIR,default-v17,false,true,Default DO configuration directory.
+DO_LINT_SCRIPT,lint.sh,false,true,Lint script name in the docustom repo.
+DO_PUSH_DECLARATION,0,false,true,Push declaration in repository.
