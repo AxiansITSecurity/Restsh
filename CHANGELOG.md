@@ -10,6 +10,7 @@ This is the changelog for Restsh.
     - Doc: Add more tutorials
     - Upd: Pad output of KV
 - Axians Automation Framework
+    - Feat: `aafw.pipeline.start.f5update`
     - Feat: `aafw.pipeline.start.task.sysdb`
     - Feat: `aafw.pipeline.start.task.f5-system-scanner`
 - Certificate Module
