@@ -47,12 +47,14 @@ then
 else
     INFO=$(GET -rf '.entries."https://localhost/mgmt/tm/sys/license/0".nestedStats.entries' /mgmt/tm/sys/license)
 
-    echo -n "registrationKey: "
-    JQ -r '.registrationKey.description' <<< "$INFO"
+    {
+        echo -ne "registrationKey\t"
+        JQ -r '.registrationKey.description' <<< "$INFO"
 
-    echo -n "serviceCheckDate: "
-    JQ -r '.serviceCheckDate.description' <<< "$INFO"
+        echo -ne "serviceCheckDate\t"
+        JQ -r '.serviceCheckDate.description' <<< "$INFO"
 
-    echo -n "maxPermittedVersion: "
-    JQ -r '.maxPermittedVersion.description' <<< "$INFO"
+        echo -ne "maxPermittedVersion\t"
+        JQ -r '.maxPermittedVersion.description' <<< "$INFO"
+    } | KV
 fi
