@@ -6,6 +6,8 @@ Dependencies
 
 Restsh works only inside the Bash shell and requires standard GNU core utilities like awk, sed, grep, etc.
 
+Debian is the preferred distribution and used in the examples.
+
 Further dependencies are:
 
 - curl >= v7.76.0
@@ -42,6 +44,7 @@ Most packages should be already installed on a standard Linux installation.
 -  grep
 -  jq
 -  newt (whiptail)
+-  openssh-client
 -  openssl
 -  sed
 -  yq
