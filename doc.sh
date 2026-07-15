@@ -21,9 +21,10 @@ usage() {
 }
 
 TMPDIR=""
-while getopts ':' OPTION
+while getopts ':t:' OPTION
 do
     case "$OPTION" in
+        t) TMPDIR=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -41,6 +42,8 @@ if [ -z "$TMPDIR" ]
 then
     TMPDIR=$(mktemp -d)
     trap 'rm -f -- "$TMPDIR"' EXIT
+else
+    install -d "$TMPDIR"
 fi
 OUTDIR="$TMPDIR/docs/restsh"
 
