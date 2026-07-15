@@ -36,6 +36,8 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <product family>"
+    echo ""
+    echo "Use myf5.downloads.product.families to get a list of all product families."
     exit 2
 fi
 restsh.util.check.string "product family" "$1"; PRODUCT_FAMILY=$1

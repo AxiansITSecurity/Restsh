@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: API to get Product Containers.
+# Shortdesc: Get the URLs for file download for all regions.
 # Desc:
-# API to get Product Containers.
+# Get the URLs for file download for all regions.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -37,17 +37,19 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <link>"
+    echo "Usage: $(basename "$0") [options...] <file>"
+    echo ""
+    echo "Use myf5.downloads.product.files to get a list of all product files."
     exit 2
 fi
 
-restsh.util.check.string "link" "$1"; LINK=$1
+restsh.util.check.string "file" "$1"; FILE=$1
 
 if [ "$RAW" -eq 1 ]
 then
-    GET "${LINK}?k=${MYF5_API_USAGE_KEY}"
+    GET "${FILE}?k=${MYF5_API_USAGE_KEY}"
 else
-    GET "${LINK}?k=${MYF5_API_USAGE_KEY}" \
+    GET "${FILE}?k=${MYF5_API_USAGE_KEY}" \
         | JQ -r ".downloadLinks[] | [.location,.href] | @tsv" \
         | KV
 fi

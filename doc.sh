@@ -91,6 +91,7 @@ module_help "gitlab"
 module_help "scm"
 module_help "cert"
 module_help "aafw"
+module_help "myf5"
 
 restsh_help() {
     # Print overview table

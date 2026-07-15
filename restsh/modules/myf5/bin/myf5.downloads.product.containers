@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: API to get Product Containers.
+# Shortdesc: API to get Product Containers for specified product family, line and optional version.
 # Desc:
-# API to get Product Containers.
+# API to get Product Containers for specified product family, line and optional version.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -36,6 +36,9 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <product family> <product lines> [version]"
+    echo ""
+    echo "Use myf5.downloads.product.families to get a list of all product families."
+    echo "Use myf5.downloads.product.lines to get a list of all product lines."
     exit 2
 fi
 

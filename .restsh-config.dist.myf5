@@ -29,14 +29,7 @@ export RESTSH_DEBUG="true"
 #[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 
 # Authentication settings
-#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="basic"
-#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
-#[ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="netrc"
 [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
-
-# Set username/password for basic auth
-#[ -n "${RESTSH_USER+x}" ] || export RESTSH_USER="apiuser"
-#[ -n "${RESTSH_PASS+x}" ] || export RESTSH_PASS="apipass"
 
 # Set token header and value
 [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="Authorization"

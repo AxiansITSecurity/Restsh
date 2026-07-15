@@ -36,6 +36,10 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <product family> <product lines> <version> <container>"
+    echo ""
+    echo "Use myf5.downloads.product.families to get a list of all product families."
+    echo "Use myf5.downloads.product.lines to get a list of all product lines."
+    echo "Use myf5.downloads.product.containers to get a list of all versions and containers."
     exit 2
 fi
 
