@@ -17,7 +17,7 @@
 RESTSH_MODULES=("cert" "custom" "myf5")
 
 # Debugging
-export RESTSH_DEBUG="true"
+#export RESTSH_DEBUG="true"
 
 # REST host to connect to
 #[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
