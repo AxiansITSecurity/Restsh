@@ -45,7 +45,7 @@ fi
 
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
-restsh.util.check.uint "pipeline schedule id" "$1"; SCHED_ID=$2
+restsh.util.check.uint "pipeline schedule id" "$2"; SCHED_ID=$2
 
 if RESULT=$(GET "${GITLAB_API_PREFIX}/projects/${PROJECT}/pipeline_schedules/${SCHED_ID}")
 then
