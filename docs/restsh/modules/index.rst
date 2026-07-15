@@ -5,7 +5,7 @@ Modules are enabled in the configuration by defining the ``RESTSH_MODULES`` arra
 
 .. code:: sh
 
-   RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
+   RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "myf5" "scm")
 
 Available modules
 -----------------
@@ -23,9 +23,10 @@ Available modules
 +------------------------------+-----------------------------------------------+
 | :doc:`gitlab <gitlab/index>` | GitLab                                        |
 +------------------------------+-----------------------------------------------+
+| :doc:`myf5 <myf5/index>`     | myF5                                          |
++------------------------------+-----------------------------------------------+
 | :doc:`scm <scm/index>`       | Sectigo Cert Manager                          |
 +------------------------------+-----------------------------------------------+
-
 
 .. toctree::
    :titlesonly:
@@ -36,4 +37,5 @@ Available modules
    f5/index.rst
    f5osa/index.rst
    gitlab/index.rst
+   myf5/index.rst
    scm/index.rst

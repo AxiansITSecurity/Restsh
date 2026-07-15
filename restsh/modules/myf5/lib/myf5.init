@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Sets environment variables for myF5 API.
+# Desc:
+# Sets environment variables for myF5 API.
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# Default init command.
+# This is only executed in interactive mode.
+if [ -z "${RESTSH_INIT_CMD+x}" ]
+then
+    export RESTSH_INIT_CMD="myf5.auth.login"
+    export RESTSH_HTTP_PRE_EXEC="myf5.auth.token.renew"
+fi
