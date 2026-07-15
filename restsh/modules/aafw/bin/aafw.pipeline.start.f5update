@@ -43,6 +43,17 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$(restsh.util.lc "$2")
 
+# Special case for draft branch
+if [ "$BRANCH" = "draft" ]
+then
+    PIPELINE_OPTS+=("-s" "CI_COMMIT_BRANCH=$BRANCH")
+    if gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH"
+    then
+        exit 0
+    fi
+    exit 1
+fi
+
 # Start pipeline to create manual jobs
 PIPELINE_OPTS+=("-w" "-r")
 if PARENT_PIPELINE=$(gitlab.project.pipeline.start "${PIPELINE_OPTS[@]}" "$PROJECT" "$BRANCH")
