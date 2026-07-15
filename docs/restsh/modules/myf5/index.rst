@@ -33,8 +33,15 @@ References
 - `Getting Started - Overview guide to help you quickly begin using our APIs <https://my.f5.com/manage/s/api-catalog-getting-started>`__
 - `API Documentation - Detailed documentation and specifications for our APIs <https://my.f5.com/manage/myf5ApiReference>`__
 
+Examples
+--------
+
+- :doc:`Usage examples </restsh/modules/myf5/Examples>`
+
 List of all functions
 ---------------------
+
+- :doc:`Overview of all functions </restsh/modules/myf5/Overview>`
 
 .. toctree::
    :titlesonly:
