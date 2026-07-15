@@ -13,6 +13,7 @@ This is the changelog for Restsh.
     - Feat: `aafw.pipeline.start.f5update`
     - Feat: `aafw.pipeline.start.task.sysdb`
     - Feat: `aafw.pipeline.start.task.f5-system-scanner`
+    - Upd: Remove obsolete TASK_HOST option from `aafw.pipeline.start.do`
 - Certificate Module
     - Feat: Add support for ML-DSA algorithm for key handling
     - Feat: New commands

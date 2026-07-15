@@ -23,10 +23,9 @@ then
 fi
 
 # Get options
-while getopts ':t:' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        t) restsh.util.check.string "Task host" "$OPTARG"; PIPELINE_OPTS+=("-s" "TASK_HOST=${OPTARG}") ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -37,10 +36,7 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid " ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <branch>"
-    echo "Options:"
-    echo "    -t <f5 management ip> or \"active\", \"standby\","
-    echo "       default is to create one manual job for each management ip."
+    echo "Usage: $(basename "$0") <project path> <branch>"
     exit 2
 fi
 
