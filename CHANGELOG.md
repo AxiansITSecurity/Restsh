@@ -6,6 +6,8 @@ This is the changelog for Restsh.
 
 ## v4.6.0 - not yet released
 
+This version introduces the MyF5 API module.
+
 - General
     - Doc: Add more tutorials
     - Upd: Pad output of KV
@@ -82,6 +84,15 @@ This is the changelog for Restsh.
     - Feat: Dockerized services management
         - Add `f5osa.service.list`
         - Add `f5osa.service.restart`
+- MyF5 Module: New module for the MyF5 API
+    - Feat: Downloads
+        - Add `myf5.downloads.metadata`
+        - Add `myf5.downloads.product`
+        - Add `myf5.downloads.product.containers`
+        - Add `myf5.downloads.product.families`
+        - Add `myf5.downloads.product.files`
+        - Add `myf5.downloads.product.lines`
+        - Add `myf5.downloads.product.links`
 
 ***
 
