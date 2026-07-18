@@ -85,7 +85,7 @@ This version introduces the MyF5 API module.
         - Add `f5osa.service.list`
         - Add `f5osa.service.restart`
 - MyF5 Module: New module for the MyF5 API
-    - Feat: Downloads
+    - Feat: Generic download functions
         - Add `myf5.downloads.metadata`
         - Add `myf5.downloads.product`
         - Add `myf5.downloads.product.containers`
@@ -93,6 +93,7 @@ This version introduces the MyF5 API module.
         - Add `myf5.downloads.product.files`
         - Add `myf5.downloads.product.lines`
         - Add `myf5.downloads.product.links`
+    - Feat: `myf5.downloads.get.as3` - Download latest or specific AS3 version
 
 ***
 
