@@ -84,7 +84,7 @@ This version introduces the MyF5 API module.
     - Feat: Dockerized services management
         - Add `f5osa.service.list`
         - Add `f5osa.service.restart`
-- MyF5 Module: New module for the MyF5 API
+- MyF5 Module: New module for the MyF5 API (Experimental)
     - Feat: Generic download functions
         - Add `myf5.downloads.metadata`
         - Add `myf5.downloads.product`
