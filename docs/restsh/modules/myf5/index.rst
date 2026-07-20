@@ -1,7 +1,10 @@
 MyF5 API
 ========
 
-The MyF5 API offering is currently in a closed beta state. Contact your F5 representative and ask for access.
+.. note::
+
+   This modules is considered experimental, because the MyF5 API offering is currently in a closed beta state.
+   Contact your F5 representative and ask for access to experiment with it.
 
 .. code:: sh
 
