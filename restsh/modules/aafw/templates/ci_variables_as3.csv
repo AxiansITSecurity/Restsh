@@ -1,7 +1,7 @@
 # Fields: KEY VALUE MASKED RAW DESC
 
 # Default config directory for AS3
-AS3_DEFAULT_DIR,default-v17,false,true,Default configuration directory.
+AS3_DEFAULT_DIR,default-v17.5,false,true,Default configuration directory.
 AS3_LINT_SCRIPT,lint.sh,false,true,Lint script name in the as3snippets repo.
 AS3_PUSH_DECLARATION,0,false,true,Push declaration in repository.
 AS3_RESTRICT_MERGE,1,false,true,Enforce merge request rules.
