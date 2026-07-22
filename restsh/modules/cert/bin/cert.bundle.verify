@@ -39,4 +39,14 @@ then
 fi
 
 restsh.util.check.filename "bundle file" "$1"; BUNDLE_FILE=$1
-openssl verify -show_chain -CAfile "$BUNDLE_FILE" "$BUNDLE_FILE"
+
+# Split the bundle
+CERT_PATH=$(cert.bundle.split -s "$BUNDLE_FILE")
+trap 'rm -rf -- "$CERT_PATH"' EXIT
+
+# Check each certificate in the bundle
+for F in "$CERT_PATH/"*
+do
+    echo ""
+    openssl verify -show_chain -CAfile "$BUNDLE_FILE" "$F"
+done
