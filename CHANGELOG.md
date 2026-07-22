@@ -19,6 +19,7 @@ This version introduces the MyF5 API module.
 - Certificate Module
     - Feat: Add support for ML-DSA algorithm for key handling
     - Feat: New commands
+        - `cert.bundle.verify`: Verifies a certificate bundle against itself.
         - `cert.key.info`: Shows the public key type
         - `cert.key.public.verify`: Check public key consistency
         - `cert.x509.create`: Creates a self-signed certificate
