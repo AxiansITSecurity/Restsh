@@ -14,7 +14,6 @@ This version introduces the MyF5 API module.
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.f5update`
     - Feat: `aafw.pipeline.start.task.sysdb`
-    - Feat: `aafw.pipeline.start.task.f5-system-scanner`
     - Upd: Remove obsolete TASK_HOST option from `aafw.pipeline.start.do`
 - Certificate Module
     - Feat: Add support for ML-DSA algorithm for key handling
@@ -40,7 +39,6 @@ This version introduces the MyF5 API module.
         - `gitlab.project.access_token.revoke`
         - `gitlab.project.access_token.rotate`
 - F5 TMOS Module
-    - Feat: `f5.system-scanner` - [https://my.f5.com/manage/s/article/K000160515](https://my.f5.com/manage/s/article/K000160515)
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
     - Feat: `f5.as3.schema`, `f5.do.schema` - Fetches the schema from current installed packages
