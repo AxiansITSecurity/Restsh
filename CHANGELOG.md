@@ -98,7 +98,7 @@ This version introduces the MyF5 API module.
 
 ***
 
-## v4.5.2 - not yet released
+## v4.5.2 - 2026-07-27
 
 - F5 TMOS Module
     - Fix: f5.ltm.clientssl.list - List certificate
