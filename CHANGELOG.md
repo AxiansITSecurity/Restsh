@@ -74,6 +74,7 @@ This version introduces the MyF5 API module.
         - `f5.software.volume.list`
     - Upd: `f5.sys.service.restart` - Add workaround for httpd restart
     - Upd: `f5.asm.live-update.list` - Add option to hide previously installed updates
+    - Upd: `f5.cluster.traffic-group.masquerade.set` - Add check for invalid MACs for F5OS
 - F5OS-A Module
     - Feat: Enhanced tenant management
         - Add `f5osa.tenant.create`

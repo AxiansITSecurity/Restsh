@@ -15,6 +15,7 @@
 # local-only traffic group is used as the fallback.
 #
 # See https://my.f5.com/manage/s/article/K3523 for details.
+# F5OS limitations: https://my.f5.com/manage/s/article/K3523
 
 # Strict error handling
 set -eEu -o pipefail
@@ -77,6 +78,13 @@ then
     #shellcheck disable=SC2086
     MAC="02:f5$(printf ':%02X' ${IP//./ })"
     echo "Using generated MAC: $MAC"
+fi
+
+if [ "${MAC:0:8}" = "02:F5:F5" ]
+then
+    echo_err "MACs using 02:F5:F5 OUI (i.e. any address of the form 02:F5:F5:xx:xx:xx) are internally reserved by F5OS for the L2 learning service."
+    echo_err "https://my.f5.com/manage/s/article/K3523"
+    exit 1
 fi
 
 if [ "$DRY_RUN" -eq 1 ]
