@@ -42,7 +42,7 @@ This version introduces the MyF5 API module.
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
     - Feat: `f5.sslreport.generate` - Add option to create Markdown report
-    - Feat: Support of the new [declarative API](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api.html)
+    - Feat: Support of the new [declarative API](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api.html) (Experimental)
         - `f5.declared.app.declare` - Create or update an app
         - `f5.declared.app.get` - Get the app declaration
         - `f5.declared.app.list` - Lists all app declarations
@@ -94,6 +94,7 @@ This version introduces the MyF5 API module.
         - Add `myf5.downloads.product.lines`
         - Add `myf5.downloads.product.links`
     - Feat: `myf5.downloads.get.as3` - Download latest or specific AS3 version
+    - Feat: `myf5.downloads.get.do` - Download latest or specific DO version
 
 ***
 
