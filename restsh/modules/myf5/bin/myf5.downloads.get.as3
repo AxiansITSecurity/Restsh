@@ -24,7 +24,7 @@ fi
 
 # Get options
 LOCATION="IRELAND"
-SLEEP=10
+SLEEP=20
 while getopts ':l:' OPTION
 do
     case "$OPTION" in
