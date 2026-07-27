@@ -81,6 +81,7 @@ This version introduces the MyF5 API module.
         - Add `f5osa.tenant.delete`
         - Add `f5osa.tenant.get`
         - Add `f5osa.tenant.state`
+        - Add `f5osa.tenant.image.list`
     - Feat: Dockerized services management
         - Add `f5osa.service.list`
         - Add `f5osa.service.restart`
