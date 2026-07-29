@@ -54,15 +54,19 @@ fi
 restsh.util.check.filename "output file" "$1"; OUTFILE=$1
 TITLE="SSL Profiles And Certificate Report"
 
-if [ -z "$FORMAT" ] && PANDOC=$(command -v pandoc2)
+if [ -z "$FORMAT" ]
 then
-    PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--embed-resources" "--standalone" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
-else
-    if [ -z "$PANDOC" ]
+    # Use pandoc if it is installed, else create markdown report
+    if PANDOC=$(command -v pandoc)
     then
+        PANDOC_OPTS+=("--metadata" "pagetitle=\"$TITLE\"" "--embed-resources" "--standalone" "--css" "${RESTSH_PATH}/templates/pandoc/pandoc.css")
+    else
         echo_warn "Pandoc not found, creating markdown report."
+        OUTFILE=${OUTFILE/.html/.md}
+        PANDOC="cat"
     fi
-    OUTFILE=${OUTFILE/.html/.md}
+else
+    # Markdown option set
     PANDOC="cat"
 fi
 
