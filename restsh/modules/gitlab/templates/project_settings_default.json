@@ -1,0 +1,5 @@
+{
+    "remove_source_branch_after_merge": false,
+    "ci_id_token_sub_claim_components": ["project_id", "ref_type", "ref"],
+    "only_allow_merge_if_pipeline_succeeds": true
+}

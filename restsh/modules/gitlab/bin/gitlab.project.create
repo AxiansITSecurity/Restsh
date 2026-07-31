@@ -25,10 +25,18 @@ fi
 # Get options
 RAW=0
 BRANCH="master"
-while getopts ':b:r' OPTION
+if [ -z "${GITLAB_PROJECT_SETTINGS+x}" ]
+then
+    PROJECT_SETTINGS="${RESTSH_PATH}/modules/gitlab/templates/project_settings_default.json"
+else
+    PROJECT_SETTINGS="$GITLAB_PROJECT_SETTINGS"
+fi
+
+while getopts ':b:e:r' OPTION
 do
     case "$OPTION" in
         b) restsh.util.check.string "branch" "$OPTARG"; BRANCH=$OPTARG ;;
+        e) restsh.util.check.string "Project settings json file" "$OPTARG"; PROJECT_SETTINGS="$OPTARG" ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -41,6 +49,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <namespace id> <name>"
     echo "    -b <branch>  Default branch, default: master"
+    echo "    -e <file>    Project settings json file."
+    echo "                 Default: modules/gitlab/templates/project_settings_default.json."
     echo "    -r           Raw output."
     exit 2
 fi
@@ -66,8 +76,8 @@ then
     else
         echo_ok "Empty project created with id $PROJECT_ID"
     fi
-    # Set the id_token_sub_claim_components uniq
-    PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID" <<< '{"ci_id_token_sub_claim_components": ["project_id", "ref_type", "ref"]}' > /dev/null
+    # Default project settings
+    PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID" < "$PROJECT_SETTINGS" > /dev/null
     exit 0
 fi
 
