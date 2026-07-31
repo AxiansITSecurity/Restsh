@@ -48,10 +48,15 @@ MSG=$3
 
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
+# Get SHA of this merge request, this is required sind GitLab 19.2.
+SHA=$(GET -rf '.sha' "$GITLAB_API_PREFIX/projects/${PROJECT}/merge_requests/${IID}")
+
 RESULT=$(JQ -n \
     --arg msg "$MSG" \
+    --arg sha "$SHA" \
     '{
-        merge_commit_message: $msg
+        merge_commit_message: $msg,
+        sha: $sha
     }' | PUT "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests/$IID/merge")
 
 if [ "$RAW" -eq 1 ]
