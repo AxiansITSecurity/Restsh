@@ -59,13 +59,15 @@ if RESULT=$(JQ -n --arg name "$NAME" \
         "default_branch": $branch
     }' | POST -r "$GITLAB_API_PREFIX/projects")
 then
-    ID=$(JQ -r ".id" <<< "$RESULT")
+    PROJECT_ID=$(JQ -r ".id" <<< "$RESULT")
     if [ "$RAW" -eq 1 ]
     then
-        echo "$ID"
+        echo "$PROJECT_ID"
     else
-        echo_ok "Empty project created with id $ID"
+        echo_ok "Empty project created with id $PROJECT_ID"
     fi
+    # Set the id_token_sub_claim_components uniq
+    PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID" <<< '{"ci_id_token_sub_claim_components": ["project_id", "ref_type", "ref"]}' > /dev/null
     exit 0
 fi
 
