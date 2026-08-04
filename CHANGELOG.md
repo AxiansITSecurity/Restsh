@@ -25,7 +25,7 @@ This version introduces the MyF5 API module.
         - `cert.x509.fingerprint`: Prints the sha256 fingerprint of the certificate.
     - Upd: Remove <alg> parameter where possible
 - GitLab Module
-    - Upd: `gitlab.project.schedules.list` - Add ref to list
+    - Feat: `gitlab.project.create` - Add default project settings
     - Feat: `gitlab.project.schedules.state`
     - Feat: `gitlab.project.job_token_scope.push`
     - Feat: Group access token management
@@ -38,6 +38,8 @@ This version introduces the MyF5 API module.
         - `gitlab.project.access_token.list`
         - `gitlab.project.access_token.revoke`
         - `gitlab.project.access_token.rotate`
+    - Upd: `gitlab.project.schedules.list` - Add ref to list
+    - Fix: `gitlab.mr.automerge`, `gitlab.mr.merge` - Get SHA of the merge request, this is required sind GitLab 19.2.
 - F5 TMOS Module
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
