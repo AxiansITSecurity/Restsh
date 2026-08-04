@@ -27,9 +27,10 @@ PIPELINE_OPTS=(
     "-s" "CI_PIPELINE_SOURCE=api"
     "-s" "TASK=f5_sys_db"
 )
-while getopts ':s:t:w' OPTION
+while getopts ':r:s:t:w' OPTION
 do
     case "$OPTION" in
+        r) PIPELINE_OPTS+=("-s" "RESTART_SERVICES=${OPTARG}") ;;
         s) restsh.util.check.uint "Sync" "$OPTARG"; PIPELINE_OPTS+=("-s" "SYNC=${OPTARG}") ;;
         t) restsh.util.check.string "Task host" "$OPTARG"; PIPELINE_OPTS+=("-s" "TASK_HOST=${OPTARG}") ;;
         w) PIPELINE_OPTS+=("-w") ;;
@@ -44,9 +45,10 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <branch>"
     echo "Options:"
-    echo "    -s <0|1>     1 = Sync Device Group, 0 = Do not sync Device Group"
-    echo "    -t <device>  F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
-    echo "    -w           Wait for finished pipeline."
+    echo "    -r <services>  Comma separated services to restart"
+    echo "    -s <0|1>       1 = Sync Device Group, 0 = Do not sync Device Group"
+    echo "    -t <device>    F5 Device for the task: <management ip> or \"active\", \"standby\", default is \"active\""
+    echo "    -w             Wait for finished pipeline."
     exit 2
 fi
 
