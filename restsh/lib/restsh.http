@@ -163,7 +163,7 @@ restsh.download() {
             -i "${RESTSH_CURL_OPTS[@]}" "${RESTSH_URL}${URI}" 2>"$ERROR_TMP" \
             | awk -F/ '/Content-Range/ {print $2}' | tr -d '\r')
         # Check if TOTAL_SIZE is gt 0
-        if [ "$TOTAL_SIZE" = "*" ] || [ "$TOTAL_SIZE" -le 0 ]
+        if [ -z "$TOTAL_SIZE" ] || [ "$TOTAL_SIZE" = "*" ] || [ "$TOTAL_SIZE" -le 0 ]
         then
             local ERROR
             ERROR=$(<"$ERROR_TMP")
@@ -186,7 +186,7 @@ restsh.download() {
     # Initialize Connection type at Keep-Alive
     local CONNECTION="Keep-Alive"
 
-    while [ "$END" -lt "$RANGE_END" ]
+    while [ "$END" -le "$RANGE_END" ]
     do
         END=$((START+CHUNK_SIZE-1))
         if [ "$END" -gt "$RANGE_END" ]
@@ -274,8 +274,8 @@ restsh.upload() {
 
     local ERROR_TMP
     ERROR_TMP=$(mktemp)
-    SKIP=0
-    while [ "$END" -lt "$RANGE_END" ]
+    local SKIP=0
+    while [ "$END" -le "$RANGE_END" ]
     do
         END=$((START+CHUNK_SIZE-1))
         if [ "$END" -gt "$RANGE_END" ]
@@ -285,6 +285,7 @@ restsh.upload() {
         fi
         local CONTENT_RANGE="${START}-${END}/${TOTAL_SIZE}"
         #echo "$CONTENT_RANGE"
+        local OUTPUT
         if ! OUTPUT=$(dd status=none if="$FILENAME" count=1 skip="$SKIP" bs="$CHUNK_SIZE" \
             | $RESTSH_CURL_BIN \
                 -H "Content-Range: $CONTENT_RANGE" \
