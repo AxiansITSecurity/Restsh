@@ -186,7 +186,7 @@ restsh.download() {
     # Initialize Connection type at Keep-Alive
     local CONNECTION="Keep-Alive"
 
-    while [ "$END" -le "$RANGE_END" ]
+    while [ "$END" -lt "$RANGE_END" ]
     do
         END=$((START+CHUNK_SIZE-1))
         if [ "$END" -gt "$RANGE_END" ]
@@ -275,7 +275,7 @@ restsh.upload() {
     local ERROR_TMP
     ERROR_TMP=$(mktemp)
     local SKIP=0
-    while [ "$END" -le "$RANGE_END" ]
+    while [ "$END" -lt "$RANGE_END" ]
     do
         END=$((START+CHUNK_SIZE-1))
         if [ "$END" -gt "$RANGE_END" ]
