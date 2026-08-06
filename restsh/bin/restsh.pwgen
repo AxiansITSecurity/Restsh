@@ -39,7 +39,7 @@ shift "$((OPTIND -1))"
 
 if [ "$OPTION" = "invalid" ]
 then
-    exec 1>&1
+    exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-c <chunks>] [-d <delimiter>] [-l <length>]"
     echo -e "\t-c Insert delimiter each <chunks> character, default: 5"

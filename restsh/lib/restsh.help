@@ -36,7 +36,10 @@ _restsh.help.parse.lib() {
         elif [[ "$LINE" == *"() {" ]]
         then
             LINE="${LINE%%\(*}"
-            CMDS["$LINE"]=$(printf "%s\n" "${LAST_LINES[@]}")
+            if [ ${#LAST_LINES[@]} -gt 0 ]
+            then
+                CMDS["$LINE"]="$(printf "%s\n" "${LAST_LINES[@]}")"
+            fi
             LAST_LINES=()
         else
             LAST_LINES=()

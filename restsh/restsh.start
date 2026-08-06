@@ -65,11 +65,17 @@ show_configs() {
         # Show parent folder
         local PARENT
         PARENT=$(realpath "$CONFIG_PATH/..")
-        show_configs "$PARENT"
+        if ! show_configs "$PARENT"
+        then
+            return 1
+        fi
     elif [ "${SELECT:0:7}" = "FOLDER:" ]
     then
         # Show subfolder
-        show_configs "${CONFIG_PATH}/${SELECT:7}"
+        if ! show_configs "${CONFIG_PATH}/${SELECT:7}"
+        then
+            return 1
+        fi
     elif [ -z "$SELECT" ]
     then
         # Cancel
@@ -103,6 +109,11 @@ else
     if command -v whiptail > /dev/null
     then
         SELECT=$(show_configs "$START_PATH")
+        if [ -z "$SELECT" ] || ! [ -f "$SELECT" ]
+        then
+            echo "No configuration file selected."
+            exit 1
+        fi
         export RESTSH_CONFIG="$SELECT"
     fi
 fi

@@ -128,6 +128,7 @@ restsh.init.check.cmd() {
         echo_err "Command not found: jq"
         return 1
     else
+        # Second test must fail and does not with too old jq versions
         if ! jq -re ".t" <<< '{"t":1}' >/dev/null 2>&1 || jq -re ".t" <<< '{"r":1}' >/dev/null 2>&1
         then
             echo_err "jq version is too old"
@@ -135,6 +136,7 @@ restsh.init.check.cmd() {
         fi
     fi
     export RESTSH_JQ
+
     if stat -c%s "$RESTSH_PATH/restsh.init" > /dev/null 2>&1
     then
         RESTSH_STAT=$(command -v stat)
@@ -146,6 +148,13 @@ restsh.init.check.cmd() {
         return 1
     fi
     export RESTSH_STAT
+
+    if ! grep -P '^\s+\w+$' <<< " d" >/dev/null 2>&1
+    then
+        echo_err "grep does not support PCRE, GNU grep is required."
+        return 1
+    fi
+
     return 0
 }
 

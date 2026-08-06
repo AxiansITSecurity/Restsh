@@ -9,6 +9,7 @@ This is the changelog for Restsh.
 This version introduces the MyF5 API module.
 
 - General
+    - Feat: Add `restsh.util.printjson` to pretty print json with plain text fallback
     - Doc: Add more tutorials
     - Upd: Pad output of KV
 - Axians Automation Framework
