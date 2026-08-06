@@ -8,3 +8,13 @@ Step-by-step guides for common tasks and workflows with Restsh. These tutorials 
    :glob:
 
    *
+
+Examples
+--------
+
+Some simple examples grouped by module.
+
+- :doc:`General </restsh/Examples>`
+- :doc:`F5 </restsh/modules/f5/Examples>`
+- :doc:`GitLab </restsh/modules/gitlab/Examples>`
+- :doc:`MyF5 </restsh/modules/myf5/Examples>`

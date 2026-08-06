@@ -42,7 +42,7 @@ Scripted mode
 Functions
 ---------
 
--  :doc:`Functions <GeneralFunctions/index>`
+-  :doc:`General <GeneralFunctions/index>`
 -  :doc:`Modules <modules/index>`
 
    -  :doc:`Certificates <modules/cert/index>`
