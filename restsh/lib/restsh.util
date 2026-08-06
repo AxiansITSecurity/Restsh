@@ -429,6 +429,24 @@ restsh.util.setcurloptions() {
     export RESTSH_CURL_OPTS
 }
 
+# Pretty prints a json structure and falls back to plain text if json parsing fails.
+restsh.util.printjson() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        {
+            echo "Pretty prints a json structure and falls back to plain text if json parsing fails."
+            echo ""
+            echo "Usage: restsh.util.printjson <json>"
+        } 1>&2
+        return 2
+    fi
+
+    if ! JQ "." <<< "$1" 2>/dev/null
+    then
+        echo "$1"
+    fi
+}
+
 # Parses a command output.
 restsh.util.parseoutput() {
     local OPTION OPTIND
@@ -1124,6 +1142,7 @@ export -f JQ
 export -f JQE
 export -f XARGS
 export -f restsh.util.setcurloptions
+export -f restsh.util.printjson
 export -f restsh.util.parseoutput
 export -f restsh.util.setvars
 export -f restsh.util.setvar
