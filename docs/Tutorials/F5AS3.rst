@@ -96,7 +96,7 @@ You need to create a JSON declaration file that contains the complete definition
 
 .. hint::
 
-   The GitHub schema is outdated, and the only way to access a current version is through a support ticket.
+   The schema available on GitHub is outdated. An up-to-date schema can be downloaded from MyF5.
 
 **Example: test-tenant.json**
 

@@ -61,7 +61,7 @@ Before you can use DO to bootstrap your F5 BIG-IP system, you must install the D
 
 .. note::
 
-   The GitHub repository for DO is no longer actively maintained. Always download the official RPM from myF5 to ensure you have the latest DO package.
+   The GitHub repository for DO is no longer actively maintained. Always download the official RPM from MyF5 to ensure you have the latest DO package.
 
 **Installation steps**:
 
@@ -97,7 +97,7 @@ You need to create a JSON declaration file that contains the complete onboarding
 
 .. hint::
 
-   The schema available on GitHub is outdated, and the only way to obtain an up-to-date version is by extracting it directly from the RPM or from an installed F5 system. Restsh includes the ``f5.do.schema`` function, which allows you to download the schema from the package installed on your F5.
+   The schema available on GitHub is outdated. An up-to-date schema can be downloaded from MyF5.
 
 **Example: onboarding.json**
 
