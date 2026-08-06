@@ -29,6 +29,7 @@ Restsh defines the special ``DELETE``, ``GET``, ``HEAD``, ``PATCH``, ``POST``, `
 ``GET /api/version`` translates to ``https://<rest endpoint>/api/version``. Restsh transparently handles the authentication for you.
 
 - :doc:`HTTP functions </restsh/GeneralFunctions/Overview>`
+- :doc:`Examples </restsh/Examples>`
 
 .. hint::
 
