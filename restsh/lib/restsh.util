@@ -430,7 +430,7 @@ restsh.util.setcurloptions() {
 }
 
 # Pretty prints a json structure and falls back to plain text if json parsing fails.
-restsh.util.printjson() {
+restsh.util.print_formated() {
     if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
     then
         {
@@ -443,8 +443,30 @@ restsh.util.printjson() {
 
     if ! JQ "." <<< "$1" 2>/dev/null
     then
-        echo "$1"
+        print_json_ok "$1"
     fi
+}
+
+# Pretty prints a json error structure and falls back to plain text if json parsing fails.
+restsh.util.print_formated_err() {
+    if [ -n "${1+x}" ] && [ "${1}" = "-h" ]
+    then
+        {
+            echo "Pretty prints a json error structure and falls back to plain text if json parsing fails."
+            echo ""
+            echo "Usage: restsh.util.printjson <json>"
+        } 1>&2
+        return 2
+    fi
+
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
+    {
+        if ! JQ "." <<< "$1" 2>/dev/null
+        then
+            print_json_err "$1"
+        fi
+    } 1>&2
+    export JQ_COLORS="1;30:0;39:0;39:0;39:0;32:1;39:1;39:1;34"
 }
 
 # Parses a command output.
@@ -1142,7 +1164,8 @@ export -f JQ
 export -f JQE
 export -f XARGS
 export -f restsh.util.setcurloptions
-export -f restsh.util.printjson
+export -f restsh.util.print_formated
+export -f restsh.util.print_formated_err
 export -f restsh.util.parseoutput
 export -f restsh.util.setvars
 export -f restsh.util.setvar

@@ -81,7 +81,7 @@ vault.login.jwt() {
     local VAULT_LOGIN_OUTPUT
     if ! VAULT_LOGIN_OUTPUT=$(curl -s --fail-with-body --show-error --data "${VAULT_LOGIN_DATA}" "${VAULT_HOST}/v1/auth/jwt/login")
     then
-        restsh.util.printjson "$VAULT_LOGIN_OUTPUT" 1>&2
+        restsh.util.print_formated_err "$VAULT_LOGIN_OUTPUT"
         return 1
     fi
     echo "Authenticated by Vault with role $VAULT_AUTH_ROLE"
@@ -119,7 +119,7 @@ vault.get() {
     local VAULT_DATA
     if ! VAULT_DATA=$(curl -s --fail-with-body --show-error -H "X-Vault-Token: ${VAULT_TOKEN}" "${VAULT_HOST}${VAULT_PATH}")
     then
-        restsh.util.printjson "$VAULT_DATA" 1>&2
+        restsh.util.print_formated_err "$VAULT_DATA"
         return 1
     fi
     if ! JQE -r ".data.data.$VAULT_KEY" <<< "$VAULT_DATA"

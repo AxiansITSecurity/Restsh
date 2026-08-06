@@ -9,7 +9,8 @@ This is the changelog for Restsh.
 This version introduces the MyF5 API module.
 
 - General
-    - Feat: Add `restsh.util.printjson` to pretty print json with plain text fallback
+    - Feat: Add `restsh.util.print_formated` to pretty print json with plain text fallback
+    - Feat: Add `restsh.util.print_formated_err` to pretty print json with plain text fallback as error
     - Doc: Add more tutorials
     - Upd: Pad output of KV
 - Axians Automation Framework

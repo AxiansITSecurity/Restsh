@@ -576,12 +576,20 @@ test.restsh.util.eval_stage_var() {
     [ "$EXAMPLE" = "$EXAMPLE_DEV" ] || return 1
 }
 
-test.restsh.util.printjson() {
+test.restsh.util.print_formated() {
     # Usage info
-    restsh.util.printjson -h > /dev/null 2>&1 || true
+    restsh.util.print_formated -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.printjson '{"t":1}'
-    restsh.util.printjson 't'
+    restsh.util.print_formated '{"t":1}'
+    restsh.util.print_formated 't'
+}
+
+test.restsh.util.print_formated_err() {
+    # Usage info
+    restsh.util.print_formated_err -h > /dev/null 2>&1 || true
+    # Test
+    restsh.util.print_formated_err '{"t":1}'
+    restsh.util.print_formated_err 't'
 }
 
 # shellcheck disable=SC2034 # Array is used in test.sh
@@ -635,5 +643,6 @@ TESTS_RESTSH_UTIL=(
     test.restsh.passphrase
     test.restsh.help
     test.restsh.util.eval_stage_var
-    test.restsh.util.printjson
+    test.restsh.util.print_formated
+    test.restsh.util.print_formated_err
 )
