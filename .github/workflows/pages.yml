@@ -30,7 +30,7 @@ jobs:
       - name: Install sphinx
         run: |
           sudo apt-get update
-          sudo apt-get install -y python3-sphinx python3-sphinx-book-theme python3-sphinx-copybutton
+          sudo apt-get install -y python3-sphinx python3-sphinx-book-theme python3-sphinx-copybutton python3-myst-parser
       - name: Generate api documentation
         run: |
           ./doc.sh build _site
