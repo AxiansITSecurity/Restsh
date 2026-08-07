@@ -45,7 +45,7 @@ This version introduces the MyF5 API module.
 - F5 TMOS Module
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
-    - Feat: `f5.sslreport.generate` - Add option to create Markdown report
+    - Feat: `f5.sslreport.generate` - Add option to create markdown report
     - Feat: Support of the new [declarative API](https://techdocs.f5.com/en-us/bigip-21-1-0/big-ip-declarative-api.html) (Experimental)
         - `f5.declared.app.declare` - Create or update an app
         - `f5.declared.app.get` - Get the app declaration
@@ -105,17 +105,17 @@ This version introduces the MyF5 API module.
 ## v4.5.2 - 2026-07-27
 
 - F5 TMOS Module
-    - Fix: f5.ltm.clientssl.list - List certificate
+    - Fix: `f5.ltm.clientssl.list` - List certificate
 
 ***
 
 ## v4.5.1 - 2026-06-29
 
 - Certificate Module
-    - Fix: cert.csr.pubkey.hash - Print correct hash
-    - Fix: cert.x509.pubkey.hash - Print correct hash
+    - Fix: `cert.csr.pubkey.hash` - Print correct hash
+    - Fix: `cert.x509.pubkey.hash` - Print correct hash
 - GitLab Module
-    - Fix: gitlab.group.clone - Run fetch before pull to update a local repository
+    - Fix: `gitlab.group.clone` - Run fetch before pull to update a local repository
 
 ***
 
