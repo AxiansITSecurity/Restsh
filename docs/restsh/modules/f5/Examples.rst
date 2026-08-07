@@ -1,7 +1,7 @@
 Examples
 ========
 
-Common examples for managing F5 LTM and ASM objects through Restsh.
+Common examples for managing F5 LTM and ASM objects with Restsh.
 
 LTM
 ---
