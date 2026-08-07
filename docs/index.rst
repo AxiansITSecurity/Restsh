@@ -31,7 +31,8 @@ How to start?
 -------------
 
 #. Refer to :doc:`First Steps </FirstSteps/index>` for installation and initial configuration.
-#. Read the usage information and play with the :doc:`general examples </restsh/Examples>` of the :doc:`modules </restsh/modules/index>` of your choice.
+#. Explore Restsh by interacting on the command line with the REST-API's.
+#. Test the :doc:`examples </restsh/Examples>` and look through the :doc:`module usage information </restsh/modules/index>`.
 #. Read the :doc:`tutorials </Tutorials/index>` for advanced topics.
 
 .. note::
