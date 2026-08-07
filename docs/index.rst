@@ -27,6 +27,13 @@ Restsh is published under the :doc:`GPLv3+ license <LICENSE>` in the hope that o
 
 .. figure:: /_assets/restsh.svg
 
+How to start?
+-------------
+
+#. Refer to :doc:`First Steps </FirstSteps/index>` for installation and initial configuration.
+#. Read the usage information and play with the :doc:`general examples </restsh/Examples>` of the :doc:`modules </restsh/modules/index>` of your choice.
+#. Read the :doc:`tutorials </Tutorials/index>` for advanced topics.
+
 .. note::
 
    This is the OpenSource and community supported version of Restsh. You can book enterprise-grade support from Axians IT Security GmbH. Simply write an email to <juergen.mang@sec.axians.de> to get in contact.
