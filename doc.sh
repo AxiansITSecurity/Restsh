@@ -8,7 +8,7 @@
 
 # Shortdesc: Creates the HTML documentation.
 # Desc:
-# Creates the HTML documentation.
+# Creates the HTML documentation. Requires Sphinx.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -224,23 +224,34 @@ EOL
 } > "$TMPDIR/docs/Advanced/Templating/functions.md"
 
 ###############################################################################
-# Install and run Sphinx
+# Run Sphinx
 
-python3 -m venv "$TMPDIR/python-venv/"
-$TMPDIR/python-venv/bin/python3 -m pip install --upgrade pip
-$TMPDIR/python-venv/bin/pip install sphinx sphinx-book-theme sphinx-copybutton myst-parser sphinx-lint
 case "$ACTION" in
     build)
         [ $# -eq 2 ] || usage
-        $TMPDIR/python-venv/bin/sphinx-build -M html "$TMPDIR/docs" "$DOC_DEST"
+        if ! command -v "sphinx-build" > /dev/null 2>&1
+        then
+            echo "sphinx-build command not installed"
+            exit 1
+        fi
+        sphinx-build -M html "$TMPDIR/docs" "$DOC_DEST"
         ;;
     lint)
-        $TMPDIR/python-venv/bin/sphinx-lint "$TMPDIR/docs"
+        if ! command -v "sphinx-lint" > /dev/null 2>&1
+        then
+            echo "sphinx-lint command not installed"
+            exit 1
+        fi
+        sphinx-lint "$TMPDIR/docs"
         ;;
     serve)
+        if ! command -v "sphinx-autobuild" > /dev/null 2>&1
+        then
+            echo "sphinx-autobuild command not installed"
+            exit 1
+        fi
         [ $# -eq 2 ] || usage
-        $TMPDIR/python-venv/bin/pip install sphinx-autobuild
-        $TMPDIR/python-venv/bin/sphinx-autobuild -M html "$TMPDIR/docs" "$DOC_DEST"
+        sphinx-autobuild -M html "$TMPDIR/docs" "$DOC_DEST"
         ;;
     *)
         usage
