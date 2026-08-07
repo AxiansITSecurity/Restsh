@@ -38,14 +38,23 @@ Token based authentication
    [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
    [ -n "${RESTSH_TOKEN_HEADER+x}" ] || export RESTSH_TOKEN_HEADER="X-F5-Auth-Token"
 
-Call `f5.auth.token.get` to retrieve the token. It uses the provided username and password to retrieve the token and sets the ``RESTSH_TOKEN_VALUE`` environment variable. The initial token is retrieved on startup and renewal is also managed by Restsh.
+Call ``f5.auth.token.get`` to retrieve the token. It uses the provided username and password to retrieve the token and sets the ``RESTSH_TOKEN_VALUE`` environment variable. The initial token is retrieved on startup and renewal is also managed by Restsh.
+
+General usage hints
+-------------------
 
 Device Groups
--------------
+~~~~~~~~~~~~~
 
-You can set RESTSH_HOST to a comma separated list of the F5 device group members management addresses.
+You should do administrative tasks on the active device in a cluster. Call ``f5.cluster.setactive`` before any other command to connect to the active F5 device.
 
-Call ``f5.cluster.setactive`` before any other command to connect to the active F5 device.
+FullPath object names in URLs
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FullPaths of F5 objects are including a ``/`` and they must escaped in URLs by replacing the ``/`` with a ``~``. In Bash you can do this with a simple inline variable expression: ``${VS//\//\~}``
+
+- FullPath: ``/Common/test``
+- Transformed: ``~Common~test``
 
 References
 ----------
@@ -53,6 +62,7 @@ References
 - `iControl Rest Home <https://clouddocs.f5.com/api/icontrol-rest/>`_
 - `F5 REST API Authentication <https://clouddocs.f5.com/api/icontrol-soap/Authentication_with_the_F5_REST_API.html>`_
 - `K45508216: Displaying the iControl REST table of contents <https://my.f5.com/manage/s/article/K45508216>`_
+- `K13225405: Common iControl REST API command examples <https://my.f5.com/manage/s/article/K13225405>`_
 
 Examples
 --------

@@ -1,7 +1,7 @@
 Examples
 ========
 
-Common F5 examples for managing LTM and ASM objects through RESTSH.
+Common examples for managing F5 LTM and ASM objects through Restsh.
 
 LTM
 ---
@@ -35,10 +35,30 @@ Retrieve the configuration of a specific virtual server.
 
    f5.ltm.vs.get /Common/vs_test
 
+Iterate through all virtual servers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can use the ``f5.ltm.vs.list`` command with a simple ``jq`` filter to iterate through all virtual servers. This is useful if you want change one setting on all your virtual servers.
+
+.. code:: sh
+
+   # Disable all virtual servers
+   while read -r VS
+   do
+      PATCH "/mgmt/tm/ltm/virtual/${VS//\//\~}" <<< '{"disabled": true}'
+   done < <(f5.ltm.vs.list -r | JQ -r '.items[].fullPath')
+
+   # To re-enable all virtual servers again
+   while read -r VS
+   do
+      PATCH "/mgmt/tm/ltm/virtual/${VS//\//\~}" <<< '{"enabled": true}'
+   done < <(f5.ltm.vs.list -r | JQ -r '.items[].fullPath')
+
+
 Attach a log profile to a list of virtual servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Apply a security log profile to all virtual servers listed in a file. The file should contain one virtual server name per line.
+Apply a security log profile to a list of virtual servers.
 
 .. code:: sh
 
@@ -63,10 +83,46 @@ Apply a security log profile to all virtual servers listed in a file. The file s
        PATCH "/mgmt/tm/ltm/virtual/${VS//\//\~}" < $RESTSH_TMP/log-profile.json
    done
 
+iRules
+~~~~~~
+
+List all iRules.
+
+.. code:: sh
+
+   f5.ltm.irule.list
+
+Download an iRule.
+
+.. code:: sh
+
+   f5.ltm.irule.download /Common/test test.irule
+
+Update an iRule.
+
+.. code:: sh
+
+   f5.ltm.irule.update /Common/test test.irule
+
+Batch processing iRules
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Download all iRules from your F5 to current folder. This function ignores system iRules.
+
+.. code:: sh
+
+   f5.ltm.irule.batch download ./
+
+Upload all iRules from current folder. This functions iterates through all files with the extension ``.irule`` and creates or updates the iRule. The iRule name on the F5 is the basename of the file.
+
+.. code:: sh
+
+   f5.ltm.irule.batch create ./
+
 ASM
 ---
 
-Functions for manaaging ASM policies and entities.
+Functions for managing ASM policies and entities.
 
 Change enforcement mode of an ASM policy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -89,7 +89,7 @@ Render a templated payload with mustache and submit it as a POST request.
    {"var1": "{{VAR1}}"}
    EOL
 
-More examples for using mustache templates can be found in the :doc:`Templating <Advances/Templating/index>` section.
+More examples for using mustache templates can be found in the :doc:`Templating </Advanced/Templating/index>` section.
 
 Modules
 -------
