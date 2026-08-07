@@ -12,7 +12,7 @@ This version introduces the MyF5 API module.
     - Feat: Add `restsh.util.print_formated` to pretty print json with plain text fallback
     - Feat: Add `restsh.util.print_formated_err` to pretty print json with plain text fallback as error
     - Doc: Add more tutorials
-    - Upd: Pad output of KV
+    - Upd: Pad output of `KV`
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.f5update`
     - Feat: `aafw.pipeline.start.task.sysdb`
@@ -25,7 +25,7 @@ This version introduces the MyF5 API module.
         - `cert.key.public.verify`: Check public key consistency
         - `cert.x509.create`: Creates a self-signed certificate
         - `cert.x509.fingerprint`: Prints the sha256 fingerprint of the certificate.
-    - Upd: Remove <alg> parameter where possible
+    - Upd: Remove `<alg>` parameter where possible
 - GitLab Module
     - Feat: `gitlab.project.create` - Add default project settings
     - Feat: `gitlab.project.schedules.state`
