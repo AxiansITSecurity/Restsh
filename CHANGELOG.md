@@ -41,7 +41,7 @@ This version introduces the MyF5 API module.
         - `gitlab.project.access_token.revoke`
         - `gitlab.project.access_token.rotate`
     - Upd: `gitlab.project.schedules.list` - Add ref to list
-    - Fix: `gitlab.mr.automerge`, `gitlab.mr.merge` - Get SHA of the merge request, this is required sind GitLab 19.2.
+    - Fix: `gitlab.mr.automerge`, `gitlab.mr.merge` - Get SHA of the merge request, this is required since GitLab 19.2.
 - F5 TMOS Module
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
