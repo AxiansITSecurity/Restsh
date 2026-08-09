@@ -59,7 +59,11 @@ clone_group() {
             git pull
             cd "$BASE_PATH" || exit 1
         else
-            git clone "${RESTSH_AAFW_URI}/${PROJECT}.git" "${PROJECT}"
+            echo "Cloning project $PROJECT from ${RESTSH_AAFW_URI}/${PROJECT}.git"
+            if ! git clone "${RESTSH_AAFW_URI}/${PROJECT}.git" "${PROJECT}"
+            then
+                echo_warn "Failure cloning the project"
+            fi
         fi
     done < <(GET "$GITLAB_API_PREFIX/groups/$FETCH_GROUP_ESCAPED/projects?per_page=${GITLAB_PER_PAGE}" | JQ -r '.[] | select(.archived == false and .marked_for_deletion_at == null) | .path_with_namespace')
     local GROUP
