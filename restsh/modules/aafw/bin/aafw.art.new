@@ -67,7 +67,7 @@ then
 fi
 
 restsh.util.check.string "project path" "$1"; PROJECT_PATH=$1
-restsh.util.check.string "app name" "$2"; APP_NAME=$2
+APP_NAME=$2
 restsh.util.check.string "template" "$3"; TEMPLATE=$3
 
 if ! restsh.util.check.isvarname "$APP_NAME"
@@ -151,9 +151,18 @@ fi
 TENANT_FOLDER=$(realpath "${PROJECT_PATH}")
 if [ -d "$TENANT_FOLDER" ]
 then
+    echo "Updating local tenant folder"
     cd "$TENANT_FOLDER" || exit 1
+    git checkout draft
+    git fetch
     git pull
 else
+    if ! gitlab.project.exists "${PROJECT_PATH}"
+    then
+        echo_err "Project ${PROJECT_PATH} not found."
+        exit 1
+    fi
+    echo "Cloning tenant project"
     if [ "$PUSH" -eq 0 ]
     then
         echo_err "Project path must be a local folder if commit and push is not enabled."
