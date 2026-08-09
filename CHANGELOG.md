@@ -14,6 +14,7 @@ This version introduces the MyF5 API module.
     - Doc: Add more tutorials
     - Upd: Pad output of `KV`
 - Axians Automation Framework
+    - Feat: `aafw.art.template.list` - Lists all Application Ready Templates
     - Feat: `aafw.pipeline.start.f5update`
     - Feat: `aafw.pipeline.start.task.sysdb`
     - Upd: Remove obsolete TASK_HOST option from `aafw.pipeline.start.do`
