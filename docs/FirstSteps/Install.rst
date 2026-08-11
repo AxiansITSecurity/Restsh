@@ -49,7 +49,7 @@ Most packages should be already installed on a standard Linux installation.
 -  sed
 -  yq
 
-.. warning:: Restsh is not compatible with the BusyBox utilities, which are used by Alpine Linux, for example.
+.. warning:: Restsh is not compatible with the BusyBox utilities that are used by e.g. Alpine Linux.
 
 .. code:: sh
 

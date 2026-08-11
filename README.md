@@ -29,4 +29,4 @@ Restsh is published under the [GPLv3+ license](LICENSE.md) in the hope that othe
 
 ## Support
 
-This is the OpenSource and community supported version of Restsh. You can book enterprise-grade support from Axians IT Security GmbH. Simply write an email to <juergen.mang@sec.axians.de> to get in contact.
+This is the OpenSource and community supported version of Restsh. You can book enterprise-grade support from Axians IT Security GmbH. Simply write an email to <juergen.mang@sec.axians.de> to get in touch.
