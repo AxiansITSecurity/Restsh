@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Cancels a job.
+# Shortdesc: Retries a job.
 # Desc:
-# Cancels a job.
+# Retries a job.
 
 # Strict error handling
 set -eEu -o pipefail
