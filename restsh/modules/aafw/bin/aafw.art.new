@@ -148,8 +148,7 @@ then
 fi
 
 # Clone or update tenant repository
-TENANT_FOLDER=$(realpath "${PROJECT_PATH}")
-if [ -d "$TENANT_FOLDER" ]
+if TENANT_FOLDER=$(realpath "${PROJECT_PATH}") && [ -d "$TENANT_FOLDER" ]
 then
     echo "Updating local tenant folder"
     cd "$TENANT_FOLDER" || exit 1
