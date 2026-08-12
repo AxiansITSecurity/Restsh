@@ -32,7 +32,7 @@ done
 shift "$((OPTIND -1))"
 
 PIPELINE_OPTS=("-s" "CI_PIPELINE_SOURCE=api")
-if [ $# -ne 2 ] || [ "$OPTION" = "invalid " ]
+if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
