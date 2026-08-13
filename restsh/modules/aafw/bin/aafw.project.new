@@ -93,7 +93,7 @@ GROUP_NAME=${PROJECT_PATH%/*}
 
 if [ ! -s "$RESTSH_AAFW_PROJECT_SETTINGS" ]
 then
-    echo_err "Default project settings file not found."
+    echo_err "Default project settings file \"${RESTSH_AAFW_PROJECT_SETTINGS}\" not found."
     exit 1
 fi
 
