@@ -83,6 +83,44 @@ Apply a security log profile to a list of virtual servers.
        PATCH "/mgmt/tm/ltm/virtual/${VS//\//\~}" < $RESTSH_TMP/log-profile.json
    done
 
+Create a snat pool
+~~~~~~~~~~~~~~~~~~
+
+Create a SNAT pool with a larger list of SNAT addresses.
+
+.. code:: sh
+
+   # Create an array of SNAT addresses to be added to the SNAT pool
+   mapfile -t IPS < <(for F in {10..80}; do echo "10.10.10.${F}"; done)
+
+   # Create a Mustache template for the SNAT pool definition
+   cat > $RESTSH_TMP/snat-pool.json <<EOL
+   {
+       "name": "snat_pool_test",
+       "members": [
+           {{#IPS}}
+               {{MO_COMMA_IF_NOT_FIRST}}
+               "{{.}}"
+           {{/IPS}}
+       ]
+   }
+   EOL
+
+   # Create the SNAT pool using the Mustache template and the array of SNAT addresses
+   MO "$RESTSH_TMP/snat-pool.json" | POST /mgmt/tm/ltm/snatpool
+
+   # Iterate through the members and set the idle timeout
+   while read -r MEMBER
+   do
+      PATCH "/mgmt/tm/ltm/snat-translation/${MEMBER//\//\~}" <<< '{"ipIdleTimeout": 60, "tcpIdleTimeout": 60, "udpIdleTimeout": 60}'
+   done < <(GET -r -f '.members[]' /mgmt/tm/ltm/snatpool/snat_pool_test)
+
+   # Cleanup
+   rm "$RESTSH_TMP/snat-pool.json"
+
+   # Delete the snat pool
+   DELETE /mgmt/tm/ltm/snatpool/snat_pool_test
+
 iRules
 ~~~~~~
 
