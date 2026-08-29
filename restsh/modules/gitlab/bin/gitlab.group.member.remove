@@ -35,7 +35,7 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <group> <user id>"
+    echo "Usage: $(basename "$0") <group> <user id>"
     exit 2
 fi
 

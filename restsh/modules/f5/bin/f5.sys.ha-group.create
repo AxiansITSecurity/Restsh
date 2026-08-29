@@ -48,8 +48,7 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") [options...] <ha-group name>"
+    echo "Usage: $(basename "$0") [options...] <ha-group name>"
     echo "Options:"
     echo "    -b <active bonus>    Active Bonus"
     echo "    -d <variables file>  Path to file with env variables to use"
@@ -57,9 +56,11 @@ then
     echo "    -s <VAR=VALUE>       Define simple variable"
     echo "    -t <template>        Path to template"
     echo "    -u <trunk name>      Trunk name"
-    echo "Template is: $TEMPLATE"
+    echo ""
+    echo "Default template: $TEMPLATE"
+    echo ""
     echo "Defaults are:"
-    sed -E 's/.*&& (.*)/\t\1/' "$DEFAULTS"
+    sed -E 's/.*\|\| (.*)/    - \1/' "$DEFAULTS"
     exit 2
 fi
 

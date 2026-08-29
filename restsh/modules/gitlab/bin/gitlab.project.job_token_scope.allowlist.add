@@ -40,8 +40,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project> <project or group to add>"
     echo "Options:"
-    echo "    -g Add group (default)"
-    echo "    -p Add project"
+    echo "    -g  Add group (default)"
+    echo "    -p  Add project"
     exit 2
 fi
 

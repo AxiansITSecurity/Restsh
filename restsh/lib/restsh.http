@@ -42,12 +42,12 @@ restsh.http() {
         {
             echo "Usage: restsh.http [options...] <method> <uri>"
             echo "Options:"
-            echo "    -b           Get body from STDIN"
-            echo "    -c <retries> Number of HTTP request retries (default no retries)."
-            echo "    -f <filter>  Apply an jq filter to output"
-            echo "    -n           Ignore RESTSH_HTTP_PRE_EXEC"
-            echo "    -o           Define an output file"
-            echo "    -r           Raw output."
+            echo "    -b            Get body from STDIN"
+            echo "    -c <retries>  Number of HTTP request retries (default no retries)."
+            echo "    -f <filter>   Apply an jq filter to output"
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
+            echo "    -o            Define an output file"
+            echo "    -r            Raw output."
         } 1>&2
         return 2
     fi
@@ -397,6 +397,7 @@ GET() {
         {
             echo "Executes a HTTP GET request"
             echo "Usage: GET [options...] <uri>"
+            echo "Options:"
             echo "    -c <retries>  Number of retries (default no retries)."
             echo "    -f <filter>   Apply an jq filter to output."
             echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"

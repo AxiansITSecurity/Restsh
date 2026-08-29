@@ -39,7 +39,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <runner id> [<page>]"
     echo "Options:"
-    echo "    -r Raw output."
+    echo "    -r  Raw output."
     exit 2
 fi
 restsh.util.check.uint "runner id" "$1"; RUNNER_ID=$1

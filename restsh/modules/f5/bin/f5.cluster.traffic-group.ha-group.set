@@ -34,8 +34,7 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") <traffic group name> <ha-group name>"
+    echo "Usage: $(basename "$0") <traffic group name> <ha-group name>"
     exit 2
 fi
 

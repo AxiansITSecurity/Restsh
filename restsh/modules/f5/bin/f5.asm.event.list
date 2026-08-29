@@ -39,8 +39,9 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...]"
-    echo "    -p           ASM Policy Full Path."
-    echo "    -r           Raw output."
+    echo "Options:"
+    echo "    -p  ASM Policy Full Path."
+    echo "    -r  Raw output."
     exit 2
 fi
 

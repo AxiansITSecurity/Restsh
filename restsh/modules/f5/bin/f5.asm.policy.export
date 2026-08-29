@@ -37,8 +37,9 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-f <json|xml|binary>] <policy fullPath> [<filename>]"
-    echo "Default format: json"
+    echo "Usage: $(basename "$0") [options...] <policy fullPath> [<filename>]"
+    echo "Options:"
+    echo "    -f <format>  Valid formats: json (default), xml, binary"
     exit 2
 fi
 

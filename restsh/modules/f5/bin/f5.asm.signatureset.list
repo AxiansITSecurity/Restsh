@@ -41,8 +41,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...]"
     echo "Options:"
-    echo "    -r Raw output."
-    echo "    -u Show only user defined signature sets"
+    echo "    -r  Raw output."
+    echo "    -u  Show only user defined signature sets"
     exit 2
 fi
 

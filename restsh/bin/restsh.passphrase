@@ -47,11 +47,11 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...]"
     echo "Options:"
-    echo "    -c Randomize case"
-    echo "    -d Delimiter for words, default: random"
-    echo "    -f Dictionary file"
-    echo "    -n Add random numbers"
-    echo "    -w Number of words, default: 4"
+    echo "    -c               Randomize case"
+    echo "    -d  <delimiter>  Delimiter for words, default: random"
+    echo "    -f  <dict file>  Dictionary file"
+    echo "    -n               Add random numbers"
+    echo "    -w <number>      Number of words, default: 4"
     exit 2
 fi
 

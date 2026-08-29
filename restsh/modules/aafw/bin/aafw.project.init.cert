@@ -38,18 +38,21 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <clone uri>"
     echo "Options:"
     echo "    -d <folder>    Parent folder for cloned repository."
-    echo "    -t <clm type>  CLM pipeline to use:"
-    echo "                   - f5-tm-scm: Traffic Management Certificate with SCM"
-    echo "                   - f5-tm-certbot: Traffic Management Certificate with Certbot"
-    echo "                   - f5-tm-scep: Traffic Management Certificate with SCEP"
-    echo "                   - f5-tm-vault: Traffic Management Certificate with HashiCorp Vault"
-    echo "                   - f5-device-scm: Device Certificate with SCM"
-    echo "                   - f5-device-certbot: Device Certificate with Certbot"
-    echo "                   - f5-device-scep: Device Certificate with SCEP"
-    echo "                   - f5-device-vault: Device Certificate with HashiCorp Vault"
+    echo "    -t <clm type>  CLM pipeline to use."
+    echo ""
+    echo "Available CLM types:"
+    echo "    - f5-tm-scm: Traffic Management Certificate with SCM"
+    echo "    - f5-tm-certbot: Traffic Management Certificate with Certbot"
+    echo "    - f5-tm-scep: Traffic Management Certificate with SCEP"
+    echo "    - f5-tm-vault: Traffic Management Certificate with HashiCorp Vault"
+    echo "    - f5-device-scm: Device Certificate with SCM"
+    echo "    - f5-device-certbot: Device Certificate with Certbot"
+    echo "    - f5-device-scep: Device Certificate with SCEP"
+    echo "    - f5-device-vault: Device Certificate with HashiCorp Vault"
     exit 2
 fi
 

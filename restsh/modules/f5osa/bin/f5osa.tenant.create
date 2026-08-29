@@ -55,10 +55,11 @@ then
     echo ""
     _restsh.help.desc.get "$0"
     echo "Example template file:"
-    cat "$RESTSH_PATH/modules/f5osa/templates/tenant.json"
+    awk '{ print "    " $0 }' "$RESTSH_PATH/modules/f5osa/templates/tenant.json"
     echo ""
     echo "Example variable file:"
-    cat "$RESTSH_PATH/modules/f5osa/templates/tenant.var"
+    awk '{ print "    " $0 }' "$RESTSH_PATH/modules/f5osa/templates/tenant.var"
+    echo ""
     exit 2
 fi
 

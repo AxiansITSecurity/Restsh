@@ -40,6 +40,7 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
     echo "    -f <filter>  Filter output with jq."
     echo "    -r           Raw output."
     exit 2

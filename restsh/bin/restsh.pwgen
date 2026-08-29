@@ -41,10 +41,11 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-c <chunks>] [-d <delimiter>] [-l <length>]"
-    echo -e "\t-c Insert delimiter each <chunks> character, default: 5"
-    echo -e "\t-d Delimiter for chunks, default: random"
-    echo -e "\t-l Length of password, default: 34"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -c <number>     Insert delimiter each <chunks> character, default: 5"
+    echo "    -d <delimiter>  Delimiter for chunks, default: random"
+    echo "    -l <length>     Length of password, default: 34"
     exit 2
 fi
 

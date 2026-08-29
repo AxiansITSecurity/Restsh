@@ -39,7 +39,7 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <group path>"
     echo "Options:"
-    echo "    -t <template folder>, default: ${RESTSH_PATH}/modules/aafw/templates"
+    echo "    -t <template folder>  Set the template folder, default: ${RESTSH_PATH}/modules/aafw/templates"
     exit 2
 fi
 

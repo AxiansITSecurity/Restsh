@@ -8,8 +8,6 @@
 
 # Shortdesc: Updates an external system datagroup.
 # Desc:
-# Updates an external system datagroup.
-#
 # Format of external datagroup file:
 # "name1" := "value1",
 # "name2" := "value2",
@@ -38,10 +36,10 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
-    _restsh.help.desc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <fullPath> <filename>"
-    echo "    Format of external datagroup file:"
-    echo "        \"name1\" := \"value1\","
+    echo ""
+    _restsh.help.desc.get "$0"
     exit 2
 fi
 

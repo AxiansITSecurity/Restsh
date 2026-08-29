@@ -8,7 +8,7 @@
 
 # Shortdesc: Gets the live update status.
 # Desc:
-# Gets a signature sets.
+# Gets the live update status.
 # Reference: https://my.f5.com/manage/s/article/K58021531
 
 # Strict error handling

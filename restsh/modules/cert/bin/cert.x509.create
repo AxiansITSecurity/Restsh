@@ -27,13 +27,13 @@ usage() {
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] --cn=<common name> <key file> <cert file>"
     echo "Options:"
-    echo "    -a <dns alternative name>"
-    echo "    -i <ip alternative name>"
-    echo "    --org=<organization>"
-    echo "    --ou=<organizational unit>"
-    echo "    --city=<city>"
-    echo "    --state=<state>"
-    echo "    --country=<country>"
+    echo "    -a <dns alternative name>   DNS alternative name, can be specified multiple times"
+    echo "    -i <ip alternative name>    IP alternative name, can be specified multiple times"
+    echo "    --org=<organization>        Set the organization"
+    echo "    --ou=<organizational unit>  Set the organizational unit"
+    echo "    --city=<city>               Set the city"
+    echo "    --state=<state>             Set the state"
+    echo "    --country=<country>         Set the countrycode, e.g. DE"
     exit 2
 }
 

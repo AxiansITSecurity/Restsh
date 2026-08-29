@@ -38,7 +38,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <name> <value>"
     echo "Options:"
-    echo "-r  Raw output"
+    echo "    -r  Raw output"
     exit 2
 fi
 restsh.util.check.string "name" "$1"; NAME=$1

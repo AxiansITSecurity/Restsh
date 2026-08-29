@@ -39,9 +39,10 @@ if [ $# -ne 3 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-m] [-e] <project> <key> <value>"
-    echo -e "\t-e Expand variable"
-    echo -e "\t-m Mask variable"
+    echo "Usage: $(basename "$0") [options...] <project> <key> <value>"
+    echo "Options:"
+    echo "    -e  Expand variable"
+    echo "    -m  Mask variable"
     exit 2
 fi
 

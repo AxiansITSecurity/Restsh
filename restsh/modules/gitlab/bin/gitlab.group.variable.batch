@@ -36,8 +36,10 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
   exec 1>&2
   _restsh.help.desc.get "$0"
-  echo "Usage: $(basename "$0") [-e] <group> <csv>"
+  echo "Usage: $(basename "$0") [options...] <group> <csv>"
+  echo "Options:"
   echo "  -e Resolve environment variables for value"
+  echo ""
   echo "CSV format: key,value,masked,raw,desc"
   exit 2
 fi

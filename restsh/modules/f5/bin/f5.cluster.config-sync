@@ -38,7 +38,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <device group name>"
     echo "Options:"
-    echo "    -f Force overwrite"
+    echo "    -f  Force overwrite"
     exit 2
 fi
 

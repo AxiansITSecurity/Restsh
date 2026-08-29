@@ -48,6 +48,7 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <namespace id> <name>"
+    echo "Options:"
     echo "    -b <branch>  Default branch, default: master"
     echo "    -e <file>    Project settings json file."
     echo "                 Default: modules/gitlab/templates/project_settings_default.json."

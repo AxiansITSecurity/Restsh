@@ -37,8 +37,9 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [-r] <project> <branch>"
-    echo -e "\tUse -r for raw output."
+    echo "Usage: $(basename "$0") [options] <project> <branch>"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
 

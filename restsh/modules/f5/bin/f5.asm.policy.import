@@ -43,6 +43,7 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <filename> <policy fullPath>"
+    echo "Options:"
     echo "    -e                 Enforce all signatures"
     echo "    -i                 Enforce given policy path (Overwrite fullPath in import file)"
     echo "    -n                 Do not apply policy after import"

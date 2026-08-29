@@ -57,9 +57,24 @@ cp -v LICENSE.md "$TMPDIR/docs/"
 export RESTSH_HOST=""
 export RESTSH_AUTH="anonymous"
 export RESTSH_PATH="restsh"
+# Axians Automation Framework Top Group
+export RESTSH_AAFW_GROUP="aafw"
+# Axians Automation Framework Skeleton Projects
+export RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
+export RESTSH_AAFW_DOSKELETON="${RESTSH_AAFW_GROUP}/doskeleton"
+export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
+export RESTSH_AAFW_F5UPDATESKELETON="${RESTSH_AAFW_GROUP}/f5updateskeleton"
+# ART
+export RESTSH_AAFW_ART="${RESTSH_AAFW_GROUP}/art"
+# Default project settings
+export RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/modules/aafw/templates/project_settings_default.json"
+export RESTSH_AAFW_ART=""
+
 . "${RESTSH_PATH}/restsh.init"
 
-export RESTSH_AAFW_ART=""
+help2md() {
+    perl ./help2md.pl
+}
 
 module_help() {
     local MODULE=$1
@@ -81,9 +96,7 @@ EOL
         {
             echo "# $FUNC"
             echo ""
-            echo '```'
-            "$FUNC" -h 2>&1 || true
-            echo '```'
+            "$FUNC" -h 2>&1 | help2md || true
         } > "$OUTDIR/modules/$MODULE/$FUNC.md"
     done
 }
@@ -108,9 +121,7 @@ restsh_help() {
         {
             echo "# $FUNC"
             echo ""
-            echo '```'
-            "$FUNC" -h 2>&1 || true
-            echo '```'
+            "$FUNC" -h 2>&1 | help2md || true
         } > "$OUTDIR/GeneralFunctions/$FUNC.md"
     done
 }
@@ -126,9 +137,7 @@ general_help() {
         {
             echo "# $FUNC"
             echo ""
-            echo '```'
-            "$FUNC" -h 2>&1 || true
-            echo '```'
+            "$FUNC" -h 2>&1 | help2md || true
         } > "$OUTDIR/GeneralFunctions/$FUNC.md"
     done
     unset CMDS

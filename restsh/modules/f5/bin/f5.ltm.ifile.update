@@ -8,7 +8,6 @@
 
 # Shortdesc: Changes the sys iFile reference for the LTM iFile.
 # Desc:
-# Changes the sys iFile reference for the LTM iFile.
 # Reference: https://community.f5.com/t5/codeshare/syncing-local-repositories-and-ifiles-using-icontrol-rest-api/ta-p/290848
 
 # Strict error handling

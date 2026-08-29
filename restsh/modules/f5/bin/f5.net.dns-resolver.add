@@ -44,12 +44,15 @@ then
     echo "    -d <file>         File to read variables from"
     echo "    -s \"VAR=VALUE\"  Set a variable for template processing"
     echo "    -t <template>     Declaration template to use"
-    echo "Template is: $TEMPLATE"
+    echo ""
+    echo "Default template: $TEMPLATE"
+    echo ""
     echo "Defaults are:"
-    sed -E 's/.*\|\| (.*)/\t\1/' "$DEFAULTS"
+    sed -E 's/.*\|\| (.*)/    - \1/' "$DEFAULTS"
     echo ""
     echo "Example:"
     echo "    $(basename "$0") -s VAR_DNS1=10.1.1.1:53 -s VAR_DNS2=10.1.1.2:53 /Common/dns-resolver-example"
+    echo ""
     exit 2
 fi
 

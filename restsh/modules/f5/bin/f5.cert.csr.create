@@ -28,19 +28,20 @@ usage() {
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") --cn=<common name>"
     echo "Options:"
-    echo "    -a <dns alternative name>"
-    echo "    -i <ip alternative name>"
-    echo "    -n <name>"
-    echo "    --partition=<f5 partition>, default: Common"
-    echo "    --keytype=<key type>, default: rsa-private, valid: rsa-private, ec-private"
-    echo "    --keysize=<keysize>, default: 4096, valid: 2048, 4096"
-    echo "    --curvename=<curve name>, default: prime256v1, valid: prime256v1, secp384r1, secp521r1"
-    echo "    --cn=<common name>"
-    echo "    --org=<organization>"
-    echo "    --ou=<organizational unit>"
-    echo "    --city=<city>"
-    echo "    --state=<state>"
-    echo "    --country=<country>"
+    echo "    -a <dns alternative name>   DNS alternative name, can be specified multiple times"
+    echo "    -c <config file>            Confiuration file to read"
+    echo "    -i <ip alternative name>    IP alternative name, can be specified multiple times"
+    echo "    -n <name>                   Certificate name"
+    echo "    --city=<city>               Set the city"
+    echo "    --cn=<common name>          Common name"
+    echo "    --country=<country>         Set the countrycode, e.g. DE"  
+    echo "    --curvename=<curve name>    Eliptic curve, valid values: prime256v1 (default), secp384r1, secp521r1"
+    echo "    --keysize=<keysize>         RSA Keysize, valid: values 2048, 4096 (default)"
+    echo "    --keytype=<key type>        Keytype, valid values: rsa-private (default), ec-private"
+    echo "    --org=<organization>        Set the organization"
+    echo "    --ou=<organizational unit>  Set the organizational unit"
+    echo "    --partition=<partition>     F5 Partition,default: Common"
+    echo "    --state=<state>             Set the state"
     exit 2
 }
 
@@ -59,7 +60,7 @@ COUNTRY=""
 ALT_NAMES=()
 ALT_IPS=()
 CONFIG_FILE=""
-while getopts ':-:a:i:n:' OPTION
+while getopts ':-:a:c:i:n:' OPTION
 do
     if [ "$OPTION" = "-" ]
     then

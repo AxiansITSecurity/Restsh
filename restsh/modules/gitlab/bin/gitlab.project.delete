@@ -37,8 +37,9 @@ if [ -z "${1+x}" ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project>"
-    echo "    -f Immediately deletes a project if it is marked for deletion."
+    echo "Usage: $(basename "$0") [options...] <project>"
+    echo "Options:"
+    echo "    -f  Immediately deletes a project if it is marked for deletion."
     exit 2
 fi
 

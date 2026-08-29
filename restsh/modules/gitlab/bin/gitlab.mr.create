@@ -41,8 +41,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project> <source branch> <target branch> <title>"
     echo "Options:"
-    echo "    -m Set automerge"
-    echo "    -r Raw output"
+    echo "    -m  Set automerge"
+    echo "    -r  Raw output"
     exit 2
 fi
 

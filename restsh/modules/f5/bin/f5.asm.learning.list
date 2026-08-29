@@ -37,8 +37,7 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") <policy name or hash>"
+    echo "Usage: $(basename "$0") <policy name or hash>"
     exit 2
 fi
 
