@@ -39,7 +39,7 @@ if [ "$#" -lt 3 ] || [ "$OPTION" = "invalid" ] || [ -z "$TEMPLATE" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...]] <policy full path> <entity type> <entity name>"
+    echo "Usage: $(basename "$0") [options...] <policy full path> <entity type> <entity name>"
     echo "Options:"
     echo "    -t <modify template>  Template to use."
     echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."

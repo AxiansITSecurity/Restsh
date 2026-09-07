@@ -38,7 +38,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <bundle file>"
     echo "Options:"
-    echo "    -s Silence output"
+    echo "    -s  Silence output"
     exit 2
 fi
 

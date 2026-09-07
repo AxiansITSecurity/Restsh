@@ -43,14 +43,12 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") [options...] <Traffic Group Name> <MAC Masquerade Address>"
+    echo "Usage: $(basename "$0") [options...] <Traffic Group Name> <MAC Masquerade Address>"
     echo "Options":
     echo "    -d  Do net set the address, only display the generated."
     echo ""
-    echo "Valid values:"
-    echo "    Traffic Group Name: This is usually traffic-group-1"
-    echo "    MAC Masquerade Address: \"auto\", \"none\" or valid MAC Address"
+    echo "- Traffic Group Name: This is usually traffic-group-1"
+    echo "- MAC Masquerade Address: \"auto\", \"none\" or a valid MAC Address"
     echo ""
     _restsh.help.desc.get "$0"
     exit 2

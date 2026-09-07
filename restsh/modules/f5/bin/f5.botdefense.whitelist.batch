@@ -35,7 +35,8 @@ if [ "$OPTION" == "invalid" ] || [ $# -lt 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <fullPath> <whitelist entries csv>"
+    echo "Usage: $(basename "$0") <fullPath> <whitelist entries csv>"
+    echo ""
     echo "CSV format: Name,sourceAddress,url"
     exit 2
 fi

@@ -41,8 +41,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project> [<page>]"
     echo "Options:"
-    echo "    -d Show only direct members"
-    echo "    -r Raw output."
+    echo "    -d  Show only direct members"
+    echo "    -r  Raw output."
     exit 2
 fi
 

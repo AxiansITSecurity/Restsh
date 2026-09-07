@@ -36,7 +36,7 @@ if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <project path> <branch>"
+    echo "Usage: $(basename "$0") <project path> <branch>"
     exit 2
 fi
 

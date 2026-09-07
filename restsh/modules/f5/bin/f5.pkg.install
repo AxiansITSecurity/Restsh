@@ -8,10 +8,7 @@
 
 # Shortdesc: Installs an iAPPs LX Package.
 # Desc:
-# Installs an iAPPs LX Package.
-# AS3: https://github.com/F5Networks/f5-appsvcs-extension/releases
-# DO: https://github.com/F5Networks/f5-declarative-onboarding/releases
-# TS: https://github.com/F5Networks/f5-telemetry-streaming/releases
+# Packages can be downloaded from MyF5.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -36,8 +33,10 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
-    _restsh.help.desc.get "$0"
+    _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") <rpm file>"
+    echo ""
+    _restsh.help.desc.get "$0"
     exit 2
 fi
 

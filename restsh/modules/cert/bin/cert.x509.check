@@ -38,7 +38,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <x509 cert file> <hostname>"
     echo "Options":
-    echo "    -e <seconds> Remaining term in seconds"
+    echo "    -e <seconds>  Remaining term in seconds"
     exit 2
 fi
 

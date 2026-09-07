@@ -8,8 +8,6 @@
 
 # Shortdesc: Creates an external datagroup.
 # Desc:
-# Creates an external datagroup.
-#
 # Format of external datagroup file:
 # "name1" := "value1",
 # "name2" := "value2",
@@ -43,11 +41,13 @@ shift "$((OPTIND -1))"
 if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
   exec 1>&2
-  _restsh.help.desc.get "$0"
+  _restsh.help.shortdesc.get "$0"
   echo "Usage: $(basename "$0") [options...] <full path> <filename>"
   echo "Options:"
   echo "    -u         Upload filename - executes f5.sys.datagroup.external.create before."
   echo "    -t <type>  Required for \"-u\" option; Datagroup type: string, integer, ip"
+  echo ""
+  _restsh.help.desc.get "$0"
   exit 2
 fi
 

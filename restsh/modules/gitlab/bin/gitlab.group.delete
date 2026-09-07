@@ -39,7 +39,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <group>"
     echo "Options:"
-    echo "    -f Immediately deletes a subgroup if it is marked for deletion."
+    echo "    -f  Immediately deletes a subgroup if it is marked for deletion."
     exit 2
 fi
 

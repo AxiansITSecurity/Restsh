@@ -39,8 +39,8 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project> <fork>"
-    echo "Options"
-    echo "    -d Remove fork relationship"
+    echo "Options:"
+    echo "    -d  Remove fork relationship"
     exit 2
 fi
 

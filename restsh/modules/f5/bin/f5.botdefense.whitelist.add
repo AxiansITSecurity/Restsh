@@ -38,10 +38,10 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <fullPath> <name> <src> <url>"
     echo ""
-    echo "Full path: Bot Defense Profile Path, e. g. /Common/bd-default"
-    echo "Name:      Name of the whitelist entry, must be uniq."
-    echo "Src:       Source IP in CIDR notation."
-    echo "URL:       URL to whitelist."
+    echo "- Full path: Bot Defense Profile Path, e. g. /Common/bd-default"
+    echo "- Name:      Name of the whitelist entry, must be uniq."
+    echo "- Src:       Source IP in CIDR notation."
+    echo "- URL:       URL to whitelist."
     exit 2
 fi
 

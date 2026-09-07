@@ -38,7 +38,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options]"
     echo "Options:"
-    echo "-f  Force reboot"
+    echo "    -f  Force reboot"
     exit 2
 fi
 

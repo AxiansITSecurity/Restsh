@@ -40,14 +40,16 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] [version]"
     echo "Options":
-    echo "    -l <location>  Download location, one of:"
-    echo "                       USA - WEST COAST"
-    echo "                       USA - EAST COAST"
-    echo "                       JAPAN"
-    echo "                       AUSTRALIA"
-    echo "                       IRELAND (default)"
-    echo "                       SINGAPORE"
-    echo "                       BRAZIL"
+    echo "    -l <location>  Download location"
+    echo ""
+    echo "Download locations:"
+    echo "    - USA - WEST COAST"
+    echo "    - USA - EAST COAST"
+    echo "    - JAPAN"
+    echo "    - AUSTRALIA"
+    echo "    - IRELAND (default)"
+    echo "    - SINGAPORE"
+    echo "    - BRAZIL"
     exit 2
 fi
 

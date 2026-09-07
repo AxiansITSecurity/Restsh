@@ -44,8 +44,10 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [-e] <import uri> <policy fullPath>"
-    echo "    -e Enforce all signatures"
-    echo "    -n Do not apply policy after import"
+    echo "Options:"
+    echo "    -e  Enforce all signatures"
+    echo "    -n  Do not apply policy after import"
+    echo ""
     exit 2
 fi
 WAF_POLICY_IMPORT_URI=$1

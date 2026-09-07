@@ -54,8 +54,10 @@ then
     exec 1>&2
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <project path> <app name> <template>"
-    echo "Project path:  GitLab project path or already cloned local tenant folder path."
-    echo "               Use \"-p\" if it is a GitLab project path."
+    echo ""
+    echo "Project path can be a GitLab project path or an already cloned local tenant folder path."
+    echo "Use \"-p\" option if it is a GitLab project path to push the changes back to GitLab."
+    echo ""
     echo "Options:"
     echo "    -a         ART Project, default: $RESTSH_AAFW_ART"
     echo "    -f         Overwrite application"

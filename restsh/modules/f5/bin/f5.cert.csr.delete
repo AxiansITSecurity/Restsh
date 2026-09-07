@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Deletes a csr on the F5.
+# Shortdesc: Deletes a CSR on the F5.
 # Desc:
-# Deletes a csr on the F5.
+# Deletes a CSR on the F5.
 
 # Strict error handling
 set -eEu -o pipefail

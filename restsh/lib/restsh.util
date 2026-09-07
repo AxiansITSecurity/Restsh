@@ -488,9 +488,10 @@ restsh.util.parseoutput() {
         {
             echo "Parses a command output."
             echo ""
-            echo "Usage: restsh.util.parseoutput [-r] [-f <filter>] <output>"
-            echo -e "\tUse -r for raw output."
-            echo -e "\tUse -f to apply an jq filter to output"
+            echo "Usage: restsh.util.parseoutput [options...] <output>"
+            echo "Options:"
+            echo "    -r           Raw output."
+            echo "    -f <filter>  An jq filter applied to the output."
         } 1>&2
         return 2
     fi
@@ -579,7 +580,7 @@ restsh.util.setvars() {
             echo ""
             echo "Usage: restsh.util.setvars [options...] <directory>"
             echo "Options:"
-            echo "    -r Recurse into directories"
+            echo "    -r  Recurse into directories"
         } 1>&2
         return 2
     fi
@@ -609,12 +610,14 @@ restsh.util.setvar() {
     if [ -z "${1+x}" ] || [ "${1}" = "-h" ]
     then
         {
-            echo "Declares a variable from a file. .txt extension for simple variable, .array for array."
-            echo "  .txt files are treated as variable and declared as VAR_<file basename>"
-            echo "  .array files are treated as array and declared as ARRAY_<file basename>"
-            echo "Blank lines and lines starting with # are ignored."
+            echo "Declares a variable from a file."
             echo ""
             echo "Usage: restsh.util.setvar <file>"
+            echo ""
+            echo "    - .txt files are treated as variable and declared as VAR_<file basename>"
+            echo "    - .array files are treated as array and declared as ARRAY_<file basename>"
+            echo ""
+            echo "Blank lines and lines starting with # are ignored."
         } 1>&2
         return 2
     fi

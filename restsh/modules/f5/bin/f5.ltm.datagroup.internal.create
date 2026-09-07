@@ -37,10 +37,17 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <fullPath> <type> <input file>"
-    echo "    Valid types: string, integer, ip"
-    echo "    Valid input file types: json, csv"
     echo "Options:"
     echo "    -s <char>  Separator for CSV, default \";\""
+    echo ""
+    echo "Valid types:"
+    echo "    - string"
+    echo "    - integer"
+    echo "    - ip"
+    echo ""
+    echo "Valid input file types:"
+    echo "    - json"
+    echo "    - csv"
     exit 2
 fi
 

@@ -45,10 +45,10 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <group> <key> <value> <description>"
     echo "Options:"
-    echo "    -d Hide variable"
-    echo "    -e Expand variable"
-    echo "    -m Mask variable"
-    echo "    -p Protect variable"
+    echo "    -d  Hide variable"
+    echo "    -e  Expand variable"
+    echo "    -m  Mask variable"
+    echo "    -p  Protect variable"
     exit 2
 fi
 

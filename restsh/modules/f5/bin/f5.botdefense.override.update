@@ -37,8 +37,12 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <fullPath> <override> <name> <json file>"
-    echo "    Allowed overrides are anomalyCategoryOverrides, anomalyOverrides,"
-    echo "    signatureCategoryOverrides, signatureOverrides"
+    echo ""
+    echo "Allowed overrides are:"
+    echo "    - anomalyCategoryOverrides"
+    echo "    - anomalyOverrides"
+    echo "    - signatureCategoryOverrides"
+    echo "    - signatureOverrides"
     exit 2
 fi
 

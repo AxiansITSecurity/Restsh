@@ -41,8 +41,7 @@ if [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage:"
-    echo "$(basename "$0") [options...] <policy full path> <filetype>"
+    echo "Usage: $(basename "$0") [options...] <policy full path> <filetype>"
     echo "Options:"
     echo "    -t <template>         Template to use, default is: $TEMPLATE"
     echo "    -d <variables file>   Define a custom variable file. Default is <template file>.var."

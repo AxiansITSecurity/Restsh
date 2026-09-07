@@ -41,8 +41,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] [<page>]"
     echo "Options:"
-    echo "    -a Show all projects"
-    echo "    -r Raw output."
+    echo "    -a  Show all projects"
+    echo "    -r  Raw output."
     exit 2
 fi
 

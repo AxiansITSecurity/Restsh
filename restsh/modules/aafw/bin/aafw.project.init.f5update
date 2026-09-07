@@ -36,7 +36,8 @@ shift "$((OPTIND -1))"
 if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ] || [ -z "${2+x}" ]
 then
     exec 1>&2
-    echo "Usage: $(basename "$0") [otions...] <f5update uri> <clone uri>"
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <f5update uri> <clone uri>"
     echo "Options:"
     echo "    -d <folder>  Parent folder for cloned repository."
     exit 2

@@ -22,7 +22,7 @@ myf5.auth.login() {
     if [ -n "${1+x}" ]
     then
         echo "Gets the bearer token from the myF5 OAuth authorization server" 1>&2
-        echo "Usage: scm.auth.login" 1>&2
+        echo "Usage: myf5.auth.login" 1>&2
         return 2
     fi
 
