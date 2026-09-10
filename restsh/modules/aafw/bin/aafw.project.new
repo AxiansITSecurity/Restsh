@@ -22,12 +22,42 @@ then
     exit 1
 fi
 
-[ -n "${RESTSH_AAFW_GROUP+x}" ] || { echo_err "Variable RESTSH_AAFW_GROUP not set"; exit 1; }
-[ -n "${RESTSH_AAFW_AS3SKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_AS3SKELETON not set"; exit 1; }
-[ -n "${RESTSH_AAFW_DOSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_DOSKELETON not set"; exit 1; }
-[ -n "${RESTSH_AAFW_WAFSKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_WAFSKELETON not set"; exit 1; }
-[ -n "${RESTSH_AAFW_F5UPDATESKELETON+x}" ] || { echo_err "Variable RESTSH_AAFW_F5UPDATESKELETON not set"; exit 1; }
-[ -n "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ] || RESTSH_AAFW_PROJECT_SETTINGS="${RESTSH_PATH}/modules/aafw/templates/project_settings_default.json"
+if [ -z "${RESTSH_AAFW_GROUP+x}" ]
+then
+    export RESTSH_AAFW_GROUP="aafw"
+    echo_warn "Variable RESTSH_AAFW_GROUP not set."
+    echo_warn "Using default: $RESTSH_AAFW_GROUP"
+fi
+if [ -z "${RESTSH_AAFW_AS3SKELETON+x}" ]
+then
+    export RESTSH_AAFW_AS3SKELETON="${RESTSH_AAFW_GROUP}/as3skeleton"
+    echo_warn "Variable RESTSH_AAFW_AS3SKELETON not set."
+    echo_warn "Using default: $RESTSH_AAFW_AS3SKELETON"
+fi
+if [ -z "${RESTSH_AAFW_DOSKELETON+x}" ]
+then
+    export RESTSH_AAFW_DOSKELETON="${RESTSH_AAFW_GROUP}/doskeleton"
+    echo_warn "Variable RESTSH_AAFW_DOSKELETON not set."
+    echo_warn "Using default: $RESTSH_AAFW_DOSKELETON"
+fi
+if [ -z "${RESTSH_AAFW_WAFSKELETON+x}" ]
+then
+    export RESTSH_AAFW_WAFSKELETON="${RESTSH_AAFW_GROUP}/wafskeleton"
+    echo_warn "Variable RESTSH_AAFW_WAFSKELETON not set."
+    echo_warn "Using default: $RESTSH_AAFW_WAFSKELETON"
+fi
+if [ -z "${RESTSH_AAFW_F5UPDATESKELETON+x}" ]
+then
+    export RESTSH_AAFW_F5UPDATESKELETON="${RESTSH_AAFW_GROUP}/f5updateskeleton"
+    echo_warn "Variable RESTSH_AAFW_F5UPDATESKELETON not set."
+    echo_warn "Using default: $RESTSH_AAFW_F5UPDATESKELETON"
+fi
+if [ -z "${RESTSH_AAFW_PROJECT_SETTINGS+x}" ]
+then
+    export RESTSH_AAFW_PROJECT_SETTINGS="${RESTSH_PATH}/modules/aafw/templates/project_settings_default.json"
+    echo_warn "Variable RESTSH_AAFW_PROJECT_SETTINGS not set."
+    echo_warn "Using default: $RESTSH_AAFW_PROJECT_SETTINGS"
+fi
 
 # Get options
 INIT_PROJECT=""
