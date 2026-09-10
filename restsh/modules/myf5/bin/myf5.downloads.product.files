@@ -23,9 +23,11 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+RAW=0
+while getopts ':r' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -48,6 +50,12 @@ restsh.util.check.string "product line" "$2"; PRODUCT_LINE=$2
 restsh.util.check.string "version" "$2"; VERSION=$3
 restsh.util.check.string "container" "$2"; CONTAINER=$4
 
-GET "/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}?k=${MYF5_API_USAGE_KEY}" \
-    | JQ -r ".versions[] | select(.version == \"${VERSION}\") | .containers[] | select(.container == \"${CONTAINER}\") | .files[] | [.filename,.href] | @tsv" \
-    | COLUMN -N "Filename,Link" -o "|"
+if [ "$RAW" -eq 0 ]
+then
+    GET "/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}?k=${MYF5_API_USAGE_KEY}" \
+        | JQ -r ".versions[] | select(.version == \"${VERSION}\") | .containers[] | select(.container == \"${CONTAINER}\") | .files[] | [.filename,.href] | @tsv" \
+        | COLUMN -N "Filename,Link" -o "|"
+else
+    GET "/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}?k=${MYF5_API_USAGE_KEY}" \
+        | JQ -r ".versions[] | select(.version == \"${VERSION}\") | .containers[] | select(.container == \"${CONTAINER}\")"
+fi
