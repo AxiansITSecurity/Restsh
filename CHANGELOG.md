@@ -44,6 +44,7 @@ This version introduces the MyF5 API module.
     - Upd: `gitlab.project.schedules.list` - Add ref to list
     - Fix: `gitlab.mr.automerge`, `gitlab.mr.merge` - Get SHA of the merge request, this is required since GitLab 19.2.
 - F5 TMOS Module
+    - Feat: `f5.sys.snmp.user.create` - Add options for authentication and privacy protocol
     - Feat: `f5.ltm.vs.list` - Shows enabled state and description
     - Feat: `f5.ltm.vs.list.state` - Like `f5.ltm.vs.list` but with availability state
     - Feat: `f5.sslreport.generate` - Add option to create markdown report

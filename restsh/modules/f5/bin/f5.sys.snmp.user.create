@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Creates a snmp v3 user.
+# Shortdesc: Creates a SNMPv3 user.
 # Desc:
-# Creates a snmp v3 user.
+# Creates a SNMPv3 user.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -27,11 +27,13 @@ AUTHPROTO="sha256"
 PRIVPROTO="aes256"
 OID=".1"
 
-while getopts ':a:ho:' OPTION
+while getopts ':a:ho:p:u:' OPTION
 do
     case "$OPTION" in
-        a) ACCESS=$OPTARG ;;
-        o) OID=$OPTARG ;;
+        a) restsh.util.check.string "Access" "$OPTARG"; ACCESS=$OPTARG ;;
+        o) restsh.util.check.string "OID" "$OPTARG"; OID=$OPTARG ;;
+        p) restsh.util.check.string "Privacy" "$OPTARG"; PRIVPROTO=$OPTARG ;;
+        u) restsh.util.check.string "Authentication" "$OPTARG"; AUTHPROTO=$OPTARG ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -41,7 +43,12 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <username> <auth pass> <priv pass>"
+    echo "Usage: $(basename "$0") [options..] <username> <auth pass> <priv pass>"
+    echo "Options:"
+    echo "    -a <access>      Valid values: ro (default), rw"
+    echo "    -o <oid>         Allowed OID, default: .1"
+    echo "    -p <priv proto>  Privacy protocol: aes, aes192, aes192c, aes256 (default), aes256c, des"
+    echo "    -u <auth proto>  Authentication protocol: sha, sha256 (default), sha512, md5"
     exit 2
 fi
 
