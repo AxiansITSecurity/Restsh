@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Creates a Route Domain.
+# Desc:
+# Creates a Route Domain.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+# Get options
+STRICT="enabled"
+while getopts ':n' OPTION
+do
+    case "$OPTION" in
+        n) STRICT="disabled" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ] || [ $# -lt 3 ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <name> <rd number> <partition> [<vlan> ...]"
+    echo "Options:"
+    echo "    -n  Disable strict isolation"
+    exit 2
+fi
+
+restsh.util.check.string "Name" "$2"; NAME=$1
+restsh.util.check.uint "RD Number" "$2"; RDNUM=$2
+restsh.util.check.string "Partition" "$3"; PARTITION=$3
+shift 3
+
+VLANS=$(printf "%s\n" "$@" | JQ -Rn '[inputs]')
+
+JQ -n --arg fullpath "/${PARTITION}/${NAME}" \
+    --arg name "$NAME" \
+    --argjson rdnum "$RDNUM" \
+    --arg partition "$PARTITION" \
+    --arg strict "$STRICT" \
+    --argjson vlans "$VLANS" \
+    '{
+        fullPath: $fullpath,
+        name: $name,
+        partition: $partition,
+        id: $rdnum,
+        strict: $strict,
+        vlans: $vlans
+    }' | POST "/mgmt/tm/net/route-domain/"

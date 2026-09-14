@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Lists Route Domains
+# Desc:
+# Lists Route Domains.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+  echo "Script must be run in the restsh environment."
+  exit 1
+fi
+
+# Get options
+RAW=0
+while getopts ':r' OPTION
+do
+    case "$OPTION" in
+        r) RAW=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output."
+    exit 2
+fi
+
+if [ "$RAW" -eq 1 ]
+then
+    GET "/mgmt/tm/net/route-domain"
+else
+    GET -r "/mgmt/tm/net/route-domain" \
+        | JQ -r '.items[] | [.fullPath,.strict, (.vlans // [] | join(",")) ] | @tsv' \
+        | COLUMN -o "|" -N "fullPath,Strict,Vlans"
+fi
