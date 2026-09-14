@@ -48,6 +48,6 @@ then
     GET "/mgmt/tm/net/route-domain"
 else
     GET -r "/mgmt/tm/net/route-domain" \
-        | JQ -r '.items[] | [.fullPath,.strict, (.vlans // [] | join(",")) ] | @tsv' \
-        | COLUMN -o "|" -N "fullPath,Strict,Vlans"
+        | JQ -r '.items[] | [.fullPath,.strict,.parent, (.vlans // [] | join(",")) ] | @tsv' \
+        | COLUMN -o "|" -N "fullPath,Strict,Parent,Vlans"
 fi

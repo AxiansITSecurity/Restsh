@@ -24,10 +24,12 @@ fi
 
 # Get options
 STRICT="enabled"
-while getopts ':n' OPTION
+PARENT=""
+while getopts ':np:' OPTION
 do
     case "$OPTION" in
         n) STRICT="disabled" ;;
+        p) restsh.util.check.string "Parent" "$OPTARG"; PARENT="$OPTARG" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -39,7 +41,8 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] <name> <rd number> <partition> [<vlan> ...]"
     echo "Options:"
-    echo "    -n  Disable strict isolation"
+    echo "    -n             Disable strict isolation"
+    echo "    -p <fullPath>  Parent Route Domain"
     exit 2
 fi
 
@@ -55,6 +58,7 @@ JQ -n --arg fullpath "/${PARTITION}/${NAME}" \
     --argjson rdnum "$RDNUM" \
     --arg partition "$PARTITION" \
     --arg strict "$STRICT" \
+    --arg parent "$PARENT" \
     --argjson vlans "$VLANS" \
     '{
         fullPath: $fullpath,
@@ -62,5 +66,6 @@ JQ -n --arg fullpath "/${PARTITION}/${NAME}" \
         partition: $partition,
         id: $rdnum,
         strict: $strict,
+        parent: $parent,
         vlans: $vlans
     }' | POST "/mgmt/tm/net/route-domain/"
