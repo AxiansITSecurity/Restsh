@@ -34,10 +34,10 @@ if [ "$OPTION" = "invalid" ] || [ -z "${1+x}" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <name>"
+    echo "Usage: $(basename "$0") <fullPath>"
     exit 2
 fi
 
-restsh.util.check.string "name" "$1"; NAME=$(restsh.util.urlencode "$1")
+restsh.util.check.string "name" "$1"; FULL_PATH="$1"
 
-DELETE "/mgmt/tm/sys/snmp/users/$NAME"
+DELETE "/mgmt/tm/sys/snmp/users/${FULL_PATH//\//\~}"
