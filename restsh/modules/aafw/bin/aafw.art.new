@@ -135,10 +135,10 @@ trap 'rm -rf -- "$ART_TMP"' EXIT
 # Optionally check for valid variables file
 if [ -n "$VARIABLES_FILE" ]
 then
-    VARIABLES_FILE=$(realpath "${VARIABLES_FILE}")
+    VARIABLES_FILE=$(realpath "${VARIABLES_FILE}" 2>/dev/null)
     if [ ! -f "$VARIABLES_FILE" ]
     then
-        echo_err "Variables file not found"
+        echo_err "Variables file \"${VARIABLES_FILE}\" not found"
         exit 1
     fi
     if ! yq "." < "$VARIABLES_FILE" > /dev/null
@@ -150,7 +150,7 @@ then
 fi
 
 # Clone or update tenant repository
-if TENANT_FOLDER=$(realpath "${PROJECT_PATH}") && [ -d "$TENANT_FOLDER" ]
+if TENANT_FOLDER=$(realpath "${PROJECT_PATH}" 2>/dev/null) && [ -d "$TENANT_FOLDER" ]
 then
     echo "Updating local tenant folder"
     cd "$TENANT_FOLDER" || exit 1
