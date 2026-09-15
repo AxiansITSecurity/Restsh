@@ -753,7 +753,7 @@ restsh.util.json_validate() {
     fi
 }
 
-# Returns 1 if value is undefined, length is zero, contains only whitespaces or is null
+# Returns 1 if value length is zero, contains only whitespace characters or is the string null
 restsh.util.check.notempty() {
     if [ $# -ne 1 ] || [ "${1}" = "-h" ]
     then
@@ -769,7 +769,7 @@ restsh.util.check.notempty() {
     fi
 }
 
-# Returns 1 if variable reference is undefined, length is zero, contains only whitespaces or is null
+# Returns 1 if variable reference is undefined, value length is zero, contains only whitespace characters or is the string null
 restsh.util.check.varnotempty() {
     if [ $# -ne 1 ] || [ "${1}" = "-h" ]
     then
