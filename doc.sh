@@ -68,7 +68,6 @@ export RESTSH_AAFW_F5UPDATESKELETON="${RESTSH_AAFW_GROUP}/f5updateskeleton"
 export RESTSH_AAFW_ART="${RESTSH_AAFW_GROUP}/art"
 # Default project settings
 export RESTSH_AAFW_PROJECT_SETTINGS="$RESTSH_PATH/modules/aafw/templates/project_settings_default.json"
-export RESTSH_AAFW_ART=""
 
 . "${RESTSH_PATH}/restsh.init"
 
