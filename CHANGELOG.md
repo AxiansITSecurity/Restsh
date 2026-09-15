@@ -28,6 +28,7 @@ This version introduces the MyF5 API module.
         - `cert.x509.fingerprint`: Prints the sha256 fingerprint of the certificate.
     - Upd: Remove `<alg>` parameter where possible
 - GitLab Module
+    - Feat: `gitlab.group.exists`
     - Feat: `gitlab.project.create` - Add default project settings
     - Feat: `gitlab.project.schedules.state`
     - Feat: `gitlab.project.job_token_scope.push`
