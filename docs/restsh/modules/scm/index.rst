@@ -34,6 +34,8 @@ References
 List of all functions
 ---------------------
 
+- :doc:`Overview of all functions </restsh/modules/scm/Overview>`
+
 .. toctree::
    :titlesonly:
    :glob:
