@@ -52,4 +52,5 @@ List of all functions
    :hidden:
 
    Overview.md
+   Examples.rst
    *
