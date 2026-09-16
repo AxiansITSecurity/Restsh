@@ -32,6 +32,8 @@ f5osa.auth.token.get() {
     then
         read -r -p "User: " RESTSH_USER 1>&2
         export RESTSH_USER
+    else
+        echo "User: ${RESTSH_USER}"
     fi
     if [ -z "${RESTSH_PASS+x}" ]
     then

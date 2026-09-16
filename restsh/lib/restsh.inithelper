@@ -41,6 +41,13 @@ restsh.init.check.env() {
                 echo_warn "No restsh user set"
                 export RESTSH_USER=""
             fi
+        else
+            if [ -n "${RESTSH_INTERACTIVE+x}" ] && \
+               ! restsh.util.check.varnotempty RESTSH_PASS
+            then
+                # Show user before asking for password if user was set in the environment
+                echo "User: ${RESTSH_USER}"
+            fi
         fi
         if ! restsh.util.check.varnotempty RESTSH_PASS
         then
