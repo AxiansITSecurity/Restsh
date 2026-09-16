@@ -17,6 +17,7 @@ apt-get install -y --no-install-recommends \
         jq \
         openssl \
         pandoc \
+        unzip \
         whiptail \
         yq
 apt-get clean
