@@ -55,10 +55,9 @@ restsh.util.check.filename "filename" "$1"; FILENAME=$1
 restsh.util.check.string "policy fullPath" "$2"; FULL_PATH=$2
 
 # Upload the policy file
-if f5.file-transfer.upload "$FILENAME" > /dev/null
+if f5.file.upload /mgmt/tm/asm/file-transfer/uploads "$FILENAME" > /dev/null
 then
     FILENAME=$(basename "$FILENAME")
-    f5.run "mv" "/var/config/rest/downloads/$FILENAME" "/ts/var/rest/${RESTSH_USER}~$FILENAME"
     echo_ok "Uploaded $FILENAME to /ts/var/rest/"
 else
     echo_err "Failure uploading $FILENAME"
@@ -68,10 +67,9 @@ fi
 # Optionally upload the openapi file
 if [ -n "$OPENAPI_FILE" ]
 then
-    if f5.file-transfer.upload "$OPENAPI_FILE" > /dev/null
+    if f5.file.upload /mgmt/tm/asm/file-transfer/uploads "$OPENAPI_FILE" > /dev/null
     then
         OPENAPI_FILE=$(basename "$OPENAPI_FILE")
-        f5.run "mv" "/var/config/rest/downloads/$OPENAPI_FILE" "/ts/var/rest/${RESTSH_USER}~$OPENAPI_FILE"
         echo_ok "Uploaded $OPENAPI_FILE to /ts/var/rest/"
     else
         echo_err "Failure uploading $FILENAME"
