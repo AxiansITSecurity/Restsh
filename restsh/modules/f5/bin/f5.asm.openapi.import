@@ -66,19 +66,19 @@ TASK_ID=$($RESTSH_JQ -n --arg swagger_file "$FILENAME" \
 if [ -z "${TASK_ID}" ]
 then
     echo_err "Importing swagger file \"$FILENAME\" failed"
-    f5.file.remove "/var/ts/var/rest/$FILENAME"
+    f5.file.remove "/var/ts/var/rest/$FILENAME" > /dev/null
     exit 1
 fi
 
 # Wait for completed task
 if ! f5.asm.taskwait import-open-api "$TASK_ID"
 then
-    echo_err "Import of policy failed."
-    f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~$FILENAME"
+    echo_err "Import of swagger file failed."
+    f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~$FILENAME" > /dev/null
     exit 1
 fi
 
-f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~${FILENAME}"
+f5.file.remove "/var/ts/var/rest/${RESTSH_USER}~${FILENAME}" > /dev/null
 
 # Apply policy
 if [ "$APPLY_POLICY" -eq 1 ]
