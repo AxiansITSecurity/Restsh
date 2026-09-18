@@ -86,7 +86,6 @@ This version introduces the MyF5 API module.
     - Upd: `f5.sys.service.restart` - Add workaround for httpd restart
     - Upd: `f5.asm.live-update.list` - Add option to hide previously installed updates
     - Upd: `f5.cluster.traffic-group.masquerade.set` - Add check for invalid MACs for F5OS
-    - Upd: `f5.asm.signatureset.filter.modify` - Remove workaround for bug id 1980601
     - Upd: `f5.sys.snmp.user.delete` - Support fullPath
 - F5OS-A Module
     - Feat: Enhanced tenant management
