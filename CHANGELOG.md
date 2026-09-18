@@ -4,7 +4,7 @@ This is the changelog for Restsh.
 
 ***
 
-## v4.6.0 - not yet released
+## v4.6.0 - 2026-09-18
 
 This version introduces the MyF5 API module.
 
