@@ -54,7 +54,7 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
             echo "    Resolving variable $VALUE" 1>&2
             if [[ ! -v "$VALUE" ]]
             then
-                echo_err "Variable $VALUE not defined"
+                echo_err "    Variable $VALUE not defined"
                 return 1
             fi
             declare "$NAME"="${!VALUE}"
@@ -65,7 +65,7 @@ MO_F5_AS3_INCLUDE_DECLARATION() {
             then
                 eval "$(declare -a -p "$VALUE" | sed "s/ $VALUE=/ $NAME=/")"
             else
-                echo "Array $VALUE not defined"
+                echo_err "    Array $VALUE not defined"
                 exit 1
             fi
         else
