@@ -4,6 +4,12 @@ This is the changelog for Restsh.
 
 ***
 
+## v4.6.1 - not yet released
+
+- Fix: `MO_F5_AS3_INCLUDE_DECLARATION` - print errors to STDERR
+
+***
+
 ## v4.6.0 - 2026-09-18
 
 This version introduces the MyF5 API module.
