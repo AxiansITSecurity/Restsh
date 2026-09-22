@@ -758,7 +758,7 @@ restsh.util.check.notempty() {
     if [ $# -ne 1 ] || [ "${1}" = "-h" ]
     then
         {
-            echo "Returns 1 if string is undefined, length is zero, contains only whitespaces or is null"
+            echo "Returns 1 if value length is zero, contains only whitespace characters or is the string null"
             echo "Usage: restsh.util.check.notempty <value>"
         } 1>&2
         return 2
