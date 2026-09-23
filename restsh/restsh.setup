@@ -94,7 +94,12 @@ restsh.setup.add() {
         echo "Failure creating configuration subfolder."
         return 1
     fi
-    local CONFIG_FILE="${RESTSH_CONFIG_PATH}/${RESTSH_FOLDER}/${RESTSH_CONFIG_FILE_PREFIX}${RESTSH_HOST}"
+    if [ -z "${RESTSH_FOLDER}" ]
+    then
+        local CONFIG_FILE="${RESTSH_CONFIG_PATH}/${RESTSH_CONFIG_FILE_PREFIX}${RESTSH_HOST}"
+    else
+        local CONFIG_FILE="${RESTSH_CONFIG_PATH}/${RESTSH_FOLDER}/${RESTSH_CONFIG_FILE_PREFIX}${RESTSH_HOST}"
+    fi
     if [ -s "$CONFIG_FILE" ]
     then
         echo "Configuration already exists."
