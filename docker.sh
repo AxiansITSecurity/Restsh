@@ -30,10 +30,10 @@ case "$ACTION" in
         docker build --no-cache -t restsh .
         ;;
     run)
-        docker ${DOCKER_OPTS[@]} restsh "$@"
+        docker "${DOCKER_OPTS[@]}" restsh "$@"
         ;;
     setup)
-        docker ${DOCKER_OPTS[@]} --entrypoint /restsh/restsh/restsh.setup restsh "$@"
+        docker "${DOCKER_OPTS[@]}" --entrypoint /restsh/restsh/restsh.setup restsh "$@"
         ;;
     *)
         echo "Runs restsh in a container."
