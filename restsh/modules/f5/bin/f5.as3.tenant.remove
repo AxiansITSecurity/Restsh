@@ -58,7 +58,7 @@ fi
 # Wait for completed task
 if f5.as3.taskwait "$TASK_ID"
 then
-    echo "AS3 Tenant removed successfully."
+    echo_ok "AS3 Tenant removed successfully."
     exit 0
 fi
 exit 1
