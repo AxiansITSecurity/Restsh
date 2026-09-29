@@ -162,6 +162,16 @@ ASM
 
 Functions for managing ASM policies and entities.
 
+Show application language of all ASM policies
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code:: sh
+
+   while read -r ID
+   do
+       GET -rf '[.fullPath, .applicationLanguage] | @tsv' "/mgmt/tm/asm/policies/$ID"
+   done < <(f5.asm.policy.list -rf '.items[].id' )
+
 Change enforcement mode of an ASM policy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
