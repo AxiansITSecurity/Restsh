@@ -46,22 +46,17 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-PAGE=1
+PAGE=$GITLAB_PAGE
 if [ -n "${2+x}" ]
 then
     restsh.util.check.uint "page" "$2"; PAGE=$2
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/access_tokens?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+if [ "$RAW" -eq 1 ]
 then
-    if [ "$RAW" -eq 1 ]
-    then
-        JQ "." <<< "$RESULT"
-    else
-        JQ -r '.[] | [.id,.name, .active, .expires_at, .access_level, (.scopes  | join(","))] | @tsv' <<< "$RESULT" | \
-            COLUMN -o " | " -N "Id,Name,Active,Expires,Access Level,Scopes"
-    fi
-    exit 0
+    gitlab.util.list "$GITLAB_API_PREFIX/projects/$PROJECT/access_tokens" "$PAGE" "${GITLAB_PER_PAGE}"
+else
+    gitlab.util.list "$GITLAB_API_PREFIX/projects/$PROJECT/access_tokens" "$PAGE" "${GITLAB_PER_PAGE}" \
+        | JQ -r '.[] | [.id,.name, .active, .expires_at, .access_level, (.scopes  | join(","))] | @tsv' \
+        | COLUMN -o " | " -N "Id,Name,Active,Expires,Access Level,Scopes"
 fi
-
-exit 1

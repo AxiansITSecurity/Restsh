@@ -46,22 +46,17 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-PAGE=1
+PAGE=$GITLAB_PAGE
 if [ -n "${2+x}" ]
 then
     restsh.util.check.uint "page" "$2"; PAGE=$2
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests?state=opened&page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+if [ "$RAW" -eq 1 ]
 then
-    if [ "$RAW" -eq 1 ]
-    then
-        JQ "." <<< "$RESULT"
-    else
-        JQ -r '.[] | [.iid, .merge_status, .source_branch, .target_branch, .author.name] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,merge status,source,target,author"
-    fi
-    exit 0
+    gitlab.util.list "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests?state=opened" "$PAGE" "${GITLAB_PER_PAGE}"
+else
+    gitlab.util.list "$GITLAB_API_PREFIX/projects/$PROJECT/merge_requests?state=opened" "$PAGE" "${GITLAB_PER_PAGE}" \
+        | JQ -r '.[] | [.iid, .merge_status, .source_branch, .target_branch, .author.name] | @tsv' \
+        | COLUMN -o "|" -N "id,merge status,source,target,author"
 fi
-
-exit 1

@@ -46,23 +46,17 @@ fi
 restsh.util.check.string "group" "$1"; GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-PAGE=1
+PAGE=$GITLAB_PAGE
 if [ -n "${2+x}" ]
 then
     restsh.util.check.uint "page" "$2"; PAGE=$2
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups/$GROUP/subgroups?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+if [ "$RAW" -eq 1 ]
 then
-    if [ "$RAW" -eq 1 ]
-    then
-        JQ "." <<< "$RESULT"
-    else
-        JQ -r '.[] | [.id, .name] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,name"
-    fi
+    gitlab.util.list "$GITLAB_API_PREFIX/groups/$GROUP/subgroups" "$PAGE" "${GITLAB_PER_PAGE}"
 else
-    exit 1
+    gitlab.util.list "$GITLAB_API_PREFIX/groups/$GROUP/subgroups" "$PAGE" "${GITLAB_PER_PAGE}" \
+        | JQ -r '.[] | [.id, .name] | @tsv' \
+        | COLUMN -o "|" -N "id,name"
 fi
-
-exit 0

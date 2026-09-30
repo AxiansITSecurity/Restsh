@@ -47,24 +47,19 @@ restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$2
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-PAGE=1
+PAGE=$GITLAB_PAGE
 if [ -n "${3+x}" ]
 then
-    PAGE=$3
+    restsh.util.check.uint "page" "$2"; PAGE=$3
 fi
 
 ID=$(GET -rf '.id' "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/latest?ref=$BRANCH")
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/jobs?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+if [ "$RAW" -eq 1 ]
 then
-    if [ "$RAW" -eq 1 ]
-    then
-        JQ '.' <<< "$RESULT"
-    else
-        JQ -r '.[] | [.id, .name, .created_at, .status, .finished_at, .web_url] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,name,created,status,finished,url"
-    fi
-    exit 0
+    gitlab.util.list "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/jobs" "$PAGE" "${GITLAB_PER_PAGE}"
+else
+    gitlab.util.list "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/$ID/jobs" "$PAGE" "${GITLAB_PER_PAGE}" \
+        | JQ -r '.[] | [.id, .name, .created_at, .status, .finished_at, .web_url] | @tsv' \
+        | COLUMN -o "|" -N "id,name,created,status,finished,url"
 fi
-
-exit 1
