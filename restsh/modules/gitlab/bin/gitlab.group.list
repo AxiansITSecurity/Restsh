@@ -43,23 +43,17 @@ then
     exit 2
 fi
 
-PAGE=1
+PAGE=$GITLAB_PAGE
 if [ -n "${1+x}" ]
 then
     restsh.util.check.uint "page" "$1"; PAGE=$1
 fi
 
-if RESULT=$(GET "$GITLAB_API_PREFIX/groups?page=$PAGE&per_page=${GITLAB_PER_PAGE}")
+if [ "$RAW" -eq 1 ]
 then
-    if [ "$RAW" -eq 1 ]
-    then
-        JQ "." <<< "$RESULT"
-    else
-        JQ -r '.[] | [.id, .full_path] | @tsv' <<< "$RESULT" | \
-            COLUMN -o "|" -N "id,full_path"
-    fi
+    gitlab.util.list "$GITLAB_API_PREFIX/groups" "$PAGE" "${GITLAB_PER_PAGE}"
 else
-    exit 1
+    gitlab.util.list "$GITLAB_API_PREFIX/groups" "$PAGE" "${GITLAB_PER_PAGE}" \
+        | JQ -r '.[] | [.id, .full_path] | @tsv' \
+        | COLUMN -o "|" -N "id,full_path"
 fi
-
-exit 0

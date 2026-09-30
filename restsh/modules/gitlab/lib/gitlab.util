@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Some utility functions for GitLab.
+# Desc:
+# Some utility functions for GitLab.
+
+#shellcheck disable=SC2120
+
+# Strict error handling
+set -uo pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+# GET Wrapper for GitLab lists that handles pagination
+gitlab.util.list() {
+    if [ $# -ne 3 ] || [ "$1" = "-h" ]
+    then
+        {
+            echo "GET Wrapper for GitLab lists that handles pagination"
+            echo "Usage: gitlab.util.list <uri> <page> <per_page>"
+            echo ""
+            echo "    <uri>       List URI to fetch."
+            echo "    <page>      Page to list, use 0 for all pages."
+            echo "    <per_page>  Entries per page, default 100."
+        } 1>&2
+        return 2
+    fi
+    local URI=$1
+    local PAGE=$2
+    local PER_PAGE=$3
+    local OUTPUT=""
+    if [[ "$URI" == *"?"* ]]
+    then
+        local SEP="&"
+    else
+        local SEP="?"
+    fi
+
+    if [ "$PAGE" -gt 0 ]
+    then
+        GET "${URI}${SEP}page=${PAGE}&per_page=${PER_PAGE}"
+    else
+        # 0 means all pages, GitLab pages are 1-indexed
+        PAGE=1
+        while [ "$OUTPUT" != "[]" ]
+        do
+            OUTPUT=$(GET -r "${URI}${SEP}page=${PAGE}&per_page=${PER_PAGE}")
+            echo "$OUTPUT"
+            PAGE=$((PAGE+1))
+        done | JQ -s 'add'
+    fi
+}
+
+export -f gitlab.util.list
