@@ -48,7 +48,7 @@ fi
 restsh.util.check.string "group" "$1"; GROUP=$1
 restsh.util.check.isnumber "$GROUP" || GROUP=$(restsh.util.urlencode "$GROUP")
 
-PAGE=0
+PAGE=1
 if [ -n "${2+x}" ]
 then
     restsh.util.check.uint "page" "$1"; PAGE=$2

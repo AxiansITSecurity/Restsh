@@ -44,7 +44,7 @@ then
 fi
 restsh.util.check.uint "runner id" "$1"; RUNNER_ID=$1
 
-PAGE=0
+PAGE=1
 if [ -n "${1+x}" ]
 then
     PAGE=$1

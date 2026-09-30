@@ -49,7 +49,7 @@ fi
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 
-PAGE=0
+PAGE=1
 if [ -n "${2+x}" ]
 then
     PAGE=$1
