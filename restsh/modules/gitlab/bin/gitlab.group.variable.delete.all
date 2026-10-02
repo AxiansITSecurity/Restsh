@@ -45,6 +45,6 @@ while read -r KEY
 do
     gitlab.group.variable.delete "$GROUP" "$KEY"
     I=$((I+1))
-done < <(gitlab.group.variable.list -r "$GROUP" | JQ -r ".[].key")
+done < <(gitlab.group.variable.list -r "$GROUP" 0 | JQ -r ".[].key")
 
 echo "Deleted $I variables."
