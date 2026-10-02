@@ -45,6 +45,6 @@ while read -r KEY
 do
     gitlab.project.variable.delete "$PROJECT" "$KEY"
     I=$((I+1))
-done < <(gitlab.project.variable.list -r "$PROJECT" | JQ -r ".[].key")
+done < <(gitlab.project.variable.list -r "$PROJECT" 0 | JQ -r ".[].key")
 
 echo "Deleted $I variables."
