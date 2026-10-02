@@ -50,7 +50,7 @@ restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJE
 PAGE=1
 if [ -n "${3+x}" ]
 then
-    PAGE=$3
+    restsh.util.check.uint "page" "$3"; PAGE=$3
 fi
 
 ID=$(GET -rf '.id' "$GITLAB_API_PREFIX/projects/$PROJECT/pipelines/latest?ref=$BRANCH")
