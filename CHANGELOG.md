@@ -6,9 +6,6 @@ This is the changelog for Restsh.
 
 ## v4.7.0 - not yet released
 
-- GitLab Module
-    - Feat: Improve pagination support
-
 ***
 
 ## v4.6.1 - not yet released
