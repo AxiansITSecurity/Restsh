@@ -16,6 +16,7 @@ This is the changelog for Restsh.
 - General
     - Fix: `MO_F5_AS3_INCLUDE_DECLARATION` - print errors to STDERR
 - GitLab Module
+    - Feat: Improve pagination support
     - Fix: Pagination is 1-indexed and max per page is 100
 
 ***
