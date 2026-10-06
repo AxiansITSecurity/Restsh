@@ -8,7 +8,7 @@ This is the changelog for Restsh.
 
 ***
 
-## v4.6.1 - not yet released
+## v4.6.1 - 2026-10-06
 
 - General
     - Fix: `MO_F5_AS3_INCLUDE_DECLARATION` - print errors to STDERR
