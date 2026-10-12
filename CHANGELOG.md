@@ -7,7 +7,12 @@ This is the changelog for Restsh.
 ## v4.7.0 - not yet released
 
 - F5 TMOS Module
-    - Feat: `f5.ltm.pool.clone`, `f5.ltm.pool.delete`, `f5.ltm.pool.get`
+    - Feat: LTM Pool management
+        - `f5.ltm.pool.clone`
+        - `f5.ltm.pool.create`
+        - `f5.ltm.pool.delete`
+        - `f5.ltm.pool.get`
+        - `f5.ltm.pool.modify`
 
 ***
 
