@@ -13,6 +13,11 @@ This is the changelog for Restsh.
         - `f5.ltm.pool.delete`
         - `f5.ltm.pool.get`
         - `f5.ltm.pool.modify`
+- F5OS-A Module
+    - Feat: VLAN management
+        - `f5osa.vlan.create`
+        - `f5osa.vlan.delete`
+        - `f5osa.vlan.list`
 - MyF5 Module (Experimental)
     - Upd: Remove default App ID and Usage Key - use the values from the MyF5 API Catalog documentation
 
