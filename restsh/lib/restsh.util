@@ -144,7 +144,8 @@ print_json_err_curl() {
     fi
     export JQ_COLORS="1;30:0;39:0;39:0;39:0;31:1;39:1;39:1;37"
     local MESSAGE=$1
-    local OUTPUT=$2
+    local OUTPUT
+    OUTPUT=$(restsh.util.trim "$2")
     local REQUEST=$3
     if [ -z "$OUTPUT" ]
     then

@@ -43,4 +43,4 @@ fi
 restsh.util.check.string "product family" "$1"; PRODUCT_FAMILY=$1
 
 GET -rf ".data.productFamilies[] | select(.name == \"$PRODUCT_FAMILY\") | .productLines[].name" \
-    "/downloads-management/v1/downloads/metadata?k=${MYF5_API_USAGE_KEY}"
+    "/downloads-management/v1/downloads/metadata?k=${MYF5_API_USAGE_KEY_DOWNLOAD}"
