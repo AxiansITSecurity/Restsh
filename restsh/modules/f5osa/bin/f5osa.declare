@@ -1,0 +1,116 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Sends a declaration.
+# Desc:
+# Sends a declaration.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+IS_TEMPLATE=0
+KEEP_TMP=0
+DEFAULTS=""
+DRY_RUN=0
+while getopts ':d:kts:v' OPTION
+do
+    case "$OPTION" in
+        d) restsh.util.check.filename "defaults file" "$OPTARG"; DEFAULTS=$OPTARG ;;
+        k) KEEP_TMP=1 ;;
+        t) IS_TEMPLATE=1 ;;
+        s) restsh.util.declare.var "$OPTARG" ;;
+        v) DRY_RUN=1 ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" == "invalid" ] || [ "$#" -ne 3 ]
+then
+    exec 1>&2
+    _restsh.help.shortdesc.get "$0"
+    echo "Usage: $(basename "$0") [options...] <declaration file> <method> <endpoint>"
+    echo "Options:"
+    echo "    -d <variables file>  Define a custom variable file."
+    echo "    -k                   Keeps the temporary files."
+    echo "    -sVAR=VALUE          Define a custom variable."
+    echo "    -t                   Process the declaration file with mustache."
+    echo "    -v                   Output the parsed declaration, do not post it."
+    exit 2
+fi
+
+restsh.util.check.filename "Declaration file" "$1"; DECLARATION_FILE=$1
+METHOD=$2
+restsh.util.check.string "Endpoint" "$3"; ENDPOINT=$3
+
+DECLARATION_FILE_PARSED="$RESTSH_TMP/$(basename "$DECLARATION_FILE")"
+
+case "${METHOD,,}" in
+    patch|post|put)
+        METHOD="${METHOD^^}"
+        ;;
+    *)
+        echo_err "Invalid method, allowed methods are PATCH and POST"
+        exit 2
+        ;;
+esac
+
+# Cleanup tmp files
+[ "$KEEP_TMP" -eq 1 ] || trap 'rm -f -- "$DECLARATION_FILE_PARSED"' EXIT
+
+# Main
+
+# Run mustache
+if [ "$IS_TEMPLATE" -eq 1 ]
+then
+    # Include mustache
+    . "${RESTSH_PATH}/dist/mo/mo"
+    . "${RESTSH_PATH}/lib/mo/mo.functions"
+
+    # Load variables file
+    MO_OPTIONS=()
+    if [ -n "$DEFAULTS" ]
+    then
+        if [ ! -f "$DEFAULTS" ]
+        then
+            echo_err "Variables file not found."
+            exit 1
+        fi
+        MO_OPTIONS+=("-s=$DEFAULTS")
+    fi
+
+    # Process template
+    if ! $RESTSH_MO "${MO_OPTIONS[@]}" -- "$DECLARATION_FILE" > "$DECLARATION_FILE_PARSED"
+    then
+        echo_err "Processing the template failed."
+        exit 1
+    fi
+else
+    cp "$DECLARATION_FILE" "$DECLARATION_FILE_PARSED"
+fi
+
+# Check the parsed declaration
+restsh.util.json_validate < "$DECLARATION_FILE_PARSED"
+
+if [ "$DRY_RUN" -eq 1 ]
+then
+    JQ "." "$DECLARATION_FILE_PARSED"
+else
+    # Send the declaration
+    "${METHOD}" "${F5OSA_API_PREFIX}${ENDPOINT}" < "$DECLARATION_FILE_PARSED"
+fi
