@@ -64,7 +64,7 @@ JQ -n --arg name "$NAME" \
 # Wait fo install to finish
 echo "Waiting for install to finish." 1>&2
 F5_TASK_CHECK_INTERVAL=30
-F5_TASK_TIMEOUT=60
+F5_TASK_TIMEOUT=120
 COUNTER=0
 LAST_STATUS=""
 while :
