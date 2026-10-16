@@ -31,9 +31,11 @@ then
 fi
 
 FORMAT=""
-while getopts ':hm' OPTION
+CERT_EXPIRATION_STRING="1 week"
+while getopts ':d:hm' OPTION
 do
     case "$OPTION" in
+        d) CERT_EXPIRATION_STRING="$OPTARG" ;;
         m) FORMAT="md" ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -46,6 +48,7 @@ then
     _restsh.help.shortdesc.get "$0"
     echo "Usage: $(basename "$0") [options...] <output file>"
     echo "Options":
+    echo "    -d <date string>  Expiration date string, default: \"1 week\"."
     echo "    -m  Create report in Markdown format."
     echo ""
     _restsh.help.desc.get "$0"
@@ -75,7 +78,7 @@ fi
     echo "# $TITLE"
     echo ""
     echo "## Certificate expiration"
-    f5.cert.expire -m -s
+    f5.cert.expire -d "$CERT_EXPIRATION_STRING" -m -s
     echo ""
     echo "## Virtual Server - SSL Profiles"
     echo ""
