@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Downloads a job artifact.
+# Shortdesc: Downloads a job artifact as ZIP archive and saves it as <output_filename>.
 # Desc:
-# Downloads a job artifact.
+# Downloads a job artifact as ZIP archive and saves it as <output_filename>.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -35,7 +35,7 @@ if [ "$OPTION" = "invalid" ] || [ $# -ne 3 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <project> <job id> <filename>"
+    echo "Usage: $(basename "$0") <project> <job id> <output_filename>"
     exit 2
 fi
 
