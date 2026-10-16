@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+# SPDX-License-Identifier: GPL-3.0-or-later
+# (c) Axians IT Security GmbH
+# Jürgen Mang <juergen.mang@sec.axians.de>
+# https://www.axians.de/security
+# https://github.com/AxiansITSecurity/Restsh
+
+# Shortdesc: Lists all certificates with SAN and expiration date.
+# Desc:
+# Lists all certificates with SAN and expiration date.
+
+# Strict error handling
+set -eEu -o pipefail
+
+# Debug mode
+[ -n "${RESTSH_DEBUG+x}" ] && set -x
+
+if [ -z "${RESTSH_PATH+x}" ]
+then
+    echo "Script must be run in the restsh environment."
+    exit 1
+fi
+
+# Get options
+FORMAT=""
+CERT_EXPIRATION_STRING=""
+while getopts ':d:m' OPTION
+do
+    case "$OPTION" in
+        d) CERT_EXPIRATION_STRING="$OPTARG" ;;
+        m) FORMAT="md" ;;
+        *) OPTION="invalid"; break ;;
+    esac
+done
+shift "$((OPTIND -1))"
+
+if [ "$OPTION" = "invalid" ]
+then
+    exec 1>&2
+    _restsh.help.desc.get "$0"
+    echo "Usage: $(basename "$0") [options...]"
+    echo ""
+    echo "Options":
+    echo "    -d <date string>  Show only certificates that will be expires at date string."
+    echo "    -m  Create report in Markdown format."
+    exit 2
+fi
+
+_list_certs() {
+    if [ -n "$CERT_EXPIRATION_STRING" ]
+    then
+        TRESHOLD=$(date -d "$CERT_EXPIRATION_STRING" +%s)
+    else
+        TRESHOLD=0
+    fi
+    while IFS=$'\t' read -r NAME EXPIRE EXPIRE_DATE SAN
+    do
+        if [ "$TRESHOLD" -eq 0 ] || [ "$EXPIRE_DATE" -lt "$TRESHOLD" ]
+        then
+            if [ "$FORMAT" == "md" ]
+            then
+                printf '| %s | %s | %s |\n' "$NAME" "$SAN" "$EXPIRE"
+            else
+                printf '%s\t%s\t%s |\n' "$NAME" "$SAN" "$EXPIRE"
+            fi
+        fi
+    done < <(f5.cert.list -r | JQ -r ".items[] | [.name, .expirationString, .expirationDate, .subjectAlternativeName] | @tsv")
+}
+
+if [ "$FORMAT" = "md" ]
+then
+    echo "| Certificate | SAN | Expiration |"
+    echo "| ----------- | --- | ---------- |"
+    _list_certs
+else
+    _list_certs | COLUMN -o "|" -N "Profile,Virtual Server"
+fi

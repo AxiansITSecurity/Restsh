@@ -75,10 +75,15 @@ else
 fi
 
 {
-    echo "# $TITLE"
+    echo "# $TITLE for $RESTSH_HOST"
     echo ""
-    echo "## Certificate expiration"
-    f5.cert.expire -d "$CERT_EXPIRATION_STRING" -m -s
+    echo "## Expiring certificates"
+    echo ""
+    f5.sslreport.cert -d "$CERT_EXPIRATION_STRING" -m
+    echo ""
+    echo "## All certificates"
+    echo ""
+    f5.sslreport.cert -m
     echo ""
     echo "## Virtual Server - SSL Profiles"
     echo ""
