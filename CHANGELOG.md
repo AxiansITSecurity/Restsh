@@ -6,6 +6,8 @@ This is the changelog for Restsh.
 
 ## v4.7.0 - not yet released
 
+- Axians Automation Framework
+    - Feat: `aafw.pipeline.start.task.certreport`
 - F5 TMOS Module
     - Feat: LTM Pool management
         - `f5.ltm.pool.clone`
