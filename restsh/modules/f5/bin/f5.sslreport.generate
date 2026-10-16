@@ -12,6 +12,7 @@
 # If Pandoc is not installed, the report will be generated in Markdown.
 #
 # Report types:
+# - Certificate expiration
 # - Virtual Server -> SSL Profile
 # - SSL Profile -> Virtual Server
 # - SSL Profiles - Certificates
@@ -72,6 +73,9 @@ fi
 
 {
     echo "# $TITLE"
+    echo ""
+    echo "## Certificate expiration"
+    f5.cert.expire -m -s
     echo ""
     echo "## Virtual Server - SSL Profiles"
     echo ""
