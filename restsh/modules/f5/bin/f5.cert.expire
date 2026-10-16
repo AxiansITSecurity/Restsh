@@ -27,10 +27,12 @@ fi
 DATE_STRING="next month"
 RAW=0
 FAIL=1
-while getopts ':d:rs' OPTION
+MARKDOWN=0
+while getopts ':d:mrs' OPTION
 do
     case "$OPTION" in
         d) restsh.util.check.string "date string" "$OPTARG"; DATE_STRING=$OPTARG ;;
+        m) MARKDOWN=1 ;;
         s) FAIL=0 ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
@@ -57,6 +59,12 @@ IGNORE_CERTS=("/Common/f5-ca-bundle.crt" "/Common/f5-irule.crt" "/Common/f5_api_
 mapfile -t KEY_LIST < <(f5.cert.key.list -r | JQ -r '.items[].fullPath')
 RC=0
 
+if [ "$MARKDOWN" -eq 1 ]
+then
+    echo "| Certificate | Expiration |"
+    echo "| ----------- | ---------- |"
+fi
+
 while IFS=$'\t' read -r CERT EXPIRATION
 do
     if restsh.util.array.includes "$CERT" "${IGNORE_CERTS[@]}"
@@ -72,6 +80,9 @@ do
         if [ "$RAW" -eq 1 ]
         then
             echo "$CERT"
+        elif [ "$MARKDOWN" -eq 1 ]
+        then
+            printf "| %s | %s |\n" "$CERT" "$(date -d@"$EXPIRATION")"
         else
             echo "$CERT expires on $(date -d@"$EXPIRATION")"
         fi

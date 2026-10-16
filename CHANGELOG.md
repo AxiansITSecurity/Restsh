@@ -15,6 +15,7 @@ This is the changelog for Restsh.
         - `f5.ltm.pool.delete`
         - `f5.ltm.pool.get`
         - `f5.ltm.pool.modify`
+    - Upd: `f5.cert.expire` - Add option for markdown output
 - F5OS-A Module
     - Feat: VLAN management
         - `f5osa.vlan.create`
