@@ -7,7 +7,7 @@
 # https://github.com/AxiansITSecurity/Restsh
 
 
-# Shortdesc: Custom configuration file for restsh.init, preconfigured for myF5 API.
+# Shortdesc: Custom configuration file for restsh.init, preconfigured for myF5 API Downloads.
 # Desc:
 # Custom configuration file for restsh.init, preconfigured for myF5 API.
 # Set central environment variables if not already set.
@@ -21,7 +21,7 @@ RESTSH_MODULES=("cert" "custom" "myf5")
 
 # REST host to connect to
 #[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
-[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="support.apis.f5.com"
+[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="api.software.downloads.f5.com"
 [ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
 
 # Curl options
@@ -44,8 +44,3 @@ RESTSH_MODULES=("cert" "custom" "myf5")
 # OAuth ClientID and ClientSecret
 [ -n "${MYF5_CLIENTID+x}" ] || export MYF5_CLIENTID=""
 [ -n "${MYF5_SECRET+x}" ] || export MYF5_SECRET=""
-# Get this values from the MyF5 API Catalog documentation
-[ -n "${MYF5_APPID+x}" ] || export MYF5_APPID=""
-[ -n "${MYF5_API_USAGE_KEY_CASE+x}" ] || export MYF5_API_USAGE_KEY_CASE=""
-[ -n "${MYF5_API_USAGE_KEY_DOWNLOAD+x}" ] || export MYF5_API_USAGE_KEY_DOWNLOAD=""
-[ -n "${MYF5_API_USAGE_KEY_ARTICLE+x}" ] || export MYF5_API_USAGE_KEY_ARTICLE=""

@@ -48,13 +48,13 @@ restsh.util.check.string "product line" "$2"; PRODUCT_LINE=$2
 if [ -z "${3:-}" ]
 then
     # Show containers for all versions
-    GET "/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}?k=${MYF5_API_USAGE_KEY_DOWNLOAD}" \
+    GET "/v1/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}" \
         | JQ -r '.versions[].containers[] | [.version,.container] | @tsv' \
         | COLUMN -N "Version,Container" -o "|"
 else
     # Show containers for specific version
     restsh.util.check.string "version" "$3"; VERSION=$3
 
-    GET "/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}?k=${MYF5_API_USAGE_KEY_DOWNLOAD}" \
+    GET "/v1/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}" \
         | JQ -r ".versions[] | select(.version == \"$VERSION\") | .containers[] | .container"
 fi

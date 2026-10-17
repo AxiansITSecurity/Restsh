@@ -72,10 +72,11 @@ myf5.auth.login() {
     restsh.util.setcurloptions
     RESTSH_CURL_OPTS+=("-X" "POST" "-H" "Content-Type: application/x-www-form-urlencoded")
     RESTSH_CURL_OPTS+=("-d" "grant_type=client_credentials")
+    RESTSH_CURL_OPTS+=("-d" "audience=api://ciam-api-myf5")
     RESTSH_CURL_OPTS+=("-d" "scope=myf5_scope")
     RESTSH_CURL_OPTS+=("-u" "${MYF5_CLIENTID}:${MYF5_SECRET}")
     local RESULT
-    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "https://identity.account.f5.com/oauth2/${MYF5_APPID}/v1/token")
+    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" "https://idp.identity.f5.com/oauth/token")
     then
         local ACCESS_TOKEN
         if ! ACCESS_TOKEN=$($RESTSH_JQ -r ".access_token" <<< "$RESULT" 2> /dev/null)

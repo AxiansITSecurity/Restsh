@@ -23,7 +23,7 @@ then
 fi
 
 # Get options
-LOCATION="IRELAND"
+LOCATION="USA - WEST COAST"
 SLEEP=20
 while getopts ':l:' OPTION
 do
@@ -58,7 +58,7 @@ then
     restsh.util.check.string "version" "$1"; VERSION=$1
 else
     # Fetch latest version
-    VERSION=$(GET -r "/downloads-management/v1/downloads/product/DO/DO?k=${MYF5_API_USAGE_KEY_DOWNLOAD}" \
+    VERSION=$(GET -r "/v1/downloads-management/v1/downloads/product/DO/DO" \
         | JQ -r '[.versions[].version] | sort | reverse | .[0]')
     echo "Latest version is $VERSION"
     # Prevent Spike Arrest Policy
@@ -82,7 +82,7 @@ do
             CHECKSUM_FILE="$FILENAME"
             ;;
     esac
-done < <(GET -r "/downloads-management/v1/downloads/product/DO/DO?k=${MYF5_API_USAGE_KEY_DOWNLOAD}" \
+done < <(GET -r "/v1/downloads-management/v1/downloads/product/DO/DO" \
     | JQ -r ".versions[] | select(.version == \"${VERSION}\") | .containers[0].files[] | [.filename, .href] | @tsv")
 
 COUNTER=0
@@ -91,7 +91,11 @@ do
     # Prevent Spike Arrest Policy
     sleep "$SLEEP"
     echo "Downloading ${OUTPUTS[$COUNTER]}"
-    LINK=$(GET -r "${DOWNLOAD}?k=${MYF5_API_USAGE_KEY_DOWNLOAD}" \
+    if [ "${DOWNLOAD:0:3}" != "/v1/" ]
+    then
+        DOWNLOAD="/v1${DOWNLOAD}"
+    fi
+    LINK=$(GET -r "${DOWNLOAD}" \
         | JQ -r ".downloadLinks[] | select(.location == \"$LOCATION\") | .href")
     curl --show-error -o "${OUTPUTS[$COUNTER]}" "$LINK"
     COUNTER=$((COUNTER+1))

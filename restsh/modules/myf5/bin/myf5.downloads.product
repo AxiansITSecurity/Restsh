@@ -43,4 +43,4 @@ restsh.util.check.string "product family" "$1"; PRODUCT_FAMILY=$1
 restsh.util.check.string "product line" "$2"; PRODUCT_LINE=$2
 
 
-GET "/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}?k=${MYF5_API_USAGE_KEY_DOWNLOAD}"
+GET "/v1/downloads-management/v1/downloads/product/${PRODUCT_FAMILY}/${PRODUCT_LINE}"

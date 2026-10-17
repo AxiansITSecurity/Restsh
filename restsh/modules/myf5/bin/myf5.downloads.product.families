@@ -39,4 +39,4 @@ then
     exit 2
 fi
 
-GET -rf '.data.productFamilies[].name' "/downloads-management/v1/downloads/metadata?k=${MYF5_API_USAGE_KEY_DOWNLOAD}"
+GET -rf '.data.productFamilies[].name' "/v1/downloads-management/v1/downloads/metadata"

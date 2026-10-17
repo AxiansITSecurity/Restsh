@@ -45,11 +45,16 @@ fi
 
 restsh.util.check.string "file" "$1"; FILE=$1
 
+if [ "${FILE:0:3}" != "/v1/" ]
+then
+    FILE="/v1${FILE}"
+fi
+
 if [ "$RAW" -eq 1 ]
 then
-    GET "${FILE}?k=${MYF5_API_USAGE_KEY_DOWNLOAD}"
+    GET "${FILE}"
 else
-    GET "${FILE}?k=${MYF5_API_USAGE_KEY_DOWNLOAD}" \
+    GET "${FILE}" \
         | JQ -r ".downloadLinks[] | [.location,.href] | @tsv" \
         | KV
 fi
