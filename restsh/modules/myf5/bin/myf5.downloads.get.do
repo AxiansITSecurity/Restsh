@@ -22,9 +22,11 @@ then
   exit 1
 fi
 
+myf5.endpoint.downloads
+
 # Get options
 LOCATION="USA - WEST COAST"
-SLEEP=20
+SLEEP=1
 while getopts ':l:' OPTION
 do
     case "$OPTION" in

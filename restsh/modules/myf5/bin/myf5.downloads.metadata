@@ -22,6 +22,8 @@ then
   exit 1
 fi
 
+myf5.endpoint.downloads
+
 # Get options
 while getopts ':' OPTION
 do

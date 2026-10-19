@@ -22,6 +22,8 @@ then
   exit 1
 fi
 
+myf5.endpoint.downloads
+
 # Get options
 RAW=0
 while getopts ':r' OPTION
