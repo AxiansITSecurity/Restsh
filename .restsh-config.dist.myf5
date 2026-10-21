@@ -21,7 +21,7 @@ RESTSH_MODULES=("cert" "custom" "myf5")
 
 # REST host to connect to
 #[ -n "${RESTSH_SCHEME+x}" ] || export RESTSH_SCHEME="https"
-[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="api.software.downloads.f5.com"
+[ -n "${RESTSH_HOST+x}" ] || export RESTSH_HOST="support.apis.f5.com"
 [ -n "${RESTSH_PORT+x}" ] || export RESTSH_PORT="443"
 
 # Curl options
