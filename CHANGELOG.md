@@ -25,6 +25,7 @@ This is the changelog for Restsh.
         - `f5osa.vlan.delete`
         - `f5osa.vlan.list`
 - MyF5 Module (Experimental)
+    - Feat: `myf5.downloads.get.tmos.iso`
     - Upd: Add show links options to `myf5.downloads.get.as3` and `myf5.downloads.get.do`
     - Upd: Remove default App ID and Usage Key - use the values from the MyF5 API Catalog documentation
 
