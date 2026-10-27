@@ -26,11 +26,13 @@ myf5.endpoint.downloads
 
 # Get options
 LOCATION="USA - WEST COAST"
+SHOW_ONLY=0
 SLEEP=1
-while getopts ':l:' OPTION
+while getopts ':l:v' OPTION
 do
     case "$OPTION" in
         l) restsh.util.check.string "location" "$OPTARG"; LOCATION=$OPTARG ;;
+        v) SHOW_ONLY=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -41,17 +43,12 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...] [version]"
-    echo "Options":
+    echo "Options:"
     echo "    -l <location>  Download location"
+    echo "    -v             Show latest version download links and exit"
     echo ""
     echo "Download locations:"
     echo "    - USA - WEST COAST"
-    echo "    - USA - EAST COAST"
-    echo "    - JAPAN"
-    echo "    - AUSTRALIA"
-    echo "    - IRELAND (default)"
-    echo "    - SINGAPORE"
-    echo "    - BRAZIL"
     exit 2
 fi
 
@@ -92,18 +89,24 @@ for DOWNLOAD in "${DOWNLOADS[@]}"
 do
     # Prevent Spike Arrest Policy
     sleep "$SLEEP"
-    echo "Downloading ${OUTPUTS[$COUNTER]}"
     if [ "${DOWNLOAD:0:3}" != "/v1/" ]
     then
         DOWNLOAD="/v1${DOWNLOAD}"
     fi
     LINK=$(GET -r "${DOWNLOAD}" \
         | JQ -r ".downloadLinks[] | select(.location == \"$LOCATION\") | .href")
-    curl --show-error -o "${OUTPUTS[$COUNTER]}" "$LINK"
+    if [ "$SHOW_ONLY" -eq 1 ]
+    then
+        echo "${OUTPUTS[$COUNTER]}: $LINK"
+        echo ""
+    else
+        echo "Downloading ${OUTPUTS[$COUNTER]}"
+        curl --show-error -o "${OUTPUTS[$COUNTER]}" "$LINK"
+    fi
     COUNTER=$((COUNTER+1))
 done
 
-if [ -n "$CHECKSUM_FILE" ]
+if [ "$SHOW_ONLY" -eq 0 ] && [ -n "$CHECKSUM_FILE" ]
 then
     echo -n "Validating checksum: "
     sha256sum -c "$CHECKSUM_FILE"
