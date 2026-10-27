@@ -40,8 +40,8 @@ fi
 
 restsh.util.check.string "project" "$1"; PROJECT=$1
 restsh.util.check.string "branch" "$2"; BRANCH=$2
-restsh.util.check.string "local file" "$3"; LOCAL_FILE=$3
-restsh.util.check.string "local file" "$4"; REMOTE_FILE=$(restsh.util.urlencode "$4")
+restsh.util.check.filename "local filename" "$3"; LOCAL_FILE=$3
+restsh.util.check.filename "remote filename" "$4"; REMOTE_FILE=$(restsh.util.urlencode "$4")
 
 restsh.util.check.isnumber "$PROJECT" || PROJECT=$(restsh.util.urlencode "$PROJECT")
 

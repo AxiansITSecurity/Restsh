@@ -24,6 +24,12 @@ This is the changelog for Restsh.
         - `f5osa.vlan.create`
         - `f5osa.vlan.delete`
         - `f5osa.vlan.list`
+- GitLab Module
+    - Feat: New repository file management functions
+        - `gitlab.repository.file.delete`
+        - `gitlab.repository.file.get`
+        - `gitlab.repository.file.metadata`
+        - `gitlab.repository.file.update`
 - MyF5 Module (Experimental)
     - Feat: `myf5.downloads.get.tmos.iso`
     - Upd: Add show links options to `myf5.downloads.get.as3` and `myf5.downloads.get.do`

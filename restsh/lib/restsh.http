@@ -42,11 +42,11 @@ restsh.http() {
         {
             echo "Usage: restsh.http [options...] <method> <uri>"
             echo "Options:"
-            echo "    -b            Get body from STDIN"
+            echo "    -b            Get body from STDIN."
             echo "    -c <retries>  Number of HTTP request retries (default no retries)."
-            echo "    -f <filter>   Apply an jq filter to output"
-            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
-            echo "    -o            Define an output file"
+            echo "    -f <filter>   Apply an jq filter to output."
+            echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC."
+            echo "    -o            Define an output file."
             echo "    -r            Raw output."
         } 1>&2
         return 2
@@ -314,10 +314,11 @@ restsh.upload() {
 DELETE() {
     local ARGS=()
     local OPTION OPTIND
-    while getopts ':c:f:nr' OPTION
+    while getopts ':bc:f:nr' OPTION
     do
         case "$OPTION" in
             c) ARGS+=("-c" "$OPTARG") ;;
+            b) ARGS+=("-b") ;; 
             f) ARGS+=("-f" "$OPTARG") ;;
             n) ARGS+=("-n") ;;
             r) ARGS+=("-r") ;;
@@ -332,6 +333,7 @@ DELETE() {
             echo "Usage: DELETE [options...] <uri>"
             echo "Options:"
             echo "    -c <retries>  Number of retries (default no retries)."
+            echo "    -b            Get body from STDIN."
             echo "    -f <filter>   Apply an jq filter to output."
             echo "    -n            Ignore RESTSH_HTTP_PRE_EXEC"
             echo "    -r            Raw output."
