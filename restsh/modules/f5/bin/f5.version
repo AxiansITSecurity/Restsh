@@ -48,6 +48,6 @@ if [ "$RAW" -eq 1 ]
 then
     GET "/mgmt/tm/sys/version"
 else
-    GET '/mgmt/tm/sys/version?$select=Version' \
-        | JQ -r '.entries."https://localhost/mgmt/tm/sys/version/0".nestedStats.entries.Version.description'
+    GET '/mgmt/tm/sys/version?$select=Version,Build' \
+        | JQ -r '.entries."https://localhost/mgmt/tm/sys/version/0".nestedStats.entries | [.Version.description, .Build.description] | join(".")'
 fi

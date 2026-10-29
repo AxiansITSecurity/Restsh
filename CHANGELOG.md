@@ -15,10 +15,11 @@ This is the changelog for Restsh.
         - `f5.ltm.pool.delete`
         - `f5.ltm.pool.get`
         - `f5.ltm.pool.modify`
-    - Certificate reporting
+    - Feat: Certificate reporting
         - Feat: `f5.sslreport.cert` - Reports all certificates with expiration date
         - Upd: `f5.cert.expire` - Add option for markdown output
         - Upd: `f5.sslreport.generate` - Add certificate expiration report
+    - Upd: `f5.version` reports now build version too
 - F5OS-A Module
     - Feat: VLAN management
         - `f5osa.vlan.create`
