@@ -31,6 +31,7 @@ This is the changelog for Restsh.
         - `gitlab.repository.file.get`
         - `gitlab.repository.file.metadata`
         - `gitlab.repository.file.update`
+    - Upd: `gitlab.project.create` - Create project by full path
 - MyF5 Module (Experimental)
     - Feat: `myf5.downloads.get.tmos.iso`
     - Upd: Add show links options to `myf5.downloads.get.as3` and `myf5.downloads.get.do`

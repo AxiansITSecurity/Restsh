@@ -43,11 +43,11 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 2 ] || [ "$OPTION" = "invalid" ]
+if [ $# -lt 1 ] || [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] <namespace id> <name>"
+    echo "Usage: $(basename "$0") [options...] [namespace] <name>"
     echo "Options:"
     echo "    -b <branch>  Default branch, default: master"
     echo "    -e <file>    Project settings json file."
@@ -56,8 +56,15 @@ then
     exit 2
 fi
 
-restsh.util.check.string "namespace id" "$1"; NAMESPACE_ID=$1
-restsh.util.check.string "name" "$2"; NAME=$2
+if [ $# -eq 2 ]
+then
+    # Backward compatibility
+    restsh.util.check.string "namespace id" "$1"; NAMESPACE_ID=$1
+    restsh.util.check.string "name" "$2"; NAME=$2
+else
+    NAMESPACE_ID=${1%/*}
+    NAME=${1##*/}
+fi
 
 restsh.util.check.isnumber "$NAMESPACE_ID" || NAMESPACE_ID=$(gitlab.group.id "$NAMESPACE_ID")
 
