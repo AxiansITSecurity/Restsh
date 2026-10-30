@@ -31,6 +31,7 @@ This is the changelog for Restsh.
         - `gitlab.repository.file.get`
         - `gitlab.repository.file.metadata`
         - `gitlab.repository.file.update`
+    - Feat: `gitlab.project.job_token_scope.push` - Support "Allow cross-project Git push requests from allowlisted projects"
     - Upd: `gitlab.project.create` - Create project by full path
 - MyF5 Module (Experimental)
     - Feat: `myf5.downloads.get.tmos.iso`

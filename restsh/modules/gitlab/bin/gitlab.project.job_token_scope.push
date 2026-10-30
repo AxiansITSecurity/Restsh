@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Allow or deny Git push requests to the repository 
+# Shortdesc: Allow or deny Git push requests with a job token to this repository.
 # Desc:
-# Allow or deny Git push requests to the repository 
+# Allow or deny Git push requests with a job token to this repository.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -26,13 +26,17 @@ _usage() {
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <project> [allow|deny]"
+    echo "Options:"
+    echo "    -c  Allow cross-project Git push requests from allowlisted projects"
     exit 2
 }
 
 # Get options
-while getopts ':' OPTION
+CROSS_PROJECT_PUSH="false"
+while getopts ':c' OPTION
 do
     case "$OPTION" in
+        c) CROSS_PROJECT_PUSH="true" ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -44,17 +48,57 @@ then
 fi
 
 restsh.util.check.string "project" "$1"; PROJECT=$1
-restsh.util.check.isnumber "$PROJECT" || PROJECT=$(gitlab.project.id "$PROJECT")
+if restsh.util.check.isnumber "$PROJECT"
+then
+    PROJECT=$(gitlab.project.path "$PROJECT")
+fi
 
-case "${2:-}" in
-    "allow") SETTING=true ;;
-    "deny")  SETTING=false;;
-    *)  GET -f ".ci_push_repository_for_job_token_allowed" "$GITLAB_API_PREFIX/projects/$PROJECT"
-        exit $?
-        ;;
-esac
+if [ $# -eq 1 ]
+then
+    POST -f '.data.project.ciCdSettings' /api/graphql <<EOL
+{
+    "query": "query {
+        project(fullPath: \"$PROJECT\") {
+            ciCdSettings {
+                pushRepositoryForJobTokenAllowed
+                crossProjectPushForJobTokenAllowed
+            }
+        }
+    }"
+}
+EOL
+else
+    case "${2:-}" in
+        "allow") SETTING=true ;;
+        "deny")  SETTING=false;;
+        *)  echo_err "Invalid allow setting"
+            exit 1
+            ;;
+    esac
 
-JQ -n --argjson setting "$SETTING" \
-    '{
-        ci_push_repository_for_job_token_allowed: $setting
-    }' | PUT "$GITLAB_API_PREFIX/projects/$PROJECT"
+#    crossProjectPushForJobTokenAllowed no supported by REST-API
+#    https://gitlab.com/gitlab-org/gitlab/-/work_items/630514
+#
+#    JQ -n --argjson setting "$SETTING" \
+#        '{
+#            ci_push_repository_for_job_token_allowed: $setting
+#        }' | PUT "$GITLAB_API_PREFIX/projects/$PROJECT_ID"
+
+    POST /api/graphql <<EOL
+{
+    "query": "mutation {
+        projectCiCdSettingsUpdate(input: {
+            fullPath: \"$PROJECT\"
+            pushRepositoryForJobTokenAllowed: $SETTING
+            crossProjectPushForJobTokenAllowed: $CROSS_PROJECT_PUSH
+        }) {
+            ciCdSettings {
+                pushRepositoryForJobTokenAllowed
+                crossProjectPushForJobTokenAllowed
+            }
+            errors
+        }
+    }"
+}
+EOL
+fi
