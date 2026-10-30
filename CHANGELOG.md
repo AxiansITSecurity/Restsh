@@ -19,6 +19,7 @@ This is the changelog for Restsh.
         - Feat: `f5.sslreport.cert` - Reports all certificates with expiration date
         - Upd: `f5.cert.expire` - Add option for markdown output
         - Upd: `f5.sslreport.generate` - Add certificate expiration report
+    - Feat: `f5.device.reboot` - Add MCP force reload option
     - Upd: `f5.version` reports now build version too
 - F5OS-A Module
     - Feat: VLAN management

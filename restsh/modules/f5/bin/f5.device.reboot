@@ -23,10 +23,12 @@ then
 fi
 
 FORCE=0
-while getopts ':f' OPTION
+RELOAD=0
+while getopts ':fm' OPTION
 do
     case "$OPTION" in
         f) FORCE=1 ;;
+        m) RELOAD=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -39,11 +41,16 @@ then
     echo "Usage: $(basename "$0") [options]"
     echo "Options:"
     echo "    -f  Force reboot"
+    echo "    -m  Force the mcpd process to reload the configuration"
     exit 2
 fi
 
 if [ "$FORCE" -eq 1 ]
 then
+    if [ "$RELOAD" -eq 1 ]
+    then
+        f5.run "touch" "/service/mcpd/forceload"
+    fi
     POST /mgmt/tm/sys <<< '{ "command":"reboot" }'
 else
     echo "Use: $(basename "$0") -f" to reboot.
