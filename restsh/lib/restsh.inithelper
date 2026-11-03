@@ -134,13 +134,6 @@ restsh.init.check.cmd() {
     then
         echo_err "Command not found: jq"
         return 1
-    else
-        # Second test must fail and does not with too old jq versions
-        if ! jq -re ".t" <<< '{"t":1}' >/dev/null 2>&1 || jq -re ".t" <<< '{"r":1}' >/dev/null 2>&1
-        then
-            echo_err "jq version is too old"
-            return 1
-        fi
     fi
     export RESTSH_JQ
 
