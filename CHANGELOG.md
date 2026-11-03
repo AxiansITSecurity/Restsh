@@ -6,6 +6,8 @@ This is the changelog for Restsh.
 
 ## v4.7.0 - not yet released
 
+This version renames the F5OS-A module to F5OS.
+
 - General
     - Feat: Add curl option to enforce HTTPS
 - Axians Automation Framework
