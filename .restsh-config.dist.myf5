@@ -28,6 +28,15 @@ RESTSH_MODULES=("cert" "custom" "myf5")
 # Set this to 1 to enable curl insecure option (disables tls checks).
 #[ -n "${RESTSH_CURL_INSECURE+x}" ] || export RESTSH_CURL_INSECURE="0"
 
+# HTTPS enforcement
+if [ "$RESTSH_SCHEME" = "https" ]
+then
+    # Set this 0 to disable HTTPS enforcement
+    [ -n "${RESTSH_CURL_ENFORCE_HTTPS+x}" ] || export RESTSH_CURL_ENFORCE_HTTPS="1"
+else
+    export RESTSH_CURL_ENFORCE_HTTPS="0"
+fi
+
 # Authentication settings
 [ -n "${RESTSH_AUTH+x}" ] || export RESTSH_AUTH="token"
 

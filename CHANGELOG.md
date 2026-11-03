@@ -6,6 +6,8 @@ This is the changelog for Restsh.
 
 ## v4.7.0 - not yet released
 
+- General
+    - Feat: Add curl option to enforce HTTPS
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.certreport`
     - Feat: `aafw.pipeline.start.task.f5caimport`

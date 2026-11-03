@@ -70,6 +70,15 @@ export RESTSH_SCHEME
 export RESTSH_PORT
 [ -n "${RESTSH_CURL_INSECURE+x}" ] || RESTSH_CURL_INSECURE="0"
 export RESTSH_CURL_INSECURE
+
+if [ "$RESTSH_SCHEME" = "https" ]
+then
+    # Set this 0 to disable HTTPS enforcement
+    [ -n "${RESTSH_CURL_ENFORCE_HTTPS+x}" ] || export RESTSH_CURL_ENFORCE_HTTPS="1"
+else
+    export RESTSH_CURL_ENFORCE_HTTPS="0"
+fi
+
 [ -n "${RESTSH_CONTENT+x}" ] || RESTSH_CONTENT="application/json"
 export RESTSH_CONTENT
 [ -n "${RESTSH_CHUNK_SIZE+x}" ] || RESTSH_CHUNK_SIZE="524288"
