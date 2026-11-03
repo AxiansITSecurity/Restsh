@@ -8,6 +8,7 @@ This is the changelog for Restsh.
 
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.certreport`
+    - Feat: `aafw.pipeline.start.task.f5caimport`
 - F5 TMOS Module
     - Feat: LTM Pool management
         - `f5.ltm.pool.clone`
