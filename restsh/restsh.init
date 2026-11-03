@@ -131,12 +131,17 @@ then
         echo_warn "Not setting RESTSH_MODULES is deprecated."
     fi
     # Include all modules
-    RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "myf5" "scm")
+    RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5os" "gitlab" "myf5" "scm")
 fi
 
 # Include enabled modules by setting path and including functions
 for MODULE in "${RESTSH_MODULES[@]}"
 do
+    if [ "$MODULE" = "f5osa" ]
+    then
+        MODULE="f5os"
+        echo_warn "f5osa module was renamed to f5os."
+    fi
     if [ -d "$RESTSH_PATH/modules/$MODULE/bin" ]
     then
         PATH="$PATH:$RESTSH_PATH/modules/$MODULE/bin"

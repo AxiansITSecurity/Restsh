@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Gets a tenant.
+# Shortdesc: Restarts a dockerized F5OS service
 # Desc:
-# Gets a tenant.
+# Restarts a dockerized F5OS service
 
 # Strict error handling
 set -eEu -o pipefail
@@ -31,15 +31,18 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
+if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <tenant name>"
+    echo "Usage: $(basename "$0") <service>"
     exit 2
 fi
-
-restsh.util.check.string "tenant name" "$1"; TENANT_NAME=$1
+restsh.util.check.string "service" "$1"; SERVICE=$1
 
 # Main
-GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME"
+JQ -n --arg service "$SERVICE" \
+    '{
+        node: "platform",
+        service: $service
+    }' | POST "${F5OS_API_PREFIX}/data/openconfig-system:system/f5-system-diagnostics-qkview:diagnostics/f5-system-diagnostics-docker:os-utils/f5-system-diagnostics-docker:docker/f5-system-diagnostics-docker:restart"

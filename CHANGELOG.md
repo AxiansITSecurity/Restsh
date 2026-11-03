@@ -24,11 +24,12 @@ This is the changelog for Restsh.
         - Upd: `f5.sslreport.generate` - Add certificate expiration report
     - Feat: `f5.device.reboot` - Add MCP force reload option
     - Upd: `f5.version` reports now build version too
-- F5OS-A Module
+- F5OS Module
+    - Renamed from `f5osa` to `f5os`
     - Feat: VLAN management
-        - `f5osa.vlan.create`
-        - `f5osa.vlan.delete`
-        - `f5osa.vlan.list`
+        - `f5os.vlan.create`
+        - `f5os.vlan.delete`
+        - `f5os.vlan.list`
 - GitLab Module
     - Feat: New repository file management functions
         - `gitlab.repository.file.delete`

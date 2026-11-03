@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Deletes a file.
+# Shortdesc: Lists VLANs.
 # Desc:
-# Manages Deletes a file.
+# Manages Lists VLANs.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,25 +23,32 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+RAW=0
+while getopts ':r' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
+if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <remote filepath>"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
-restsh.util.check.string "remote filepath" "$1"; FILEPATH=$1
 
 # Main
-JQ -n --arg filepath "$FILEPATH" \
-    '{
-        "f5-utils-file-transfer:file-name": $filepath
-    }' | POST -r "$F5OSA_API_PREFIX/data/f5-utils-file-transfer:file/delete"
+if [ "$RAW" -eq 1 ]
+then
+    GET "$F5OS_API_PREFIX/data/openconfig-vlan:vlans"
+else
+    GET -r "$F5OS_API_PREFIX/data/openconfig-vlan:vlans" \
+        | JQ -r '."openconfig-vlan:vlans".vlan[] | [."vlan-id", .config.name] | @tsv' \
+        | COLUMN -o "|" -N "ID,Name"
+fi

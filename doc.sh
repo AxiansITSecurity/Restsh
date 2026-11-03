@@ -101,7 +101,7 @@ EOL
 }
 
 module_help "f5"
-module_help "f5osa"
+module_help "f5os"
 module_help "gitlab"
 module_help "scm"
 module_help "cert"

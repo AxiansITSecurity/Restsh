@@ -5,7 +5,7 @@ Modules are enabled in the configuration by defining the ``RESTSH_MODULES`` arra
 
 .. code:: sh
 
-   RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "myf5" "scm")
+   RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5os" "gitlab" "myf5" "scm")
 
 Available modules
 -----------------
@@ -19,7 +19,7 @@ Available modules
 +------------------------------+-----------------------------------------------+
 | :doc:`f5 <f5/index>`         | F5 BIG-IP TMOS                                |
 +------------------------------+-----------------------------------------------+
-| :doc:`f5osa <f5osa/index>`   | F5OS-A / rSeries                              |
+| :doc:`f5os <f5os/index>`     | F5OS                                          |
 +------------------------------+-----------------------------------------------+
 | :doc:`gitlab <gitlab/index>` | GitLab                                        |
 +------------------------------+-----------------------------------------------+
@@ -35,7 +35,7 @@ Available modules
    aafw/index.rst
    cert/index.rst
    f5/index.rst
-   f5osa/index.rst
+   f5os/index.rst
    gitlab/index.rst
    myf5/index.rst
    scm/index.rst

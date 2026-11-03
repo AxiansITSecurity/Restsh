@@ -527,7 +527,7 @@ test.restsh.help() {
     then
         return 1
     fi
-    for F in cert f5 f5osa gitlab scm all
+    for F in cert f5 f5os gitlab scm all
     do
         if ! restsh.help "$F" > /dev/null
         then

@@ -52,8 +52,8 @@ then
         '{
             "running-state": $running_state
         }' \
-    | PATCH "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/config/running-state"
+    | PATCH "$F5OS_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/config/running-state"
 else
-    GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/config/running-state"
-    GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/state/status"
+    GET "$F5OS_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/config/running-state"
+    GET "$F5OS_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME/state/status"
 fi

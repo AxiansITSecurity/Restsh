@@ -1,15 +1,15 @@
-F5OS-A
+F5OS
 ======
 
 .. code:: sh
 
-   RESTSH_MODULES=("cert" "custom" "f5osa")
+   RESTSH_MODULES=("cert" "custom" "f5os")
 
 Restsh is using the restconf port 8888 (API prefix ``/restconf``).
 
-All functions for this module are prefixed with ``f5osa.``.
+All functions for this module are prefixed with ``f5os.``.
 
-Example configuration file: ``.restsh-config.dist.f5osa``
+Example configuration file: ``.restsh-config.dist.f5os``
 
 Authentication
 --------------
@@ -25,17 +25,17 @@ See :doc:`Passwords and Secrets </Advanced/Passwords>` for storing the credentia
    [ -n "${RESTSH_USER+x}" ] || export RESTSH_USER="<user>"
    [ -n "${RESTSH_PASS+x}" ] || export RESTSH_PASS="<password>"
 
-Call ``f5osa.auth.token.get`` to retrieve the token. It uses the provided username and password to retrieve the token and sets the ``RESTSH_TOKEN_VALUE`` environment variable. The initial token is retrieved on startup and renewal is also managed by Restsh.
+Call ``f5os.auth.token.get`` to retrieve the token. It uses the provided username and password to retrieve the token and sets the ``RESTSH_TOKEN_VALUE`` environment variable. The initial token is retrieved on startup and renewal is also managed by Restsh.
 
 References
 ----------
 
-- `F5OS-A/F5 rSeries - API <https://clouddocs.f5.com/api/rseries-api/rseries-api-index.html>`_
+- `F5OS - API <https://clouddocs.f5.com/api/rseries-api/rseries-api-index.html>`_
 
 List of all functions
 ---------------------
 
-- :doc:`Overview of all functions </restsh/modules/f5osa/Overview>`
+- :doc:`Overview of all functions </restsh/modules/f5os/Overview>`
 
 .. toctree::
    :titlesonly:

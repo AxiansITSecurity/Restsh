@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Lists all dockerized F5OS-A services
+# Shortdesc: Lists all dockerized F5OS services
 # Desc:
-# Lists all dockerized F5OS-A services
+# Lists all dockerized F5OS services
 # Reference: https://clouddocs.f5.com/api/rseries-api/F5OS-A-1.8.4-api.html?section=f5-system-diagnostics-docker#tag/get
 
 # Strict error handling
@@ -45,9 +45,9 @@ fi
 # Main
 if [ "$RAW" -eq 1 ]
 then
-    GET "${F5OSA_API_PREFIX}/data/openconfig-system:system/f5-system-diagnostics-qkview:diagnostics/f5-system-diagnostics-docker:os-utils"
+    GET "${F5OS_API_PREFIX}/data/openconfig-system:system/f5-system-diagnostics-qkview:diagnostics/f5-system-diagnostics-docker:os-utils"
 else
-    GET "${F5OSA_API_PREFIX}/data/openconfig-system:system/f5-system-diagnostics-qkview:diagnostics/f5-system-diagnostics-docker:os-utils" \
+    GET "${F5OS_API_PREFIX}/data/openconfig-system:system/f5-system-diagnostics-qkview:diagnostics/f5-system-diagnostics-docker:os-utils" \
         | JQ -r '."f5-system-diagnostics-docker:os-utils".docker.nodes.node[].services.service[] | [.name,.state.status] | @tsv' \
         | COLUMN -o "|" -N "Service,State"
 fi

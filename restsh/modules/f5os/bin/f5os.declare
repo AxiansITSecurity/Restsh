@@ -112,5 +112,5 @@ then
     JQ "." "$DECLARATION_FILE_PARSED"
 else
     # Send the declaration
-    "${METHOD}" "${F5OSA_API_PREFIX}${ENDPOINT}" < "$DECLARATION_FILE_PARSED"
+    "${METHOD}" "${F5OS_API_PREFIX}${ENDPOINT}" < "$DECLARATION_FILE_PARSED"
 fi

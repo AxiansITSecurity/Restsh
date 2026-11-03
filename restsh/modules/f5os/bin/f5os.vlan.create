@@ -31,14 +31,29 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ] || [ "$#" -ne 1 ]
+if [ "$OPTION" == "invalid" ] || [ "$#" -ne 2 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <vlan_id>"
+    echo "Usage: $(basename "$0") <vlan_id> <name>"
     exit 2
 fi
 
-restsh.util.check.uint "name" "$1"; VLAN_ID=$1
+restsh.util.check.uint "id" "$1"; VLAN_ID=$1
+restsh.util.check.string "name" "$2"; VLAN_NAME=$2
 
-DELETE "$F5OSA_API_PREFIX/data/openconfig-vlan:vlans/vlan=$VLAN_ID"
+JQ -n --arg name "$VLAN_NAME" \
+    --arg id "$VLAN_ID" \
+    '{
+        "openconfig-vlan:vlans": {
+            "vlan": [
+                {
+                    "vlan-id": $id,
+                    "config": {
+                        "vlan-id": $id,
+                        "name": $name
+                    }
+                }
+            ]
+        }
+    }' | PATCH "$F5OS_API_PREFIX/data/openconfig-vlan:vlans"

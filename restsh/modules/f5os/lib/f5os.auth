@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Manages F5OS-A Authentication.
+# Shortdesc: Manages F5OS Authentication.
 # Desc:
-# Manages F5OS-A Authentication.
+# Manages F5OS Authentication.
 
 #shellcheck disable=SC2120
 
@@ -18,11 +18,11 @@ set -uo pipefail
 # Debug mode
 [ -n "${RESTSH_DEBUG+x}" ] && set -x
 
-# Gets the authentication token from F5OS-A and sets the RESTSH_TOKEN_VALUE environment variable.
-f5osa.auth.token.get() {
+# Gets the authentication token from F5OS and sets the RESTSH_TOKEN_VALUE environment variable.
+f5os.auth.token.get() {
     if [ -n "${1+x}" ]
     then
-        echo "Gets the authentication token from F5OS-A and sets the RESTSH_TOKEN_VALUE environment variable." 1>&2
+        echo "Gets the authentication token from F5OS and sets the RESTSH_TOKEN_VALUE environment variable." 1>&2
         echo "Usage: f5os.auth.token.get" 1>&2
         return 2
     fi
@@ -49,7 +49,7 @@ f5osa.auth.token.get() {
     fi
 
     local RESULT
-    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -u "$RESTSH_USER:$RESTSH_PASS" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OSA_API_PREFIX")
+    if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -u "$RESTSH_USER:$RESTSH_PASS" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OS_API_PREFIX")
     then
         local TOKEN
         TOKEN=$(awk -v RS='\r' '/X-Auth-Token/ {print $2}' <<< "$RESULT")
@@ -57,7 +57,7 @@ f5osa.auth.token.get() {
         then
             local NOW
             NOW=$(date +%s)
-            RESTSH_TOKEN_LIFETIME=$((NOW+F5OSA_TOKEN_LIFETIME))
+            RESTSH_TOKEN_LIFETIME=$((NOW+F5OS_TOKEN_LIFETIME))
             export RESTSH_TOKEN_VALUE="$TOKEN"
             export RESTSH_TOKEN_LIFETIME
             return 0
@@ -77,11 +77,11 @@ f5osa.auth.token.get() {
 }
 
 # Renews the token if it was expired
-f5osa.auth.token.renew() {
+f5os.auth.token.renew() {
     if [ -n "${1+x}" ]
     then
         echo "Renews the token if it was expired." 1>&2
-        echo "Usage: f5osa.auth.token.renew" 1>&2
+        echo "Usage: f5os.auth.token.renew" 1>&2
         return 2
     fi
     if [ "$RESTSH_AUTH" != "token" ] || [ -z "${RESTSH_TOKEN_LIFETIME+x}" ]
@@ -101,7 +101,7 @@ f5osa.auth.token.renew() {
         # Use current token to get a new one
         echo "Extending token" 1>&2
         local RESULT
-        if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -H "X-F5-Auth-Token: $RESTSH_TOKEN_VALUE" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OSA_API_PREFIX")
+        if RESULT=$($RESTSH_CURL_BIN "${RESTSH_CURL_OPTS[@]}" -H "X-F5-Auth-Token: $RESTSH_TOKEN_VALUE" "https://$RESTSH_HOST:$RESTSH_PORT/$F5OS_API_PREFIX")
         then
             local TOKEN
             TOKEN=$(awk -v RS='\r' '/X-Auth-Token/ {print $2}' <<< "$RESULT")
@@ -109,7 +109,7 @@ f5osa.auth.token.renew() {
             then
                 local NOW
                 NOW=$(date +%s)
-                RESTSH_TOKEN_LIFETIME=$((NOW+F5OSA_TOKEN_LIFETIME))
+                RESTSH_TOKEN_LIFETIME=$((NOW+F5OS_TOKEN_LIFETIME))
                 export RESTSH_TOKEN_VALUE="$TOKEN"
                 export RESTSH_TOKEN_LIFETIME
                 # This files are read by the prompt command and used to inject the refreshed token into the parent bash session
@@ -119,7 +119,7 @@ f5osa.auth.token.renew() {
             fi
         else
             # Fallback to basic auth
-            if f5osa.auth.token.get
+            if f5os.auth.token.get
             then
                 # This files are read by the prompt command and used to inject the refreshed token into the parent bash session
                 printf "%s" "$RESTSH_TOKEN_LIFETIME" > "$RESTSH_TMP/.RESTSH_TOKEN_LIFETIME"
@@ -133,5 +133,5 @@ f5osa.auth.token.renew() {
     fi
 }
 
-export -f f5osa.auth.token.get
-export -f f5osa.auth.token.renew
+export -f f5os.auth.token.get
+export -f f5os.auth.token.renew

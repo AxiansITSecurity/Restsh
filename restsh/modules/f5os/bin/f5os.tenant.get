@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Lists tenants.
+# Shortdesc: Gets a tenant.
 # Desc:
-# Manages Lists tenants.
+# Gets a tenant.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,32 +23,23 @@ then
 fi
 
 # Get options
-RAW=0
-while getopts ':r' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...]"
-    echo "Options:"
-    echo "    -r  Raw output."
+    echo "Usage: $(basename "$0") <tenant name>"
     exit 2
 fi
 
+restsh.util.check.string "tenant name" "$1"; TENANT_NAME=$1
+
 # Main
-if [ "$RAW" -eq 1 ]
-then
-    GET "$F5OSA_API_PREFIX/data/f5-tenants:tenants"
-else
-    GET -r "$F5OSA_API_PREFIX/data/f5-tenants:tenants" \
-        | JQ -r '."f5-tenants:tenants".tenant[] | [.name, .state."running-state",.state."status", .state."vcpu-cores-per-node", .state.memory, .state."mgmt-ip"] | @tsv' \
-        | COLUMN -o "|" -N "Name,State,Status,vCPUs,Memory,Mgmt-IP"
-fi
+GET "$F5OS_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME"

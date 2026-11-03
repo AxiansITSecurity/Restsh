@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Shows F5OS-A Version.
+# Shortdesc: Lists tenant images.
 # Desc:
-# Manages Shows F5OS-A Version.
+# Manages Lists tenant images.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,21 +23,32 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+RAW=0
+while getopts ':r' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0")"
+    echo "Usage: $(basename "$0") [options...]"
+    echo "Options:"
+    echo "    -r  Raw output."
     exit 2
 fi
 
 # Main
-GET "$F5OSA_API_PREFIX/data/openconfig-system:system/f5-system-version:version"
+if [ "$RAW" -eq 1 ]
+then
+    GET "$F5OS_API_PREFIX/data/f5-tenant-images:images"
+else
+    GET -r "$F5OS_API_PREFIX/data/f5-tenant-images:images" \
+        | JQ -r '."f5-tenant-images:images".image[] | [.name, .date, .size, .type, ."in-use", .status] | @tsv' \
+        | COLUMN -o "|" -N "Name,Date,Size,Type,In Use,Status"
+fi

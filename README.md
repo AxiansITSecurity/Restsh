@@ -15,7 +15,7 @@ The provided modules are offering hundreds of API wrapper scripts to simplify th
 | aafw | Axians Automation Framework specific modules. |
 | cert | Local Certificate handling. |
 | f5 | F5 BIG-IP TMOS |
-| f5osa | F5OS-A / rSeries |
+| f5os | F5OS |
 | gitlab | GitLab |
 | scm | Sectigo Cert Manager |
 

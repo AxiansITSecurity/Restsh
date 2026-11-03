@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Deletes a tenant.
+# Shortdesc: Shows F5OS Version.
 # Desc:
-# Deletes a tenant.
+# Manages Shows F5OS Version.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,31 +23,21 @@ then
 fi
 
 # Get options
-FORCE=0
-while getopts ':f' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
+if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <tenant name>"
+    echo "Usage: $(basename "$0")"
     exit 2
 fi
 
-restsh.util.check.string "tenant name" "$1"; TENANT_NAME=$1
-
-if [ "$FORCE" -ne 1 ]
-then
-    echo_warn "Use -f to force deletion."
-    exit 1
-fi
-
 # Main
-DELETE "$F5OSA_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME"
+GET "$F5OS_API_PREFIX/data/openconfig-system:system/f5-system-version:version"

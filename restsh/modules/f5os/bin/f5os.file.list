@@ -61,7 +61,7 @@ restsh.util.check.string "path" "$1"; FILEPATH=$1
 RESULT=$(JQ -n --arg filepath "$FILEPATH" \
     '{
         "f5-utils-file-transfer:path": $filepath
-    }' | POST -r "$F5OSA_API_PREFIX/data/f5-utils-file-transfer:file/list")
+    }' | POST -r "$F5OS_API_PREFIX/data/f5-utils-file-transfer:file/list")
 
 if [ "$RAW" -eq 1 ]
 then

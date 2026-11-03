@@ -9,7 +9,7 @@
 # Shortdesc: Creates a tenant.
 # Desc:
 # Reference: https://clouddocs.f5.com/training/community/rseries-training/html/rseries_deploying_a_tenant.html#creating-a-tenant-via-api
-# Example tenant template: restsh/modules/f5osa/templates/tenant.json
+# Example tenant template: restsh/modules/f5os/templates/tenant.json
 
 # Strict error handling
 set -eEu -o pipefail
@@ -55,10 +55,10 @@ then
     echo ""
     _restsh.help.desc.get "$0"
     echo "Example template file:"
-    awk '{ print "    " $0 }' "$RESTSH_PATH/modules/f5osa/templates/tenant.json"
+    awk '{ print "    " $0 }' "$RESTSH_PATH/modules/f5os/templates/tenant.json"
     echo ""
     echo "Example variable file:"
-    awk '{ print "    " $0 }' "$RESTSH_PATH/modules/f5osa/templates/tenant.var"
+    awk '{ print "    " $0 }' "$RESTSH_PATH/modules/f5os/templates/tenant.var"
     echo ""
     exit 2
 fi
@@ -108,5 +108,5 @@ then
     JQ "." "$DECLARATION_FILE_PARSED"
 else
     # Post the declaration
-    POST "$F5OSA_API_PREFIX/data/f5-tenants:tenants" < "$DECLARATION_FILE_PARSED"
+    POST "$F5OS_API_PREFIX/data/f5-tenants:tenants" < "$DECLARATION_FILE_PARSED"
 fi

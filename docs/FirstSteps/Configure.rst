@@ -8,7 +8,7 @@ The ``restsh.setup`` script can be used to create the initial configuration file
 .. code:: sh
 
     restsh.setup add <type> <folder> <host>
-        Type: One of f5, f5osa, gitlab, scm
+        Type: One of f5, f5os, gitlab, scm
         Folder: Subfolder in the config folder
         Host: Hostname of the REST endpoint
 
@@ -41,7 +41,7 @@ Pre-defined config files
 +================================+======================+
 | ``.restsh-config.dist.f5``     | F5 BIG-IP TMOS       |
 +--------------------------------+----------------------+
-| ``.restsh-config.dist.f5osa``  | F5OS-A / rSeries     |
+| ``.restsh-config.dist.f5os``   | F5OS                 |
 +--------------------------------+----------------------+
 | ``.restsh-config.dist.gitlab`` | GitLab               |
 +--------------------------------+----------------------+
@@ -69,7 +69,7 @@ Modules are enabled by setting the ``RESTSH_MODULES`` array.
 
 .. code:: sh
 
-    RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5osa" "gitlab" "scm")
+    RESTSH_MODULES=("aafw" "cert" "custom" "f5" "f5os" "gitlab" "scm")
 
 Certificate checking
 ~~~~~~~~~~~~~~~~~~~~

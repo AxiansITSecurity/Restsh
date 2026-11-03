@@ -33,7 +33,7 @@ do
     shellcheck "${SHELLCHECK_OPT[@]}" -- "$FILE" || ERROR=1
 done < <(find restsh/lib restsh/bin -type f ! -name .\*)
 
-for M in aafw cert custom f5 f5osa gitlab scm
+for M in aafw cert custom f5 f5os gitlab scm
 do
     while read -r FILE
     do

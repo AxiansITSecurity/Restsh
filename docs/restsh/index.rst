@@ -48,7 +48,7 @@ Functions
 
    -  :doc:`Certificates <modules/cert/index>`
    -  :doc:`F5 TMOS <modules/f5/index>`
-   -  :doc:`F5OS-A / rSeries <modules/f5osa/index>`
+   -  :doc:`F5OS <modules/f5os/index>`
    -  :doc:`GitLab <modules/gitlab/index>`
    -  :doc:`myF5 <modules/myf5/index>`
    -  :doc:`Sectigo Cert Manager <modules/scm/index>`

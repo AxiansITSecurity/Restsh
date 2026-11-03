@@ -6,14 +6,14 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Custom configuration file for restsh.init, pre-configured for F5OS-A.
+# Shortdesc: Custom configuration file for restsh.init, pre-configured for F5OS.
 # Desc:
-# Custom configuration file for restsh.init, pre-configured for F5OS-A.
+# Custom configuration file for restsh.init, pre-configured for F5OS.
 # Set central environment variables if not already set.
 
 # Enabled modules
 # shellcheck disable=SC2034
-RESTSH_MODULES=("cert" "custom" "f5osa")
+RESTSH_MODULES=("cert" "custom" "f5os")
 
 # Debugging
 # export RESTSH_DEBUG="true"
@@ -67,5 +67,5 @@ fi
 # Command that is executed after initialization in interactive mode
 #export RESTSH_INIT_CMD=""
 
-# Set token lifetime to 14 minutes, default lifetime is 15 minutes in F5OS-A
-[ -n "${F5OSA_TOKEN_LIFETIME+x}" ] || export F5OSA_TOKEN_LIFETIME=840
+# Set token lifetime to 14 minutes, default lifetime is 15 minutes in F5OS
+[ -n "${F5OS_TOKEN_LIFETIME+x}" ] || export F5OS_TOKEN_LIFETIME=840

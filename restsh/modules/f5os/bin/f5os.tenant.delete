@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Restarts a dockerized F5OS-A service
+# Shortdesc: Deletes a tenant.
 # Desc:
-# Restarts a dockerized F5OS-A service
+# Deletes a tenant.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,26 +23,31 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+FORCE=0
+while getopts ':f' OPTION
 do
     case "$OPTION" in
+        f) FORCE=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
+if [ "$OPTION" == "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") <service>"
+    echo "Usage: $(basename "$0") <tenant name>"
     exit 2
 fi
-restsh.util.check.string "service" "$1"; SERVICE=$1
+
+restsh.util.check.string "tenant name" "$1"; TENANT_NAME=$1
+
+if [ "$FORCE" -ne 1 ]
+then
+    echo_warn "Use -f to force deletion."
+    exit 1
+fi
 
 # Main
-JQ -n --arg service "$SERVICE" \
-    '{
-        node: "platform",
-        service: $service
-    }' | POST "${F5OSA_API_PREFIX}/data/openconfig-system:system/f5-system-diagnostics-qkview:diagnostics/f5-system-diagnostics-docker:os-utils/f5-system-diagnostics-docker:docker/f5-system-diagnostics-docker:restart"
+DELETE "$F5OS_API_PREFIX/data/f5-tenants:tenants/tenant=$TENANT_NAME"

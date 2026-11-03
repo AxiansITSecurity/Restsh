@@ -6,9 +6,9 @@
 # https://www.axians.de/security
 # https://github.com/AxiansITSecurity/Restsh
 
-# Shortdesc: Lists tenant images.
+# Shortdesc: Creates a backup.
 # Desc:
-# Manages Lists tenant images.
+# Creates a backup.
 
 # Strict error handling
 set -eEu -o pipefail
@@ -23,32 +23,25 @@ then
 fi
 
 # Get options
-RAW=0
-while getopts ':r' OPTION
+while getopts ':' OPTION
 do
     case "$OPTION" in
-        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" == "invalid" ]
+if [ $# -ne 1 ] || [ "$OPTION" == "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...]"
-    echo "Options:"
-    echo "    -r  Raw output."
+    echo "Usage: $(basename "$0") <backup filename>"
     exit 2
 fi
+restsh.util.check.string "backup filename" "$1"; FILENAME=$1
 
 # Main
-if [ "$RAW" -eq 1 ]
-then
-    GET "$F5OSA_API_PREFIX/data/f5-tenant-images:images"
-else
-    GET -r "$F5OSA_API_PREFIX/data/f5-tenant-images:images" \
-        | JQ -r '."f5-tenant-images:images".image[] | [.name, .date, .size, .type, ."in-use", .status] | @tsv' \
-        | COLUMN -o "|" -N "Name,Date,Size,Type,In Use,Status"
-fi
+JQ -n --arg filename "$FILENAME" \
+    '{
+        "f5-database:name": $filename
+    }' | POST "$F5OS_API_PREFIX/data/openconfig-system:system/f5-database:database/f5-database:config-backup"
