@@ -48,7 +48,6 @@
    <glyph unicode="5" horiz-adv-x="968" d="M 1053,459 C 1053,310 1009,193 921,108 832,23 710,-20 553,-20 422,-20 316,9 235,66 154,123 103,206 82,315 L 264,336 C 302,197 400,127 557,127 654,127 729,156 784,215 839,273 866,353 866,455 866,544 839,615 784,670 729,725 654,752 561,752 512,752 467,744 425,729 383,714 341,688 299,651 L 123,651 170,1409 971,1409 971,1256 334,1256 307,809 C 385,869 482,899 598,899 737,899 847,858 930,777 1012,696 1053,590 1053,459 Z "/>
    <glyph unicode="3" horiz-adv-x="968" d="M 1049,389 C 1049,259 1008,158 925,87 842,16 724,-20 571,-20 428,-20 315,12 230,77 145,141 94,236 78,362 L 264,379 C 288,212 390,129 571,129 662,129 733,151 785,196 836,241 862,307 862,395 862,472 833,532 774,575 715,618 629,639 518,639 L 416,639 416,795 514,795 C 613,795 689,817 744,860 798,903 825,962 825,1038 825,1113 803,1173 759,1217 714,1260 648,1282 561,1282 482,1282 418,1262 369,1221 320,1180 291,1123 283,1049 L 102,1063 C 115,1178 163,1268 246,1333 328,1398 434,1430 563,1430 704,1430 814,1397 893,1332 971,1266 1010,1174 1010,1057 1010,967 985,894 935,838 884,781 811,743 715,723 L 715,719 C 820,708 902,672 961,613 1020,554 1049,479 1049,389 Z "/>
    <glyph unicode="/" horiz-adv-x="568" d="M 0,-20 L 411,1484 569,1484 162,-20 0,-20 Z "/>
-   <glyph unicode="-" horiz-adv-x="499" d="M 91,464 L 91,624 591,624 591,464 91,464 Z "/>
    <glyph unicode=" " horiz-adv-x="566"/>
   </font>
  </defs>
@@ -191,7 +190,7 @@
         <rect class="BoundingBox" stroke="none" fill="none" x="999" y="3499" width="6503" height="2003"/>
         <path fill="rgb(0,96,189)" stroke="none" d="M 4250,5500 L 1000,5500 1000,3500 7500,3500 7500,5500 4250,5500 Z "/>
         <path fill="none" stroke="rgb(52,101,164)" d="M 4250,5500 L 1000,5500 1000,3500 7500,3500 7500,5500 4250,5500 Z "/>
-        <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="2123" y="4695"><tspan font-family="Liberation Sans, sans-serif" font-size="564px" font-weight="400" lengthAdjust="spacingAndGlyphs" textLength="4255" fill="rgb(255,255,255)" stroke="none" style="white-space: pre">F5OS-A / rSeries</tspan></tspan></tspan></text>
+        <text class="SVGTextShape"><tspan class="TextParagraph"><tspan class="TextPosition" x="3515" y="4695"><tspan font-family="Liberation Sans, sans-serif" font-size="564px" font-weight="400" lengthAdjust="spacingAndGlyphs" textLength="1471" fill="rgb(255,255,255)" stroke="none" style="white-space: pre">F5OS</tspan></tspan></tspan></text>
        </g>
       </g>
      </g>
