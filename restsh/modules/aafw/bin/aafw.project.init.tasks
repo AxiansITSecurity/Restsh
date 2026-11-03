@@ -67,7 +67,7 @@ do
     mkdir -p "config/$F"
     touch "config/$F/.gitkeep"
 done
-for F in internal-cas waftemplates signaturesets signatureset-templates
+for F in cabundles internal-cas waftemplates signaturesets signatureset-templates
 do
     mkdir -p "$F"
     touch "$F/.gitkeep"
