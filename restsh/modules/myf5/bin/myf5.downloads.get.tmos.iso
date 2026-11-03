@@ -27,7 +27,6 @@ myf5.endpoint.downloads
 # Get options
 LOCATION="USA - WEST COAST"
 SHOW_ONLY=0
-SLEEP=1
 while getopts ':l:v' OPTION
 do
     case "$OPTION" in
@@ -38,7 +37,7 @@ do
 done
 shift "$((OPTIND -1))"
 
-if [ "$OPTION" = "invalid" ]
+if [ "$OPTION" = "invalid" ] || [ $# -ne 1 ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
@@ -66,8 +65,6 @@ GET -r "/v1/downloads-management/v1/downloads/product/BIG-IP/${PRODUCT_LINE}" > 
 VERSION=$(JQ -r '[.versions[].version] | sort | reverse | .[0]' "${RESTSH_TMP}/products.json")
 MINOR_VERSION=$(JQ "[.versions[] | select(.version == \"${VERSION}\") | .containers[] | select(.container | test(\"^${VERSION}.[0-9]+$\")) | .container | split(\".\") | last | tonumber] | sort | last" "${RESTSH_TMP}/products.json")
 echo "Latest version is ${VERSION}.${MINOR_VERSION}"
-# Prevent Spike Arrest Policy
-sleep "$SLEEP"
 
 echo "Getting download links"
 OUTPUTS=()
@@ -92,8 +89,6 @@ done < <(GET -r "/v1/downloads-management/v1/downloads/product/DO/DO" \
 COUNTER=0
 for DOWNLOAD in "${DOWNLOADS[@]}"
 do
-    # Prevent Spike Arrest Policy
-    sleep "$SLEEP"
     if [ "${DOWNLOAD:0:3}" != "/v1/" ]
     then
         DOWNLOAD="/v1${DOWNLOAD}"
