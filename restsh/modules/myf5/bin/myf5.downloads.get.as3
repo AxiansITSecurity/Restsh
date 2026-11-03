@@ -27,7 +27,6 @@ myf5.endpoint.downloads
 # Get options
 LOCATION="USA - WEST COAST"
 SHOW_ONLY=0
-SLEEP=1
 while getopts ':l:v' OPTION
 do
     case "$OPTION" in
@@ -60,8 +59,6 @@ else
     VERSION=$(GET -r "/v1/downloads-management/v1/downloads/product/AS3/AS3" \
         | JQ -r '[.versions[].version] | sort | reverse | .[0]')
     echo "Latest version is $VERSION"
-    # Prevent Spike Arrest Policy
-    sleep "$SLEEP"
 fi
 
 echo "Getting download links"
@@ -87,8 +84,6 @@ done < <(GET -r "/v1/downloads-management/v1/downloads/product/AS3/AS3" \
 COUNTER=0
 for DOWNLOAD in "${DOWNLOADS[@]}"
 do
-    # Prevent Spike Arrest Policy
-    sleep "$SLEEP"
     if [ "${DOWNLOAD:0:3}" != "/v1/" ]
     then
         DOWNLOAD="/v1${DOWNLOAD}"
