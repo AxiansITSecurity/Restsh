@@ -25,9 +25,11 @@ then
 fi
 
 # Get options
-while getopts ':' OPTION
+WAIT=0
+while getopts ':w' OPTION
 do
     case "$OPTION" in
+        w) WAIT=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -45,4 +47,24 @@ fi
 
 restsh.util.check.string "bundle" "$1"; BUNDLE=${1//\//\~}
 
+LAST_UPDATE_TIME=$(f5.cert.get "${BUNDLE}.crt" | JQ -r '.lastUpdateTime')
+
 PATCH "/mgmt/tm/sys/crypto/ca-bundle-manager/${BUNDLE}" <<< '{"updateNow": "yes"}'
+
+if [ "$WAIT" -eq 1 ]
+then
+    sleep 2
+    UPDATE_TIME=$(f5.cert.get "${BUNDLE}.crt" | JQ -r '.lastUpdateTime')
+    COUNTER=0
+    while [ "$LAST_UPDATE_TIME" = "$UPDATE_TIME" ]
+    do
+        sleep 2
+        UPDATE_TIME=$(f5.cert.get "${BUNDLE}.crt" | JQ -r '.lastUpdateTime')
+        COUNTER=$((COUNTER+1))
+        if [ "$COUNTER" -eq 30 ]
+        then
+            echo_err "Failure updating bundle"
+            exit 1
+        fi
+    done
+fi
