@@ -9,3 +9,4 @@ TASK_BACKUP_REPO,,false,true,Repository for config backup (not for ucs).
 TASK_ASM_SIGNATURESET_CLEANUP,1,false,true,Remove all not declared user-defined signature sets.
 TASK_ASM_SIGNATURESET_PREFIX,aafw-,false,true,Prefix for AAFW managed ASM signature sets.
 TASK_CA_IMPORT_DEBIAN,1,false,true,Import trusted CAs from debian_restsh container.
+TASK_CA_IMPORT_UPDATE_BUNDLE_MANAGER,1,false,true,Trigger an update of all bundles managed by Bundle Manager

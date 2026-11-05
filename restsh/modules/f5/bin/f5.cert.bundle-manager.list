@@ -27,6 +27,7 @@ RAW=0
 while getopts ':r' OPTION
 do
     case "$OPTION" in
+        r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
