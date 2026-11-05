@@ -25,6 +25,10 @@ This version renames the F5OS-A module to F5OS.
         - Upd: `f5.cert.expire` - Add option for markdown output
         - Upd: `f5.sslreport.generate` - Add certificate expiration report
     - Feat: `f5.device.reboot` - Add MCP force reload option
+    - Feat: Support for Bundle Manager
+        - `f5.cert.bundle-manager.get`
+        - `f5.cert.bundle-manager.list`
+        - `f5.cert.bundle-manager.update-now`
     - Upd: `f5.version` reports now build version too
 - F5OS Module
     - Renamed from `f5osa` to `f5os`
