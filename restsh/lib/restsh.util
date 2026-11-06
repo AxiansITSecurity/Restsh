@@ -389,7 +389,7 @@ restsh.util.setcurloptions() {
     # Enforce HTTPS
     if [ "$RESTSH_CURL_ENFORCE_HTTPS" -eq 1 ]
     then
-        RESTSH_CURL_OPTS+=("--proto-default" "https" "--proto" "=https" "--proto-redir" "=http")
+        RESTSH_CURL_OPTS+=("--proto-default" "https" "--proto" "=https" "--proto-redir" "=https")
     fi
 
     # Proxy authentication
