@@ -10,6 +10,7 @@ This version renames the F5OS-A module to F5OS.
 
 - General
     - Feat: Add curl option to enforce HTTPS
+    - Upd: Curl - do not retry all errors, add enforce option
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.certreport`
     - Feat: `aafw.pipeline.start.task.f5caimport`
