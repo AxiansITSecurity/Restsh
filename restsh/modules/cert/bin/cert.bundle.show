@@ -39,4 +39,9 @@ then
 fi
 
 restsh.util.check.filename "bundle file" "$1"; BUNDLE_FILE=$1
-openssl crl2pkcs7 -nocrl -certfile "$BUNDLE_FILE" | openssl pkcs7 -print_certs -noout
+
+while read -r LINE
+do
+    [ "${LINE:0:8}" = "subject=" ] && echo ""
+    echo "$LINE"
+done < <(openssl x509 -multi -in "$BUNDLE_FILE" -noout -subject -issuer -dates -fingerprint)
