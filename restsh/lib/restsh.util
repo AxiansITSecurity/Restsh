@@ -600,8 +600,8 @@ restsh.util.setvars() {
     done < <(find "$DIR" "${FIND_OPTS[@]}" -type f -name \*.txt -or -name \*.array)
     # Warn for skipped files
     local INVALID
-    INVALID=$(find "$DIR" "${FIND_OPTS[@]}" -type f -printf "%f\n" | grep -Pv '^((\w+)\.(array|txt)|\.gitkeep)$' || true)
-    if [ -n "$INVALID" ]
+    mapfile -t INVALID < <(find "$DIR" "${FIND_OPTS[@]}" -type f -printf "%f\n" | grep -Pv '^((\w+)\.(array|txt)|\.gitkeep)$' || true)
+    if [ -n "${INVALID[*]}" ]
     then
         echo_warn "Skipped files in folder \"$DIR\":"
         local FILE
@@ -639,7 +639,7 @@ restsh.util.setvar() {
     local FILENAME="${FILE##*/}"
     local BASENAME="${FILENAME%.*}"
     local EXT="${FILENAME##*.}"
-    local REGEX='^[a-zA-Z][0-9a-zA-Z_]+$'
+    local REGEX='^[a-zA-Z_][0-9a-zA-Z_]*$'
     if ! [[ "$BASENAME" =~ $REGEX ]]
     then
         echo_err "Invalid characters in filename."
@@ -870,7 +870,7 @@ restsh.util.check.isvarname() {
     then
         return 1
     fi
-    local REGEX='^[a-zA-Z][0-9a-zA-Z_]+$'
+    local REGEX='^[a-zA-Z_][0-9a-zA-Z_]*$'
     if [[ "$VALUE" =~ $REGEX ]]
     then
         return 0
