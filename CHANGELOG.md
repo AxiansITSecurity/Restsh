@@ -14,6 +14,10 @@ This version renames the F5OS-A module to F5OS.
 - Axians Automation Framework
     - Feat: `aafw.pipeline.start.task.certreport`
     - Feat: `aafw.pipeline.start.task.f5caimport`
+- Certificates
+    - Feat: `cert.bundle.count` - Counts the number of certificates in a bundle.
+    - Feat: `cert.bundle.includes` - Checks if certificates are included in a bundle by SHA1 fingerprint.
+    - Upd: `cert.bundle.show` - Use `openssl x509 -multi`
 - F5 TMOS Module
     - Feat: LTM Pool management
         - `f5.ltm.pool.clone`
