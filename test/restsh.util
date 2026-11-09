@@ -17,9 +17,9 @@ test.restsh.util.echo_verbose() {
     # Usage info
     echo_verbose -h > /dev/null 2>&1 || true
     # Test
-    echo_verbose "test"
+    echo_verbose "test" || return 1
     export RESTSH_VERBOSE=1
-    echo_verbose "test"
+    echo_verbose "test" || return 1
     unset RESTSH_VERBOSE
 }
 
@@ -27,64 +27,64 @@ test.restsh.util.echo_ok() {
     # Usage info
     echo_ok -h > /dev/null 2>&1 || true
     # Test
-    echo_ok "test"
+    echo_ok "test" || return 1
 }
 
 test.restsh.util.print_json_ok() {
     # Usage info
     print_json_ok -h > /dev/null 2>&1 || true
     # Test
-    print_json_ok "test" | JQE ".ok.message"
+    print_json_ok "test" | JQE ".ok.message" || return 1
 }
 
 test.restsh.util.print_json_ok_curl() {
     # Usage info
     print_json_ok_curl -h > /dev/null 2>&1 || true
     # Test
-    print_json_ok_curl "test" "GET /"  | JQE ".ok | [.request, .message]"
+    print_json_ok_curl "test" "GET /"  | JQE ".ok | [.request, .message]" || return 1
 }
 
 test.restsh.util.echo_err() {
     # Usage info
     echo_err -h > /dev/null 2>&1 || true
     # Test
-    echo_err "test"
+    echo_err "test" || return 1
 }
 
 test.restsh.util.print_json_err() {
     # Usage info
     print_json_err -h > /dev/null 2>&1 || true
     # Test
-    print_json_err "test" 2>&1 | JQE ".error.message"
+    print_json_err "test" 2>&1 | JQE ".error.message" || return 1
 }
 
 test.restsh.util.print_json_err_curl() {
     # Usage info
     print_json_err_curl -h > /dev/null 2>&1 || true
     # Test
-    print_json_err_curl "test" "GET /" "error output" 2>&1 | JQE ".error | [.request, .message, .output]"
-    print_json_err_curl "" "" "" 2>&1 | JQE ".error | [.request, .message, .output]"
+    print_json_err_curl "test" "GET /" "error output" 2>&1 | JQE ".error | [.request, .message, .output]" || return 1
+    print_json_err_curl "" "" "" 2>&1 | JQE ".error | [.request, .message, .output]" || return 1
 }
 
 test.restsh.util.echo_warn() {
     # Usage info
     echo_warn -h > /dev/null 2>&1 || true
     # Test
-    echo_warn "test"
+    echo_warn "test" || return 1
 }
 
 test.restsh.util.print_json_warn() {
     # Usage info
     print_json_warn -h > /dev/null 2>&1 || true
     # Test
-    print_json_warn "test" 2>&1 | JQE ".warn.message"
+    print_json_warn "test" 2>&1 | JQE ".warn.message" || return 1
 }
 
 test.restsh.util.print_json_warn_curl() {
     # Usage info
     print_json_warn_curl -h > /dev/null 2>&1 || true
     # Test
-    print_json_warn_curl "test" "GET /" 2>&1 | JQE ".warn | [.request, .message]"
+    print_json_warn_curl "test" "GET /" 2>&1 | JQE ".warn | [.request, .message]" || return 1
 }
 
 test.restsh.util.MO() {
@@ -101,14 +101,14 @@ test.restsh.util.JQ() {
     # Usage info
     JQ -h > /dev/null 2>&1 || true
     # Test
-    JQ "." <<< '{"test": "test"}'
+    JQ "." <<< '{"test": "test"}' || return 1
 }
 
 test.restsh.util.JQE() {
     # Usage info
     JQE -h > /dev/null 2>&1 || true
     # Test
-    JQE ".test" <<< '{"test": "test"}'
+    JQE ".test" <<< '{"test": "test"}' || return 1
     if ! JQE ".test2" <<< '{"test": "test"}'
     then 
         return 0
@@ -120,15 +120,15 @@ test.restsh.util.XARGS() {
     # Usage info
     XARGS -h > /dev/null 2>&1 || true
     # Test
-    echo "test1 test2" | XARGS "echo"
+    echo "test1 test2" | XARGS "echo" || return 1
 }
 
 test.restsh.util.COLUMN() {
     # Usage info
     COLUMN -h > /dev/null 2>&1 || true
     # Test
-    echo -e "v1\tv2\tv3\n" | COLUMN
-    echo -e "v1\tv2\tv3\n" | COLUMN -N "c1,c2,c3" -o "|"
+    echo -e "v1\tv2\tv3\n" | COLUMN || return 1
+    echo -e "v1\tv2\tv3\n" | COLUMN -N "c1,c2,c3" -o "|" || return 1
     # Negative test
     if echo -e "v1\tv2\tv3\n" | COLUMN -l
     then
@@ -140,7 +140,7 @@ test.restsh.util.KV() {
     # Usage info
     KV -h > /dev/null 2>&1 || true
     # Test
-    echo -e "k1\tv2\nk2\tv2" | KV
+    echo -e "k1\tv2\nk2\tv2" | KV || return 1
 }
 
 test.restsh.util.setcurloptions() {
@@ -155,21 +155,21 @@ test.restsh.util.setcurloptions() {
     local RESTSH_TOKEN_HEADER="Authorization"
     #shellcheck disable=SC2034
     local RESTSH_TOKEN_VALUE="test"
-    RESTSH_CURL_INSECURE=1 restsh.util.setcurloptions
-    RESTSH_DEBUG=1 restsh.util.setcurloptions
-    RESTSH_AUTH=basic restsh.util.setcurloptions
-    RESTSH_AUTH=token restsh.util.setcurloptions
-    RESTSH_AUTH=netrc restsh.util.setcurloptions
+    RESTSH_CURL_INSECURE=1 restsh.util.setcurloptions || return 1
+    RESTSH_DEBUG=1 restsh.util.setcurloptions || return 1
+    RESTSH_AUTH=basic restsh.util.setcurloptions || return 1
+    RESTSH_AUTH=token restsh.util.setcurloptions || return 1
+    RESTSH_AUTH=netrc restsh.util.setcurloptions || return 1
 }
 
 test.restsh.util.parseoutput() {
     # Usage info
     restsh.util.parseoutput -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.parseoutput -f ".test" -r '{"test":"test"}'
-    restsh.util.parseoutput -f ".test" '{"test":"test"}'
-    restsh.util.parseoutput -r '{"test":"test"}'
-    restsh.util.parseoutput '{"test":"test"}'
+    restsh.util.parseoutput -f ".test" -r '{"test":"test"}' || return 1
+    restsh.util.parseoutput -f ".test" '{"test":"test"}' || return 1
+    restsh.util.parseoutput -r '{"test":"test"}' || return 1
+    restsh.util.parseoutput '{"test":"test"}' || return 1
 }
 
 test.restsh.util.declare.var() {
@@ -177,7 +177,7 @@ test.restsh.util.declare.var() {
     restsh.util.declare.var -h > /dev/null 2>&1 || true
     # Test
     export VERBOSE=1
-    restsh.util.declare.var "KEY1=wert"
+    restsh.util.declare.var "KEY1=wert" || return 1
     unset VEROBOSE
     [ "$KEY1" = "wert" ] || return 1
 }
@@ -229,13 +229,16 @@ test.restsh.util.setvar() {
     echo "string" > "$RESTSH_TMP/vars/TEST_STR.txt"
     echo -e "string1\nstring2\n" > "$RESTSH_TMP/vars/TEST_ARRAY.array"
     echo -e "#string1\n#string2\n" > "$RESTSH_TMP/vars/TEST_EMPTY.array"
-    restsh.util.setvar "$RESTSH_TMP/vars/TEST_STR.txt"
-    restsh.util.setvar "$RESTSH_TMP/vars/TEST_ARRAY.array"
-    restsh.util.setvar "$RESTSH_TMP/vars/TEST_EMPTY.array"
+    echo "single" > "$RESTSH_TMP/vars/A.txt"
+    if ! restsh.util.setvar "$RESTSH_TMP/vars/TEST_STR.txt"; then return 1; fi
+    if ! restsh.util.setvar "$RESTSH_TMP/vars/TEST_ARRAY.array"; then return 1; fi
+    if ! restsh.util.setvar "$RESTSH_TMP/vars/TEST_EMPTY.array"; then return 1; fi
+    if ! restsh.util.setvar "$RESTSH_TMP/vars/A.txt"; then return 1; fi
     rm -r "$RESTSH_TMP/vars"
     [ -n "$VAR_TEST_STR" ] || return 1
     [ -n "${ARRAY_TEST_ARRAY[*]}" ] || return 1
     [ -z "${ARRAY_TEST_EMPTY[*]}" ] || return 1
+    [ -n "$VAR_A" ] || return 1
     # Invalid extension
     touch "$RESTSH_TMP/vars/INVALID_EXT.txt "
     if restsh.util.setvar "$RESTSH_TMP/vars/INVALID_EXT.txt "
@@ -274,7 +277,7 @@ test.restsh.util.json_validate() {
     # Test
     restsh.util.json_validate < test/files/valid.json
     # Negative test
-    if ! restsh.util.json_validate < test/files/invalid.json; then true; else false; fi
+    if restsh.util.json_validate < test/files/invalid.json; then return 1; fi
 }
 
 test.restsh.util.check.notempty() {
@@ -283,8 +286,8 @@ test.restsh.util.check.notempty() {
     # Test
     restsh.util.check.notempty "test"
     # Negative test
-    if ! restsh.util.check.notempty " "; then true; else false; fi
-    if ! restsh.util.check.notempty "null"; then true; else false; fi
+    if restsh.util.check.notempty " "; then return 1; fi
+    if restsh.util.check.notempty "null"; then return 1; fi
 }
 
 test.restsh.util.check.varnotempty() {
@@ -294,14 +297,14 @@ test.restsh.util.check.varnotempty() {
     VAR1="test"
     restsh.util.check.varnotempty "VAR1"
     VAR1=""
-    if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
+    if restsh.util.check.varnotempty "VAR1"; then return 1; fi
     VAR1=" "
-    if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
+    if restsh.util.check.varnotempty "VAR1"; then return 1; fi
     # shellcheck disable=SC2034 # Variable is used as reference
     VAR1="null"
-    if ! restsh.util.check.varnotempty "VAR1"; then true; else false; fi
+    if restsh.util.check.varnotempty "VAR1"; then return 1; fi
     # not defined variable
-    if ! restsh.util.check.varnotempty "VAR2"; then true; else false; fi
+    if restsh.util.check.varnotempty "VAR2"; then return 1; fi
 }
 
 test.restsh.util.check.isnumber() {
@@ -310,29 +313,30 @@ test.restsh.util.check.isnumber() {
     # Test
     restsh.util.check.isnumber "10"
     # Negative test
-    if ! restsh.util.check.isnumber " 10"; then true; else false; fi
-    if ! restsh.util.check.isnumber "test"; then true; else false; fi
+    if restsh.util.check.isnumber " 10"; then return 1; fi
+    if restsh.util.check.isnumber "test"; then return 1; fi
 }
 
 test.restsh.util.check.isvarname() {
     # Usage info
     restsh.util.check.isvarname -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.check.isvarname "testvar"
-    restsh.util.check.isvarname "TEST_VAR"
+    if ! restsh.util.check.isvarname "A"; then return 1; fi
+    if ! restsh.util.check.isvarname "testvar"; then return 1; fi
+    if ! restsh.util.check.isvarname "TEST_VAR"; then return 1; fi
     # Negative test
-    if ! restsh.util.check.isvarname "1abc"; then true; else false; fi
-    if ! restsh.util.check.isvarname " 10"; then true; else false; fi
-    if ! restsh.util.check.isvarname "te-st"; then true; else false; fi
-    if ! restsh.util.check.isvarname "1test"; then true; else false; fi
+    if restsh.util.check.isvarname "1abc"; then return 1; fi
+    if restsh.util.check.isvarname " 10"; then return 1; fi
+    if restsh.util.check.isvarname "te-st"; then return 1; fi
+    if restsh.util.check.isvarname "1test"; then return 1; fi
 }
 
 test.restsh.util.check.string() {
     # Usage info
     restsh.util.check.string -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.check.string "all special chars" "a-zA-Z0-9_=.:/ @~+-"
-    restsh.util.check.string "start with hyphen" "-sdf"
+    restsh.util.check.string "all special chars" "a-zA-Z0-9_=.:/ @~+-" || return 1
+    restsh.util.check.string "start with hyphen" "-sdf" || return 1
     # Negative test
     if restsh.util.check.string "invalid special chars" "sdf(asdf)"; then return 1; fi
 }
@@ -341,7 +345,7 @@ test.restsh.util.check.filename() {
     # Usage info
     restsh.util.check.filename -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.check.filename "all special chars" "a-zA-Z0-9_=.:/ @~+-"
+    restsh.util.check.filename "all special chars" "a-zA-Z0-9_=.:/ @~+-" || return 1
     # Negative test
     if restsh.util.check.filename "invalid special chars" "sdf(asdf)"; then return 1; fi
     if restsh.util.check.filename "start with hyphen" "-sdf"; then return 1; fi
@@ -351,7 +355,7 @@ test.restsh.util.check.uint() {
     # Usage info
     restsh.util.check.uint -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.check.uint "uint" "42"
+    restsh.util.check.uint "uint" "42" || return 1
     # Negative test
     if restsh.util.check.uint "invalid" "4iinvalid"; then return 1; fi
 }
@@ -360,8 +364,8 @@ test.restsh.util.check.bool() {
     # Usage info
     restsh.util.check.bool -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.check.bool "bool1" "true"
-    restsh.util.check.bool "bool2" "false"
+    restsh.util.check.bool "bool1" "true" || return 1
+    restsh.util.check.bool "bool2" "false" || return 1
     # Negative test
     if restsh.util.check.bool "invalid" "-sdf"; then return 1; fi
 }
@@ -386,10 +390,10 @@ test.restsh.util.array.includes() {
     # Usage info
     restsh.util.array.includes -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.array.includes "test" "test" "foo" "bar"
-    restsh.util.array.includes "test" "foo" "test" "bar"
-    restsh.util.array.includes "test" "foo" "bar" "test"
-    if ! restsh.util.array.includes "test" "test2" "foo" "bar"; then true; else false; fi
+    restsh.util.array.includes "test" "test" "foo" "bar" || return 1
+    restsh.util.array.includes "test" "foo" "test" "bar" || return 1
+    restsh.util.array.includes "test" "foo" "bar" "test" || return 1
+    if restsh.util.array.includes "test" "test2" "foo" "bar"; then return 1; fi
 }
 
 test.restsh.util.array.string() {
@@ -399,13 +403,13 @@ test.restsh.util.array.string() {
     local ARRAY=("abc" "dfg" "hij" "x y")
     local STR
     STR=$(restsh.util.array.string -q'"' "${ARRAY[@]}")
-    if [ "$STR" = '"abc" "dfg" "hij" "x y"' ]; then true; else false; fi
+    [ "$STR" = '"abc" "dfg" "hij" "x y"' ] || return 1
     STR=$(restsh.util.array.string -q'"' -s, "${ARRAY[@]}")
-    if [ "$STR" = '"abc","dfg","hij","x y"' ]; then true; else false; fi
+    [ "$STR" = '"abc","dfg","hij","x y"' ] || return 1
     STR=$(restsh.util.array.string -s, "${ARRAY[@]}")
-    if [ "$STR" = 'abc,dfg,hij,x y' ]; then true; else false; fi
+    [ "$STR" = 'abc,dfg,hij,x y' ] || return 1
     STR=$(restsh.util.array.string -p "test-" "${ARRAY[@]}")
-    if [ "$STR" = 'test-abc test-dfg test-hij test-x y' ]; then true; else false; fi
+    [ "$STR" = 'test-abc test-dfg test-hij test-x y' ] || return 1
 }
 
 test.restsh.util.uc() {
@@ -440,7 +444,7 @@ test.restsh.util.isencrypted() {
     restsh.util.isencrypted -h > /dev/null 2>&1 || true
     # Test
     restsh.util.isencrypted "AES256:test"
-    if ! restsh.util.isencrypted "test"; then true; else false; fi
+    if restsh.util.isencrypted "test"; then return 1; fi
 }
 
 test.restsh.util.encrypt() {
@@ -580,16 +584,16 @@ test.restsh.util.print_formated() {
     # Usage info
     restsh.util.print_formated -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.print_formated '{"t":1}'
-    restsh.util.print_formated 't'
+    restsh.util.print_formated '{"t":1}' || return 1
+    restsh.util.print_formated 't' || return 1
 }
 
 test.restsh.util.print_formated_err() {
     # Usage info
     restsh.util.print_formated_err -h > /dev/null 2>&1 || true
     # Test
-    restsh.util.print_formated_err '{"t":1}'
-    restsh.util.print_formated_err 't'
+    restsh.util.print_formated_err '{"t":1}' || return 1
+    restsh.util.print_formated_err 't' || return 1
 }
 
 # shellcheck disable=SC2034 # Array is used in test.sh
