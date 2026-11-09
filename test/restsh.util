@@ -180,6 +180,7 @@ test.restsh.util.declare.var() {
     restsh.util.declare.var "KEY1=wert" || return 1
     unset VEROBOSE
     [ "$KEY1" = "wert" ] || return 1
+    if restsh.util.declare.var "EMPTY="; then return 1; fi
 }
 
 test.restsh.util.setvars() {
@@ -337,6 +338,7 @@ test.restsh.util.check.string() {
     # Test
     restsh.util.check.string "all special chars" "a-zA-Z0-9_=.:/ @~+-" || return 1
     restsh.util.check.string "start with hyphen" "-sdf" || return 1
+    restsh.util.check.string "empty" "" || return 1
     # Negative test
     if restsh.util.check.string "invalid special chars" "sdf(asdf)"; then return 1; fi
 }
@@ -349,6 +351,7 @@ test.restsh.util.check.filename() {
     # Negative test
     if restsh.util.check.filename "invalid special chars" "sdf(asdf)"; then return 1; fi
     if restsh.util.check.filename "start with hyphen" "-sdf"; then return 1; fi
+    if restsh.util.check.filename "empty" ""; then return 1; fi
 }
 
 test.restsh.util.check.uint() {
@@ -481,6 +484,11 @@ test.restsh.util.var.decrypt() {
     ENCRYPTED=$(restsh.util.encrypt <<< "$STR" | tr -d '\n')
     restsh.util.var.decrypt ENCRYPTED
     [ "$STR" = "$ENCRYPTED" ] || return 1
+    # Verify decrypting a variable updates the stored value in-place.
+    local VALUE="keep me secret"
+    VALUE_TO_DECRYPT=$(restsh.util.encrypt <<< "$VALUE" | tr -d '\n')
+    restsh.util.var.decrypt VALUE_TO_DECRYPT
+    [ "$VALUE_TO_DECRYPT" = "$VALUE" ] || return 1
     return 0
 }
 
@@ -515,6 +523,11 @@ test.restsh.util.trim() {
     local OUTPUT
     OUTPUT=$(restsh.util.trim "  test ")
     [ "$OUTPUT" = "test" ] || return 1
+    OUTPUT=$(restsh.util.trim $' \t\nhello world\t \n')
+    [ "$OUTPUT" = "hello world" ] || return 1
+    OUTPUT=$(restsh.util.trim $' \t\n \t')
+    [ -z "$OUTPUT" ] || return 1
+    [ "$(restsh.util.trim ' ')" = "" ] || return 1
 }
 
 test.restsh.util.base64url() {
@@ -524,6 +537,9 @@ test.restsh.util.base64url() {
     local OUTPUT
     OUTPUT=$(restsh.util.base64url "test")
     [ "$OUTPUT" = "dGVzdA" ] || return 1
+    OUTPUT=$(restsh.util.base64url "a/b+c")
+    [ "$OUTPUT" = "YS9iK2M" ] || return 1
+    [ "$(restsh.util.base64url '')" = "" ] || return 1
 }
 
 test.restsh.help() {
@@ -576,8 +592,16 @@ test.restsh.util.eval_stage_var() {
     restsh.util.eval_stage_var -h > /dev/null 2>&1 || true
     # Test
     EXAMPLE_DEV="test"
+    unset EXAMPLE
     restsh.util.eval_stage_var "EXAMPLE" "DEV"
     [ "$EXAMPLE" = "$EXAMPLE_DEV" ] || return 1
+    unset EXAMPLE_DEV
+    unset EXAMPLE
+    restsh.util.eval_stage_var "EXAMPLE" "DEV"
+    [ -z "${EXAMPLE+x}" ] || return 1
+    unset MISSING_STAGE
+    restsh.util.eval_stage_var "MISSING_STAGE" "DEV"
+    [ -z "${MISSING_STAGE+x}" ] || return 1
 }
 
 test.restsh.util.print_formated() {
