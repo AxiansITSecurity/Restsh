@@ -919,7 +919,8 @@ restsh.util.check.filename() {
     local PARAM="$2"
     if [[ -z "$PARAM" ]]
     then
-        return 0
+        echo_err "Invalid value for \"$NAME\", must not be empty."
+        return 1
     fi
     if [[ "${PARAM:0:1}" == "-" ]]
     then
