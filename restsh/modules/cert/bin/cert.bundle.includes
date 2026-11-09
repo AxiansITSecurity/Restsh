@@ -22,9 +22,13 @@ then
     exit 1
 fi
 
-while getopts ':h' OPTION
+FAIL_INCLUDED=0
+FAIL_EXCLUDED=0
+while getopts ':ehi' OPTION
 do
     case "$OPTION" in
+        i) FAIL_INCLUDED=1 ;;
+        e) FAIL_EXCLUDED=1 ;;
         *) OPTION="invalid"; break ;;
     esac
 done
@@ -35,6 +39,9 @@ then
     exec 1>&2
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") <bundle file> <check file>"
+    echo "Options:"
+    echo "    -e  Fail if certificate is not in bundle"
+    echo "    -i  Fail if certificate is in bundle"
     exit 2
 fi
 
@@ -54,6 +61,7 @@ do
     fi
 done < <(openssl x509 -multi -in "$BUNDLE_FILE" -noout -fingerprint -subject)
 
+RC=0
 while read -r LINE
 do
     KEY=${LINE%%=*}
@@ -65,9 +73,23 @@ do
         INCLUDED="${BUNDLE["$VALUE"]:-}"
         if [ -n  "$INCLUDED" ]
         then
-            echo "Included:     $LAST_SUBJECT"
+            if [ "$FAIL_INCLUDED" -eq 1 ]
+            then
+                 echo_err "Included:     $LAST_SUBJECT"
+                 RC=1
+            else
+                echo "Included:     $LAST_SUBJECT"
+            fi
         else
-            echo "Not included: $LAST_SUBJECT"
+            if [ "$FAIL_EXCLUDED" -eq 1 ]
+            then
+                echo_err "Not included: $LAST_SUBJECT"
+                RC=1
+            else
+                echo "Not included: $LAST_SUBJECT"
+            fi
         fi
     fi
 done < <(openssl x509 -multi -in "$CHECK_FILE" -noout -subject -fingerprint)
+
+exit "$RC"
