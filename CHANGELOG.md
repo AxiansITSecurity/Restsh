@@ -35,6 +35,7 @@ This version renames the F5OS-A module to F5OS.
         - `f5.cert.bundle-manager.list`
         - `f5.cert.bundle-manager.update-now`
     - Upd: `f5.version` reports now build version too
+    - Upd: `f5.asm.signatureset.filter.modify` - Remove workaround for bug id 1980601
 - F5OS Module
     - Renamed from `f5osa` to `f5os`
     - Feat: VLAN management
