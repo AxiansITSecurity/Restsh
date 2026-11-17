@@ -34,7 +34,7 @@ This version renames the F5OS-A module to F5OS.
         - `f5.cert.bundle-manager.get`
         - `f5.cert.bundle-manager.list`
         - `f5.cert.bundle-manager.update-now`
-    - Feat: `f5.ltm.log`
+    - Feat: `f5.log.apm`, `f5.log.asm`, `f5.log.ltm`
     - Upd: `f5.version` reports now build version too
     - Upd: `f5.asm.signatureset.filter.modify` - Remove workaround for bug id 1980601
 - F5OS Module
