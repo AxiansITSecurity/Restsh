@@ -58,6 +58,12 @@ This version renames the F5OS-A module to F5OS.
 
 ***
 
+## v4.6.2 - 2026-11-17
+
+No changes
+
+***
+
 ## v4.6.1 - 2026-10-06
 
 - General
