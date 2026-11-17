@@ -35,7 +35,7 @@ if [ "$OPTION" = "invalid" ]
 then
     exec 1>&2
     _restsh.help.desc.get "$0"
-    echo "Usage: $(basename "$0") [options...] [lines]"
+    echo "Usage: $(basename "$0") [lines]"
     exit 2
 fi
 
