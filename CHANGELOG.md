@@ -4,6 +4,12 @@ This is the changelog for Restsh.
 
 ***
 
+## v4.6.2 - 2026-11-17
+
+No changes
+
+***
+
 ## v4.6.1 - 2026-10-06
 
 - General
