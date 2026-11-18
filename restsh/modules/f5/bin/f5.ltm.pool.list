@@ -24,9 +24,11 @@ fi
 
 # Get options
 RAW=0
-while getopts ':r' OPTION
+IPS=0
+while getopts ':ir' OPTION
 do
     case "$OPTION" in
+        i) IPS=1 ;;
         r) RAW=1 ;;
         *) OPTION="invalid"; break ;;
     esac
@@ -39,6 +41,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [options...]"
     echo "Options:"
+    echo "    -i  Print member IPs."
     echo "    -r  Raw output."
     exit 2
 fi
@@ -48,10 +51,24 @@ then
     GET "/mgmt/tm/ltm/pool?expandSubcollections=true"
 else
     {
-        while IFS=$'\t' read -r POOL MEMBERS
+        while IFS=$'\t' read -r POOL MEMBERS_NAME MEMBERS_IP
         do
-            MEMBERS="${MEMBERS//[[:space:]]/, }"
+            IFS=',' read -ra NAME_ARRAY <<< "$MEMBERS_NAME"
+            IFS=',' read -ra IP_ARRAY <<< "$MEMBERS_IP"
+            if [ "$IPS" -eq 1 ]
+            then
+                COUNTER=0
+                for MEMBER in "${NAME_ARRAY[@]}"
+                do
+                    PORT="${MEMBER##*:}"
+                    IP_ARRAY[COUNTER]="${IP_ARRAY[${COUNTER}]}:${PORT}"
+                    COUNTER=$((COUNTER+1))
+                done
+                MEMBERS=$(restsh.util.array.string -s ", " "${IP_ARRAY[@]}")
+            else
+                MEMBERS=$(restsh.util.array.string -s ", " "${NAME_ARRAY[@]}")
+            fi
             printf "%s\t%s\n" "$POOL" "$MEMBERS"
-        done < <(GET "/mgmt/tm/ltm/pool?expandSubcollections=true" | JQ -r '.items[] | [.fullPath,.membersReference.items[].name] | @tsv')
+        done < <(GET "/mgmt/tm/ltm/pool?expandSubcollections=true" | JQ -r '.items[] | [.fullPath,([.membersReference.items[].name] | join(",")), ([.membersReference.items[].address] | join(","))] | @tsv')
     } | COLUMN -o "|" -N "Full Path,Members"
 fi
