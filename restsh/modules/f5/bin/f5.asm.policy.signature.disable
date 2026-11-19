@@ -42,6 +42,6 @@ restsh.util.check.string "policy fullPath" "$1"; POLICY=$1
 restsh.util.check.uint "signature id" "$2"; SIGNATURE_ID=$2
 
 POLICY_HASH=$(f5.asm.policy.gethash "$POLICY")
-POLICY_SIGNATURE_ID=$(f5.asm.policy.signature.getid "$POLICY_HASH" "$SIGNATURE_ID")
+POLICY_SIGNATURE_ID=$(f5.asm.policy.signature.getid -- "$POLICY_HASH" "$SIGNATURE_ID")
 
 PATCH "/mgmt/tm/asm/policies/$POLICY_HASH/signatures/$POLICY_SIGNATURE_ID" <<< '{"enabled":false}'
