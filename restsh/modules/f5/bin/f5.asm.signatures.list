@@ -26,9 +26,10 @@ fi
 RAW=0
 FILTER=""
 FILTER_JQ=""
-while getopts ':ri:n:' OPTION
+while getopts ':c:i:n:r' OPTION
 do
     case "$OPTION" in
+        c) restsh.util.check.string "CVE" "$OPTARG"; FILTER_JQ="| select(.hasCve == true and .references[].value == \"${OPTARG}\")" ;;
         i) restsh.util.check.uint "signatureId" "$OPTARG"; FILTER="signatureId eq ${OPTARG}" ;;
         n) restsh.util.check.string "string" "$OPTARG"; FILTER_JQ="| select(.name | contains(\"${OPTARG}\"))" ;;
         r) RAW=1 ;;
@@ -43,6 +44,7 @@ then
     _restsh.help.desc.get "$0"
     echo "Usage: $(basename "$0") [searchfilter]"
     echo "Options:"
+    echo "    -c <cve>           List signature for given CVE."
     echo "    -i <signature id>  List signature with given id."
     echo "    -n <string>        List signatures with contains the strint in its name"
     echo "    -r  Raw output."
@@ -58,10 +60,10 @@ fi
 # Main
 if [ "$RAW" -eq 1 ]
 then
-    GET "/mgmt/tm/asm/signatures?\$select=id,signatureId,name,accuracy,risk${FILTER}" \
+    GET "/mgmt/tm/asm/signatures?\$select=id,signatureId,name,accuracy,risk,hasCve,references${FILTER}" \
         | JQ -r ".items[] ${FILTER_JQ} | [.id,.signatureId, .name, .accuracy, .risk]"
 else
-    GET "/mgmt/tm/asm/signatures?\$select=id,signatureId,name,accuracy,risk${FILTER}" \
+    GET "/mgmt/tm/asm/signatures?\$select=id,signatureId,name,accuracy,risk,hasCve,references${FILTER}" \
         | JQ -r ".items[] ${FILTER_JQ} | [.id,.signatureId, .name, .accuracy, .risk] | @tsv" \
         | COLUMN -o "|" -N "Id,SignatureId,Name,Accuracy,Risk"
 fi
