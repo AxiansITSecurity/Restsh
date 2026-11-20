@@ -35,6 +35,9 @@ This version renames the F5OS-A module to F5OS.
         - `f5.cert.bundle-manager.list`
         - `f5.cert.bundle-manager.update-now`
     - Feat: `f5.log.apm`, `f5.log.asm`, `f5.log.ltm`
+    - Feat: List ASM signatures
+        - `f5.asm.signatures.get` - Get details of a signature by its signatureID
+        - `f5.asm.signatures.list` - Lists signatures filtered by signatureID or name
     - Upd: `f5.ltm.pool.list` - Add option to print member IPs
     - Upd: `f5.version` reports now build version too
     - Upd: `f5.asm.signatureset.filter.modify` - Remove workaround for bug id 1980601
