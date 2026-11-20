@@ -61,7 +61,7 @@ fi
 if [ "$RAW" -eq 1 ]
 then
     GET "/mgmt/tm/asm/signatures?\$select=id,signatureId,name,accuracy,risk,hasCve,references${FILTER}" \
-        | JQ -r ".items[] ${FILTER_JQ} | [.id,.signatureId, .name, .accuracy, .risk]"
+        | JQ -r "{items: [.items[] ${FILTER_JQ}]}"
 else
     GET "/mgmt/tm/asm/signatures?\$select=id,signatureId,name,accuracy,risk,hasCve,references${FILTER}" \
         | JQ -r ".items[] ${FILTER_JQ} | [.id,.signatureId, .name, .accuracy, .risk] | @tsv" \
